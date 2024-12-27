@@ -1,0 +1,20 @@
+<Project>
+    <Import Project="ReferencePath.props.user" Condition="Exists('ReferencePath.props.user')"/>
+    <PropertyGroup>
+        <AssemblySearchPaths>$(AssemblySearchPaths);$(ReferencePath)</AssemblySearchPaths>
+    </PropertyGroup>
+    
+    <Target Name="NotifyIncompleteSetup" BeforeTargets="PrepareForBuild" Condition="$(ReferencePath) == ''">
+        <Warning Text="The ReferencePath property is not specified! Make sure to set the property in the ReferencePath.props.user file."/>
+        <PropertyGroup>
+            <Template>
+&lt;Project&gt;
+    &lt;PropertyGroup&gt;
+        &lt;ReferencePath&gt;&lt;/ReferencePath&gt;
+    &lt;/PropertyGroup&gt;
+&lt;/Project&gt;
+            </Template>
+        </PropertyGroup>
+        <WriteLinesToFile File="../ReferencePath.props.user" Lines="$(Template)" Overwrite="false" Condition="!Exists('../ReferencePath.props.user')"/>
+    </Target>
+</Project>

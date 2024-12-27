@@ -1,0 +1,25 @@
+﻿<Project>
+
+    <PropertyGroup>
+        <TargetFramework>net481</TargetFramework>
+        <Nullable>enable</Nullable>
+        <LangVersion>13</LangVersion>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="NAudio.Core" Version="2.2.1"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Reference Include="Assembly-CSharp" Private="false"/>
+        <Reference Include="Axwabo.Helpers" Private="false"/>
+        <Reference Include="Mirror" Private="false"/>
+        <Reference Include="UnityEngine.CoreModule" Private="false"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Using Include="System"/>
+        <Using Include="UnityEngine.Object" Alias="Object"/>
+    </ItemGroup>
+
+</Project>
