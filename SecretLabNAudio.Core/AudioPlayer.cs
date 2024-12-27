@@ -131,6 +131,11 @@ public sealed partial class AudioPlayer : MonoBehaviour
 
     public event Action? OnDestroyed;
 
-    private void OnDestroy() => OnDestroyed?.Invoke();
+    private void OnDestroy()
+    {
+        _encoder.Dispose();
+        _playbackBuffer.Dispose();
+        OnDestroyed?.Invoke();
+    }
 
 }
