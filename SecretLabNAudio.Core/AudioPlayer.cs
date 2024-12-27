@@ -1,31 +1,25 @@
 ﻿using AdminToys;
-using Mirror;
+using CentralAuth;
 using NAudio.Wave;
-using UnityEngine;
+using SecretLabNAudio.Core.Extensions;
+using VoiceChat.Codec;
+using VoiceChat.Codec.Enums;
+using VoiceChat.Networking;
 
 namespace SecretLabNAudio.Core;
 
-public sealed class AudioPlayer : MonoBehaviour
+public sealed partial class AudioPlayer : MonoBehaviour
 {
 
-    public const int SampleRate = 48000;
-    public const int Channels = 1;
+    private const int SendBufferSize = SampleRate / 100;
 
-    public static WaveFormat SupportedFormat { get; } = WaveFormat.CreateIeeeFloatWaveFormat(SampleRate, Channels);
-
-    public static AudioPlayer Create(AudioPlayerSettings settings, Vector3 position = default)
+    public static AudioPlayer Create(byte id, AudioPlayerSettings settings, Vector3 position = default)
     {
-        foreach (var value in NetworkClient.prefabs.Values)
-            if (value.TryGetComponent(out SpeakerToy toy))
-            {
-                var o = Instantiate(toy, position, Quaternion.identity).gameObject;
-                NetworkServer.Spawn(o);
-                var player = o.AddComponent<AudioPlayer>();
-                player.ApplySettings(settings);
-                return player;
-            }
-
-        throw new MissingComponentException("SpeakerToy not found");
+        var o = Instantiate(SpeakerToyExtensions.Prefab, position, Quaternion.identity).gameObject;
+        var player = o.AddComponent<AudioPlayer>().ApplySettings(settings);
+        player.Id = id;
+        NetworkServer.Spawn(o);
+        return player;
     }
 
     private ISampleProvider? _sampleProvider;
@@ -35,13 +29,44 @@ public sealed class AudioPlayer : MonoBehaviour
         get => _sampleProvider;
         set
         {
-            if (value is {WaveFormat: {SampleRate: not SampleRate, Channels: not Channels}})
+            if (value is {WaveFormat: not {SampleRate: SampleRate, Channels: Channels}})
                 throw new ArgumentException("Expected a mono provider with a sample rate of 48000Hz and.");
             _sampleProvider = value;
+            _samplesToSend = 0;
         }
     }
 
     public SpeakerToy Speaker { get; private set; } = null!;
+
+    public byte Id
+    {
+        get => Speaker.NetworkControllerId;
+        set => Speaker.NetworkControllerId = value;
+    }
+
+    public bool IsSpatial
+    {
+        get => Speaker.NetworkIsSpatial;
+        set => Speaker.NetworkIsStatic = !(Speaker.NetworkIsSpatial = value);
+    }
+
+    public float Volume
+    {
+        get => Speaker.NetworkVolume;
+        set => Speaker.NetworkVolume = value;
+    }
+
+    public float MinDistance
+    {
+        get => Speaker.NetworkMinDistance;
+        set => Speaker.NetworkMinDistance = value;
+    }
+
+    public float MaxDistance
+    {
+        get => Speaker.NetworkMaxDistance;
+        set => Speaker.NetworkMaxDistance = value;
+    }
 
     private void Awake()
     {
@@ -50,8 +75,62 @@ public sealed class AudioPlayer : MonoBehaviour
             throw new InvalidOperationException("AudioPlayer must be attached to a SpeakerToy.");
     }
 
+    private int _samplesToSend;
+
+    private readonly float[] _readBuffer = new float[SampleRate / 10];
+
+    private readonly PlaybackBuffer _playbackBuffer = new();
+
+    private readonly OpusEncoder _encoder = new(OpusApplicationType.Voip);
+
+    private readonly float[] _sendBuffer = new float[SendBufferSize];
+
+    private readonly byte[] _encoderBuffer = new byte[1024];
+
     private void Update()
     {
+        if (SampleProvider == null)
+            return;
+        var delta = (int) (Time.deltaTime * SampleRate);
+        _samplesToSend += delta;
+        var read = SampleProvider.Read(_readBuffer, 0, Mathf.Min(_samplesToSend, _readBuffer.Length));
+        if (read == 0)
+        {
+            _samplesToSend -= delta;
+            return;
+        }
+
+        _playbackBuffer.Write(_readBuffer, read);
+        _samplesToSend = Mathf.Max(_samplesToSend - read, 0);
+        SendAudio();
     }
+
+    private void SendAudio()
+    {
+        while (_playbackBuffer.Length > SendBufferSize)
+        {
+            _playbackBuffer.ReadTo(_sendBuffer, SendBufferSize);
+            var encoded = _encoder.Encode(_sendBuffer, _encoderBuffer);
+            var message = new AudioMessage(Speaker.NetworkControllerId, _encoderBuffer, encoded);
+            Send(message);
+        }
+    }
+
+    private static void Send(AudioMessage message)
+    {
+        foreach (var hub in ReferenceHub.AllHubs)
+            if (hub.Mode == ClientInstanceMode.ReadyClient)
+                hub.connectionToClient.Send(message);
+    }
+
+    public void ClearBuffer()
+    {
+        _samplesToSend = 0;
+        _playbackBuffer.Clear();
+    }
+
+    public event Action? OnDestroyed;
+
+    private void OnDestroy() => OnDestroyed?.Invoke();
 
 }

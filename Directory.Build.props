@@ -19,6 +19,8 @@
 
     <ItemGroup>
         <Using Include="System"/>
+        <Using Include="Mirror"/>
+        <Using Include="UnityEngine"/>
         <Using Include="UnityEngine.Object" Alias="Object"/>
     </ItemGroup>
 
