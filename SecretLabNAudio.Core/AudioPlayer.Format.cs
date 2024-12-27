@@ -2,7 +2,7 @@
 
 namespace SecretLabNAudio.Core;
 
-public sealed partial class AudioPlayer
+public partial class AudioPlayer
 {
 
     public const int SampleRate = 48000;

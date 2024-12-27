@@ -1,26 +1,16 @@
 ﻿using AdminToys;
 using CentralAuth;
 using NAudio.Wave;
-using SecretLabNAudio.Core.Extensions;
 using VoiceChat.Codec;
 using VoiceChat.Codec.Enums;
 using VoiceChat.Networking;
 
 namespace SecretLabNAudio.Core;
 
-public sealed partial class AudioPlayer : MonoBehaviour
+public partial class AudioPlayer : MonoBehaviour
 {
 
     private const int SendBufferSize = SampleRate / 100;
-
-    public static AudioPlayer Create(byte id, AudioPlayerSettings settings, Vector3 position = default)
-    {
-        var o = Instantiate(SpeakerToyExtensions.Prefab, position, Quaternion.identity).gameObject;
-        var player = o.AddComponent<AudioPlayer>().ApplySettings(settings);
-        player.Id = id;
-        NetworkServer.Spawn(o);
-        return player;
-    }
 
     private ISampleProvider? _sampleProvider;
 
@@ -116,12 +106,16 @@ public sealed partial class AudioPlayer : MonoBehaviour
         }
     }
 
-    private static void Send(AudioMessage message)
+    private void Send(AudioMessage message)
     {
         foreach (var hub in ReferenceHub.AllHubs)
-            if (hub.Mode == ClientInstanceMode.ReadyClient)
-                hub.connectionToClient.Send(message);
+            if (hub.Mode == ClientInstanceMode.ReadyClient && ShouldSendTo(hub))
+                Send(hub, message);
     }
+
+    protected virtual bool ShouldSendTo(ReferenceHub hub) => true;
+
+    protected virtual void Send(ReferenceHub hub, AudioMessage message) => hub.connectionToClient.Send(message);
 
     public void ClearBuffer()
     {
