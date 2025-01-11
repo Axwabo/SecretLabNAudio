@@ -1,9 +1,17 @@
 ﻿namespace SecretLabNAudio.Core;
 
-public readonly struct AudioPlayerSettings
+public readonly record struct AudioPlayerSettings
 {
 
     public static AudioPlayerSettings Default { get; } = new();
+
+    public static AudioPlayerSettings From(AudioPlayer player) => new()
+    {
+        IsSpatial = player.IsSpatial,
+        Volume = player.Volume,
+        MinDistance = player.MinDistance,
+        MaxDistance = player.MaxDistance
+    };
 
     public AudioPlayerSettings()
     {
