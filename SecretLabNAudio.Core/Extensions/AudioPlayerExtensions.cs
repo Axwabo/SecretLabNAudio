@@ -1,4 +1,6 @@
-﻿namespace SecretLabNAudio.Core.Extensions;
+﻿using NAudio.Wave;
+
+namespace SecretLabNAudio.Core.Extensions;
 
 public static class AudioPlayerExtensions
 {
@@ -33,6 +35,12 @@ public static class AudioPlayerExtensions
     public static AudioPlayer WithSpatial(this AudioPlayer player, bool isSpatial = true)
     {
         player.IsSpatial = isSpatial;
+        return player;
+    }
+
+    public static AudioPlayer WithProvider(this AudioPlayer player, ISampleProvider? provider)
+    {
+        player.SampleProvider = provider?.ToPlayerCompatible();
         return player;
     }
 

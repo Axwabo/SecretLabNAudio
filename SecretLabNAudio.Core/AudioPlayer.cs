@@ -19,8 +19,8 @@ public partial class AudioPlayer : MonoBehaviour
         get => _sampleProvider;
         set
         {
-            if (value is {WaveFormat: not {SampleRate: SampleRate, Channels: Channels}})
-                throw new ArgumentException("Expected a mono provider with a sample rate of 48000Hz and.");
+            if (value is {WaveFormat: not {SampleRate: SampleRate, Channels: Channels, Encoding: WaveFormatEncoding.IeeeFloat}})
+                throw new ArgumentException($"Expected a mono provider with a sample rate of 48000Hz and IEEEFloat encoding, got format {value.WaveFormat}");
             _sampleProvider = value;
             _samplesToSend = 0;
         }
