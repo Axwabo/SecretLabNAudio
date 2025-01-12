@@ -61,6 +61,7 @@ public static class SpeakerToyExtensions
         var dataStart = writer.Position;
         try
         {
+            writer.WriteULong(0); // SerializeSyncObjects
             var dirtyBits = GetDirtyBits(data);
             // AdminToyBase.SerializeSyncVars
             writer.WriteULong(dirtyBits);
