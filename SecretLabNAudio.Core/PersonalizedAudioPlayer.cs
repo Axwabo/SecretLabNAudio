@@ -25,15 +25,25 @@ public class PersonalizedAudioPlayer : TargetedAudioPlayer
 
     private void Sync(ReferenceHub hub, AudioPlayerSettings? previous, AudioPlayerSettings? settings)
     {
+        if (previous == settings)
+            return;
         var id = hub.NotNullUserId();
+        var defaultSettings = AudioPlayerSettings.From(this);
+        var settingsToSend = settings ?? defaultSettings;
         if (settings.HasValue)
-            _settingsPerUserId[id] = settings.Value;
+            _settingsPerUserId[id] = settingsToSend;
         else
             _settingsPerUserId.Remove(id);
-        var settingsToSend = settings ?? AudioPlayerSettings.From(this);
-        if (previous == settingsToSend)
-            return;
-        // TODO: send fake sync vars
+        var actualPrevious = previous ?? defaultSettings;
+        SendSyncVars(hub, actualPrevious, settingsToSend);
     }
+
+    private void SendSyncVars(ReferenceHub hub, in AudioPlayerSettings previous, in AudioPlayerSettings current)
+        => SpeakerToyExtensions.SendFakeSyncVars(hub.connectionToClient, Speaker, (
+            Mathf.Approximately(previous.Volume, current.Volume) ? null : current.Volume,
+            previous.IsSpatial == current.IsSpatial ? null : current.IsSpatial,
+            Mathf.Approximately(previous.MinDistance, current.MinDistance) ? null : current.MinDistance,
+            Mathf.Approximately(previous.MaxDistance, current.MaxDistance) ? null : current.MaxDistance
+        ));
 
 }
