@@ -3,8 +3,17 @@ using SecretLabNAudio.Core.Extensions;
 
 namespace SecretLabNAudio.Core;
 
-public class PersonalizedAudioPlayer : TargetedAudioPlayer
+public class AudioPlayerPersonalization : MonoBehaviour
 {
+
+    public AudioPlayer Player { get; private set; } = null!;
+
+    private void Awake()
+    {
+        Player = GetComponent<AudioPlayer>();
+        if (!Player)
+            throw new InvalidOperationException("AudioPlayerPersonalization must be attached to an AudioPlayer.");
+    }
 
     private readonly Dictionary<string, AudioPlayerSettings> _settingsPerUserId = [];
 
@@ -28,7 +37,7 @@ public class PersonalizedAudioPlayer : TargetedAudioPlayer
         if (previous == settings)
             return;
         var id = hub.NotNullUserId();
-        var defaultSettings = AudioPlayerSettings.From(this);
+        var defaultSettings = AudioPlayerSettings.From(Player);
         var settingsToSend = settings ?? defaultSettings;
         if (settings.HasValue)
             _settingsPerUserId[id] = settingsToSend;
@@ -39,7 +48,7 @@ public class PersonalizedAudioPlayer : TargetedAudioPlayer
     }
 
     private void SendSyncVars(ReferenceHub hub, in AudioPlayerSettings previous, in AudioPlayerSettings current)
-        => SpeakerToyExtensions.SendFakeSyncVars(hub.connectionToClient, Speaker, (
+        => SpeakerToyExtensions.SendFakeSyncVars(hub.connectionToClient, Player.Speaker, (
             Mathf.Approximately(previous.Volume, current.Volume) ? null : current.Volume,
             previous.IsSpatial == current.IsSpatial ? null : current.IsSpatial,
             Mathf.Approximately(previous.MinDistance, current.MinDistance) ? null : current.MinDistance,
