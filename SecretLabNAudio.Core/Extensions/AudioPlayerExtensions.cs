@@ -1,4 +1,5 @@
-﻿using NAudio.Wave;
+﻿using Axwabo.Helpers;
+using NAudio.Wave;
 
 namespace SecretLabNAudio.Core.Extensions;
 
@@ -47,6 +48,39 @@ public static class AudioPlayerExtensions
     public static AudioPlayer Pause(this AudioPlayer player, bool pause = true)
     {
         player.IsPaused = pause;
+        return player;
+    }
+
+    public static AudioPlayerPersonalization AddPersonalization(this AudioPlayer player)
+        => player.AddPersonalization<AudioPlayerPersonalization>();
+
+    public static T AddPersonalization<T>(this AudioPlayer player) where T : AudioPlayerPersonalization
+        => typeof(T).IsAbstract
+            ? throw new InvalidOperationException("Cannot create an abstract AudioPlayerPersonalization component")
+            : player.GetOrAddComponent<T>();
+
+    public static T AddPersonalization<T>(this AudioPlayer player, Action<T> configure) where T : AudioPlayerPersonalization
+    {
+        var personalization = player.AddPersonalization<T>();
+        configure.Invoke(personalization);
+        return personalization;
+    }
+
+    public static AudioPlayer WithPersonalization(this AudioPlayer player)
+    {
+        player.AddPersonalization();
+        return player;
+    }
+
+    public static AudioPlayer WithPersonalization<T>(this AudioPlayer player) where T : AudioPlayerPersonalization
+    {
+        player.AddPersonalization<T>();
+        return player;
+    }
+
+    public static AudioPlayer WithPersonalization<T>(this AudioPlayer player, Action<T> configure) where T : AudioPlayerPersonalization
+    {
+        player.AddPersonalization(configure);
         return player;
     }
 
