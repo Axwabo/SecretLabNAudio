@@ -6,7 +6,7 @@ namespace SecretLabNAudio.Core.Extensions;
 public static class AudioPlayerExtensions
 {
 
-    public static AudioPlayer ApplySettings(this AudioPlayer player, AudioPlayerSettings settings)
+    public static T ApplySettings<T>(this T player, AudioPlayerSettings settings) where T : AudioPlayer
     {
         player.IsSpatial = settings.IsSpatial;
         player.Volume = settings.Volume;
@@ -15,37 +15,37 @@ public static class AudioPlayerExtensions
         return player;
     }
 
-    public static AudioPlayer WithVolume(this AudioPlayer player, float volume)
+    public static T WithVolume<T>(this T player, float volume) where T : AudioPlayer
     {
         player.Volume = volume;
         return player;
     }
 
-    public static AudioPlayer WithMinDistance(this AudioPlayer player, float minDistance)
+    public static T WithMinDistance<T>(this T player, float minDistance) where T : AudioPlayer
     {
         player.MinDistance = minDistance;
         return player;
     }
 
-    public static AudioPlayer WithMaxDistance(this AudioPlayer player, float maxDistance)
+    public static T WithMaxDistance<T>(this T player, float maxDistance) where T : AudioPlayer
     {
         player.MaxDistance = maxDistance;
         return player;
     }
 
-    public static AudioPlayer WithSpatial(this AudioPlayer player, bool isSpatial = true)
+    public static T WithSpatial<T>(this T player, bool isSpatial = true) where T : AudioPlayer
     {
         player.IsSpatial = isSpatial;
         return player;
     }
 
-    public static AudioPlayer WithProvider(this AudioPlayer player, ISampleProvider? provider)
+    public static T WithProvider<T>(this T player, ISampleProvider? provider) where T : AudioPlayer
     {
         player.SampleProvider = provider?.ToPlayerCompatible();
         return player;
     }
 
-    public static AudioPlayer Pause(this AudioPlayer player, bool pause = true)
+    public static T Pause<T>(this T player, bool pause = true) where T : AudioPlayer
     {
         player.IsPaused = pause;
         return player;
@@ -54,31 +54,36 @@ public static class AudioPlayerExtensions
     public static AudioPlayerPersonalization AddPersonalization(this AudioPlayer player)
         => player.AddPersonalization<AudioPlayerPersonalization>();
 
-    public static T AddPersonalization<T>(this AudioPlayer player) where T : AudioPlayerPersonalization
-        => typeof(T).IsAbstract
+    public static TPersonalization AddPersonalization<TPersonalization>(this AudioPlayer player) where TPersonalization : AudioPlayerPersonalization
+        => typeof(TPersonalization).IsAbstract
             ? throw new InvalidOperationException("Cannot create an abstract AudioPlayerPersonalization component")
-            : player.GetOrAddComponent<T>();
+            : player.GetOrAddComponent<TPersonalization>();
 
-    public static T AddPersonalization<T>(this AudioPlayer player, Action<T> configure) where T : AudioPlayerPersonalization
+    public static TPersonalization AddPersonalization<TPersonalization>(this AudioPlayer player, Action<TPersonalization> configure)
+        where TPersonalization : AudioPlayerPersonalization
     {
-        var personalization = player.AddPersonalization<T>();
+        var personalization = player.AddPersonalization<TPersonalization>();
         configure.Invoke(personalization);
         return personalization;
     }
 
-    public static AudioPlayer WithPersonalization(this AudioPlayer player)
+    public static TPlayer WithPersonalization<TPlayer>(this TPlayer player) where TPlayer : AudioPlayer
     {
         player.AddPersonalization();
         return player;
     }
 
-    public static AudioPlayer WithPersonalization<T>(this AudioPlayer player) where T : AudioPlayerPersonalization
+    public static TPlayer WithPersonalization<TPlayer, TPersonalization>(this TPlayer player)
+        where TPlayer : AudioPlayer
+        where TPersonalization : AudioPlayerPersonalization
     {
-        player.AddPersonalization<T>();
+        player.AddPersonalization<TPersonalization>();
         return player;
     }
 
-    public static AudioPlayer WithPersonalization<T>(this AudioPlayer player, Action<T> configure) where T : AudioPlayerPersonalization
+    public static TPlayer WithPersonalization<TPlayer, TPersonalization>(this TPlayer player, Action<TPersonalization> configure)
+        where TPlayer : AudioPlayer
+        where TPersonalization : AudioPlayerPersonalization
     {
         player.AddPersonalization(configure);
         return player;
