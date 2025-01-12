@@ -44,4 +44,10 @@ public static class AudioPlayerExtensions
         return player;
     }
 
+    public static AudioPlayer Pause(this AudioPlayer player, bool pause = true)
+    {
+        player.IsPaused = pause;
+        return player;
+    }
+
 }

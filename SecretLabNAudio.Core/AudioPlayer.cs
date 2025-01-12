@@ -57,6 +57,8 @@ public partial class AudioPlayer : MonoBehaviour
         get => Speaker.NetworkMaxDistance;
         set => Speaker.NetworkMaxDistance = value;
     }
+    
+    public bool IsPaused { get; set; }
 
     private void Awake()
     {
@@ -79,7 +81,7 @@ public partial class AudioPlayer : MonoBehaviour
 
     private void Update()
     {
-        if (SampleProvider == null)
+        if (SampleProvider == null || IsPaused)
             return;
         var delta = (int) (Time.deltaTime * SampleRate);
         _samplesToSend += delta;
