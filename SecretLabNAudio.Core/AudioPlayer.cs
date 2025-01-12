@@ -85,7 +85,7 @@ public partial class AudioPlayer : MonoBehaviour
             return;
         var delta = (int) (Time.deltaTime * SampleRate);
         _samplesToSend += delta;
-        var read = SampleProvider.Read(_readBuffer, 0, Mathf.Min(_samplesToSend, _readBuffer.Length));
+        var read = ReadAudio(_readBuffer, Mathf.Min(_samplesToSend, _readBuffer.Length));
         if (read == 0)
         {
             _samplesToSend -= delta;
@@ -96,6 +96,8 @@ public partial class AudioPlayer : MonoBehaviour
         _samplesToSend = Mathf.Max(_samplesToSend - read, 0);
         SendAudio();
     }
+
+    protected virtual int ReadAudio(float[] buffer, int count) => SampleProvider!.Read(buffer, 0, count);
 
     private void SendAudio()
     {
