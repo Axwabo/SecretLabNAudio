@@ -5,7 +5,7 @@
     </PropertyGroup>
     
     <Target Name="NotifyIncompleteSetup" BeforeTargets="PrepareForBuild" Condition="$(ReferencePath) == ''">
-        <Warning Text="The ReferencePath property is not specified! Make sure to set the property in the ReferencePath.props.user file."/>
+        <Error Text="The ReferencePath property is not specified! Make sure to set the property in the ReferencePath.props.user file."/>
         <PropertyGroup>
             <Template>
 &lt;Project&gt;
