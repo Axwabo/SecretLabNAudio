@@ -1,6 +1,6 @@
 ﻿using AdminToys;
-using CentralAuth;
 using NAudio.Wave;
+using SecretLabNAudio.Core.SendEngines;
 using VoiceChat.Codec;
 using VoiceChat.Codec.Enums;
 using VoiceChat.Networking;
@@ -27,6 +27,8 @@ public partial class AudioPlayer : MonoBehaviour
     }
 
     public SpeakerToy Speaker { get; private set; } = null!;
+
+    public SendEngine? SendEngine { get; set; }
 
     public byte Id
     {
@@ -57,7 +59,7 @@ public partial class AudioPlayer : MonoBehaviour
         get => Speaker.NetworkMaxDistance;
         set => Speaker.NetworkMaxDistance = value;
     }
-    
+
     public bool IsPaused { get; set; }
 
     private void Awake()
@@ -66,6 +68,8 @@ public partial class AudioPlayer : MonoBehaviour
         if (!Speaker)
             throw new InvalidOperationException("AudioPlayer must be attached to a SpeakerToy.");
     }
+
+    private void Start() => SendEngine ??= new SendEngine(this);
 
     private int _samplesToSend;
 
@@ -106,20 +110,9 @@ public partial class AudioPlayer : MonoBehaviour
             _playbackBuffer.ReadTo(_sendBuffer, SendBufferSize);
             var encoded = _encoder.Encode(_sendBuffer, _encoderBuffer);
             var message = new AudioMessage(Speaker.NetworkControllerId, _encoderBuffer, encoded);
-            Send(message);
+            SendEngine?.Broadcast(message);
         }
     }
-
-    private void Send(AudioMessage message)
-    {
-        foreach (var hub in ReferenceHub.AllHubs)
-            if (hub.Mode == ClientInstanceMode.ReadyClient && ShouldSendTo(hub))
-                Send(hub, message);
-    }
-
-    protected virtual bool ShouldSendTo(ReferenceHub hub) => true;
-
-    protected virtual void Send(ReferenceHub hub, AudioMessage message) => hub.connectionToClient.Send(message);
 
     public void ClearBuffer()
     {
