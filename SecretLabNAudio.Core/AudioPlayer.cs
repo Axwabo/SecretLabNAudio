@@ -69,7 +69,7 @@ public sealed partial class AudioPlayer : MonoBehaviour
             throw new InvalidOperationException("AudioPlayer must be attached to a SpeakerToy.");
     }
 
-    private void Start() => SendEngine ??= new SendEngine(this);
+    private void Start() => SendEngine ??= new SendEngine();
 
     private int _samplesToSend;
 

@@ -6,10 +6,6 @@ namespace SecretLabNAudio.Core.SendEngines;
 public class SendEngine
 {
 
-    public AudioPlayer Player { get; }
-
-    public SendEngine(AudioPlayer player) => Player = player;
-
     public void Broadcast(AudioMessage message)
     {
         foreach (var hub in ReferenceHub.AllHubs)

@@ -7,7 +7,7 @@ public class FilteredSendEngine : SendEngine
 
     public Predicate<ReferenceHub> Filter { get; }
 
-    public FilteredSendEngine(AudioPlayer player, Predicate<ReferenceHub> filter) : base(player) => Filter = filter;
+    public FilteredSendEngine(Predicate<ReferenceHub> filter) => Filter = filter;
 
     protected override void Broadcast(ReferenceHub hub, AudioMessage message)
     {
