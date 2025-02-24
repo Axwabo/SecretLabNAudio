@@ -3,7 +3,7 @@ using SecretLabNAudio.Core.Extensions;
 
 namespace SecretLabNAudio.Core;
 
-public class AudioPlayerPersonalization : MonoBehaviour
+public sealed class AudioPlayerPersonalization : MonoBehaviour
 {
 
     public AudioPlayer Player { get; private set; } = null!;

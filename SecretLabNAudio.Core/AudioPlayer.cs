@@ -7,7 +7,7 @@ using VoiceChat.Networking;
 
 namespace SecretLabNAudio.Core;
 
-public partial class AudioPlayer : MonoBehaviour
+public sealed partial class AudioPlayer : MonoBehaviour
 {
 
     private const int SendBufferSize = SampleRate / 100;
@@ -101,7 +101,7 @@ public partial class AudioPlayer : MonoBehaviour
         SendAudio();
     }
 
-    protected virtual int ReadAudio(float[] buffer, int count) => SampleProvider!.Read(buffer, 0, count);
+    private int ReadAudio(float[] buffer, int count) => SampleProvider!.Read(buffer, 0, count);
 
     private void SendAudio()
     {
