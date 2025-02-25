@@ -41,7 +41,7 @@ public static class SpeakerToyExtensions
         });
     }
 
-    private static void SerializeServer(SpeakerToy speaker, NetworkWriter observersWriter, in SpeakerSyncVarData data)
+    private static void SerializeServer(SpeakerToy speaker, NetworkWriter observersWriter,  SpeakerSyncVarData data)
     {
         var networkBehaviours = speaker.netIdentity.NetworkBehaviours;
         for (var i = 0; i < networkBehaviours.Length; i++)
@@ -49,12 +49,12 @@ public static class SpeakerToyExtensions
             if (networkBehaviours[i] != speaker)
                 continue;
             Compression.CompressVarUInt(observersWriter, (uint) (1 << i));
-            Serialize(speaker, observersWriter, in data);
+            Serialize(speaker, observersWriter, data);
             break;
         }
     }
 
-    private static void Serialize(SpeakerToy speaker, NetworkWriter writer, in SpeakerSyncVarData data)
+    private static void Serialize(SpeakerToy speaker, NetworkWriter writer,  SpeakerSyncVarData data)
     {
         var start = writer.Position;
         writer.WriteByte(0);
@@ -90,7 +90,7 @@ public static class SpeakerToyExtensions
         writer.Position = dataEnd;
     }
 
-    private static ulong GetDirtyBits(in SpeakerSyncVarData data)
+    private static ulong GetDirtyBits( SpeakerSyncVarData data)
     {
         var dirtyBits = 0UL;
         if (data.Volume.HasValue)

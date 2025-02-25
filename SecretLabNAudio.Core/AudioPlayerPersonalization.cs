@@ -47,7 +47,7 @@ public sealed class AudioPlayerPersonalization : MonoBehaviour
         SendSyncVars(hub, actualPrevious, settingsToSend);
     }
 
-    private void SendSyncVars(ReferenceHub hub, in AudioPlayerSettings previous, in AudioPlayerSettings current)
+    private void SendSyncVars(ReferenceHub hub,  AudioPlayerSettings previous, AudioPlayerSettings current)
         => SpeakerToyExtensions.SendFakeSyncVars(hub.connectionToClient, Player.Speaker, (
             Mathf.Approximately(previous.Volume, current.Volume) ? null : current.Volume,
             previous.IsSpatial == current.IsSpatial ? null : current.IsSpatial,
