@@ -23,3 +23,5 @@ public sealed record WaveStreamResult(WaveStream Stream) : AudioReaderFactoryRes
 public sealed record SampleProviderResult(ISampleProvider Provider) : AudioReaderFactoryResult, ISampleProviderResult;
 
 public sealed record StreamAndProviderResult(WaveStream Stream, ISampleProvider Provider) : AudioReaderFactoryResult, IWaveStreamResult, ISampleProviderResult;
+
+public sealed record NullFactoryResult : AudioReaderFactoryResult;
