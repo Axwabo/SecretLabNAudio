@@ -70,16 +70,17 @@ public static class TryCreateAudioReader
         return false;
     }
 
-    public static bool StreamAndProvider(string path, [NotNullWhen(true)] out StreamAndProviderResult? streamAndProvider)
+    public static bool StreamAndProvider(string path, [NotNullWhen(true)] out WaveStream? stream, [NotNullWhen(true)] out ISampleProvider? provider)
     {
         var type = Path.GetExtension(path);
         if (TryGetResult(type, factory => factory.FromPath(path), out var result) && result is StreamAndProviderResult streamAndProviderResult)
         {
-            streamAndProvider = streamAndProviderResult;
+            (stream, provider) = streamAndProviderResult;
             return true;
         }
 
-        streamAndProvider = null;
+        stream = null;
+        provider = null;
         return false;
     }
 
