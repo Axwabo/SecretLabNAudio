@@ -22,7 +22,6 @@ public sealed partial class AudioPlayer : MonoBehaviour
             if (value is {WaveFormat: not {SampleRate: SampleRate, Channels: Channels, Encoding: WaveFormatEncoding.IeeeFloat}})
                 throw new ArgumentException($"Expected a mono provider with a sample rate of 48000Hz and IEEEFloat encoding, got format {value.WaveFormat}");
             _sampleProvider = value;
-            _samplesToSend = 0;
         }
     }
 
@@ -85,11 +84,19 @@ public sealed partial class AudioPlayer : MonoBehaviour
 
     private void Update()
     {
-        if (SampleProvider == null || IsPaused)
+        if (IsPaused)
             return;
         var delta = (int) (Time.deltaTime * SampleRate);
         _samplesToSend += delta;
-        var read = ReadAudio(_readBuffer, Mathf.Min(_samplesToSend, _readBuffer.Length));
+        if (_playbackBuffer.Length < _samplesToSend)
+            ReadFromProvider(delta);
+        SendAudio();
+    }
+
+    private void ReadFromProvider(int delta)
+    {
+        var targetRead = Mathf.Min(_samplesToSend, _readBuffer.Length);
+        var read = SampleProvider?.Read(_readBuffer, 0, targetRead) ?? 0;
         if (read == 0)
         {
             _samplesToSend -= delta;
@@ -98,10 +105,7 @@ public sealed partial class AudioPlayer : MonoBehaviour
 
         _playbackBuffer.Write(_readBuffer, read);
         _samplesToSend = Mathf.Max(_samplesToSend - read, 0);
-        SendAudio();
     }
-
-    private int ReadAudio(float[] buffer, int count) => SampleProvider!.Read(buffer, 0, count);
 
     private void SendAudio()
     {
