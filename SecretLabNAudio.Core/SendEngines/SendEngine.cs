@@ -13,6 +13,10 @@ public class SendEngine
                 Broadcast(hub, message);
     }
 
-    protected virtual void Broadcast(ReferenceHub hub, AudioMessage message) => hub.connectionToClient.Send(message);
+    protected internal virtual bool Broadcast(ReferenceHub hub, AudioMessage message)
+    {
+        hub.connectionToClient.Send(message);
+        return true;
+    }
 
 }

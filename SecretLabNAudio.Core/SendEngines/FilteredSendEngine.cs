@@ -9,10 +9,12 @@ public class FilteredSendEngine : SendEngine
 
     public FilteredSendEngine(Predicate<ReferenceHub> filter) => Filter = filter;
 
-    protected override void Broadcast(ReferenceHub hub, AudioMessage message)
+    protected internal override bool Broadcast(ReferenceHub hub, AudioMessage message)
     {
-        if (Filter(hub))
-            base.Broadcast(hub, message);
+        if (!Filter(hub))
+            return false;
+        base.Broadcast(hub, message);
+        return true;
     }
 
 }
