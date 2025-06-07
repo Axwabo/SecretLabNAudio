@@ -1,107 +1,41 @@
-﻿using AdminToys;
+﻿using LabApi.Features.Wrappers;
 
 namespace SecretLabNAudio.Core.Extensions;
-
-using SpeakerSyncVarData = (float? Volume, bool? IsSpatial, float? MinDistance, float? MaxDistance);
 
 public static class SpeakerToyExtensions
 {
 
-    private const ulong StaticBit = 16UL;
-    private const ulong IsSpatialBit = 64UL;
-    private const ulong VolumeBit = 128UL;
-    private const ulong MinDistanceBit = 256UL;
-    private const ulong MaxDistanceBit = 512UL;
-
-    private static SpeakerToy? _prefab;
-
-    public static SpeakerToy Prefab
+    public static SpeakerToy ApplySettings(this SpeakerToy speaker, SpeakerSettings settings)
     {
-        get
-        {
-            if (_prefab != null)
-                return _prefab;
-            foreach (var value in NetworkClient.prefabs.Values)
-                if (value.TryGetComponent(out SpeakerToy toy))
-                    return _prefab = toy;
-            throw new MissingComponentException("SpeakerToy not found");
-        }
+        speaker.IsSpatial = settings.IsSpatial;
+        speaker.Volume = settings.Volume;
+        speaker.MinDistance = settings.MinDistance;
+        speaker.MaxDistance = settings.MaxDistance;
+        return speaker;
     }
 
-    public static void SendFakeSyncVars(NetworkConnectionToClient connection, SpeakerToy speaker, SpeakerSyncVarData data)
+    public static SpeakerToy WithVolume(this SpeakerToy speaker, float volume)
     {
-        if (data == default)
-            return;
-        using var writer = NetworkWriterPool.Get();
-        SerializeServer(speaker, writer, data);
-        connection.Send(new EntityStateMessage
-        {
-            netId = speaker.netId,
-            payload = writer.ToArraySegment()
-        });
+        speaker.Volume = volume;
+        return speaker;
     }
 
-    private static void SerializeServer(SpeakerToy speaker, NetworkWriter observersWriter,  SpeakerSyncVarData data)
+    public static SpeakerToy WithMinDistance(this SpeakerToy speaker, float minDistance)
     {
-        var networkBehaviours = speaker.netIdentity.NetworkBehaviours;
-        for (var i = 0; i < networkBehaviours.Length; i++)
-        {
-            if (networkBehaviours[i] != speaker)
-                continue;
-            Compression.CompressVarUInt(observersWriter, (uint) (1 << i));
-            Serialize(speaker, observersWriter, data);
-            break;
-        }
+        speaker.MinDistance = minDistance;
+        return speaker;
     }
 
-    private static void Serialize(SpeakerToy speaker, NetworkWriter writer,  SpeakerSyncVarData data)
+    public static SpeakerToy WithMaxDistance(this SpeakerToy speaker, float maxDistance)
     {
-        var start = writer.Position;
-        writer.WriteByte(0);
-        var dataStart = writer.Position;
-        try
-        {
-            writer.WriteULong(0); // SerializeSyncObjects
-            var dirtyBits = GetDirtyBits(data);
-            // AdminToyBase.SerializeSyncVars
-            writer.WriteULong(dirtyBits);
-            if (data.IsSpatial.HasValue)
-                writer.WriteBool(data.IsSpatial.Value); // NetworkIsStatic
-            // SpeakerToy.SerializeSyncVars
-            writer.WriteULong(dirtyBits);
-            if (data.IsSpatial.HasValue)
-                writer.WriteBool(data.IsSpatial.Value);
-            if (data.Volume.HasValue)
-                writer.WriteFloat(data.Volume.Value);
-            if (data.MinDistance.HasValue)
-                writer.WriteFloat(data.MinDistance.Value);
-            if (data.MaxDistance.HasValue)
-                writer.WriteFloat(data.MaxDistance.Value);
-        }
-        catch (Exception ex)
-        {
-            Debug.LogError($"OnSerialize failed for: object={speaker.name} component={speaker.GetType()} sceneId={speaker.netIdentity.sceneId:X}\n\n{ex}");
-        }
-
-        var dataEnd = writer.Position;
-        writer.Position = start;
-        var num = (byte) (dataEnd - dataStart & byte.MaxValue);
-        writer.WriteByte(num);
-        writer.Position = dataEnd;
+        speaker.MaxDistance = maxDistance;
+        return speaker;
     }
 
-    private static ulong GetDirtyBits( SpeakerSyncVarData data)
+    public static SpeakerToy WithSpatial(this SpeakerToy speaker, bool isSpatial = true)
     {
-        var dirtyBits = 0UL;
-        if (data.Volume.HasValue)
-            dirtyBits |= VolumeBit;
-        if (data.IsSpatial.HasValue)
-            dirtyBits |= StaticBit | IsSpatialBit;
-        if (data.MinDistance.HasValue)
-            dirtyBits |= MinDistanceBit;
-        if (data.MaxDistance.HasValue)
-            dirtyBits |= MaxDistanceBit;
-        return dirtyBits;
+        speaker.IsSpatial = isSpatial;
+        return speaker;
     }
 
 }

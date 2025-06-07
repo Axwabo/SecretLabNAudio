@@ -1,9 +1,10 @@
-﻿using NAudio.Wave;
+﻿using LabApi.Features.Wrappers;
+using NAudio.Wave;
+using SecretLabNAudio.Core.Extensions;
 using SecretLabNAudio.Core.SendEngines;
 using VoiceChat.Codec;
 using VoiceChat.Codec.Enums;
 using VoiceChat.Networking;
-using SpeakerToy = AdminToys.SpeakerToy;
 
 namespace SecretLabNAudio.Core;
 
@@ -37,44 +38,15 @@ public sealed partial class AudioPlayer : MonoBehaviour
 
     public SendEngine? SendEngine { get; set; }
 
-    public byte Id
-    {
-        get => Speaker.NetworkControllerId;
-        set => Speaker.NetworkControllerId = value;
-    }
-
-    public bool IsSpatial
-    {
-        get => Speaker.NetworkIsSpatial;
-        set => Speaker.NetworkIsStatic = !(Speaker.NetworkIsSpatial = value);
-    }
-
-    public float Volume
-    {
-        get => Speaker.NetworkVolume;
-        set => Speaker.NetworkVolume = value;
-    }
-
-    public float MinDistance
-    {
-        get => Speaker.NetworkMinDistance;
-        set => Speaker.NetworkMinDistance = value;
-    }
-
-    public float MaxDistance
-    {
-        get => Speaker.NetworkMaxDistance;
-        set => Speaker.NetworkMaxDistance = value;
-    }
-
     public bool IsPaused { get; set; }
 
-    private void Awake()
+    public byte Id
     {
-        Speaker = GetComponent<SpeakerToy>();
-        if (!Speaker)
-            throw new InvalidOperationException("AudioPlayer must be attached to a SpeakerToy.");
+        get => Speaker.ControllerId;
+        set => Speaker.ControllerId = value;
     }
+
+    private void Awake() => Speaker = this.GetSpeaker("AudioPlayer must be attached to a SpeakerToy.");
 
     private void Start() => SendEngine ??= new SendEngine();
 

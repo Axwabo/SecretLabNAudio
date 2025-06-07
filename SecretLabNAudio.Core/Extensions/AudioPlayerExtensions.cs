@@ -1,4 +1,5 @@
-﻿using NAudio.Wave;
+﻿using LabApi.Features.Wrappers;
+using NAudio.Wave;
 using SecretLabNAudio.Core.SendEngines;
 
 namespace SecretLabNAudio.Core.Extensions;
@@ -6,38 +7,26 @@ namespace SecretLabNAudio.Core.Extensions;
 public static class AudioPlayerExtensions
 {
 
-    public static AudioPlayer ApplySettings(this AudioPlayer player, AudioPlayerSettings settings)
+    private static AudioPlayer PatchSpeaker<T>(this AudioPlayer player, Func<SpeakerToy, T, SpeakerToy> method, T parameter)
     {
-        player.IsSpatial = settings.IsSpatial;
-        player.Volume = settings.Volume;
-        player.MinDistance = settings.MinDistance;
-        player.MaxDistance = settings.MaxDistance;
+        method(player.Speaker, parameter);
         return player;
     }
+
+    public static AudioPlayer ApplySettings(this AudioPlayer player, SpeakerSettings settings)
+        => player.PatchSpeaker(SpeakerToyExtensions.ApplySettings, settings);
 
     public static AudioPlayer WithVolume(this AudioPlayer player, float volume)
-    {
-        player.Volume = volume;
-        return player;
-    }
+        => player.PatchSpeaker(SpeakerToyExtensions.WithVolume, volume);
 
     public static AudioPlayer WithMinDistance(this AudioPlayer player, float minDistance)
-    {
-        player.MinDistance = minDistance;
-        return player;
-    }
+        => player.PatchSpeaker(SpeakerToyExtensions.WithMinDistance, minDistance);
 
     public static AudioPlayer WithMaxDistance(this AudioPlayer player, float maxDistance)
-    {
-        player.MaxDistance = maxDistance;
-        return player;
-    }
+        => player.PatchSpeaker(SpeakerToyExtensions.WithMaxDistance, maxDistance);
 
     public static AudioPlayer WithSpatial(this AudioPlayer player, bool isSpatial = true)
-    {
-        player.IsSpatial = isSpatial;
-        return player;
-    }
+        => player.PatchSpeaker(SpeakerToyExtensions.WithSpatial, isSpatial);
 
     public static AudioPlayer WithProvider(this AudioPlayer player, ISampleProvider? provider)
     {
@@ -57,7 +46,7 @@ public static class AudioPlayerExtensions
         return player;
     }
 
-    public static AudioPlayer WithFilteredSendEngine(this AudioPlayer player, Predicate<ReferenceHub> filter) 
+    public static AudioPlayer WithFilteredSendEngine(this AudioPlayer player, Predicate<ReferenceHub> filter)
         => player.WithSendEngine(new FilteredSendEngine(filter));
 
 }

@@ -1,30 +1,26 @@
 ﻿using System.Collections.Generic;
+using LabApi.Features.Wrappers;
 using SecretLabNAudio.Core.Extensions;
 
 namespace SecretLabNAudio.Core;
 
-public sealed class AudioPlayerPersonalization : MonoBehaviour
+public sealed class SpeakerPersonalization : MonoBehaviour
 {
 
-    public AudioPlayer Player { get; private set; } = null!;
+    public SpeakerToy Speaker { get; private set; } = null!;
 
-    private void Awake()
-    {
-        Player = GetComponent<AudioPlayer>();
-        if (!Player)
-            throw new InvalidOperationException("AudioPlayerPersonalization must be attached to an AudioPlayer.");
-    }
+    private void Awake() => Speaker = this.GetSpeaker("SpeakerPersonalization must be attached to a SpeakerToy.");
 
-    private readonly Dictionary<string, AudioPlayerSettings> _settingsPerUserId = [];
+    private readonly Dictionary<string, SpeakerSettings> _settingsPerUserId = [];
 
-    public AudioPlayerSettings? this[ReferenceHub hub] => this[hub.NotNullUserId()];
+    public SpeakerSettings? this[ReferenceHub hub] => this[hub.NotNullUserId()];
 
-    public AudioPlayerSettings? this[string userId]
+    public SpeakerSettings? this[string userId]
         => _settingsPerUserId.TryGetValue(userId, out var settings) ? settings : null;
 
-    public void Override(ReferenceHub hub, AudioPlayerSettings settings) => Sync(hub, this[hub], settings);
+    public void Override(ReferenceHub hub, SpeakerSettings settings) => Sync(hub, this[hub], settings);
 
-    public void Modify(ReferenceHub hub, Func<AudioPlayerSettings?, AudioPlayerSettings?> settingsTransform)
+    public void Modify(ReferenceHub hub, Func<SpeakerSettings?, SpeakerSettings?> settingsTransform)
     {
         var current = this[hub];
         Sync(hub, current, settingsTransform(current));
@@ -32,12 +28,12 @@ public sealed class AudioPlayerPersonalization : MonoBehaviour
 
     public void ClearOverride(ReferenceHub hub) => Sync(hub, this[hub], null);
 
-    private void Sync(ReferenceHub hub, AudioPlayerSettings? previous, AudioPlayerSettings? settings)
+    private void Sync(ReferenceHub hub, SpeakerSettings? previous, SpeakerSettings? settings)
     {
         if (previous == settings)
             return;
         var id = hub.NotNullUserId();
-        var defaultSettings = AudioPlayerSettings.From(Player);
+        var defaultSettings = SpeakerSettings.From(Speaker);
         var settingsToSend = settings ?? defaultSettings;
         if (settings.HasValue)
             _settingsPerUserId[id] = settingsToSend;
@@ -47,8 +43,8 @@ public sealed class AudioPlayerPersonalization : MonoBehaviour
         SendSyncVars(hub, actualPrevious, settingsToSend);
     }
 
-    private void SendSyncVars(ReferenceHub hub,  AudioPlayerSettings previous, AudioPlayerSettings current)
-        => SpeakerToyExtensions.SendFakeSyncVars(hub.connectionToClient, Player.Speaker, (
+    private void SendSyncVars(ReferenceHub hub, SpeakerSettings previous, SpeakerSettings current)
+        => SpeakerSyncVars.SendFakeSyncVars(hub.connectionToClient, Speaker.Base, (
             Mathf.Approximately(previous.Volume, current.Volume) ? null : current.Volume,
             previous.IsSpatial == current.IsSpatial ? null : current.IsSpatial,
             Mathf.Approximately(previous.MinDistance, current.MinDistance) ? null : current.MinDistance,

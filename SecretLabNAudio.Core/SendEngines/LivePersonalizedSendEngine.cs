@@ -2,16 +2,16 @@
 
 namespace SecretLabNAudio.Core.SendEngines;
 
-public delegate AudioPlayerSettings? PersonalizedSettingsTransform(ReferenceHub hub, AudioPlayerSettings? current);
+public delegate SpeakerSettings? PersonalizedSettingsTransform(ReferenceHub hub, SpeakerSettings? current);
 
 public class LivePersonalizedSendEngine : SendEngine
 {
 
     private readonly SendEngine _baseEngine;
-    private readonly AudioPlayerPersonalization _personalization;
+    private readonly SpeakerPersonalization _personalization;
     private readonly PersonalizedSettingsTransform _settingsTransform;
 
-    public LivePersonalizedSendEngine(SendEngine baseEngine, AudioPlayerPersonalization personalization, PersonalizedSettingsTransform settingsTransform)
+    public LivePersonalizedSendEngine(SendEngine baseEngine, SpeakerPersonalization personalization, PersonalizedSettingsTransform settingsTransform)
     {
         _baseEngine = baseEngine;
         _personalization = personalization;
