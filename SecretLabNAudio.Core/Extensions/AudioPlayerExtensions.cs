@@ -34,6 +34,14 @@ public static class AudioPlayerExtensions
         return player;
     }
 
+    public static AudioPlayer Buffer(this AudioPlayer player, double seconds)
+    {
+        if (player.SampleProvider == null)
+            return player;
+        player.SampleProvider = player.SampleProvider.Buffer(seconds);
+        return player;
+    }
+
     public static AudioPlayer Pause(this AudioPlayer player, bool pause = true)
     {
         player.IsPaused = pause;

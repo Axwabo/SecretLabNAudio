@@ -3,7 +3,7 @@ using SecretLabNAudio.Core.SendEngines;
 
 namespace SecretLabNAudio.Core.Extensions;
 
-public static class PersonalizationExtensions
+public static partial class PersonalizationExtensions
 {
 
     public static SpeakerPersonalization AddPersonalization(this AudioPlayer player)
