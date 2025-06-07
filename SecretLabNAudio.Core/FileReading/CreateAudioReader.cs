@@ -13,14 +13,12 @@ public static class CreateAudioReader
         => AudioReaderFactoryManager.GetFactory(type).FromStream(source, closeOnDispose);
 
     private static WaveStream GetStream(this AudioReaderFactoryResult result, string fileType)
-        => result is IWaveStreamResult waveStreamResult
-            ? waveStreamResult.Stream
-            : throw new NotSupportedException($"Factory for {fileType} did not return a WaveStream");
+        => result.Stream ?? throw new NotSupportedException($"Factory for {fileType} did not return a WaveStream");
 
     private static ISampleProvider GetProvider(this AudioReaderFactoryResult result, string fileType, bool convertStream) => result switch
     {
-        ISampleProviderResult sampleProviderResult => sampleProviderResult.Provider,
-        IWaveStreamResult waveStreamResult when convertStream => waveStreamResult.Stream.ToSampleProvider(),
+        (_, { } provider) => provider,
+        ({ } stream, _) when convertStream => stream.ToSampleProvider(),
         _ => throw new NotSupportedException($"Factory for {fileType} did not return a SampleProvider")
     };
 
@@ -45,11 +43,14 @@ public static class CreateAudioReader
     public static StreamAndProviderResult StreamAndProvider(string path)
     {
         var type = Path.GetExtension(path);
-        return Result(path, type) as StreamAndProviderResult ?? throw new NotSupportedException($"Factory for {type} did not return a StreamAndProviderResult");
+        return Result(path, type) is ({ } stream, { } provider)
+            ? (stream, provider)
+            : throw new NotSupportedException($"Factory for {type} did not return both a stream and a provider");
     }
 
     public static StreamAndProviderResult StreamAndProvider(Stream source, string fileType, bool closeOnDispose = true)
-        => Result(source, fileType, closeOnDispose) as StreamAndProviderResult
-           ?? throw new NotSupportedException($"Factory for {fileType} did not return a StreamAndProviderResult");
+        => Result(source, fileType, closeOnDispose) is ({ } stream, { } provider)
+            ? (stream, provider)
+            : throw new NotSupportedException($"Factory for {fileType} did not return both a stream and a provider");
 
 }

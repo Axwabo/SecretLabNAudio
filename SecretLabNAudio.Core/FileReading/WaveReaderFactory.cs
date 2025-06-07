@@ -6,7 +6,7 @@ namespace SecretLabNAudio.Core.FileReading;
 public sealed class WaveReaderFactory : IAudioReaderFactory
 {
 
-    private static StreamAndProviderResult Result(WaveFileReader reader)
+    private static AudioReaderFactoryResult Result(WaveFileReader reader)
         => new(reader, reader.ToSampleProvider());
 
     public AudioReaderFactoryResult FromPath(string path) => Result(new WaveFileReader(path));
