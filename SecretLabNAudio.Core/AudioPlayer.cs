@@ -1,16 +1,24 @@
-﻿using AdminToys;
-using NAudio.Wave;
+﻿using NAudio.Wave;
 using SecretLabNAudio.Core.SendEngines;
 using VoiceChat.Codec;
 using VoiceChat.Codec.Enums;
 using VoiceChat.Networking;
+using SpeakerToy = AdminToys.SpeakerToy;
 
 namespace SecretLabNAudio.Core;
 
 public sealed partial class AudioPlayer : MonoBehaviour
 {
 
-    private const int SendBufferSize = SampleRate / 100;
+    private const int PacketsPerSecond = 100;
+
+    private const int PacketSamples = SampleRate / PacketsPerSecond;
+
+    private const float PacketDuration = 1f / PacketsPerSecond;
+
+    private static readonly float[] SendBuffer = new float[PacketSamples];
+
+    private static readonly byte[] EncoderBuffer = new byte[1024];
 
     private ISampleProvider? _sampleProvider;
 
@@ -70,66 +78,43 @@ public sealed partial class AudioPlayer : MonoBehaviour
 
     private void Start() => SendEngine ??= new SendEngine();
 
-    private int _samplesToSend;
+    private float _remainingTime;
 
-    private readonly float[] _readBuffer = new float[SampleRate / 10];
-
-    private readonly PlaybackBuffer _playbackBuffer = new();
-
-    private readonly OpusEncoder _encoder = new(OpusApplicationType.Voip);
-
-    private readonly float[] _sendBuffer = new float[SendBufferSize];
-
-    private readonly byte[] _encoderBuffer = new byte[1024];
+    private readonly OpusEncoder _encoder = new(OpusApplicationType.Audio);
 
     private void Update()
     {
         if (IsPaused)
             return;
-        var delta = (int) (Time.deltaTime * SampleRate);
-        _samplesToSend += delta;
-        if (_playbackBuffer.Length < _samplesToSend)
-            ReadFromProvider(delta);
-        SendAudio();
-    }
-
-    private void ReadFromProvider(int delta)
-    {
-        var targetRead = Mathf.Min(_samplesToSend, _readBuffer.Length);
-        var read = SampleProvider?.Read(_readBuffer, 0, targetRead) ?? 0;
-        if (read == 0)
+        _remainingTime += Time.deltaTime;
+        while (_remainingTime > 0)
         {
-            _samplesToSend -= delta;
-            return;
-        }
+            var read = SampleProvider?.Read(SendBuffer, 0, PacketSamples) ?? 0;
+            if (read == 0)
+            {
+                ClearBuffer();
+                break;
+            }
 
-        _playbackBuffer.Write(_readBuffer, read);
-        _samplesToSend = Mathf.Max(_samplesToSend - read, 0);
-    }
+            if (read < PacketSamples)
+            {
+                Array.Clear(SendBuffer, read, PacketSamples - read);
+                _remainingTime = PacketDuration;
+            }
 
-    private void SendAudio()
-    {
-        while (_playbackBuffer.Length > SendBufferSize)
-        {
-            _playbackBuffer.ReadTo(_sendBuffer, SendBufferSize);
-            var encoded = _encoder.Encode(_sendBuffer, _encoderBuffer);
-            var message = new AudioMessage(Speaker.NetworkControllerId, _encoderBuffer, encoded);
-            SendEngine?.Broadcast(message);
+            var encoded = _encoder.Encode(SendBuffer, EncoderBuffer);
+            SendEngine?.Broadcast(new AudioMessage(Id, EncoderBuffer, encoded));
+            _remainingTime -= PacketDuration;
         }
     }
 
-    public void ClearBuffer()
-    {
-        _samplesToSend = 0;
-        _playbackBuffer.Clear();
-    }
+    public void ClearBuffer() => _remainingTime = 0;
 
     public event Action? OnDestroyed;
 
     private void OnDestroy()
     {
         _encoder.Dispose();
-        _playbackBuffer.Dispose();
         OnDestroyed?.Invoke();
     }
 
