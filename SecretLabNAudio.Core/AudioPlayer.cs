@@ -1,6 +1,7 @@
 ﻿using LabApi.Features.Wrappers;
 using NAudio.Wave;
 using SecretLabNAudio.Core.Extensions;
+using SecretLabNAudio.Core.Providers;
 using SecretLabNAudio.Core.SendEngines;
 using VoiceChat.Codec;
 using VoiceChat.Codec.Enums;
@@ -10,12 +11,6 @@ namespace SecretLabNAudio.Core;
 
 public sealed partial class AudioPlayer : MonoBehaviour
 {
-
-    private const int PacketsPerSecond = 100;
-
-    private const int PacketSamples = SampleRate / PacketsPerSecond;
-
-    private const float PacketDuration = 1f / PacketsPerSecond;
 
     private static readonly float[] SendBuffer = new float[PacketSamples];
 
@@ -80,7 +75,11 @@ public sealed partial class AudioPlayer : MonoBehaviour
         }
     }
 
-    public void ClearBuffer() => _remainingTime = 0;
+    public void ClearBuffer()
+    {
+        _remainingTime = 0;
+        (SampleProvider as BufferedSampleProvider)?.Clear();
+    }
 
     public event Action? OnDestroyed;
 

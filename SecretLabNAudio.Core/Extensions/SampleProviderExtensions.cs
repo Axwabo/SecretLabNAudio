@@ -1,5 +1,6 @@
 ﻿using NAudio.Wave;
 using NAudio.Wave.SampleProviders;
+using SecretLabNAudio.Core.Providers;
 
 namespace SecretLabNAudio.Core.Extensions;
 
@@ -23,6 +24,15 @@ public static class SampleProviderExtensions
             return new MixingSampleProvider([current, other]);
         mixing.AddMixerInput(other);
         return mixing;
+    }
+
+    public static BufferedSampleProvider Buffer(this ISampleProvider provider, double seconds) => new(provider, seconds);
+
+    public static SampleProviderQueue Queue(this ISampleProvider provider, ISampleProvider other)
+    {
+        var queue = provider as SampleProviderQueue ?? new SampleProviderQueue(provider.WaveFormat);
+        queue.Enqueue(other);
+        return queue;
     }
 
 }
