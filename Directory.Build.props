@@ -25,4 +25,8 @@
         <Using Include="UnityEngine.Object" Alias="Object"/>
     </ItemGroup>
 
+    <ItemGroup Condition="$(ProjectName) != 'SecretLabNAudio.Core'">
+        <ProjectReference Include="..\SecretLabNAudio.Core\SecretLabNAudio.Core.csproj"/>
+    </ItemGroup>
+
 </Project>
