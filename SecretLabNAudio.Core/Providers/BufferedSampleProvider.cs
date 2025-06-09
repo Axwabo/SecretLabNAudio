@@ -1,4 +1,5 @@
 ﻿using NAudio.Wave;
+using SecretLabNAudio.Core.Extensions;
 using VoiceChat.Networking;
 
 namespace SecretLabNAudio.Core.Providers;
@@ -13,7 +14,7 @@ public sealed class BufferedSampleProvider : ISampleProvider
     private readonly int _size;
 
     public BufferedSampleProvider(ISampleProvider provider, double seconds)
-        : this(provider, (int) (provider.WaveFormat.SampleRate * provider.WaveFormat.Channels * seconds))
+        : this(provider, provider.WaveFormat.SampleCount(seconds))
     {
     }
 

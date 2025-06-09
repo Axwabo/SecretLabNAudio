@@ -11,6 +11,14 @@ public sealed class RawSourceSampleProvider : ISampleProvider
 
     public int Position { get; set; }
 
+    public RawSourceSampleProvider(float[] samples, WaveFormat format) : this(samples, samples.Length, format)
+    {
+    }
+
+    public RawSourceSampleProvider(float[] samples, int length, WaveFormat format) : this(samples, length, format.SampleRate, format.Channels)
+    {
+    }
+
     public RawSourceSampleProvider(float[] samples, int sampleRate, int channels) : this(samples, samples.Length, sampleRate, channels)
     {
     }
