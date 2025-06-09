@@ -9,8 +9,10 @@ public static class WaveStreamExtensions
     private const int BufferLength = 4800;
     private static readonly float[] Buffer = new float[BufferLength];
 
+    public static LoopingWaveProvider Loop(this WaveStream stream) => new(stream);
+
     public static RawSourceSampleProvider ReadPlayerCompatibleSamples(this WaveStream stream, bool seekToBeginning = true)
-        => stream.ReadSamples(SampleProviderExtensions.ToPlayerCompatible, seekToBeginning);
+        => stream.ReadSamples(WaveProviderExtensions.ToPlayerCompatible, seekToBeginning);
 
     public static RawSourceSampleProvider ReadSamples(this WaveStream stream, bool seekToBeginning = true)
         => stream.ReadSamples(WaveExtensionMethods.ToSampleProvider, seekToBeginning);

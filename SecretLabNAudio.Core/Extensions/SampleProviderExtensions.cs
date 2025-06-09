@@ -7,9 +7,6 @@ namespace SecretLabNAudio.Core.Extensions;
 public static class SampleProviderExtensions
 {
 
-    public static ISampleProvider ToPlayerCompatible(this IWaveProvider waveProvider)
-        => waveProvider.ToSampleProvider().ToPlayerCompatible();
-
     public static ISampleProvider ToPlayerCompatible(this ISampleProvider provider)
     {
         if (provider.WaveFormat.Encoding != WaveFormatEncoding.IeeeFloat)
