@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using NAudio.Wave;
+using StreamAndProvider = (NAudio.Wave.WaveStream Stream, NAudio.Wave.ISampleProvider Provider);
 
 namespace SecretLabNAudio.Core.FileReading;
 
@@ -40,7 +41,7 @@ public static class CreateAudioReader
     public static ISampleProvider Provider(Stream stream, string fileType, bool closeOnDispose = true, bool convertStream = true)
         => Result(stream, fileType, closeOnDispose).GetProvider(fileType, convertStream);
 
-    public static StreamAndProviderResult StreamAndProvider(string path)
+    public static StreamAndProvider StreamAndProvider(string path)
     {
         var type = Path.GetExtension(path);
         return Result(path, type) is ({ } stream, { } provider)
@@ -48,7 +49,7 @@ public static class CreateAudioReader
             : throw new NotSupportedException($"Factory for {type} did not return both a stream and a provider");
     }
 
-    public static StreamAndProviderResult StreamAndProvider(Stream source, string fileType, bool closeOnDispose = true)
+    public static StreamAndProvider StreamAndProvider(Stream source, string fileType, bool closeOnDispose = true)
         => Result(source, fileType, closeOnDispose) is ({ } stream, { } provider)
             ? (stream, provider)
             : throw new NotSupportedException($"Factory for {fileType} did not return both a stream and a provider");
