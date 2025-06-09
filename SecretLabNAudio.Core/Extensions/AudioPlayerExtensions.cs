@@ -16,6 +16,9 @@ public static class AudioPlayerExtensions
     public static AudioPlayer ApplySettings(this AudioPlayer player, SpeakerSettings settings)
         => player.PatchSpeaker(SpeakerToyExtensions.ApplySettings, settings);
 
+    public static AudioPlayer WithId(this AudioPlayer player, byte id)
+        => player.PatchSpeaker(SpeakerToyExtensions.WithId, id);
+
     public static AudioPlayer WithVolume(this AudioPlayer player, float volume)
         => player.PatchSpeaker(SpeakerToyExtensions.WithVolume, volume);
 

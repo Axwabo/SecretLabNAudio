@@ -8,9 +8,9 @@ public partial class AudioPlayer
 
     private static AudioPlayer Init(GameObject o, byte id, SpeakerSettings settings)
     {
-        var player = o.AddComponent<AudioPlayer>();
-        player.Id = id;
-        player.ApplySettings(settings);
+        var player = o.AddComponent<AudioPlayer>()
+            .WithId(id)
+            .ApplySettings(settings);
         NetworkServer.Spawn(o);
         return player;
     }

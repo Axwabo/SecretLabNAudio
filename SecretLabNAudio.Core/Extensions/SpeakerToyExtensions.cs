@@ -14,6 +14,12 @@ public static class SpeakerToyExtensions
         return speaker;
     }
 
+    public static SpeakerToy WithId(this SpeakerToy speaker, byte id)
+    {
+        speaker.ControllerId = id;
+        return speaker;
+    }
+
     public static SpeakerToy WithVolume(this SpeakerToy speaker, float volume)
     {
         speaker.Volume = volume;
