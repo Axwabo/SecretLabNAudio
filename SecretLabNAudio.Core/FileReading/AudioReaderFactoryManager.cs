@@ -8,7 +8,15 @@ public static class AudioReaderFactoryManager
 
     private static readonly Dictionary<string, IAudioReaderFactory> Factories = [];
 
-    static AudioReaderFactoryManager() => RegisterFactory("wav", new WaveReaderFactory());
+    static AudioReaderFactoryManager()
+    {
+        var wave = new WaveReaderFactory();
+        RegisterFactory("wav", wave);
+        RegisterFactory("wave", wave);
+        var aiff = new AiffReaderFactory();
+        RegisterFactory("aiff", aiff);
+        RegisterFactory("aif", aiff);
+    }
 
     private static string Sanitize(this string fileType) => fileType.TrimStart('.').ToLower();
 
