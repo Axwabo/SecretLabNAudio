@@ -1,5 +1,4 @@
-﻿using Axwabo.Helpers;
-using LabApi.Features.Wrappers;
+﻿using LabApi.Features.Wrappers;
 
 namespace SecretLabNAudio.Core.Extensions;
 
@@ -7,7 +6,7 @@ public static partial class PersonalizationExtensions
 {
 
     public static SpeakerPersonalization AddPersonalization(this SpeakerToy speaker)
-        => speaker.GameObject.GetOrAddComponent<SpeakerPersonalization>();
+        => speaker.GameObject.AddComponent<SpeakerPersonalization>();
 
     public static SpeakerPersonalization AddPersonalization(this SpeakerToy speaker, Action<SpeakerPersonalization> configure)
     {

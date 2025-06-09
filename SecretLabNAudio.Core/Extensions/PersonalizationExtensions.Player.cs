@@ -1,5 +1,4 @@
-﻿using Axwabo.Helpers;
-using SecretLabNAudio.Core.SendEngines;
+﻿using SecretLabNAudio.Core.SendEngines;
 
 namespace SecretLabNAudio.Core.Extensions;
 
@@ -7,7 +6,7 @@ public static partial class PersonalizationExtensions
 {
 
     public static SpeakerPersonalization AddPersonalization(this AudioPlayer player)
-        => player.GetOrAddComponent<SpeakerPersonalization>();
+        => player.gameObject.AddComponent<SpeakerPersonalization>();
 
     public static SpeakerPersonalization AddPersonalization(this AudioPlayer player, Action<SpeakerPersonalization> configure)
     {
