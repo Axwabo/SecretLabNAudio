@@ -41,25 +41,30 @@ public sealed partial class AudioPlayer : MonoBehaviour
         set => Speaker.ControllerId = value;
     }
 
-    private void Awake() => Speaker = this.GetSpeaker("AudioPlayer must be attached to a SpeakerToy.");
+    public event Action? NoSamplesRead;
 
-    private void Start() => SendEngine ??= new SendEngine();
+    public event Action? Destroyed;
 
     private float _remainingTime;
 
     private readonly OpusEncoder _encoder = new(OpusApplicationType.Audio);
 
+    private void Awake() => Speaker = this.GetSpeaker("AudioPlayer must be attached to a SpeakerToy.");
+
+    private void Start() => SendEngine ??= new SendEngine();
+
     private void Update()
     {
-        if (IsPaused)
+        if (IsPaused || SampleProvider == null)
             return;
         _remainingTime += Time.deltaTime;
         while (_remainingTime > 0)
         {
-            var read = SampleProvider?.Read(SendBuffer, 0, PacketSamples) ?? 0;
+            var read = SampleProvider.Read(SendBuffer, 0, PacketSamples);
             if (read == 0)
             {
                 ClearBuffer();
+                NoSamplesRead?.Invoke();
                 break;
             }
 
@@ -75,18 +80,16 @@ public sealed partial class AudioPlayer : MonoBehaviour
         }
     }
 
+    private void OnDestroy()
+    {
+        _encoder.Dispose();
+        Destroyed?.Invoke();
+    }
+
     public void ClearBuffer()
     {
         _remainingTime = 0;
         (SampleProvider as BufferedSampleProvider)?.Clear();
-    }
-
-    public event Action? OnDestroyed;
-
-    private void OnDestroy()
-    {
-        _encoder.Dispose();
-        OnDestroyed?.Invoke();
     }
 
 }
