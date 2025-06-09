@@ -80,6 +80,25 @@ public sealed partial class AudioPlayer : MonoBehaviour
         }
     }
 
+    private void OnDisable()
+    {
+        try
+        {
+            Destroyed?.Invoke();
+        }
+        catch (Exception e)
+        {
+            Debug.LogError(e);
+        }
+
+        NoSamplesRead = null;
+        Destroyed = null;
+        IsPaused = false;
+        SampleProvider = null;
+        SendEngine = null;
+        _remainingTime = 0;
+    }
+
     private void OnDestroy()
     {
         _encoder.Dispose();

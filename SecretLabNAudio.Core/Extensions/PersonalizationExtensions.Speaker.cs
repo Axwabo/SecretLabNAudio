@@ -6,7 +6,9 @@ public static partial class PersonalizationExtensions
 {
 
     public static SpeakerPersonalization AddPersonalization(this SpeakerToy speaker)
-        => speaker.GameObject.AddComponent<SpeakerPersonalization>();
+        => speaker.GameObject.TryGetComponent(out SpeakerPersonalization existing)
+            ? existing
+            : speaker.GameObject.AddComponent<SpeakerPersonalization>();
 
     public static SpeakerPersonalization AddPersonalization(this SpeakerToy speaker, Action<SpeakerPersonalization> configure)
     {

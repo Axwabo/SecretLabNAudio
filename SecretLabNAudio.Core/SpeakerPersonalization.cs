@@ -51,4 +51,6 @@ public sealed class SpeakerPersonalization : MonoBehaviour
             Mathf.Approximately(previous.MaxDistance, current.MaxDistance) ? null : current.MaxDistance
         ));
 
+    private void OnDisable() => _settingsPerUserId.Clear();
+
 }

@@ -15,10 +15,7 @@ public partial class AudioPlayer
         return player;
     }
 
-    public static AudioPlayer Create(byte id, SpeakerSettings settings, Vector3 position = default)
-        => Init(SpeakerToy.Create(position, Quaternion.identity, networkSpawn: false).GameObject, id, settings);
-
-    public static AudioPlayer Create(byte id, SpeakerSettings settings, Transform parent, Vector3 position = default)
+    public static AudioPlayer Create(byte id, SpeakerSettings settings, Transform? parent = null, Vector3 position = default)
         => Init(SpeakerToy.Create(position, Quaternion.identity, parent, false).GameObject, id, settings);
 
 }

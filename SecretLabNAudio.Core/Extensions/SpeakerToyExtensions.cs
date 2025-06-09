@@ -44,4 +44,9 @@ public static class SpeakerToyExtensions
         return speaker;
     }
 
+    public static AudioPlayer AddAudioPlayer(this SpeakerToy speaker)
+        => speaker.GameObject.TryGetComponent(out AudioPlayer existing)
+            ? existing
+            : speaker.GameObject.AddComponent<AudioPlayer>();
+
 }
