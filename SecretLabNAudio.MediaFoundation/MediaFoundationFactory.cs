@@ -18,7 +18,7 @@ file sealed class DisposableMediaFoundationReader : StreamMediaFoundationReader
 
     private readonly ConditionalOneShotDisposable _disposable;
 
-    public DisposableMediaFoundationReader(Stream stream, bool closeOnDispose) : base(stream)
+    public DisposableMediaFoundationReader(Stream stream, bool closeOnDispose) : base(stream, new MediaFoundationReaderSettings())
         => _disposable = new ConditionalOneShotDisposable(stream, closeOnDispose);
 
     protected override void Dispose(bool disposing)
