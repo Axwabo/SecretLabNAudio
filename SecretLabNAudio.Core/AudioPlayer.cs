@@ -6,6 +6,7 @@ using VoiceChat.Networking;
 
 namespace SecretLabNAudio.Core;
 
+/// <summary>A <see cref="SpeakerToy"/>-bound component playing audio using an <see cref="ISampleProvider"/>.</summary>
 public sealed partial class AudioPlayer : MonoBehaviour
 {
 
@@ -15,6 +16,17 @@ public sealed partial class AudioPlayer : MonoBehaviour
 
     private ISampleProvider? _sampleProvider;
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <exception cref="ArgumentException">
+    /// Thrown when the given sample provider is not null and does not match the following criteria:
+    /// <para>
+    /// Encoding = <see cref="WaveFormatEncoding.IeeeFloat"/><br/>
+    /// Sample Rate = <see cref="SampleRate"/><br/>
+    /// Channels = <see cref="Channels"/>
+    /// </para>
+    /// </exception>
     public ISampleProvider? SampleProvider
     {
         get => _sampleProvider;
@@ -26,20 +38,32 @@ public sealed partial class AudioPlayer : MonoBehaviour
         }
     }
 
+    /// <summary>The <see cref="SpeakerToy"/> this player is attached to.</summary>
     public SpeakerToy Speaker { get; private set; } = null!;
 
+    /// <summary>
+    /// The <see cref="SendEngine"/> used to broadcast audio messages.
+    /// Will be set to <see cref="SendEngines.SendEngine.DefaultEngine"/> if not provided.
+    /// </summary>
     public SendEngine? SendEngine { get; set; }
 
+    /// <summary>Whether the playback is paused.</summary>
     public bool IsPaused { get; set; }
 
+    /// <summary>The controller ID of this player.</summary>
+    /// <seealso cref="SpeakerToy.ControllerId"/>
     public byte Id
     {
         get => Speaker.ControllerId;
         set => Speaker.ControllerId = value;
     }
 
+    /// <summary>Invoked every frame when no samples were read from the <see cref="SampleProvider"/>.</summary>
+    /// <remarks>The provider is not set to null by default.</remarks>
+    /// <seealso cref="AudioPlayerExtensions.UnsetProviderOnEnd"/>
     public event Action? NoSamplesRead;
 
+    /// <summary>Invoked when this player is disabled or destroyed.</summary>
     public event Action? Destroyed;
 
     private float _remainingTime;
@@ -102,6 +126,7 @@ public sealed partial class AudioPlayer : MonoBehaviour
         Destroyed?.Invoke();
     }
 
+    /// <summary>Resets the amount of samples to send and clears the <see cref="SampleProvider"/>'s buffer if it's a <see cref="BufferedSampleProvider"/>.</summary>
     public void ClearBuffer()
     {
         _remainingTime = 0;

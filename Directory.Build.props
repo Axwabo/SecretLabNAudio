@@ -4,6 +4,7 @@
         <TargetFramework>net48</TargetFramework>
         <Nullable>enable</Nullable>
         <LangVersion>13</LangVersion>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
     </PropertyGroup>
 
     <ItemGroup>

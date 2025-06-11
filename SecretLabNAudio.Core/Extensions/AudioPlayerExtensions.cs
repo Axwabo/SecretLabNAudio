@@ -59,13 +59,16 @@ public static class AudioPlayerExtensions
     public static AudioPlayer WithFilteredSendEngine(this AudioPlayer player, Predicate<ReferenceHub> filter)
         => player.WithSendEngine(new FilteredSendEngine(filter));
 
+    public static AudioPlayer UnsetProviderOnEnd(this AudioPlayer player)
+    {
+        player.NoSamplesRead += () => player.SampleProvider = null;
+        return player;
+    }
+
     public static AudioPlayer DestroyOnEnd(this AudioPlayer player)
     {
-        player.NoSamplesRead += () =>
-        {
-            player.SampleProvider = null;
-            NetworkServer.Destroy(player.gameObject);
-        };
+        player.UnsetProviderOnEnd();
+        player.NoSamplesRead += () => NetworkServer.Destroy(player.gameObject);
         return player;
     }
 
