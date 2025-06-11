@@ -2,18 +2,22 @@
 
 namespace SecretLabNAudio.Core.Pools;
 
-public class AudioPlayerPool
+public static class AudioPlayerPool
 {
+
+    private static bool[] Occupied = new bool[byte.MaxValue + 1];
 
     public static byte NextAvailableId
     {
         get
         {
-            byte available = 0;
+            Array.Clear(Occupied, 0, Occupied.Length);
             foreach (var instance in SpeakerToyPlaybackBase.AllInstances)
-                if (available == instance.ControllerId)
-                    available++;
-            return available;
+                Occupied[instance.ControllerId] = true;
+            for (var i = 0; i < Occupied.Length; i++)
+                if (!Occupied[i])
+                    return (byte) i;
+            throw new OverflowException("No available IDs found");
         }
     }
 
