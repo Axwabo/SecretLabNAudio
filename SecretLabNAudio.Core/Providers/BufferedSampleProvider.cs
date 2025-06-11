@@ -1,6 +1,4 @@
-﻿using NAudio.Wave;
-using SecretLabNAudio.Core.Extensions;
-using VoiceChat.Networking;
+﻿using VoiceChat.Networking;
 
 namespace SecretLabNAudio.Core.Providers;
 

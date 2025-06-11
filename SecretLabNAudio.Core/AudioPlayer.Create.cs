@@ -1,7 +1,4 @@
-﻿using LabApi.Features.Wrappers;
-using SecretLabNAudio.Core.Extensions;
-
-namespace SecretLabNAudio.Core;
+﻿namespace SecretLabNAudio.Core;
 
 public partial class AudioPlayer
 {

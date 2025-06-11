@@ -1,6 +1,4 @@
-﻿using NAudio.Wave;
-
-namespace SecretLabNAudio.Core.FileReading;
+﻿namespace SecretLabNAudio.Core.FileReading;
 
 public readonly record struct AudioReaderFactoryResult(WaveStream? Stream, ISampleProvider? Provider)
 {

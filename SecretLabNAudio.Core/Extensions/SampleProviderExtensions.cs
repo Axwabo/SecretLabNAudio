@@ -1,5 +1,4 @@
-﻿using NAudio.Wave;
-using NAudio.Wave.SampleProviders;
+﻿using NAudio.Wave.SampleProviders;
 using SecretLabNAudio.Core.Providers;
 
 namespace SecretLabNAudio.Core.Extensions;

@@ -1,6 +1,4 @@
-﻿using NAudio.Wave;
-
-namespace SecretLabNAudio.Core.Extensions;
+﻿namespace SecretLabNAudio.Core.Extensions;
 
 public static class WaveProviderExtensions
 {

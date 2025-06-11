@@ -1,7 +1,4 @@
-﻿using LabApi.Features.Wrappers;
-using NAudio.Wave;
-using SecretLabNAudio.Core.Extensions;
-using SecretLabNAudio.Core.Providers;
+﻿using SecretLabNAudio.Core.Providers;
 using SecretLabNAudio.Core.SendEngines;
 using VoiceChat.Codec;
 using VoiceChat.Codec.Enums;

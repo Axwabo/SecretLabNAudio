@@ -1,4 +1,4 @@
-﻿using AdminToys;
+﻿using SpeakerToy = AdminToys.SpeakerToy;
 
 namespace SecretLabNAudio.Core.Extensions;
 

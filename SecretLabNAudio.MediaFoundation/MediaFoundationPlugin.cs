@@ -1,5 +1,4 @@
 ﻿using LabApi.Loader.Features.Plugins;
-using NAudio.Wave;
 using SecretLabNAudio.Core.FileReading;
 
 namespace SecretLabNAudio.MediaFoundation;

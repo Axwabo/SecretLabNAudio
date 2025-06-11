@@ -1,6 +1,4 @@
-﻿using LabApi.Features.Wrappers;
-
-namespace SecretLabNAudio.Core.Extensions;
+﻿namespace SecretLabNAudio.Core.Extensions;
 
 public static class MonoBehaviorExtensions
 {

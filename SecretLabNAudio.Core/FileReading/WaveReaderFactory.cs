@@ -1,5 +1,4 @@
 ﻿using System.IO;
-using NAudio.Wave;
 
 namespace SecretLabNAudio.Core.FileReading;
 

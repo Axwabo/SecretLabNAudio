@@ -1,5 +1,4 @@
 ﻿using System.IO;
-using NAudio.Wave;
 using SecretLabNAudio.Core.FileReading;
 
 namespace SecretLabNAudio.MediaFoundation;

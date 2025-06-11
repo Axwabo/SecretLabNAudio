@@ -1,6 +1,4 @@
-﻿using LabApi.Features.Wrappers;
-
-namespace SecretLabNAudio.Core;
+﻿namespace SecretLabNAudio.Core;
 
 public readonly record struct SpeakerSettings
 {

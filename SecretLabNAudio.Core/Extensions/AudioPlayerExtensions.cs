@@ -1,6 +1,4 @@
-﻿using LabApi.Features.Wrappers;
-using NAudio.Wave;
-using SecretLabNAudio.Core.SendEngines;
+﻿using SecretLabNAudio.Core.SendEngines;
 
 namespace SecretLabNAudio.Core.Extensions;
 

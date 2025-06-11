@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using NAudio.Wave;
 
 namespace SecretLabNAudio.Core.Providers;
 

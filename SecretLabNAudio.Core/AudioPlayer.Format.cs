@@ -1,6 +1,4 @@
-﻿using NAudio.Wave;
-
-namespace SecretLabNAudio.Core;
+﻿namespace SecretLabNAudio.Core;
 
 public partial class AudioPlayer
 {

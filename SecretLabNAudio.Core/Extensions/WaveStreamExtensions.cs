@@ -1,5 +1,4 @@
-﻿using NAudio.Wave;
-using SecretLabNAudio.Core.Providers;
+﻿using SecretLabNAudio.Core.Providers;
 
 namespace SecretLabNAudio.Core.Extensions;
 

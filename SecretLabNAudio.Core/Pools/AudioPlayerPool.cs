@@ -1,5 +1,4 @@
-﻿using SecretLabNAudio.Core.Extensions;
-using VoiceChat.Playbacks;
+﻿using VoiceChat.Playbacks;
 
 namespace SecretLabNAudio.Core.Pools;
 

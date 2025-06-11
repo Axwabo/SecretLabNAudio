@@ -1,6 +1,4 @@
-﻿using NAudio.Wave;
-
-namespace SecretLabNAudio.Core.Providers;
+﻿namespace SecretLabNAudio.Core.Providers;
 
 public sealed class LoopingWaveProvider : IWaveProvider, IDisposable
 {

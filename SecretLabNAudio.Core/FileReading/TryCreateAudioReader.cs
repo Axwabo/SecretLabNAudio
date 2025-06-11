@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.IO;
-using NAudio.Wave;
 
 namespace SecretLabNAudio.Core.FileReading;
 
