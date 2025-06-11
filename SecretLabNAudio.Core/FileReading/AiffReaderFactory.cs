@@ -14,10 +14,10 @@ internal sealed class AiffReaderFactory : IAudioReaderFactory
 file sealed class DisposableAiffReader : AiffFileReader
 {
 
-    private readonly ConditionalOneShotDisposable _disposable;
+    private readonly ConditionalOneTimeDisposable _disposable;
 
     public DisposableAiffReader(Stream stream, bool closeOnDispose) : base(stream)
-        => _disposable = new ConditionalOneShotDisposable(stream, closeOnDispose);
+        => _disposable = new ConditionalOneTimeDisposable(stream, closeOnDispose);
 
     protected override void Dispose(bool disposing)
     {

@@ -1,12 +1,12 @@
 ﻿namespace SecretLabNAudio.Core.FileReading;
 
-public sealed class ConditionalOneShotDisposable
+public sealed class ConditionalOneTimeDisposable
 {
 
     private readonly bool _closeOnDispose;
     private IDisposable? _disposable;
 
-    public ConditionalOneShotDisposable(IDisposable disposable, bool closeOnDispose)
+    public ConditionalOneTimeDisposable(IDisposable disposable, bool closeOnDispose)
     {
         _disposable = disposable;
         _closeOnDispose = closeOnDispose;

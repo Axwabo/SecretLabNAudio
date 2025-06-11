@@ -15,10 +15,10 @@ internal sealed class MediaFoundationFactory : IAudioReaderFactory
 file sealed class DisposableMediaFoundationReader : StreamMediaFoundationReader
 {
 
-    private readonly ConditionalOneShotDisposable _disposable;
+    private readonly ConditionalOneTimeDisposable _disposable;
 
     public DisposableMediaFoundationReader(Stream stream, bool closeOnDispose) : base(stream, new MediaFoundationReaderSettings())
-        => _disposable = new ConditionalOneShotDisposable(stream, closeOnDispose);
+        => _disposable = new ConditionalOneTimeDisposable(stream, closeOnDispose);
 
     protected override void Dispose(bool disposing)
     {

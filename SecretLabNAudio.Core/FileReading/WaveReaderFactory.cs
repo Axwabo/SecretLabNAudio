@@ -14,10 +14,10 @@ internal sealed class WaveReaderFactory : IAudioReaderFactory
 file sealed class DisposableWaveReader : WaveFileReader
 {
 
-    private readonly ConditionalOneShotDisposable _disposable;
+    private readonly ConditionalOneTimeDisposable _disposable;
 
     public DisposableWaveReader(Stream stream, bool closeOnDispose) : base(stream)
-        => _disposable = new ConditionalOneShotDisposable(stream, closeOnDispose);
+        => _disposable = new ConditionalOneTimeDisposable(stream, closeOnDispose);
 
     protected override void Dispose(bool disposing)
     {
