@@ -2,11 +2,14 @@
 
 namespace SecretLabNAudio.Core.Pools;
 
+/// <summary>Provides methods to reuse <see cref="AudioPlayer"/> components.</summary>
 public static class AudioPlayerPool
 {
 
-    private static bool[] Occupied = new bool[byte.MaxValue + 1];
+    private static readonly bool[] Occupied = new bool[byte.MaxValue + 1];
 
+    /// <summary>Gets the first controller ID not used by any active speakers.</summary>
+    /// <exception cref="OverflowException">Thrown when no IDs are available.</exception>
     public static byte NextAvailableId
     {
         get
@@ -21,6 +24,14 @@ public static class AudioPlayerPool
         }
     }
 
+    /// <summary>
+    /// Rents an <see cref="AudioPlayer"/> from the pool or creates a new one if no <see cref="SpeakerToy"/> is pooled.
+    /// </summary>
+    /// <param name="id">The controller ID to assign to the player.</param>
+    /// <param name="settings">The settings to apply to the player.</param>
+    /// <param name="parent">The <see cref="Transform"/> to parent the player to. <see langword="null"/> if it should not be parented.</param>
+    /// <param name="position">The position of the speaker in local space (world space if no parent is specified).</param>
+    /// <returns>A new or reused <see cref="AudioPlayer"/>.</returns>
     public static AudioPlayer Rent(byte id, SpeakerSettings settings, Transform? parent = null, Vector3 position = default)
     {
         if (!SpeakerToyPool.TryGetFromPool(out var existing, parent, position, false))
@@ -32,9 +43,19 @@ public static class AudioPlayerPool
         return player;
     }
 
+    /// <summary>
+    /// Rents an <see cref="AudioPlayer"/> with the next available ID from the pool or creates a new one if no <see cref="SpeakerToy"/> is pooled.
+    /// </summary>
+    /// <param name="settings">The settings to apply to the player.</param>
+    /// <param name="parent">The <see cref="Transform"/> to parent the player to. <see langword="null"/> if it should not be parented.</param>
+    /// <param name="position">The position of the speaker in local space (world space if no parent is specified).</param>
+    /// <returns>A new or reused <see cref="AudioPlayer"/>.</returns>
+    /// <seealso cref="NextAvailableId"/>
     public static AudioPlayer Rent(SpeakerSettings settings, Transform? parent = null, Vector3 position = default)
         => Rent(NextAvailableId, settings, parent, position);
 
+    /// <summary>Returns an <see cref="AudioPlayer"/> to the pool.</summary>
+    /// <param name="player">The player to return.</param>
     public static void Return(AudioPlayer player) => SpeakerToyPool.Return(player.Speaker);
 
 }

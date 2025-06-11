@@ -133,4 +133,7 @@ public sealed partial class AudioPlayer : MonoBehaviour
         (SampleProvider as BufferedSampleProvider)?.Clear();
     }
 
+    /// <summary>Destroys the player and its <see cref="Speaker"/>.</summary>
+    public void Destroy() => Speaker.Destroy();
+
 }
