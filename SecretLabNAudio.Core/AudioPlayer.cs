@@ -48,7 +48,7 @@ public sealed partial class AudioPlayer : MonoBehaviour
 
     private void Awake() => Speaker = this.GetSpeaker("AudioPlayer must be attached to a SpeakerToy.");
 
-    private void Start() => SendEngine ??= new SendEngine();
+    private void Start() => SendEngine ??= SendEngine.DefaultEngine;
 
     private void Update()
     {

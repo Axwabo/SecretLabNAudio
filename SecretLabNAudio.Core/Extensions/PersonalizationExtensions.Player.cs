@@ -32,7 +32,7 @@ public static partial class PersonalizationExtensions
     public static AudioPlayer WithLivePersonalizedSendEngine(this AudioPlayer player, SpeakerPersonalization personalization, PersonalizedSettingsTransform transform, SendEngine? baseEngine = null)
     {
         player.SendEngine = new LivePersonalizedSendEngine(
-            baseEngine ?? player.SendEngine ?? new SendEngine(),
+            baseEngine ?? player.SendEngine ?? SendEngine.DefaultEngine,
             personalization,
             transform
         );

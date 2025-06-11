@@ -6,6 +6,8 @@ namespace SecretLabNAudio.Core.SendEngines;
 public class SendEngine
 {
 
+    public static SendEngine DefaultEngine { get; } = new();
+
     public void Broadcast(AudioMessage message)
     {
         foreach (var hub in ReferenceHub.AllHubs)
