@@ -32,6 +32,8 @@ public static class SpeakerToyPool
     public static void Return(SpeakerToy speaker)
     {
         speaker.Stop();
+        if (speaker.IsDestroyed)
+            return;
         var o = speaker.GameObject;
         o.SetActive(false);
         o.AddComponent<PooledSpeaker>();

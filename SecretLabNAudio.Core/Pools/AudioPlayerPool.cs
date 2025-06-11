@@ -31,4 +31,6 @@ public class AudioPlayerPool
     public static AudioPlayer Rent(SpeakerSettings settings, Transform? parent = null, Vector3 position = default)
         => Rent(NextAvailableId, settings, parent, position);
 
+    public static void Return(AudioPlayer player) => SpeakerToyPool.Return(player.Speaker);
+
 }
