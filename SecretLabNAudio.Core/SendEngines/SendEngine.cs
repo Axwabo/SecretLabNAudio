@@ -1,23 +1,31 @@
-﻿using CentralAuth;
-using VoiceChat.Networking;
+﻿using VoiceChat.Networking;
 
 namespace SecretLabNAudio.Core.SendEngines;
 
+/// <summary>The base class for broadcasting <see cref="AudioMessage"/>s.</summary>
 public class SendEngine
 {
 
+    /// <summary>The default engine that broadcasts to every player.</summary>
     public static SendEngine DefaultEngine { get; } = new();
 
+    /// <summary>Broadcasts the given <see cref="AudioMessage"/>.</summary>
+    /// <param name="message">The <see cref="AudioMessage"/> to broadcast.</param>
     public void Broadcast(AudioMessage message)
     {
-        foreach (var hub in ReferenceHub.AllHubs)
-            if (hub.Mode == ClientInstanceMode.ReadyClient)
-                Broadcast(hub, message);
+        foreach (var player in Player.ReadyList)
+            Broadcast(player, message);
     }
 
-    protected internal virtual bool Broadcast(ReferenceHub hub, AudioMessage message)
+    /// <summary>
+    /// Broadcasts the given <see cref="AudioMessage"/> to the specified <paramref name="player"/>.
+    /// </summary>
+    /// <param name="player">The <see cref="Player"/> to send the message to.</param>
+    /// <param name="message">The <see cref="AudioMessage"/> to send.</param>
+    /// <returns>Whether the message was successfully sent.</returns>
+    protected internal virtual bool Broadcast(Player player, AudioMessage message)
     {
-        hub.connectionToClient.Send(message);
+        player.Connection.Send(message);
         return true;
     }
 

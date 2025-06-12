@@ -2,18 +2,23 @@
 
 namespace SecretLabNAudio.Core.SendEngines;
 
+/// <summary>Restricts sending <see cref="AudioMessage"/>s to players based on a predicate.</summary>
 public class FilteredSendEngine : SendEngine
 {
 
-    public Predicate<ReferenceHub> Filter { get; }
+    /// <summary>The condition to match.</summary>
+    public Predicate<Player> Filter { get; }
 
-    public FilteredSendEngine(Predicate<ReferenceHub> filter) => Filter = filter;
+    /// <summary>Creates a new <see cref="FilteredSendEngine"/>.</summary>
+    /// <param name="filter">The condition to match for a player to receive the message.</param>
+    public FilteredSendEngine(Predicate<Player> filter) => Filter = filter;
 
-    protected internal override bool Broadcast(ReferenceHub hub, AudioMessage message)
+    /// <inheritdoc />
+    protected internal override bool Broadcast(Player player, AudioMessage message)
     {
-        if (!Filter(hub))
+        if (!Filter(player))
             return false;
-        base.Broadcast(hub, message);
+        base.Broadcast(player, message);
         return true;
     }
 

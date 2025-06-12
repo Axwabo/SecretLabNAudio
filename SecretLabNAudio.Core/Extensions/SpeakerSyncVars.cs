@@ -4,6 +4,7 @@ namespace SecretLabNAudio.Core.Extensions;
 
 using SpeakerSyncVarData = (float? Volume, bool? IsSpatial, float? MinDistance, float? MaxDistance);
 
+/// <summary>Handles sending fake <see cref="SpeakerToy"/> SyncVars.</summary>
 public static class SpeakerSyncVars
 {
 
@@ -12,7 +13,13 @@ public static class SpeakerSyncVars
     private const ulong MinDistanceBit = 256UL;
     private const ulong MaxDistanceBit = 512UL;
 
-    public static void SendFakeSyncVars(NetworkConnectionToClient connection, SpeakerToy speaker, SpeakerSyncVarData data)
+    /// <summary>
+    /// Sends fake SyncVars to a given <paramref name="connection"/> about the specified <paramref name="speaker"/>.
+    /// </summary>
+    /// <param name="connection">The connection to send the SyncVars to.</param>
+    /// <param name="speaker">The <see cref="SpeakerToy"/> to fake.</param>
+    /// <param name="data">The SyncVars to send. If a member is not specified, it will not be sent.</param>
+    public static void SendFakeSyncVars(NetworkConnection connection, SpeakerToy speaker, SpeakerSyncVarData data)
     {
         if (data == default)
             return;

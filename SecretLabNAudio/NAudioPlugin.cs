@@ -4,7 +4,7 @@ using SecretLabNAudio.NVorbis;
 
 namespace SecretLabNAudio;
 
-/// <summary>A plugin that includes SecretLabNAudio.Core, NVorbis and NAudio support with dependencies.</summary>
+/// <summary>A plugin that includes SecretLabNAudio.Core, NVorbis and NLayer support with dependencies.</summary>
 public sealed class NAudioPlugin : Plugin
 {
 

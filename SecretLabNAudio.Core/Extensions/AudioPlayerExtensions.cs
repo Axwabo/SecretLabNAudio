@@ -138,9 +138,9 @@ public static class AudioPlayerExtensions
     /// Sets the <see cref="AudioPlayer.SendEngine"/> of the <see cref="AudioPlayer"/> to a <see cref="FilteredSendEngine"/>.
     /// </summary>
     /// <param name="player">The player to set the engine of.</param>
-    /// <param name="filter">The condition to satisfy for a player to receive the audio.</param>
+    /// <param name="filter">The condition to satisfy for a <see cref="Player"/> to receive the audio.</param>
     /// <returns>The <paramref name="player"/> itself.</returns>
-    public static AudioPlayer WithFilteredSendEngine(this AudioPlayer player, Predicate<ReferenceHub> filter)
+    public static AudioPlayer WithFilteredSendEngine(this AudioPlayer player, Predicate<Player> filter)
         => player.WithSendEngine(new FilteredSendEngine(filter));
 
     /// <summary>

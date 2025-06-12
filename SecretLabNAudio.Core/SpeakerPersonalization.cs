@@ -2,10 +2,8 @@
 
 namespace SecretLabNAudio.Core;
 
-/// <summary>
-/// A delegate that maps a <see cref="SpeakerSettings"/> struct to another.
+/// <summary>A delegate that maps a <see cref="SpeakerSettings"/> struct to another.</summary>
 /// <param name="current">The current settings for the player. <see langword="null"/> if there is no override.</param>
-/// </summary>
 /// <returns>The modified <see cref="SpeakerSettings"/> or <see langword="null"/> if the default settings should be used.</returns>
 /// <seealso cref="SpeakerSettings.From(SpeakerPersonalization)"/>
 public delegate SpeakerSettings? SettingsTransform(SpeakerSettings? current);
@@ -22,10 +20,10 @@ public sealed class SpeakerPersonalization : MonoBehaviour
 
     private readonly Dictionary<string, SpeakerSettings> _settingsPerUserId = [];
 
-    /// <summary>Gets the personalized settings for the given <see cref="ReferenceHub"/>.</summary>
-    /// <param name="hub">The player to get the settings of.</param>
+    /// <summary>Gets the personalized settings for the given <see cref="Player"/>.</summary>
+    /// <param name="player">The player to get the settings of.</param>
     /// <returns>The settings if any specified; <see langword="null"/> otherwise.</returns>
-    public SpeakerSettings? this[ReferenceHub hub] => this[hub.NotNullUserId()];
+    public SpeakerSettings? this[Player player] => this[player.NotNullUserId()];
 
     /// <summary>Gets the personalized settings for the given <paramref name="userId"/>.</summary>
     /// <param name="userId">The user ID to get the settings of.</param>
@@ -34,33 +32,33 @@ public sealed class SpeakerPersonalization : MonoBehaviour
         => _settingsPerUserId.TryGetValue(userId, out var settings) ? settings : null;
 
     /// <summary>
-    /// Overrides the settings for the given <see cref="ReferenceHub"/>.
+    /// Overrides the settings for the given <see cref="Player"/>.
     /// </summary>
-    /// <param name="hub">The player to override the settings for.</param>
+    /// <param name="player">The player to override the settings for.</param>
     /// <param name="settings">The settings to set.</param>
-    public void Override(ReferenceHub hub, SpeakerSettings settings) => Sync(hub, this[hub], settings);
+    public void Override(Player player, SpeakerSettings settings) => Sync(player, this[player], settings);
 
     /// <summary>
-    /// Transforms the settings for the given <see cref="ReferenceHub"/>.
+    /// Transforms the settings for the given <see cref="Player"/>.
     /// </summary>
-    /// <param name="hub">The player to change the settings for.</param>
+    /// <param name="player">The player to change the settings for.</param>
     /// <param name="settingsTransform">A delegate modifying the settings.</param>
     /// <seealso cref="SettingsTransform"/>
-    public void Modify(ReferenceHub hub, SettingsTransform settingsTransform)
+    public void Modify(Player player, SettingsTransform settingsTransform)
     {
-        var current = this[hub];
-        Sync(hub, current, settingsTransform(current));
+        var current = this[player];
+        Sync(player, current, settingsTransform(current));
     }
 
     /// <summary>Clears the settings override for the specified player and sends the default settings.</summary>
-    /// <param name="hub">The player to clear the settings for.</param>
-    public void ClearOverride(ReferenceHub hub) => Sync(hub, this[hub], null);
+    /// <param name="player">The player to clear the settings for.</param>
+    public void ClearOverride(Player player) => Sync(player, this[player], null);
 
-    private void Sync(ReferenceHub hub, SpeakerSettings? previous, SpeakerSettings? settings)
+    private void Sync(Player player, SpeakerSettings? previous, SpeakerSettings? settings)
     {
         if (previous == settings)
             return;
-        var id = hub.NotNullUserId();
+        var id = player.NotNullUserId();
         var defaultSettings = SpeakerSettings.From(Speaker);
         var settingsToSend = settings ?? defaultSettings;
         if (settings.HasValue)
@@ -68,11 +66,11 @@ public sealed class SpeakerPersonalization : MonoBehaviour
         else
             _settingsPerUserId.Remove(id);
         var actualPrevious = previous ?? defaultSettings;
-        SendSyncVars(hub, actualPrevious, settingsToSend);
+        SendSyncVars(player, actualPrevious, settingsToSend);
     }
 
-    private void SendSyncVars(ReferenceHub hub, SpeakerSettings previous, SpeakerSettings current)
-        => SpeakerSyncVars.SendFakeSyncVars(hub.connectionToClient, Speaker.Base, (
+    private void SendSyncVars(Player player, SpeakerSettings previous, SpeakerSettings current)
+        => SpeakerSyncVars.SendFakeSyncVars(player.Connection, Speaker.Base, (
             Mathf.Approximately(previous.Volume, current.Volume) ? null : current.Volume,
             previous.IsSpatial == current.IsSpatial ? null : current.IsSpatial,
             Mathf.Approximately(previous.MinDistance, current.MinDistance) ? null : current.MinDistance,
