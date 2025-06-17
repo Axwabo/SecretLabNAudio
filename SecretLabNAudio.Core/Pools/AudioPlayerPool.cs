@@ -1,28 +1,11 @@
-﻿using VoiceChat.Playbacks;
-
-namespace SecretLabNAudio.Core.Pools;
+﻿namespace SecretLabNAudio.Core.Pools;
 
 /// <summary>Provides methods to reuse <see cref="AudioPlayer"/> components.</summary>
 public static class AudioPlayerPool
 {
 
-    private static readonly bool[] Occupied = new bool[byte.MaxValue + 1];
-
-    /// <summary>Gets the first controller ID not used by any active speakers.</summary>
-    /// <exception cref="OverflowException">Thrown when no IDs are available.</exception>
-    public static byte NextAvailableId
-    {
-        get
-        {
-            Array.Clear(Occupied, 0, Occupied.Length);
-            foreach (var instance in SpeakerToyPlaybackBase.AllInstances)
-                Occupied[instance.ControllerId] = true;
-            for (var i = 0; i < Occupied.Length; i++)
-                if (!Occupied[i])
-                    return (byte) i;
-            throw new OverflowException("No available IDs found");
-        }
-    }
+    /// <inheritdoc cref="SpeakerToyPool.NextAvailableId" />
+    public static byte NextAvailableId => SpeakerToyPool.NextAvailableId;
 
     /// <summary>
     /// Rents an <see cref="AudioPlayer"/> from the pool or creates a new one if no <see cref="SpeakerToy"/> is pooled.

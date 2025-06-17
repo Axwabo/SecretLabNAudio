@@ -1,10 +1,28 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using VoiceChat.Playbacks;
 
 namespace SecretLabNAudio.Core.Pools;
 
 /// <summary>Provides methods to reuse <see cref="SpeakerToy"/>s.</summary>
 public static class SpeakerToyPool
 {
+
+    private static readonly bool[] Occupied = new bool[byte.MaxValue + 1];
+
+    /// <summary>Gets the first controller ID not used by any active speakers.</summary>
+    /// <exception cref="OverflowException">Thrown when no IDs are available.</exception>
+    public static byte NextAvailableId
+    {
+        get
+        {
+            Array.Clear(Occupied, 0, Occupied.Length);
+            foreach (var instance in SpeakerToyPlaybackBase.AllInstances) Occupied[instance.ControllerId] = true;
+            for (var i = 0; i < Occupied.Length; i++)
+                if (!Occupied[i])
+                    return (byte) i;
+            throw new OverflowException("No available IDs found");
+        }
+    }
 
     /// <summary>
     /// Attempts to get a <see cref="SpeakerToy"/> from the pool.
@@ -54,7 +72,7 @@ public static class SpeakerToyPool
         var o = speaker.GameObject;
         o.SetActive(false);
         o.AddComponent<PooledSpeaker>();
-        NetworkServer.DestroyObject(o, NetworkServer.DestroyMode.Reset);
+        NetworkServer.UnSpawn(o);
     }
 
 }
