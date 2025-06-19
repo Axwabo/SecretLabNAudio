@@ -1,6 +1,6 @@
 ﻿namespace SecretLabNAudio.Core.Providers;
 
-/// <summary>Wraps a <see cref="WaveStream"/> to loop when reaching the end.</summary>
+/// <summary>Wraps a <see cref="WaveStream"/> and restarts it when reaching the end.</summary>
 public sealed class LoopingWaveProvider : IWaveProvider, IDisposable
 {
 

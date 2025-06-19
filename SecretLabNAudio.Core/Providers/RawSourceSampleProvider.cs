@@ -9,8 +9,24 @@ public sealed class RawSourceSampleProvider : ISampleProvider
     /// <summary>The count of readable samples.</summary>
     public int Length { get; }
 
+    /// <summary>The duration of readable samples as a <see cref="TimeSpan"/>.</summary>
+    public TimeSpan TotalTime { get; }
+
     /// <summary>The current position of the provider.</summary>
     public int Position { get; set; }
+
+    /// <summary>The current position of the provider as a <see cref="TimeSpan"/>.</summary>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when setting a negative value or a value greater than <see cref="TotalTime"/>.</exception>
+    public TimeSpan CurrentTime
+    {
+        get => TimeSpan.FromSeconds(WaveFormat.Seconds(Position));
+        set
+        {
+            if (value < TimeSpan.Zero || value > TotalTime)
+                throw new ArgumentOutOfRangeException(nameof(value), "Time must be within the range of the sample provider.");
+            Position = WaveFormat.SampleCount(value.TotalSeconds);
+        }
+    }
 
     /// <summary>Creates a new <see cref="RawSourceSampleProvider"/> with the full sample array.</summary>
     /// <param name="samples">The samples to read from.</param>
@@ -52,6 +68,7 @@ public sealed class RawSourceSampleProvider : ISampleProvider
             throw new ArgumentOutOfRangeException(nameof(length), "Length cannot be negative.");
         _samples = samples;
         Length = length;
+        TotalTime = TimeSpan.FromSeconds(length);
         WaveFormat = WaveFormat.CreateIeeeFloatWaveFormat(sampleRate, channels);
     }
 
