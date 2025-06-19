@@ -24,7 +24,7 @@ public static class AudioPlayerExtensions
         => player.PatchSpeaker(SpeakerToyExtensions.ApplySettings, settings);
 
     /// <summary>
-    /// Sets the controller ID of the <see cref="AudioPlayer"/>-
+    /// Sets the controller ID of the <see cref="AudioPlayer"/>.
     /// </summary>
     /// <param name="player">The player to set the ID of.</param>
     /// <param name="id">The ID to set.</param>

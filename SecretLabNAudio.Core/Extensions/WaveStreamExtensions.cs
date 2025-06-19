@@ -2,20 +2,44 @@
 
 namespace SecretLabNAudio.Core.Extensions;
 
+/// <summary>Extension methods for the <see cref="WaveStream"/> class.</summary>
 public static class WaveStreamExtensions
 {
 
     private const int BufferLength = 4800;
     private static readonly float[] Buffer = new float[BufferLength];
 
+    /// <summary>Wraps the stream in a <see cref="LoopingWaveProvider"/>.</summary>
+    /// <param name="stream">The <see cref="WaveStream"/> to wrap.</param>
+    /// <returns>The <see cref="LoopingWaveProvider"/> wrapping the stream.</returns>
     public static LoopingWaveProvider Loop(this WaveStream stream) => new(stream);
 
+    /// <summary>
+    /// Fully reads the stream in an <see cref="AudioPlayer"/>-compatible format and creates a buffer for the read samples.
+    /// </summary>
+    /// <param name="stream">The <see cref="WaveStream"/> to read samples from.</param>
+    /// <param name="seekToBeginning">Whether to rewind the stream to the start before reading samples.</param>
+    /// <returns>A <see cref="RawSourceSampleProvider"/> containing the read samples.</returns>
+    /// <seealso cref="WaveProviderExtensions.ToPlayerCompatible"/>
     public static RawSourceSampleProvider ReadPlayerCompatibleSamples(this WaveStream stream, bool seekToBeginning = true)
         => stream.ReadSamples(WaveProviderExtensions.ToPlayerCompatible, seekToBeginning);
 
+    /// <summary>
+    /// Fully reads the stream and creates a buffer for the read samples.
+    /// </summary>
+    /// <param name="stream">The <see cref="WaveStream"/> to read samples from.</param>
+    /// <param name="seekToBeginning">Whether to rewind the stream to the start before reading samples.</param>
+    /// <returns>A <see cref="RawSourceSampleProvider"/> containing the read samples.</returns>
     public static RawSourceSampleProvider ReadSamples(this WaveStream stream, bool seekToBeginning = true)
         => stream.ReadSamples(WaveExtensionMethods.ToSampleProvider, seekToBeginning);
 
+    /// <summary>
+    /// Fully reads the stream and creates a buffer for the read samples using a custom <see cref="WaveStream"/> to <see cref="ISampleProvider"/> conversion function.
+    /// </summary>
+    /// <param name="stream">The <see cref="WaveStream"/> to read samples from.</param>
+    /// <param name="toProvider">The function to convert the <see cref="WaveStream"/> to an <see cref="ISampleProvider"/>.</param>
+    /// <param name="seekToBeginning">Whether to rewind the stream to the start before reading samples.</param>
+    /// <returns>A <see cref="RawSourceSampleProvider"/> containing the read samples.</returns>
     public static RawSourceSampleProvider ReadSamples(this WaveStream stream, Func<WaveStream, ISampleProvider> toProvider, bool seekToBeginning = true)
     {
         if (seekToBeginning && stream.CanSeek)

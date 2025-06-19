@@ -3,9 +3,17 @@ using SecretLabNAudio.Core.Providers;
 
 namespace SecretLabNAudio.Core.Extensions;
 
+/// <summary>Extension methods for the <see cref="ISampleProvider"/> interface.</summary>
 public static class SampleProviderExtensions
 {
 
+    /// <summary>Converts the provider to be compatible with <see cref="AudioPlayer"/>s.</summary>
+    /// <param name="provider">The sample provider to convert.</param>
+    /// <returns>The converted provider.</returns>
+    /// <exception cref="ArgumentException">Thrown if the format's encoding is not IEEEFloat.</exception>
+    /// <remarks>The method first mixes down to mono (if necessary), then resamples (if necessary).
+    /// If the format is already compatible, the original <paramref name="provider"/> is returned.</remarks>
+    /// <seealso cref="AudioPlayer.SupportedFormat"/>
     public static ISampleProvider ToPlayerCompatible(this ISampleProvider provider)
     {
         if (provider.WaveFormat.Encoding != WaveFormatEncoding.IeeeFloat)
@@ -17,16 +25,39 @@ public static class SampleProviderExtensions
         return provider;
     }
 
+    /// <summary>Mixes two sample providers.</summary>
+    /// <param name="current">The current sample provider.</param>
+    /// <param name="other">The other sample provider to mix with.</param>
+    /// <returns>A new <see cref="MixingSampleProvider"/> containing both providers.</returns>
+    /// <exception cref="ArgumentException">Thrown if the <paramref name="other"/> provider's format does not match that of <paramref name="current"/>.</exception>
+    /// <remarks>This extension reuses a <see cref="MixingSampleProvider"/> if any were given.</remarks>
     public static MixingSampleProvider MixWith(this ISampleProvider current, ISampleProvider other)
     {
-        if (current is not MixingSampleProvider mixing)
-            return new MixingSampleProvider([current, other]);
-        mixing.AddMixerInput(other);
-        return mixing;
+        switch (current, other)
+        {
+            case (MixingSampleProvider mixing, _):
+                mixing.AddMixerInput(other);
+                return mixing;
+            case (_, MixingSampleProvider mixing):
+                mixing.AddMixerInput(mixing);
+                return mixing;
+            default:
+                return new MixingSampleProvider([current, other]);
+        }
     }
 
+    /// <summary>Buffers the given sample provider by the specified amount of seconds.</summary>
+    /// <param name="provider">The sample provider to buffer.</param>
+    /// <param name="seconds">The number of seconds to buffer.</param>
+    /// <returns>A new <see cref="BufferedSampleProvider"/> that buffers the given provider.</returns>
+    /// <seealso cref="BufferedSampleProvider"/>
     public static BufferedSampleProvider Buffer(this ISampleProvider provider, double seconds) => new(provider, seconds);
 
+    /// <summary>Queues the <paramref name="other"/> sample provider after <paramref name="provider"/>.</summary>
+    /// <param name="provider">The sample provider to queue after.</param>
+    /// <param name="other">The sample provider to queue.</param>
+    /// <returns>A <see cref="SampleProviderQueue"/> containing both providers.</returns>
+    /// <remarks>The <paramref name="provider"/> is reused if it's already a <see cref="SampleProviderQueue"/>.</remarks>
     public static SampleProviderQueue Queue(this ISampleProvider provider, ISampleProvider other)
     {
         var queue = provider as SampleProviderQueue ?? new SampleProviderQueue(provider.WaveFormat);
