@@ -9,24 +9,35 @@ public static class SpeakerToyPool
 
     private static readonly bool[] Occupied = new bool[byte.MaxValue + 1];
 
-    /// <summary>Gets the first controller ID not used by any active speakers.</summary>
-    /// <exception cref="OverflowException">Thrown when no IDs are available.</exception>
-    public static byte NextAvailableId
+    /// <summary>Attempts to get first controller ID not used by any active speakers.</summary>
+    /// <param name="result">The first free controller ID. 0 if no ID was found.</param>
+    /// <returns>Whether there was an available ID.</returns>
+    /// <remarks>
+    /// This method only returns false in the scenario when all controller IDs from 0 to 255 are in use.
+    /// If all IDs are used, consider <see cref="Return">returning your speakers to the pool</see>
+    /// or using the same ID across speakers that have the same output.
+    /// </remarks>
+    public static bool TryGetNextAvailableId(out byte result)
     {
-        get
-        {
-            Array.Clear(Occupied, 0, Occupied.Length);
-            foreach (var instance in SpeakerToyPlaybackBase.AllInstances) Occupied[instance.ControllerId] = true;
-            for (var i = 0; i < Occupied.Length; i++)
-                if (!Occupied[i])
-                    return (byte) i;
-            throw new OverflowException("No available IDs found");
-        }
+        Array.Clear(Occupied, 0, Occupied.Length);
+        foreach (var instance in SpeakerToyPlaybackBase.AllInstances)
+            Occupied[instance.ControllerId] = true;
+        for (var i = 0; i < Occupied.Length; i++)
+            if (!Occupied[i])
+            {
+                result = (byte) i;
+                return true;
+            }
+
+        result = 0;
+        return false;
     }
 
-    /// <summary>
-    /// Attempts to get a <see cref="SpeakerToy"/> from the pool.
-    /// </summary>
+    /// <summary>Gets the first controller ID not used by any active speakers.</summary>
+    /// <exception cref="OverflowException">Thrown when no IDs are available.</exception>
+    public static byte NextAvailableId => TryGetNextAvailableId(out var id) ? id : throw new OverflowException("No available IDs found");
+
+    /// <summary>Attempts to get a <see cref="SpeakerToy"/> from the pool.</summary>
     /// <param name="toy">The <see cref="SpeakerToy"/> found in the pool, or <see langword="null"/> if none was found.</param>
     /// <param name="parent">The <see cref="Transform"/> to parent the toy to. <see langword="null"/> if it should not be parented.</param>
     /// <param name="position">The position of the toy in local space (world space if no parent is specified).</param>

@@ -4,6 +4,9 @@
 public static class AudioPlayerPool
 {
 
+    /// <inheritdoc cref="SpeakerToyPool.TryGetNextAvailableId" />
+    public static bool TryGetNextAvailableId(out byte result) => SpeakerToyPool.TryGetNextAvailableId(out result);
+
     /// <inheritdoc cref="SpeakerToyPool.NextAvailableId" />
     public static byte NextAvailableId => SpeakerToyPool.NextAvailableId;
 
