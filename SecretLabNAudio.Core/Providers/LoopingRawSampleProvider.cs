@@ -21,7 +21,8 @@ public sealed class LoopingRawSampleProvider : ISampleProvider
         while (total < count)
         {
             total += Provider.Read(buffer, offset + total, count - total);
-            Provider.Position = 0;
+            if (Provider.Position >= Provider.Length)
+                Provider.Position = 0;
         }
 
         return total;
