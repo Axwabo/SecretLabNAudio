@@ -41,11 +41,8 @@ public sealed partial class AudioPlayer : MonoBehaviour
     /// <summary>The <see cref="SpeakerToy"/> this player is attached to.</summary>
     public SpeakerToy Speaker { get; private set; } = null!;
 
-    /// <summary>
-    /// The <see cref="SendEngine"/> used to broadcast audio messages.
-    /// Will be set to <see cref="SendEngines.SendEngine.DefaultEngine"/> if not provided.
-    /// </summary>
-    public SendEngine? SendEngine { get; set; }
+    /// <summary>The <see cref="SendEngine"/> used to broadcast audio messages.</summary>
+    public SendEngine? SendEngine { get; set; } = SendEngine.DefaultEngine;
 
     /// <summary>An optional monitor to consume read audio samples.</summary>
     public IAudioPacketMonitor? OutputMonitor { get; set; }
@@ -74,8 +71,6 @@ public sealed partial class AudioPlayer : MonoBehaviour
     private readonly OpusEncoder _encoder = new(OpusApplicationType.Audio);
 
     private void Awake() => Speaker = this.GetSpeaker("AudioPlayer must be attached to a SpeakerToy.");
-
-    private void Start() => SendEngine ??= SendEngine.DefaultEngine;
 
     private void Update()
     {
