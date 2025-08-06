@@ -13,7 +13,7 @@ public partial class AudioPlayer
     public const int PacketsPerSecond = 100;
 
     /// <summary>The amount of samples in a packet.</summary>
-    public const int PacketSamples = SampleRate / PacketsPerSecond;
+    public const int SamplesPerPacket = SampleRate / PacketsPerSecond;
 
     /// <summary>The duration of a packet in seconds.</summary>
     public const float PacketDuration = 1f / PacketsPerSecond;

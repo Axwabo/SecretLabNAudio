@@ -10,7 +10,7 @@ namespace SecretLabNAudio.Core;
 public sealed partial class AudioPlayer : MonoBehaviour
 {
 
-    private static readonly float[] SendBuffer = new float[PacketSamples];
+    private static readonly float[] SendBuffer = new float[SamplesPerPacket];
 
     private static readonly byte[] EncoderBuffer = new byte[1024];
 

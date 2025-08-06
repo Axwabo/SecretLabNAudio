@@ -34,15 +34,8 @@ public static class SpeakerSyncVars
 
     private static void SerializeServer(SpeakerToy speaker, NetworkWriter observersWriter, SpeakerSyncVarData data)
     {
-        var networkBehaviours = speaker.netIdentity.NetworkBehaviours;
-        for (var i = 0; i < networkBehaviours.Length; i++)
-        {
-            if (networkBehaviours[i] != speaker)
-                continue;
-            Compression.CompressVarUInt(observersWriter, (uint) (1 << i));
-            Serialize(speaker, observersWriter, data);
-            break;
-        }
+        Compression.CompressVarUInt(observersWriter, 1);
+        Serialize(speaker, observersWriter, data);
     }
 
     private static void Serialize(SpeakerToy speaker, NetworkWriter writer, SpeakerSyncVarData data)

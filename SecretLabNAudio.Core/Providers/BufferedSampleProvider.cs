@@ -8,7 +8,7 @@ namespace SecretLabNAudio.Core.Providers;
 public sealed class BufferedSampleProvider : ISampleProvider
 {
 
-    private static readonly float[] ReadBuffer = new float[AudioPlayer.PacketSamples];
+    private static readonly float[] ReadBuffer = new float[AudioPlayer.SamplesPerPacket];
 
     private readonly ISampleProvider _source;
     private readonly PlaybackBuffer _buffer;
@@ -40,7 +40,7 @@ public sealed class BufferedSampleProvider : ISampleProvider
     {
         while (_buffer.Length < _size)
         {
-            var read = _source.Read(ReadBuffer, 0, AudioPlayer.PacketSamples);
+            var read = _source.Read(ReadBuffer, 0, AudioPlayer.SamplesPerPacket);
             if (read == 0)
                 break;
             _buffer.Write(ReadBuffer, read);
