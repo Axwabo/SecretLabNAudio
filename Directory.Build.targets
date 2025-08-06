@@ -14,7 +14,7 @@
 &lt;/Project&gt;
             </Template>
         </PropertyGroup>
-        <WriteLinesToFile File="../ReferencePath.props.user" Lines="$(Template)" Overwrite="false" Condition="!Exists('../ReferencePath.props.user')"/>
+        <WriteLinesToFile File="$(MSBuildThisFileDirectory)/ReferencePath.props.user" Lines="$(Template)" Overwrite="false" Condition="!Exists('$(MSBuildThisFileDirectory)/ReferencePath.props.user')" />
         <Error Text="The ReferencePath property is not specified! Make sure to set the property in the ReferencePath.props.user file." />
     </Target>
 </Project>
