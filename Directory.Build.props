@@ -8,28 +8,28 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="NAudio.Core" Version="2.2.1"/>
-        <PackageReference Include="Northwood.LabAPI" Version="1.1.0"/>
+        <PackageReference Include="NAudio.Core" Version="2.2.1" />
+        <PackageReference Include="Northwood.LabAPI" Version="1.1.0" />
     </ItemGroup>
 
     <ItemGroup>
-        <Reference Include="Assembly-CSharp" Private="false"/>
-        <Reference Include="Mirror" Private="false"/>
-        <Reference Include="UnityEngine.CoreModule" Private="false"/>
+        <Reference Include="Assembly-CSharp" Private="false" />
+        <Reference Include="Mirror" Private="false" />
+        <Reference Include="UnityEngine.CoreModule" Private="false" />
     </ItemGroup>
 
     <ItemGroup>
-        <Using Include="System"/>
-        <Using Include="LabApi.Features.Wrappers"/>
-        <Using Include="Mirror"/>
-        <Using Include="NAudio.Wave"/>
-        <Using Include="SecretLabNAudio.Core.Extensions"/>
-        <Using Include="UnityEngine"/>
-        <Using Include="UnityEngine.Object" Alias="Object"/>
+        <Using Include="System" />
+        <Using Include="LabApi.Features.Wrappers" />
+        <Using Include="Mirror" />
+        <Using Include="NAudio.Wave" />
+        <Using Include="SecretLabNAudio.Core.Extensions" />
+        <Using Include="UnityEngine" />
+        <Using Include="UnityEngine.Object" Alias="Object" />
     </ItemGroup>
 
     <ItemGroup Condition="$(ProjectName) != 'SecretLabNAudio.Core'">
-        <ProjectReference Include="..\SecretLabNAudio.Core\SecretLabNAudio.Core.csproj"/>
+        <ProjectReference Include="..\SecretLabNAudio.Core\SecretLabNAudio.Core.csproj" />
     </ItemGroup>
 
 </Project>

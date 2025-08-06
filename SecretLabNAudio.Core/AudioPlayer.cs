@@ -47,6 +47,9 @@ public sealed partial class AudioPlayer : MonoBehaviour
     /// </summary>
     public SendEngine? SendEngine { get; set; }
 
+    /// <summary>An optional monitor to consume read audio samples.</summary>
+    public IAudioPacketMonitor? OutputMonitor { get; set; }
+
     /// <summary>Whether the playback is paused.</summary>
     public bool IsPaused { get; set; }
 
@@ -80,25 +83,7 @@ public sealed partial class AudioPlayer : MonoBehaviour
             return;
         _remainingTime += Time.deltaTime;
         while (_remainingTime > 0)
-        {
-            var read = SampleProvider.Read(SendBuffer, 0, PacketSamples);
-            if (read == 0)
-            {
-                ClearBuffer();
-                NoSamplesRead?.Invoke();
-                break;
-            }
-
-            if (read < PacketSamples)
-            {
-                Array.Clear(SendBuffer, read, PacketSamples - read);
-                _remainingTime = PacketDuration;
-            }
-
-            var encoded = _encoder.Encode(SendBuffer, EncoderBuffer);
-            SendEngine?.Broadcast(new AudioMessage(Id, EncoderBuffer, encoded));
-            _remainingTime -= PacketDuration;
-        }
+            ProcessPacket();
     }
 
     private void OnDisable()
@@ -124,6 +109,31 @@ public sealed partial class AudioPlayer : MonoBehaviour
     {
         _encoder.Dispose();
         Destroyed?.Invoke();
+    }
+
+    private void ProcessPacket()
+    {
+        var read = SampleProvider!.Read(SendBuffer, 0, SamplesPerPacket);
+        if (read == 0)
+        {
+            ClearBuffer();
+            OutputMonitor?.OnEmpty();
+            NoSamplesRead?.Invoke();
+            return;
+        }
+
+        if (read < SamplesPerPacket)
+        {
+            Array.Clear(SendBuffer, read, SamplesPerPacket - read);
+            _remainingTime = PacketDuration;
+        }
+
+        _remainingTime -= PacketDuration;
+        OutputMonitor?.OnRead(SendBuffer, read);
+        if (SendEngine == null)
+            return;
+        var encoded = _encoder.Encode(SendBuffer, EncoderBuffer);
+        SendEngine.Broadcast(new AudioMessage(Id, EncoderBuffer, encoded));
     }
 
     /// <summary>Resets the amount of samples to send and clears the <see cref="SampleProvider"/>'s buffer if it's a <see cref="BufferedSampleProvider"/>.</summary>
