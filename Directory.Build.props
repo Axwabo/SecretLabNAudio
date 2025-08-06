@@ -5,6 +5,7 @@
         <Nullable>enable</Nullable>
         <LangVersion>13</LangVersion>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <DisableImplicitFrameworkReferences>true</DisableImplicitFrameworkReferences>
     </PropertyGroup>
 
     <ItemGroup>
@@ -12,6 +13,13 @@
         <PackageReference Include="Northwood.LabAPI" Version="1.1.0" />
     </ItemGroup>
 
+    <ItemGroup>
+        <Reference Include="mscorlib" Private="false" />
+        <Reference Include="System" Private="false" />
+        <Reference Include="System.Core" Private="false" />
+        <Reference Include="System.Data" Private="false" />
+    </ItemGroup>
+    
     <ItemGroup>
         <Reference Include="Assembly-CSharp" Private="false" />
         <Reference Include="Mirror" Private="false" />

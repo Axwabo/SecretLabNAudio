@@ -1,7 +1,7 @@
 <Project>
     <Import Project="ReferencePath.props.user" Condition="Exists('ReferencePath.props.user')"/>
     <PropertyGroup>
-        <AssemblySearchPaths>$(AssemblySearchPaths);$(ReferencePath)</AssemblySearchPaths>
+        <AssemblySearchPaths>$(ReferencePath);$(AssemblySearchPaths)</AssemblySearchPaths>
     </PropertyGroup>
     
     <Target Name="NotifyIncompleteSetup" BeforeTargets="PrepareForBuild" Condition="$(ReferencePath) == ''">
