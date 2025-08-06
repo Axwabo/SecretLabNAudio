@@ -129,7 +129,7 @@ public sealed partial class AudioPlayer : MonoBehaviour
         }
 
         _remainingTime -= PacketDuration;
-        OutputMonitor?.OnRead(SendBuffer, read);
+        OutputMonitor?.OnRead(SendBuffer.AsSpan()[..read]);
         if (SendEngine == null)
             return;
         var encoded = _encoder.Encode(SendBuffer, EncoderBuffer);
