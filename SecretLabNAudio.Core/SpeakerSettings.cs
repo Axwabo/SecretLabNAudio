@@ -13,7 +13,13 @@ public readonly record struct SpeakerSettings
     /// <see cref="MaxDistance"/> = 15
     /// </para>
     /// </summary>
-    public static SpeakerSettings Default { get; } = new();
+    public static SpeakerSettings Default { get; } = new()
+    {
+        IsSpatial = true,
+        Volume = 1,
+        MinDistance = 1,
+        MaxDistance = 15
+    };
 
     /// <summary>
     /// Gets the settings of the given <see cref="AudioPlayer"/>.
@@ -42,22 +48,16 @@ public readonly record struct SpeakerSettings
         MaxDistance = speaker.MaxDistance
     };
 
-    /// <summary>Creates a new <see cref="SpeakerSettings"/> struct with default settings.</summary>
-    /// <seealso cref="Default"/>
-    public SpeakerSettings()
-    {
-    }
-
     /// <summary>Whether the speaker is spatial (has 3D sound).</summary>
-    public bool IsSpatial { get; init; } = true;
+    public bool IsSpatial { get; init; }
 
     /// <summary>The volume of the speaker (range 0-1).</summary>
-    public float Volume { get; init; } = 1;
+    public float Volume { get; init; }
 
     /// <summary>Minimum distance where attentuation begins. Up until this distance the audio is heard at full volume.</summary>
-    public float MinDistance { get; init; } = 1;
+    public float MinDistance { get; init; }
 
     /// <summary>Maximum distance of the speaker. From this distance beyond, the audio is completely inaudible.</summary>
-    public float MaxDistance { get; init; } = 15;
+    public float MaxDistance { get; init; }
 
 }
