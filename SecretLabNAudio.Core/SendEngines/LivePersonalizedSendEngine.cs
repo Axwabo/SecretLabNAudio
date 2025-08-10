@@ -5,7 +5,7 @@ namespace SecretLabNAudio.Core.SendEngines;
 /// <summary>A delegate that maps a <see cref="SpeakerSettings"/> struct to another per player.</summary>
 /// <param name="player">The player map get the settings for.</param>
 /// <param name="current">The current settings for the player. <see langword="null"/> if there is no override.</param>
-/// <returns>The modified <see cref="SpeakerSettings"/> or <see langword="null"/> if the default settings should be used.</returns>
+/// <returns>The modified <see cref="SpeakerSettings"/> or <see langword="null"/> if the speaker's original settings should be used.</returns>
 /// <seealso cref="SpeakerSettings.From(SpeakerPersonalization)"/>
 public delegate SpeakerSettings? PersonalizedSettingsTransform(Player player, SpeakerSettings? current);
 

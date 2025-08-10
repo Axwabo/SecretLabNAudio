@@ -144,6 +144,18 @@ public static class AudioPlayerExtensions
         => player.WithSendEngine(new FilteredSendEngine(filter));
 
     /// <summary>
+    /// Sets the <see cref="AudioPlayer.OutputMonitor"/> of the <see cref="AudioPlayer"/> to the given <see cref="IAudioPacketMonitor"/>.
+    /// </summary>
+    /// <param name="player">The player to set the monitor of.</param>
+    /// <param name="monitor">The monitor to set.</param>
+    /// <returns>The <paramref name="player"/> itself.</returns>
+    public static AudioPlayer WithOutputMonitor(this AudioPlayer player, IAudioPacketMonitor monitor)
+    {
+        player.OutputMonitor = monitor;
+        return player;
+    }
+
+    /// <summary>
     /// Sets the <see cref="AudioPlayer.SampleProvider"/> to <see langword="null"/> of the <see cref="AudioPlayer"/> when no samples are read.
     /// </summary>
     /// <param name="player">The player to unset the provider of.</param>
@@ -174,6 +186,18 @@ public static class AudioPlayerExtensions
     public static AudioPlayer PoolOnEnd(this AudioPlayer player)
     {
         player.NoSamplesRead += () => AudioPlayerPool.Return(player);
+        return player;
+    }
+
+    /// <summary>
+    /// Disposes of the given resource when the <see cref="AudioPlayer"/> is destroyed or disabled.
+    /// </summary>
+    /// <param name="player">The player that the resource should be disposed with.</param>
+    /// <param name="disposable">The resource to dispose of.</param>
+    /// <returns>The <paramref name="player"/> itself.</returns>
+    public static AudioPlayer DisposeOnDestroy(this AudioPlayer player, IDisposable disposable)
+    {
+        player.Destroyed += disposable.Dispose;
         return player;
     }
 
