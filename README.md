@@ -43,13 +43,15 @@ This library has a number of open-source dependencies. See [Attributions](ATTRIB
     - Linux: `.config/SCP Secret Laboratory/LabAPI/dependencies/<port>/`
     - Windows: `%appdata%/SCP Secret Laboratory/LabAPI/dependencies/<port>/`
 3. Download the `SecretLabNAudio.zip` file from the releases page
-4. Extract the necessary files from the `bin/` directory of the archive
+4. Extract the necessary files from the `bin/` directory of the archive as **dependencies**
     - `NAudio.Core.dll` is **always required**
     - `NLayer` and `NLayer.NAudioSpport.dll` for `.mp3` support (optional)
     - `NAudio.Vorbis.dll` and `NVorbis.dll` for `.ogg` support (optional)
-5. Optionally download the necessary plugin from the releases page
+    - `NAudio.Wasapi.dll` for Media Foundation support (optional, WIndows-only)
+5. Optionally download the necessary **plugin(s)** from the releases page
     - `SecretLabNAudio.NLayer.dll` for `.mp3` support
     - `SecretLabNAudio.NVorbis.dll` for `.ogg` support
+    - `SecretLabNAudio.MediaFoundation.dll` for Media Foundation support (Windows-only)
 6. Place the downloaded plugin(s) into the **plugins** directory
     - Linux: `.config/SCP Secret Laboratory/LabAPI/plugins/<port>/`
     - Windows: `%appdata%/SCP Secret Laboratory/LabAPI/plugins/<port>/`
