@@ -49,7 +49,7 @@ public sealed class SampleProviderQueue : ISampleProvider
     }
 
     /// <summary>Dequeues the next provider in the queue.</summary>
-    /// <returns>True if a provider was dequeued, false if the queue is empty.</returns>
+    /// <returns>True if a provider was dequeued, false if the queue is already empty.</returns>
     public bool Next() => _queue.TryDequeue(out _current);
 
     /// <summary>Clears the queue.</summary>

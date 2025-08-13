@@ -41,7 +41,7 @@ public static class SpeakerToyPool
     /// <param name="toy">The <see cref="SpeakerToy"/> found in the pool, or <see langword="null"/> if none was found.</param>
     /// <param name="parent">The <see cref="Transform"/> to parent the toy to. <see langword="null"/> if it should not be parented.</param>
     /// <param name="position">The position of the toy in local space (world space if no parent is specified).</param>
-    /// <param name="spawn">Whether to spawn the toy on the network after retrieving it.</param>
+    /// <param name="spawn">Whether to invoke <see cref="NetworkServer.Spawn(GameObject,NetworkConnection)"/>.</param>
     /// <returns>Whether a <see cref="SpeakerToy"/> was found in the pool.</returns>
     public static bool TryGetFromPool([NotNullWhen(true)] out SpeakerToy? toy, Transform? parent = null, Vector3 position = default, bool spawn = true)
     {
@@ -67,8 +67,9 @@ public static class SpeakerToyPool
     /// </summary>
     /// <param name="parent">The <see cref="Transform"/> to parent the toy to. <see langword="null"/> if it should not be parented.</param>
     /// <param name="position"> The position of the toy in local space (world space if no parent is specified).</param>
+    /// <param name="spawn">Whether to invoke <see cref="NetworkServer.Spawn(GameObject,NetworkConnection)"/>.</param>
     /// <returns>A new or reused <see cref="SpeakerToy"/>.</returns>
-    public static SpeakerToy Rent(Transform? parent = null, Vector3 position = default)
+    public static SpeakerToy Rent(Transform? parent = null, Vector3 position = default, bool spawn = true)
         => TryGetFromPool(out var existing, parent, position)
             ? existing
             : SpeakerToy.Create(position, parent);

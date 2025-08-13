@@ -95,7 +95,7 @@ public static class AudioPlayerExtensions
         => player.WithProvider(provider?.ToSampleProvider());
 
     /// <summary>
-    /// Buffers the provider of the <see cref="AudioPlayer"/> ahead by <paramref name="seconds"/>.
+    /// Sets the provider of the <see cref="AudioPlayer"/> to be a <see cref="Providers.BufferedSampleProvider"/>, reading ahead by <paramref name="seconds"/>.
     /// </summary>
     /// <param name="player">The player to buffer.</param>
     /// <param name="seconds">The number of seconds to buffer ahead.</param>
