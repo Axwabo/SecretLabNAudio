@@ -65,4 +65,17 @@ public static class SampleProviderExtensions
         return queue;
     }
 
+    /// <summary>Sets the volume of the sample provider.</summary>
+    /// <param name="provider">The provider to change the volume of.</param>
+    /// <param name="volume">The volume to set.</param>
+    /// <returns>A <see cref="VolumeSampleProvider"/> with the specified volume.</returns>
+    /// <remarks>This method returns the <paramref name="provider"/> itself if it's a <see cref="VolumeSampleProvider"/>.</remarks>
+    public static VolumeSampleProvider Volume(this ISampleProvider provider, float volume = 1)
+    {
+        if (provider is not VolumeSampleProvider volumeProvider)
+            return new VolumeSampleProvider(provider) {Volume = volume};
+        volumeProvider.Volume = volume;
+        return volumeProvider;
+    }
+
 }

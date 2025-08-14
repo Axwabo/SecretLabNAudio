@@ -11,10 +11,13 @@ public sealed class PlaybackBufferSampleProvider : ISampleProvider
     /// <summary>The number of samples in the buffer.</summary>
     public int Length => _buffer.Length;
 
-    /// <summary>Whether to pad out the read buffer with zeroes if more samples are requested than available.</summary>
+    /// <summary>
+    /// Whether to pad out the read buffer with zeroes if more samples are requested than available.
+    /// If set to true, makes the provider never-ending.
+    /// </summary>
     public bool ReadFully { get; set; }
 
-    /// <summary>Creates a new <see cref="PlaybackBufferSampleProvider"/>.</summary>
+    /// <summary>Creates a new endless <see cref="PlaybackBufferSampleProvider"/>.</summary>
     /// <param name="capacitySeconds">The capacity of the buffer in seconds.</param>
     /// <param name="sampleRate">The sample rate of the audio.</param>
     /// <param name="channels">The number of audio channels.</param>
@@ -65,8 +68,8 @@ public sealed class PlaybackBufferSampleProvider : ISampleProvider
     /// <summary>Writes a portion of the array to the playback buffer.</summary>
     /// <param name="buffer">The array containing samples to write.</param>
     /// <param name="offset">The offset in the array to start writing from.</param>
-    /// <param name="length">The number of samples to write from the array.</param>
-    public void Write(float[] buffer, int offset, int length) => _buffer.Write(buffer, length, offset);
+    /// <param name="count">The number of samples to write from the array.</param>
+    public void Write(float[] buffer, int offset, int count) => _buffer.Write(buffer, count, offset);
 
     /// <summary>Writes a single sample to the playback buffer.</summary>
     /// <param name="sample">The sample to write.</param>

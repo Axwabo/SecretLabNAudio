@@ -70,9 +70,9 @@ public static class SpeakerToyPool
     /// <param name="spawn">Whether to invoke <see cref="NetworkServer.Spawn(GameObject,NetworkConnection)"/>.</param>
     /// <returns>A new or reused <see cref="SpeakerToy"/>.</returns>
     public static SpeakerToy Rent(Transform? parent = null, Vector3 position = default, bool spawn = true)
-        => TryGetFromPool(out var existing, parent, position)
+        => TryGetFromPool(out var existing, parent, position, spawn)
             ? existing
-            : SpeakerToy.Create(position, parent);
+            : SpeakerToy.Create(position, parent, networkSpawn: spawn);
 
     /// <summary>Returns a <see cref="SpeakerToy"/> to the pool.</summary>
     /// <param name="speaker">The speaker to return.</param>

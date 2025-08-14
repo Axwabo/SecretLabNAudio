@@ -96,7 +96,7 @@ public sealed partial class AudioPlayer : MonoBehaviour
         Destroyed = null;
         IsPaused = false;
         SampleProvider = null;
-        SendEngine = null;
+        SendEngine = SendEngine.DefaultEngine;
         _remainingTime = 0;
     }
 
