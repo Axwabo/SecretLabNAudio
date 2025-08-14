@@ -8,29 +8,29 @@ namespace SecretLabNAudio;
 public sealed class NAudioPlugin : Plugin
 {
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
     public override string Name => "SecretLabNAudio";
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
     public override string Description => "SecretLabNAudio.Core, SecretLabNAudio.NVorbis and SecretLabNAudio.NLayer";
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
     public override string Author => "Axwabo";
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
     public override Version Version => GetType().Assembly.GetName().Version;
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
     public override Version RequiredApiVersion { get; } = new(1, 0, 0);
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
     public override void Enable()
     {
         NVorbisPlugin.RegisterFactory();
         NLayerPlugin.RegisterFactory();
     }
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
     public override void Disable()
     {
     }

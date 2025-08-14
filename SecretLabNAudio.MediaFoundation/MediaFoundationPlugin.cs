@@ -30,19 +30,19 @@ public sealed class MediaFoundationPlugin : Plugin
         ".smi"
     ];
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
     public override string Name => "SecretLabNAudio.MediaFoundation";
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
     public override string Description => "Registers Media Foundation support";
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
     public override string Author => "Axwabo";
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
     public override Version Version => GetType().Assembly.GetName().Version;
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
     public override Version RequiredApiVersion { get; } = new(1, 0, 0);
 
     /// <summary>Registers a factory to read audio from files and other streams using Media Foundation.</summary>
@@ -60,7 +60,7 @@ public sealed class MediaFoundationPlugin : Plugin
     /// <summary>Calls <see cref="RegisterFactory"/>.</summary>
     public override void Enable() => RegisterFactory();
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
     public override void Disable()
     {
     }

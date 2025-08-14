@@ -54,10 +54,10 @@ public readonly record struct SpeakerSettings
     /// <summary>The volume of the speaker (range 0-1).</summary>
     public float Volume { get; init; }
 
-    /// <summary>Minimum distance where attentuation begins. Up until this distance the audio is heard at full volume.</summary>
+    /// <summary>Minimum distance where attentuation begins at. Up until this distance the audio is heard at full volume.</summary>
     public float MinDistance { get; init; }
 
-    /// <summary>Maximum distance of the speaker. From this distance beyond, the audio is completely inaudible.</summary>
+    /// <summary>Maximum distance of the speaker. From this distance and beyond, the audio is completely inaudible.</summary>
     public float MaxDistance { get; init; }
 
 }

@@ -9,19 +9,19 @@ namespace SecretLabNAudio.NVorbis;
 public sealed class NVorbisPlugin : Plugin
 {
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
     public override string Name => "SecretLabNAudio.NVorbis";
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
     public override string Description => "Registers NVorbis support";
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
     public override string Author => "Axwabo";
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
     public override Version Version => GetType().Assembly.GetName().Version;
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
     public override Version RequiredApiVersion { get; } = new(1, 0, 0);
 
     /// <summary>Registers a factory to read Ogg Vorbis files.</summary>
@@ -37,7 +37,7 @@ public sealed class NVorbisPlugin : Plugin
     /// <summary>Calls <see cref="RegisterFactory"/>.</summary>
     public override void Enable() => RegisterFactory();
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
     public override void Disable()
     {
     }
