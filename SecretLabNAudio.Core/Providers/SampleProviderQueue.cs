@@ -17,10 +17,10 @@ public sealed class SampleProviderQueue : ISampleProvider
     /// <param name="waveFormat">The <see cref="WaveFormat"/> of the audio.</param>
     public SampleProviderQueue(WaveFormat waveFormat) => WaveFormat = waveFormat;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public WaveFormat WaveFormat { get; }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public int Read(float[] buffer, int offset, int count)
     {
         if (_current == null && !_queue.TryDequeue(out _current))

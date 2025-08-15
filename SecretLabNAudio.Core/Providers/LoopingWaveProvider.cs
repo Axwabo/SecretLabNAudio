@@ -11,10 +11,10 @@ public sealed class LoopingWaveProvider : IWaveProvider, IDisposable
     /// <param name="stream">The <see cref="WaveStream"/> to loop.</param>
     public LoopingWaveProvider(WaveStream stream) => Stream = stream;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public WaveFormat WaveFormat => Stream.WaveFormat;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public int Read(byte[] buffer, int offset, int count)
     {
         var read = Stream.Read(buffer, offset, count);
@@ -25,7 +25,7 @@ public sealed class LoopingWaveProvider : IWaveProvider, IDisposable
         return read;
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public void Dispose() => Stream.Dispose();
 
 }

@@ -100,8 +100,11 @@ public static class AudioPlayerExtensions
     /// <param name="player">The player to buffer.</param>
     /// <param name="seconds">The number of seconds to buffer ahead.</param>
     /// <returns>The <paramref name="player"/> itself.</returns>
+    /// <remarks>
+    /// This method modifies the <see cref="AudioPlayer.SampleProvider"/>, therefore, changing the provider will remove buffering.
+    /// If the current provider is null, no changes will be made.
+    /// </remarks>
     /// <seealso cref="SampleProviderExtensions.Buffer"/>
-    /// <remarks>This method modifies the <see cref="AudioPlayer.SampleProvider"/>, therefore, changing the provider will remove buffering.</remarks>
     public static AudioPlayer Buffer(this AudioPlayer player, double seconds)
     {
         if (player.SampleProvider == null)

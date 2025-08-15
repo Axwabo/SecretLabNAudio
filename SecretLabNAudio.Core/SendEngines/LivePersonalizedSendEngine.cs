@@ -28,7 +28,7 @@ public class LivePersonalizedSendEngine : SendEngine
         _settingsTransform = settingsTransform;
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     protected internal override bool Broadcast(Player player, AudioMessage message)
     {
         if (!_baseEngine.Broadcast(player, message))

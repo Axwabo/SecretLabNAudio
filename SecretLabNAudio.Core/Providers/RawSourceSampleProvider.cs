@@ -72,10 +72,10 @@ public sealed class RawSourceSampleProvider : ISampleProvider
         WaveFormat = WaveFormat.CreateIeeeFloatWaveFormat(sampleRate, channels);
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public WaveFormat WaveFormat { get; }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public int Read(float[] buffer, int offset, int count)
     {
         var target = Mathf.Clamp(Length - Position, 0, count);

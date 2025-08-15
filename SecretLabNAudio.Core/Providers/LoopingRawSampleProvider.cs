@@ -11,10 +11,10 @@ public sealed class LoopingRawSampleProvider : ISampleProvider
     /// <param name="provider">The <see cref="RawSourceSampleProvider"/> to loop.</param>
     public LoopingRawSampleProvider(RawSourceSampleProvider provider) => Provider = provider;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public WaveFormat WaveFormat => Provider.WaveFormat;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public int Read(float[] buffer, int offset, int count)
     {
         var total = 0;

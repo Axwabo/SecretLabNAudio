@@ -13,7 +13,7 @@ public class FilteredSendEngine : SendEngine
     /// <param name="filter">The condition to match for a player to receive the message.</param>
     public FilteredSendEngine(Predicate<Player> filter) => Filter = filter;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     protected internal override bool Broadcast(Player player, AudioMessage message)
     {
         if (!Filter(player))

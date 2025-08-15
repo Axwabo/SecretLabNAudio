@@ -34,11 +34,7 @@ public static class AudioPlayerPool
     /// <summary>
     /// Rents an <see cref="AudioPlayer"/> with the next available ID from the pool or creates a new one if no <see cref="SpeakerToy"/> is pooled.
     /// </summary>
-    /// <param name="settings">The settings to apply to the player.</param>
-    /// <param name="parent">The <see cref="Transform"/> to parent the player to. <see langword="null"/> if it should not be parented.</param>
-    /// <param name="position">The position of the speaker in local space (world space if no parent is specified).</param>
-    /// <param name="spawn">Whether to invoke <see cref="NetworkServer.Spawn(GameObject,NetworkConnection)"/>.</param>
-    /// <returns>A new or reused <see cref="AudioPlayer"/>.</returns>
+    /// <inheritdoc cref="Rent(byte,SpeakerSettings,Transform?,Vector3,bool)"/>
     /// <seealso cref="NextAvailableId"/>
     public static AudioPlayer Rent(SpeakerSettings settings, Transform? parent = null, Vector3 position = default, bool spawn = true)
         => Rent(NextAvailableId, settings, parent, position, spawn);

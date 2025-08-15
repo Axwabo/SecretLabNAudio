@@ -32,10 +32,10 @@ public sealed class BufferedSampleProvider : ISampleProvider
         _buffer = new PlaybackBuffer(capacity, true);
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public WaveFormat WaveFormat => _source.WaveFormat;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public int Read(float[] buffer, int offset, int count)
     {
         while (_buffer.Length < _size)

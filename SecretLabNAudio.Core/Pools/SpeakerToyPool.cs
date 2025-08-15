@@ -43,6 +43,11 @@ public static class SpeakerToyPool
     /// <param name="position">The position of the toy in local space (world space if no parent is specified).</param>
     /// <param name="spawn">Whether to invoke <see cref="NetworkServer.Spawn(GameObject,NetworkConnection)"/>.</param>
     /// <returns>Whether a <see cref="SpeakerToy"/> was found in the pool.</returns>
+    /// <remarks>
+    /// The <see cref="SpeakerToy.ControllerId"/> of the returned speaker may already be occupied.
+    /// Assign an ID yourself by setting it or calling <see cref="SpeakerToyExtensions.WithId"/>.
+    /// Speaker settings may also vary.
+    /// </remarks>
     public static bool TryGetFromPool([NotNullWhen(true)] out SpeakerToy? toy, Transform? parent = null, Vector3 position = default, bool spawn = true)
     {
         foreach (var existing in PooledSpeaker.Instances)
@@ -65,14 +70,12 @@ public static class SpeakerToyPool
     /// <summary>
     /// Rents a <see cref="SpeakerToy"/> from the pool or creates a new one if no <see cref="SpeakerToy"/> is pooled.
     /// </summary>
-    /// <param name="parent">The <see cref="Transform"/> to parent the toy to. <see langword="null"/> if it should not be parented.</param>
-    /// <param name="position"> The position of the toy in local space (world space if no parent is specified).</param>
-    /// <param name="spawn">Whether to invoke <see cref="NetworkServer.Spawn(GameObject,NetworkConnection)"/>.</param>
+    /// <inheritdoc cref="TryGetFromPool" path="remarks"/>
     /// <returns>A new or reused <see cref="SpeakerToy"/>.</returns>
     public static SpeakerToy Rent(Transform? parent = null, Vector3 position = default, bool spawn = true)
         => TryGetFromPool(out var existing, parent, position, spawn)
             ? existing
-            : SpeakerToy.Create(position, parent, networkSpawn: spawn);
+            : SpeakerToy.Create(position, parent, spawn);
 
     /// <summary>Returns a <see cref="SpeakerToy"/> to the pool.</summary>
     /// <param name="speaker">The speaker to return.</param>

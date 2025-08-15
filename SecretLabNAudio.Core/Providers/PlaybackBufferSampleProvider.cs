@@ -47,10 +47,10 @@ public sealed class PlaybackBufferSampleProvider : ISampleProvider
         WaveFormat = WaveFormat.CreateIeeeFloatWaveFormat(sampleRate, channels);
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public WaveFormat WaveFormat { get; }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public int Read(float[] buffer, int offset, int count)
     {
         var max = Math.Min(count, Length);
@@ -78,7 +78,7 @@ public sealed class PlaybackBufferSampleProvider : ISampleProvider
     /// <summary>Clears the playback buffer.</summary>
     public void Clear() => _buffer.Clear();
 
-    /// <summary>Disposes the underlying playback buffer when this object is finalized, allowing its buffer to be used later.</summary>
+    /// <summary>Disposes the underlying playback buffer when this object is finalized, allowing for its buffer to be used later.</summary>
     ~PlaybackBufferSampleProvider() => _buffer.Dispose();
 
 }
