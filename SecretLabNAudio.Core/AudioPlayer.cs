@@ -41,7 +41,10 @@ public sealed partial class AudioPlayer : MonoBehaviour
     /// <summary>The <see cref="SpeakerToy"/> this player is attached to.</summary>
     public SpeakerToy Speaker { get; private set; } = null!;
 
-    /// <summary>The <see cref="SendEngine"/> used to broadcast audio messages.</summary>
+    /// <summary>
+    /// The <see cref="SendEngine"/> used to broadcast audio messages.
+    /// If null, no encoding & broadcasting is skipped.
+    /// </summary>
     public SendEngine? SendEngine { get; set; } = SendEngine.DefaultEngine;
 
     /// <summary>An optional monitor to consume read audio samples.</summary>
@@ -102,6 +105,7 @@ public sealed partial class AudioPlayer : MonoBehaviour
 
     private void OnDestroy()
     {
+        SampleProvider = null;
         _encoder.Dispose();
         Destroyed?.Invoke();
     }

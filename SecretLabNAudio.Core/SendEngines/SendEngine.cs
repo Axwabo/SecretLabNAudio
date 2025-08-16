@@ -11,7 +11,7 @@ public class SendEngine
 
     /// <summary>Broadcasts the given <see cref="AudioMessage"/>.</summary>
     /// <param name="message">The <see cref="AudioMessage"/> to broadcast.</param>
-    public void Broadcast(AudioMessage message)
+    public virtual void Broadcast(AudioMessage message)
     {
         foreach (var player in Player.ReadyList)
             Broadcast(player, message);
