@@ -75,7 +75,7 @@ public static partial class AudioPlayerExtensions
     /// Pauses (or unpauses) the <see cref="AudioPlayer"/>.
     /// </summary>
     /// <param name="player">The player to pause.</param>
-    /// <param name="pause">Whether to pause the player. Defaults to true.</param>
+    /// <param name="pause">Whether to pause the player.</param>
     /// <returns>The <paramref name="player"/> itself.</returns>
     public static AudioPlayer Pause(this AudioPlayer player, bool pause = true)
     {
