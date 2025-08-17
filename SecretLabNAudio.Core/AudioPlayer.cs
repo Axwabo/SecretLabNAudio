@@ -17,21 +17,13 @@ public sealed partial class AudioPlayer : MonoBehaviour
     private ISampleProvider? _sampleProvider;
 
     /// <summary>The provider this player will read from. Set to null to skip updates.</summary>
-    /// <exception cref="ArgumentException">
-    /// Thrown when the given sample provider is not null and does not match the following criteria:
-    /// <para>
-    /// Encoding = <see cref="WaveFormatEncoding.IeeeFloat"/><br/>
-    /// Sample Rate = <see cref="SampleRate"/><br/>
-    /// Channels = <see cref="Channels"/>
-    /// </para>
-    /// </exception>
+    /// <exception cref="ArgumentException"><inheritdoc cref="ThrowIfIncompatible" path="exception"/></exception>
     public ISampleProvider? SampleProvider
     {
         get => _sampleProvider;
         set
         {
-            if (value is {WaveFormat: not {SampleRate: SampleRate, Channels: Channels, Encoding: WaveFormatEncoding.IeeeFloat}})
-                throw new ArgumentException($"Expected a mono provider with a sample rate of 48000Hz and IEEEFloat encoding, got format {value.WaveFormat}");
+            ThrowIfIncompatible(value);
             _sampleProvider = value;
         }
     }
