@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using System.Linq;
 using SecretLabNAudio.Core.Providers;
 
 namespace SecretLabNAudio.Core.FileReading;
@@ -26,6 +27,7 @@ public static class ShortClipCache
     /// <param name="provider">The clip to store.</param>
     /// <param name="trimExtension">Whether to trim the file extension from the name.</param>
     /// <exception cref="ArgumentException"><inheritdoc cref="AudioPlayer.ThrowIfIncompatible" path="exception"/></exception>
+    /// <remarks>If an entry already exists, it will be overwritten.</remarks>
     public static void Add(string name, RawSourceSampleProvider provider, bool trimExtension = true)
     {
         AudioPlayer.ThrowIfIncompatible(provider);
@@ -50,7 +52,10 @@ public static class ShortClipCache
     /// A <see cref="RawSourceSampleProvider"/> if the clip was added to the cache.
     /// If the file doesn't exist, no <see cref="IAudioReaderFactory">factory</see> was registered for the type, or no <see cref="WaveStream"/> was returned.
     /// </returns>
-    /// <remarks>Audio is automatically converted to <see cref="WaveStreamExtensions.ReadPlayerCompatibleSamples">player-compatible samples</see>.</remarks>
+    /// <remarks>
+    /// If an entry already exists, it will be overwritten.
+    /// Audio is automatically converted to <see cref="WaveStreamExtensions.ReadPlayerCompatibleSamples">player-compatible samples</see>.
+    /// </remarks>
     public static RawSourceSampleProvider? AddFromFile(string path, bool trimExtension = true)
     {
         if (!TryRead(path, out var provider))
@@ -69,6 +74,31 @@ public static class ShortClipCache
         Add(name, provider);
         return provider;
     }
+
+    /// <summary>
+    /// Attempts to add the clips from the given files to the cache with keys based on files' names.
+    /// <b>Do not use this for storing lengthy audio, stream the files instead.</b> 
+    /// </summary>
+    /// <param name="trimExtension">Whether to trim the file extension from the names.</param>
+    /// <param name="paths">The fully qualified paths to the files.</param>
+    /// <returns>The number of clips added to the cache.</returns>
+    /// <remarks><inheritdoc cref="AddFromFile(string,bool)"/></remarks>
+    /// <seealso cref="AddFromFile(string,bool)"/>
+    public static int AddAllFromFiles(bool trimExtension, params IEnumerable<string> paths)
+    {
+        var count = 0;
+        foreach (var path in paths)
+            if (AddFromFile(path, trimExtension) != null)
+                count++;
+        return count;
+    }
+
+    /// <inheritdoc cref="AddAllFromFiles(bool,IEnumerable{string})"/>
+    /// <param name="baseDirectory">The base directory to combine with the paths.</param>
+    /// <param name="trimExtension">Whether to trim the file extension from the names.</param>
+    /// <param name="paths">The paths to the files relative to <paramref name="baseDirectory"/>.</param>
+    public static int AddAllFromFiles(string baseDirectory, bool trimExtension, params IEnumerable<string> paths)
+        => AddAllFromFiles(trimExtension, paths.Select(e => Path.Combine(baseDirectory, e)));
 
     /// <summary>Attempts to retrieve a clip from the cache.</summary>
     /// <param name="name">The key to search by.</param>
