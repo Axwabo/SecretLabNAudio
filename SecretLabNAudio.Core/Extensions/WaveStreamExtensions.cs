@@ -1,4 +1,6 @@
-﻿using SecretLabNAudio.Core.Providers;
+﻿using System.Buffers;
+using System.Collections.Generic;
+using SecretLabNAudio.Core.Providers;
 
 namespace SecretLabNAudio.Core.Extensions;
 
@@ -7,7 +9,6 @@ public static class WaveStreamExtensions
 {
 
     private const int BufferLength = 4800;
-    private static readonly float[] Buffer = new float[BufferLength];
 
     /// <summary>Wraps the stream in a <see cref="LoopingWaveProvider"/>.</summary>
     /// <param name="stream">The <see cref="WaveStream"/> to wrap.</param>
@@ -59,17 +60,66 @@ public static class WaveStreamExtensions
 
     private static void ReadRemaining(ISampleProvider provider, ref float[] array, ref int total)
     {
-        var read = provider.Read(Buffer, 0, BufferLength);
-        if (read == 0)
-            return;
-        Array.Resize(ref array, total + read);
-        Array.Copy(Buffer, 0, array, total, read);
-        total += read;
-        while ((read = provider.Read(Buffer, 0, BufferLength)) != 0)
+        var totalRead = 0;
+        var firstBuffer = ArrayPool<float>.Shared.Rent(BufferLength);
+        try
         {
-            Array.Resize(ref array, array.Length + BufferLength);
-            Array.Copy(Buffer, 0, array, total, read);
-            total += read;
+            var read = provider.Read(firstBuffer, 0, BufferLength);
+            if (read == 0)
+            {
+                ArrayPool<float>.Shared.Return(firstBuffer);
+                return;
+            }
+
+            if (read < BufferLength)
+            {
+                Array.Resize(ref array, total + read);
+                Array.Copy(firstBuffer, 0, array, total, read);
+                total += read;
+                ArrayPool<float>.Shared.Return(firstBuffer);
+                return;
+            }
+
+            totalRead += read;
+        }
+        catch
+        {
+            ArrayPool<float>.Shared.Return(firstBuffer);
+            throw;
+        }
+
+        var buffers = new List<float[]> {firstBuffer};
+        try
+        {
+            while (true)
+            {
+                var buffer = ArrayPool<float>.Shared.Rent(BufferLength);
+                var read = provider.Read(buffer, 0, buffer.Length);
+                totalRead += read;
+                if (read != 0)
+                {
+                    buffers.Add(buffer);
+                    continue;
+                }
+
+                ArrayPool<float>.Shared.Return(buffer);
+                break;
+            }
+
+            Array.Resize(ref array, total + totalRead);
+            var copied = 0;
+            foreach (var buffer in buffers)
+            {
+                Array.Copy(buffer, 0, array, total + copied, Math.Min(buffer.Length, totalRead - copied));
+                copied += buffer.Length;
+            }
+
+            total += totalRead;
+        }
+        finally
+        {
+            foreach (var buffer in buffers)
+                ArrayPool<float>.Shared.Return(buffer);
         }
     }
 
