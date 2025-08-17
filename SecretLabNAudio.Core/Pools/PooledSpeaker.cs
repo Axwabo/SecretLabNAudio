@@ -2,6 +2,7 @@
 
 namespace SecretLabNAudio.Core.Pools;
 
+[DisallowMultipleComponent]
 internal sealed class PooledSpeaker : MonoBehaviour
 {
 

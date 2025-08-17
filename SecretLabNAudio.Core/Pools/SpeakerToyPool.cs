@@ -77,6 +77,39 @@ public static class SpeakerToyPool
             ? existing
             : SpeakerToy.Create(position, parent, spawn);
 
+    /// <summary><inheritdoc cref="Rent(Transform?,Vector3,bool)" path="summary"/></summary>
+    /// <param name="id">The controller ID to assign to the toy.</param>
+    /// <param name="parent">The <see cref="Transform"/> to parent the toy to. <see langword="null"/> if it should not be parented.</param>
+    /// <param name="position">The position of the toy in local space (world space if no parent is specified).</param>
+    /// <param name="spawn">Whether to invoke <see cref="NetworkServer.Spawn(GameObject,NetworkConnection)"/>.</param>
+    /// <returns><inheritdoc cref="Rent(Transform?,Vector3,bool)" path="returns"/></returns>
+    public static SpeakerToy Rent(byte id, Transform? parent = null, Vector3 position = default, bool spawn = true)
+    {
+        if (!TryGetFromPool(out var toy, parent, position, false))
+            toy = SpeakerToy.Create(position, parent, false);
+        toy.ControllerId = id;
+        if (spawn)
+            toy.Spawn();
+        return toy;
+    }
+
+    /// <summary><inheritdoc cref="Rent(Transform?,Vector3,bool)" path="summary"/></summary>
+    /// <param name="id">The controller ID to assign to the toy.</param>
+    /// <param name="settings">Settings to apply to the toy.</param>
+    /// <param name="parent">The <see cref="Transform"/> to parent the toy to. <see langword="null"/> if it should not be parented.</param>
+    /// <param name="position">The position of the toy in local space (world space if no parent is specified).</param>
+    /// <param name="spawn">Whether to invoke <see cref="NetworkServer.Spawn(GameObject,NetworkConnection)"/>.</param>
+    /// <returns><inheritdoc cref="Rent(Transform?,Vector3,bool)" path="returns"/></returns>
+    public static SpeakerToy Rent(byte id, SpeakerSettings settings, Transform? parent = null, Vector3 position = default, bool spawn = true)
+    {
+        if (!TryGetFromPool(out var toy, parent, position, false))
+            toy = SpeakerToy.Create(position, parent, false);
+        toy.WithId(id).ApplySettings(settings);
+        if (spawn)
+            toy.Spawn();
+        return toy;
+    }
+
     /// <summary>Returns a <see cref="SpeakerToy"/> to the pool.</summary>
     /// <param name="speaker">The speaker to return.</param>
     public static void Return(SpeakerToy speaker)
@@ -86,6 +119,8 @@ public static class SpeakerToyPool
             return;
         var o = speaker.GameObject;
         o.SetActive(false);
+        if (o.TryGetComponent(out PooledSpeaker _))
+            return;
         o.AddComponent<PooledSpeaker>();
         NetworkServer.UnSpawn(o);
     }
