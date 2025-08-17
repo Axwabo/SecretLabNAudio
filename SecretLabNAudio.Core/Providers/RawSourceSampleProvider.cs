@@ -86,4 +86,11 @@ public sealed class RawSourceSampleProvider : ISampleProvider
         return target;
     }
 
+    /// <summary>Creates a copy of this provider using the same buffer.</summary>
+    /// <param name="resetPosition">Whether to reset the position to 0 in the copy.</param>
+    /// <returns>A new <see cref="RawSourceSampleProvider"/> with the same samples and wave format.</returns>
+    /// <remarks>The buffer reference is kept, so if you have access to the original buffer, changes in it will be reflected in both providers.</remarks>
+    public RawSourceSampleProvider Copy(bool resetPosition = false)
+        => new(_samples, Length, WaveFormat) {Position = resetPosition ? 0 : Position};
+
 }
