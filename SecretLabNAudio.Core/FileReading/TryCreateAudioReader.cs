@@ -3,7 +3,8 @@ using System.IO;
 
 namespace SecretLabNAudio.Core.FileReading;
 
-/// <summary>Non-throwing methods for creating <see cref="WaveStream"/>s and <see cref="ISampleProvider"/>.</summary>
+/// <summary>Methods for creating <see cref="WaveStream"/>s and <see cref="ISampleProvider"/>s with the try pattern.</summary>
+/// <remarks>This class does not protect against nonexistent files.</remarks>
 public static class TryCreateAudioReader
 {
 
@@ -37,6 +38,7 @@ public static class TryCreateAudioReader
     /// <param name="path">The file path to read the audio from.</param>
     /// <param name="stream">The resulting <see cref="WaveStream"/> if successful. <see langword="null"/> if no factory was found for the file type, or if the factory didn't return a <see cref="WaveStream"/>.</param>
     /// <returns>Whether a <see cref="WaveStream"/> was successfully created.</returns>
+    /// <remarks>This method doesn't check if the file exists. Call <see cref="File.Exists">File.Exists</see> beforehand.</remarks>
     public static bool Stream(string path, [NotNullWhen(true)] out WaveStream? stream)
     {
         if (GetResult(Path.GetExtension(path), factory => factory.FromPath(path)).TryGetStream(out stream))
@@ -89,6 +91,7 @@ public static class TryCreateAudioReader
     /// <param name="stream">The resulting <see cref="WaveStream"/> if successful. <see langword="null"/> if no factory was found for the file type, or if the factory didn't return a <see cref="WaveStream"/>.</param>
     /// <param name="provider">The resulting <see cref="ISampleProvider"/> if successful. <see langword="null"/> if no factory was found for the file type, or if the factory didn't return an <see cref="ISampleProvider"/>.</param>
     /// <returns>Whether a <see cref="WaveStream"/> and its corresponding <see cref="ISampleProvider"/> were successfully created.</returns>
+    /// <remarks>This method doesn't check if the file exists. Call <see cref="File.Exists">File.Exists</see> beforehand.</remarks>
     public static bool StreamAndProvider(string path, [NotNullWhen(true)] out WaveStream? stream, [NotNullWhen(true)] out ISampleProvider? provider)
         => GetResult(Path.GetExtension(path), factory => factory.FromPath(path)).StreamAndProvider(out stream, out provider);
 

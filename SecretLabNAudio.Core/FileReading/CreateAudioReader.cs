@@ -4,6 +4,7 @@ using StreamAndProvider = (NAudio.Wave.WaveStream Stream, NAudio.Wave.ISamplePro
 namespace SecretLabNAudio.Core.FileReading;
 
 /// <summary>Methods for creating <see cref="WaveStream"/>s and <see cref="ISampleProvider"/>.</summary>
+/// <remarks>This class does not protect against nonexistent files.</remarks>
 public static class CreateAudioReader
 {
 
@@ -29,6 +30,7 @@ public static class CreateAudioReader
     /// <param name="path">The file path to read the audio from.</param>
     /// <returns>A <see cref="WaveStream"/> corresponding to the file.</returns>
     /// <exception cref="NotSupportedException">Thrown if there was no registered factory for the file type, or if the factory didn't return a <see cref="WaveStream"/>.</exception>
+    /// <remarks>This method doesn't check if the file exists. Call <see cref="File.Exists">File.Exists</see> beforehand.</remarks>
     public static WaveStream Stream(string path)
     {
         var type = Path.GetExtension(path);
@@ -57,8 +59,10 @@ public static class CreateAudioReader
     /// Thrown if there was no registered factory for the file type,
     /// or if the factory didn't return an <see cref="ISampleProvider"/> and <paramref name="convertStream"/> is false.
     /// </exception>
-    /// <remarks>This method discards the <see cref="WaveStream"/> returned by the factory. The caller is responsible for disposing the <paramref name="stream"/>.</remarks>
-    /// <remarks>The period is automatically trimmed from the start of the <paramref name="fileType"/>.</remarks>
+    /// <remarks>
+    /// This method discards the <see cref="WaveStream"/> returned by the factory. The caller is responsible for disposing the <paramref name="stream"/>.
+    /// The period is automatically trimmed from the start of the <paramref name="fileType"/>.
+    /// </remarks>
     public static ISampleProvider Provider(Stream stream, string fileType, bool convertStream = true)
         => Result(stream, fileType, false).GetProvider(fileType, convertStream);
 
@@ -68,6 +72,7 @@ public static class CreateAudioReader
     /// <param name="path">The file path to read the audio from.</param>
     /// <returns>A tuple containing a <see cref="WaveStream"/> and its corresponding <see cref="ISampleProvider"/>.</returns>
     /// <exception cref="NotSupportedException">Thrown if no factory was registered for the file type, or if the factory didn't return both a <see cref="WaveStream"/> and an <see cref="ISampleProvider"/>.</exception>
+    /// <remarks>This method doesn't check if the file exists. Call <see cref="File.Exists">File.Exists</see> beforehand.</remarks>
     public static StreamAndProvider StreamAndProvider(string path)
     {
         var type = Path.GetExtension(path);
@@ -84,6 +89,7 @@ public static class CreateAudioReader
     /// <param name="closeOnDispose">Whether to close the stream when disposing the <see cref="WaveStream"/>.</param>
     /// <returns>A tuple containing a <see cref="WaveStream"/> and its corresponding <see cref="ISampleProvider"/>.</returns>
     /// <exception cref="NotSupportedException">Thrown if no factory was registered for the file type, or if the factory didn't return both a <see cref="WaveStream"/> and an <see cref="ISampleProvider"/>.</exception>
+    /// <remarks>The period is automatically trimmed from the start of the <paramref name="fileType"/>.</remarks>
     public static StreamAndProvider StreamAndProvider(Stream source, string fileType, bool closeOnDispose = true)
         => Result(source, fileType, closeOnDispose) is ({ } stream, { } provider)
             ? (stream, provider)
