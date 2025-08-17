@@ -10,15 +10,13 @@ namespace SecretLabNAudio.Core;
 public sealed partial class AudioPlayer : MonoBehaviour
 {
 
-    private static readonly float[] SendBuffer = new float[SamplesPerPacket];
+    private static readonly float[] ReadBuffer = new float[SamplesPerPacket];
 
     private static readonly byte[] EncoderBuffer = new byte[1024];
 
     private ISampleProvider? _sampleProvider;
 
-    /// <summary>
-    /// 
-    /// </summary>
+    /// <summary>The provider this player will read from. Set to null to skip updates.</summary>
     /// <exception cref="ArgumentException">
     /// Thrown when the given sample provider is not null and does not match the following criteria:
     /// <para>
@@ -43,7 +41,7 @@ public sealed partial class AudioPlayer : MonoBehaviour
 
     /// <summary>
     /// The <see cref="SendEngine"/> used to broadcast audio messages.
-    /// If null, no encoding & broadcasting is skipped.
+    /// If null, encoding and broadcasting is skipped.
     /// </summary>
     public SendEngine? SendEngine { get; set; } = SendEngine.DefaultEngine;
 
@@ -106,13 +104,14 @@ public sealed partial class AudioPlayer : MonoBehaviour
     private void OnDestroy()
     {
         SampleProvider = null;
+        SendEngine = null;
         _encoder.Dispose();
         Destroyed?.Invoke();
     }
 
     private void ProcessPacket()
     {
-        var read = SampleProvider!.Read(SendBuffer, 0, SamplesPerPacket);
+        var read = SampleProvider!.Read(ReadBuffer, 0, SamplesPerPacket);
         if (read == 0)
         {
             ClearBuffer();
@@ -123,15 +122,15 @@ public sealed partial class AudioPlayer : MonoBehaviour
 
         if (read < SamplesPerPacket)
         {
-            Array.Clear(SendBuffer, read, SamplesPerPacket - read);
+            Array.Clear(ReadBuffer, read, SamplesPerPacket - read);
             _remainingTime = PacketDuration;
         }
 
         _remainingTime -= PacketDuration;
-        OutputMonitor?.OnRead(SendBuffer.AsSpan()[..read]);
+        OutputMonitor?.OnRead(ReadBuffer.AsSpan()[..read]);
         if (SendEngine == null)
             return;
-        var encoded = _encoder.Encode(SendBuffer, EncoderBuffer);
+        var encoded = _encoder.Encode(ReadBuffer, EncoderBuffer);
         SendEngine.Broadcast(new AudioMessage(Id, EncoderBuffer, encoded));
     }
 
