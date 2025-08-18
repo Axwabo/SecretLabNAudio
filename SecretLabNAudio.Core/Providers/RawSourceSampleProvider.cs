@@ -28,6 +28,9 @@ public sealed class RawSourceSampleProvider : ISampleProvider
         }
     }
 
+    /// <summary>A custom identifier for the provider. Used by <see cref="FileReading.ShortClipCache"/>.</summary>
+    public string? ClipName { get; set; }
+
     /// <summary>Creates a new <see cref="RawSourceSampleProvider"/> with the full sample array.</summary>
     /// <param name="samples">The samples to read from.</param>
     /// <param name="format">The <see cref="WaveFormat"/> of the samples.</param>
@@ -91,6 +94,6 @@ public sealed class RawSourceSampleProvider : ISampleProvider
     /// <returns>A new <see cref="RawSourceSampleProvider"/> with the same samples and wave format.</returns>
     /// <remarks>The buffer reference is kept, so if you have access to the original buffer, changes in it will be reflected in both providers.</remarks>
     public RawSourceSampleProvider Copy(bool resetPosition = false)
-        => new(_samples, Length, WaveFormat) {Position = resetPosition ? 0 : Position};
+        => new(_samples, Length, WaveFormat) {ClipName = ClipName, Position = resetPosition ? 0 : Position};
 
 }

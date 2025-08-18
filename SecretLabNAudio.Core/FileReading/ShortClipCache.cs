@@ -17,6 +17,7 @@ namespace SecretLabNAudio.Core.FileReading;
 /// <seealso cref="IAudioReaderFactory"/>
 /// <seealso cref="AudioReaderFactoryManager"/>
 /// <seealso cref="TryCreateAudioReader"/>
+/// <seealso cref="AudioPlayerExtensions.AddMixerShortClip"/>
 public static class ShortClipCache
 {
 
@@ -105,15 +106,19 @@ public static class ShortClipCache
     /// <param name="provider">The resulting provider if there was a provider found, null otherwise.</param>
     /// <param name="trimExtension">Whether to trim the file extension from the name.</param>
     /// <returns>Whether a provider was found.</returns>
+    /// <remarks>This method returns a copy of the original and sets the <see cref="RawSourceSampleProvider.ClipName"/> to the key.</remarks>
+    /// <seealso cref="RawSourceSampleProvider.Copy"/>
     public static bool TryGet(string name, [NotNullWhen(true)] out RawSourceSampleProvider? provider, bool trimExtension = true)
     {
-        if (!Clips.TryGetValue(name.RemoveExtension(trimExtension), out var original))
+        var key = name.RemoveExtension(trimExtension);
+        if (!Clips.TryGetValue(key, out var original))
         {
             provider = null;
             return false;
         }
 
         provider = original.Copy(true);
+        provider.ClipName = key;
         return true;
     }
 

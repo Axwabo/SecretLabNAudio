@@ -1,4 +1,8 @@
+using System.IO;
+using System.Linq;
 using NAudio.Wave.SampleProviders;
+using SecretLabNAudio.Core.FileReading;
+using SecretLabNAudio.Core.Providers;
 
 namespace SecretLabNAudio.Core.Extensions;
 
@@ -54,8 +58,60 @@ public static partial class AudioPlayerExtensions
         return player;
     }
 
+    /// <summary>
+    /// Removes all <see cref="RawSourceSampleProvider"/> inputs which have the <see cref="RawSourceSampleProvider.ClipName"/> property equal to <paramref name="name"/>.
+    /// </summary>
+    /// <param name="player">The player to remove mixer inputs from.</param>
+    /// <param name="name">The name to search for.</param>
+    /// <param name="removed">The number of removed inputs.</param>
+    /// <param name="trimExtension">Whether to trim the file extension from the name.</param>
+    /// <param name="ignoreCase">Whether to ignore case when comparing the names.</param>
+    /// <returns>The <paramref name="player"/> itself.</returns>
+    public static AudioPlayer RemoveMixerInputsByName(this AudioPlayer player, string name, out int removed, bool trimExtension = true, bool ignoreCase = true)
+    {
+        if (player.SampleProvider is not MixingSampleProvider mixing)
+        {
+            removed = 0;
+            return player;
+        }
+
+        if (trimExtension)
+            name = Path.ChangeExtension(name, null);
+        var comparison = ignoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
+        var matches = mixing.MixerInputs.OfType<RawSourceSampleProvider>()
+            .Where(e => name.Equals(e.ClipName, comparison))
+            .ToArray();
+        foreach (var provider in matches)
+            mixing.RemoveMixerInput(provider);
+        removed = matches.Length;
+        return player;
+    }
+
+    /// <summary>
+    /// Removes all <see cref="RawSourceSampleProvider"/> inputs which have the <see cref="RawSourceSampleProvider.ClipName"/> property equal to <paramref name="name"/>.
+    /// </summary>
+    /// <param name="player">The player to remove mixer inputs from.</param>
+    /// <param name="name">The name to search for.</param>
+    /// <param name="trimExtension">Whether to trim the file extension from the name.</param>
+    /// <param name="ignoreCase">Whether to ignore case when comparing the names.</param>
+    /// <returns>The <paramref name="player"/> itself.</returns>
+    public static AudioPlayer RemoveMixerInputsByName(this AudioPlayer player, string name, bool trimExtension = true, bool ignoreCase = true)
+        => player.RemoveMixerInputsByName(name, out _, trimExtension, ignoreCase);
+
     /// <inheritdoc cref="AddMixerInput(AudioPlayer,ISampleProvider)"/>
     public static AudioPlayer AddMixerInput(this AudioPlayer player, IWaveProvider input)
         => player.AddMixerInput(input.ToSampleProvider());
+
+    /// <summary>
+    /// Adds a <see cref="ShortClipCache">short clip</see> as a mixer input to the <see cref="AudioPlayer"/>.
+    /// </summary>
+    /// <param name="player">The player to add the mixer input to.</param>
+    /// <param name="name">The key to search for.</param>
+    /// <param name="trimExtension">Whether to trim the file extension from the inputted <paramref name="name"/>.</param>
+    /// <returns>The <paramref name="player"/> itself.</returns>
+    public static AudioPlayer AddMixerShortClip(this AudioPlayer player, string name, bool trimExtension = true)
+        => !ShortClipCache.TryGet(name, out var provider, trimExtension)
+            ? player
+            : player.AddMixerInput(provider);
 
 }
