@@ -61,7 +61,7 @@ public static class ShortClipCache
     {
         if (!TryRead(path, out var provider))
             return null;
-        Add(path.FileName(trimExtension), provider);
+        Add(path.FileName(trimExtension), provider, trimExtension);
         return provider;
     }
 
@@ -72,7 +72,7 @@ public static class ShortClipCache
     {
         if (!TryRead(path, out var provider))
             return null;
-        Add(name, provider);
+        Add(name, provider, false);
         return provider;
     }
 
