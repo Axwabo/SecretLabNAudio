@@ -60,4 +60,4 @@ jobs:
 
       - name: Push to NuGet
         working-directory: Output
-        run: dotnet nuget push SecretLabNAudio.*.nupkg --api-key ${{ secrets.NUGET_API_KEY }}
+        run: dotnet nuget push SecretLabNAudio.*.nupkg -k ${{ secrets.NUGET_API_KEY }} -s https://api.nuget.org/v3/index.json
