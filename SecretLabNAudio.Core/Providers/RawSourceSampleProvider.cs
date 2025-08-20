@@ -70,9 +70,9 @@ public sealed class RawSourceSampleProvider : ISampleProvider
         if (length < 0)
             throw new ArgumentOutOfRangeException(nameof(length), "Length cannot be negative.");
         _samples = samples;
-        Length = length;
-        TotalTime = TimeSpan.FromSeconds(length);
         WaveFormat = WaveFormat.CreateIeeeFloatWaveFormat(sampleRate, channels);
+        Length = length;
+        TotalTime = TimeSpan.FromSeconds(WaveFormat.Seconds(length));
     }
 
     /// <inheritdoc/>
@@ -81,6 +81,8 @@ public sealed class RawSourceSampleProvider : ISampleProvider
     /// <inheritdoc/>
     public int Read(float[] buffer, int offset, int count)
     {
+        if (Position < 0)
+            return 0;
         var target = Mathf.Clamp(Length - Position, 0, count);
         if (target == 0)
             return 0;
