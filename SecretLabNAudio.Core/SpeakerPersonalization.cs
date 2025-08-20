@@ -17,7 +17,7 @@ public delegate SpeakerSettings? SettingsTransform(SpeakerSettings? current);
 public sealed class SpeakerPersonalization : MonoBehaviour
 {
 
-    private readonly Dictionary<Player, SpeakerSettings> _settingsPerUserId = [];
+    private readonly Dictionary<Player, SpeakerSettings> _settingsPerPlayer = [];
 
     private SpeakerSettings _previousSettings;
 
@@ -28,7 +28,7 @@ public sealed class SpeakerPersonalization : MonoBehaviour
     /// <param name="player">The player to get the settings of.</param>
     /// <returns>The settings if any specified; <see langword="null"/> otherwise.</returns>
     public SpeakerSettings? this[Player player]
-        => _settingsPerUserId.TryGetValue(player, out var settings) ? settings : null;
+        => _settingsPerPlayer.TryGetValue(player, out var settings) ? settings : null;
 
     /// <summary>
     /// Overrides the settings for the given <see cref="Player"/>.
@@ -60,9 +60,9 @@ public sealed class SpeakerPersonalization : MonoBehaviour
         var defaultSettings = SpeakerSettings.From(Speaker);
         var settingsToSend = settings ?? defaultSettings;
         if (settings.HasValue)
-            _settingsPerUserId[player] = settingsToSend;
+            _settingsPerPlayer[player] = settingsToSend;
         else
-            _settingsPerUserId.Remove(player);
+            _settingsPerPlayer.Remove(player);
         var actualPrevious = previous ?? defaultSettings;
         SendSyncVars(player, actualPrevious, settingsToSend);
     }
@@ -77,7 +77,7 @@ public sealed class SpeakerPersonalization : MonoBehaviour
 
     private void ResyncAll(SpeakerSettings previousSettings)
     {
-        foreach (var kvp in _settingsPerUserId)
+        foreach (var kvp in _settingsPerPlayer)
             if (kvp.Key.ReferenceHub)
                 SendSyncVars(kvp.Key, previousSettings, kvp.Value);
     }
@@ -97,8 +97,8 @@ public sealed class SpeakerPersonalization : MonoBehaviour
         _previousSettings = currentSettings;
     }
 
-    private void OnDisable() => _settingsPerUserId.Clear();
+    private void OnDisable() => _settingsPerPlayer.Clear();
 
-    private void OnDestroy() => _settingsPerUserId.Clear();
+    private void OnDestroy() => _settingsPerPlayer.Clear();
 
 }
