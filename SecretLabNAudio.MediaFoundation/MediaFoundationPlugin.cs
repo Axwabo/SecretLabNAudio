@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using LabApi.Loader.Features.Plugins;
+using LabApi.Loader.Features.Plugins.Enums;
 using SecretLabNAudio.Core.FileReading;
 
 namespace SecretLabNAudio.MediaFoundation;
@@ -37,6 +38,8 @@ public sealed class MediaFoundationPlugin : Plugin
     public override Version Version => GetType().Assembly.GetName().Version;
 
     public override Version RequiredApiVersion { get; } = new(1, 0, 0);
+
+    public override LoadPriority Priority => LoadPriority.Highest;
 
     public static void RegisterFactory()
     {

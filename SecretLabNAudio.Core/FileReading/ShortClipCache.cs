@@ -23,6 +23,10 @@ public static class ShortClipCache
 
     private static readonly Dictionary<string, RawSourceSampleProvider> Clips = new(StringComparer.OrdinalIgnoreCase);
 
+    /// <summary>All stored clips' keys.</summary>
+    /// <remarks>Make sure not to add or remove items while iterating through this collection.</remarks>
+    public static IReadOnlyCollection<string> Keys => Clips.Keys;
+
     /// <summary>Adds a raw sample provider to the cache.</summary>
     /// <param name="name">The key to add by.</param>
     /// <param name="provider">The clip to store.</param>

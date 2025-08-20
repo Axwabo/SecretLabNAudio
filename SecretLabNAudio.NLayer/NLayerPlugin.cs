@@ -1,4 +1,5 @@
 ﻿using LabApi.Loader.Features.Plugins;
+using LabApi.Loader.Features.Plugins.Enums;
 using NLayer;
 using NLayer.NAudioSupport;
 using SecretLabNAudio.Core.FileReading;
@@ -17,6 +18,8 @@ public sealed class NLayerPlugin : Plugin
     public override Version Version => GetType().Assembly.GetName().Version;
 
     public override Version RequiredApiVersion { get; } = new(1, 0, 0);
+
+    public override LoadPriority Priority => LoadPriority.High;
 
     public static void RegisterFactory()
     {

@@ -1,4 +1,5 @@
 ﻿using LabApi.Loader.Features.Plugins;
+using LabApi.Loader.Features.Plugins.Enums;
 using SecretLabNAudio.NLayer;
 using SecretLabNAudio.NVorbis;
 
@@ -16,6 +17,8 @@ public sealed class NAudioPlugin : Plugin
     public override Version Version => GetType().Assembly.GetName().Version;
 
     public override Version RequiredApiVersion { get; } = new(1, 0, 0);
+
+    public override LoadPriority Priority => LoadPriority.High;
 
     public override void Enable()
     {
