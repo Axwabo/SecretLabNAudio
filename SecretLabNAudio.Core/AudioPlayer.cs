@@ -91,9 +91,10 @@ public sealed partial class AudioPlayer : MonoBehaviour
 
         NoSamplesRead = null;
         Destroyed = null;
-        IsPaused = false;
+        HasEnded = IsPaused = false;
         SampleProvider = null;
         SendEngine = SendEngine.DefaultEngine;
+        OutputMonitor = null;
         _remainingTime = 0;
     }
 
@@ -101,8 +102,11 @@ public sealed partial class AudioPlayer : MonoBehaviour
     {
         SampleProvider = null;
         SendEngine = null;
+        OutputMonitor = null;
         _encoder.Dispose();
         Destroyed?.Invoke();
+        NoSamplesRead = null;
+        Destroyed = null;
     }
 
     private void ProcessPacket()
