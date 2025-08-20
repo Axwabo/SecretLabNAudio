@@ -9,14 +9,18 @@ This library has a number of open-source dependencies. See [Attributions](ATTRIB
 
 # Features
 
+[Watch the demo](https://youtu.be/6btaXm3BU8s)
+
 - Fully customizable audio provider interfaces
 - Real-time audio processing
 - Streaming files from disk
+- Resampling and downmixing
 - Ogg Vorbis support using [NVorbis](https://github.com/NVorbis/NVorbis)
 - MP3 support using [NLayer](https://github.com/naudio/NLayer)
 - Speaker personalization
 - SpeakerToy pooling
 - Automatic reader resolution by file type
+- Cache for short audio clips
 - Windows-only Media Foundation support for a wider range of formats, and decoding over the network
 
 > [!TIP]
@@ -58,6 +62,10 @@ This library has a number of open-source dependencies. See [Attributions](ATTRIB
 7. Restart the server
 
 ## Development
+
+Simply install the `SecretLabNAudio.Core` package from NuGet.
+
+Manual installation:
 
 1. Reference the `SecretLabNAudio.Core.dll` file from the [releases page](https://github.com/Axwabo/SecretLabNAudio/releases)
 2. Install the `NAudio.Core` package from NuGet
