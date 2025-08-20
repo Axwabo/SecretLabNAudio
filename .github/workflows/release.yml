@@ -1,0 +1,63 @@
+name: Release
+
+on:
+  release:
+    types: [ created ]
+
+permissions:
+  contents: write
+
+jobs:
+
+  release:
+    runs-on: ubuntu-latest
+
+    env:
+      ReferenceUrl: https://exmod-team.github.io/SL-References/Dev.zip
+      ReferencePath: ${{ github.workspace }}/References
+
+    steps:
+
+      - uses: actions/checkout@v4
+
+      - name: Set Up .NET
+        uses: actions/setup-dotnet@v4.0.1
+        with:
+          dotnet-version: 9.0.x
+
+      - name: Download References
+        run: |
+          wget -O "References.zip" ${{ env.ReferenceUrl }}
+          unzip -d ${{ env.ReferencePath }} "References.zip"
+
+      - name: Rename Assembly-CSharp
+        working-directory: ${{ env.ReferencePath }}
+        run: mv Assembly-CSharp-Publicized.dll Assembly-CSharp.dll
+
+      - name: Build
+        run: dotnet build -c:Release -o Output
+
+      - name: Create Bundle
+        working-directory: Output
+        run: |
+          mkdir SecretLabNAudio
+          mkdir SecretLabNAudio/bin
+          mkdir SecretLabNAudio/LICENSES
+
+          mv SecretLabNAudio.dll SecretLabNAudio/bin
+          ls | grep -E "^(NAudio|NLayer|NVorbis)" | xargs -I {0} mv {0} SecretLabNAudio/bin
+
+          cp -r ../THIRD_PARTY_LICENSES SecretLabNAudio/LICENSES
+          cp ../LICENSE SecretLabNAudio/LICENSES/SecretLabNAudio.txt
+
+          cd SecretLabNAudio
+          zip -r ../SecretLabNAudio.zip .
+
+      - name: Upload Assets
+        uses: softprops/action-gh-release@v2
+        with:
+          files: Output/SecretLabNAudio*.dll,Output/SecretLabNAudio*.xml,Output/SecretLabNAudio.zip
+
+      - name: Push to NuGet
+        working-directory: Output
+        run: dotnet nuget push SecretLabNAudio.*.nupkg --api-key ${{ secrets.NUGET_API_KEY }}
