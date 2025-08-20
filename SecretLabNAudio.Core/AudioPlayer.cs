@@ -43,6 +43,9 @@ public sealed partial class AudioPlayer : MonoBehaviour
     /// <summary>Whether the playback is paused.</summary>
     public bool IsPaused { get; set; }
 
+    /// <summary>True if playback has finished on the previous frame (fewer samples were read than requested).</summary>
+    public bool HasEnded { get; private set; }
+
     /// <summary>The controller ID of this player.</summary>
     /// <seealso cref="SpeakerToy.ControllerId"/>
     public byte Id
@@ -54,6 +57,7 @@ public sealed partial class AudioPlayer : MonoBehaviour
     /// <summary>Invoked every frame when no samples were read from the <see cref="SampleProvider"/>.</summary>
     /// <remarks>The provider is not set to null by default.</remarks>
     /// <seealso cref="AudioPlayerExtensions.UnsetProviderOnEnd"/>
+    /// <seealso cref="HasEnded"/>
     public event Action? NoSamplesRead;
 
     /// <summary>Invoked when this player is disabled or destroyed.</summary>
@@ -106,14 +110,17 @@ public sealed partial class AudioPlayer : MonoBehaviour
         var read = SampleProvider!.Read(ReadBuffer, 0, SamplesPerPacket);
         if (read == 0)
         {
+            HasEnded = true;
             ClearBuffer();
             OutputMonitor?.OnEmpty();
             NoSamplesRead?.Invoke();
             return;
         }
 
+        HasEnded = false;
         if (read < SamplesPerPacket)
         {
+            HasEnded = true;
             Array.Clear(ReadBuffer, read, SamplesPerPacket - read);
             _remainingTime = PacketDuration;
         }
