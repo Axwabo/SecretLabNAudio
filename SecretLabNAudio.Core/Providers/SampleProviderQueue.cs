@@ -8,10 +8,13 @@ public sealed class SampleProviderQueue : ISampleProvider
 
     private readonly Queue<ISampleProvider> _queue = [];
 
-    /// <summary>A read-only collection representing the underlying queue.</summary>
+    private ISampleProvider? _current;
+
+    /// <summary>A read-only collection representing the underlying queue. Does not contain <seealso cref="Current"/>.</summary>
     public IReadOnlyCollection<ISampleProvider> Queue => _queue;
 
-    private ISampleProvider? _current;
+    /// <summary>Gets the active provider (if any).</summary>
+    public ISampleProvider? Current => _current;
 
     /// <summary>Creates a new <see cref="SampleProviderQueue"/>.</summary>
     /// <param name="waveFormat">The <see cref="WaveFormat"/> of the audio.</param>
