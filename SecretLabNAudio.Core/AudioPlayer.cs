@@ -40,6 +40,13 @@ public sealed partial class AudioPlayer : MonoBehaviour
     /// <summary>An optional monitor to consume read audio samples.</summary>
     public IAudioPacketMonitor? OutputMonitor { get; set; }
 
+    /// <summary>A scalar to multiply samples by before encoding.</summary>
+    /// <remarks>
+    /// This is different from <see cref="SpeakerToy.Volume"/> and runs after the <see cref="OutputMonitor"/> has received the samples.
+    /// It can be used to amplify audio if it's too quiet without requiring a volume sample provider.
+    /// </remarks>
+    public float MasterAmplification { get; set; } = 1;
+
     /// <summary>Whether the playback is paused.</summary>
     public bool IsPaused { get; set; }
 
@@ -133,6 +140,9 @@ public sealed partial class AudioPlayer : MonoBehaviour
         OutputMonitor?.OnRead(ReadBuffer.AsSpan()[..read]);
         if (SendEngine == null)
             return;
+        if (MasterAmplification is not 1f)
+            for (var i = 0; i < read; i++)
+                ReadBuffer[i] *= MasterAmplification;
         var encoded = _encoder.Encode(ReadBuffer, EncoderBuffer);
         SendEngine.Broadcast(new AudioMessage(Id, EncoderBuffer, encoded));
     }

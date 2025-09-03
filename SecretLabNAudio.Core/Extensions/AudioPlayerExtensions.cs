@@ -72,6 +72,23 @@ public static partial class AudioPlayerExtensions
         => player.PatchSpeaker(SpeakerToyExtensions.WithSpatial, isSpatial);
 
     /// <summary>
+    /// Sets the master amplification of the <see cref="AudioPlayer"/>.
+    /// This is different from <see cref="WithVolume"/>, which changes the volume of the <see cref="SpeakerToy"/>.
+    /// </summary>
+    /// <param name="player">The player to set the amplification of.</param>
+    /// <param name="scalar">The scalar to multiply samples by before encoding. 1 is normal volume, 2 is double volume, 0.5 is half volume, etc.</param>
+    /// <returns>The <paramref name="player"/> itself.</returns>
+    /// <remarks>
+    /// This can be used to amplify audio if it's too quiet without requiring a <see cref="VolumeSampleProvider"/>.
+    /// The <see cref="AudioPlayer.OutputMonitor"/> is not affected by this.
+    /// </remarks>
+    public static AudioPlayer WithMasterAmplification(this AudioPlayer player, float scalar)
+    {
+        player.MasterAmplification = scalar;
+        return player;
+    }
+
+    /// <summary>
     /// Pauses (or unpauses) the <see cref="AudioPlayer"/>.
     /// </summary>
     /// <param name="player">The player to pause.</param>
