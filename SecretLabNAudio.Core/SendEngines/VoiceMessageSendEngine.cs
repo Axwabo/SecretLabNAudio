@@ -4,7 +4,7 @@ using VoiceChat.Networking;
 namespace SecretLabNAudio.Core.SendEngines;
 
 /// <summary>A send engine that broadcasts audio through a <see cref="Player"/> as if they were speaking.</summary>
-/// <remarks>Distance & voice receiving checks are not performed.</remarks>
+/// <remarks>Distance &amp; voice receiving checks are not performed.</remarks>
 public class VoiceMessageSendEngine : SendEngine
 {
 
