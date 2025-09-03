@@ -78,8 +78,13 @@ public static partial class AudioPlayerExtensions
         if (trimExtension)
             name = Path.ChangeExtension(name, null);
         var comparison = ignoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
-        var matches = mixing.MixerInputs.OfType<RawSourceSampleProvider>()
-            .Where(e => name.Equals(e.ClipName, comparison))
+        var matches = mixing.MixerInputs
+            .Where(e => e switch
+            {
+                LoopingRawSampleProvider looping => name.Equals(looping.Provider.ClipName, comparison),
+                RawSourceSampleProvider raw => name.Equals(raw.ClipName, comparison),
+                _ => false
+            })
             .ToArray();
         foreach (var provider in matches)
             mixing.RemoveMixerInput(provider);
