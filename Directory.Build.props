@@ -5,6 +5,7 @@
         <LangVersion>13</LangVersion>
         <PlatformTarget>x64</PlatformTarget>
         <DisableImplicitFrameworkReferences>true</DisableImplicitFrameworkReferences>
+        <Version>1.0.2</Version>
     </PropertyGroup>
 
     <ItemGroup>
@@ -18,7 +19,7 @@
         <Reference Include="System.Core" Private="false" />
         <Reference Include="System.Data" Private="false" />
     </ItemGroup>
-    
+
     <ItemGroup>
         <Reference Include="Assembly-CSharp" Private="false" />
         <Reference Include="Mirror" Private="false" />
