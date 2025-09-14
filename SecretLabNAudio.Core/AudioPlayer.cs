@@ -45,6 +45,7 @@ public sealed partial class AudioPlayer : MonoBehaviour
     /// This is different from <see cref="SpeakerToy.Volume"/> and runs after the <see cref="OutputMonitor"/> has received the samples.
     /// It can be used to amplify audio if it's too quiet without requiring a volume sample provider.
     /// </remarks>
+    [Obsolete("SpeakerToy volume now supports values greater than 1.")]
     public float MasterAmplification { get; set; } = 1;
 
     /// <summary>Whether the playback is paused.</summary>
@@ -140,9 +141,11 @@ public sealed partial class AudioPlayer : MonoBehaviour
         OutputMonitor?.OnRead(ReadBuffer.AsSpan()[..read]);
         if (SendEngine == null)
             return;
+#pragma warning disable CS0618
         if (MasterAmplification is not 1f)
             for (var i = 0; i < read; i++)
                 ReadBuffer[i] *= MasterAmplification;
+#pragma warning restore CS0618
         var encoded = _encoder.Encode(ReadBuffer, EncoderBuffer);
         SendEngine.Broadcast(new AudioMessage(Id, EncoderBuffer, encoded));
     }

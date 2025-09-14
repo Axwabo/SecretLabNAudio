@@ -38,7 +38,6 @@ public static partial class AudioPlayerExtensions
     /// <param name="player">The player to set the volume of.</param>
     /// <param name="volume">The volume to set.</param>
     /// <returns>The <paramref name="player"/> itself.</returns>
-    /// <remarks>The volume must be in range 0-1. To further amplify the volume, use the <see cref="VolumeSampleProvider"/>.</remarks>
     public static AudioPlayer WithVolume(this AudioPlayer player, float volume)
         => player.PatchSpeaker(SpeakerToyExtensions.WithVolume, volume);
 
@@ -82,6 +81,7 @@ public static partial class AudioPlayerExtensions
     /// This can be used to amplify audio if it's too quiet without requiring a <see cref="VolumeSampleProvider"/>.
     /// The <see cref="AudioPlayer.OutputMonitor"/> is not affected by this.
     /// </remarks>
+    [Obsolete("SpeakerToy volume now supports values greater than 1.")]
     public static AudioPlayer WithMasterAmplification(this AudioPlayer player, float scalar)
     {
         player.MasterAmplification = scalar;
