@@ -119,7 +119,17 @@ public sealed partial class AudioPlayer : MonoBehaviour
 
     private void ProcessPacket()
     {
-        var read = SampleProvider!.Read(ReadBuffer, 0, SamplesPerPacket);
+        int read;
+        try
+        {
+            read = SampleProvider!.Read(ReadBuffer, 0, SamplesPerPacket);
+        }
+        catch (Exception e)
+        {
+            read = 0;
+            Debug.LogError(e);
+        }
+
         if (read == 0)
         {
             HasEnded = true;
