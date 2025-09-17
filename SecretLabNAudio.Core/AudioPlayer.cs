@@ -43,9 +43,8 @@ public sealed partial class AudioPlayer : MonoBehaviour
     /// <summary>A scalar to multiply samples by before encoding.</summary>
     /// <remarks>
     /// This is different from <see cref="SpeakerToy.Volume"/> and runs after the <see cref="OutputMonitor"/> has received the samples.
-    /// It can be used to amplify audio if it's too quiet without requiring a volume sample provider.
+    /// It can be used to amplify audio without requiring a volume sample provider.
     /// </remarks>
-    [Obsolete("SpeakerToy volume now supports values greater than 1.")]
     public float MasterAmplification { get; set; } = 1;
 
     /// <summary>Whether the playback is paused.</summary>

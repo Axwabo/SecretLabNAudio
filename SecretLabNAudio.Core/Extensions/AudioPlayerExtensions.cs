@@ -78,10 +78,9 @@ public static partial class AudioPlayerExtensions
     /// <param name="scalar">The scalar to multiply samples by before encoding. 1 is normal volume, 2 is double volume, 0.5 is half volume, etc.</param>
     /// <returns>The <paramref name="player"/> itself.</returns>
     /// <remarks>
-    /// This can be used to amplify audio if it's too quiet without requiring a <see cref="VolumeSampleProvider"/>.
+    /// This can be used to amplify audio without requiring a <see cref="VolumeSampleProvider"/>.
     /// The <see cref="AudioPlayer.OutputMonitor"/> is not affected by this.
     /// </remarks>
-    [Obsolete("SpeakerToy volume now supports values greater than 1.")]
     public static AudioPlayer WithMasterAmplification(this AudioPlayer player, float scalar)
     {
         player.MasterAmplification = scalar;
