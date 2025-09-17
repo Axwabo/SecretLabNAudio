@@ -9,8 +9,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="NAudio.Core" Version="2.2.1" />
-        <PackageReference Include="Northwood.LabAPI" Version="1.1.2" />
+        <PackageReference Include="NAudio.Core" />
+        <PackageReference Include="Northwood.LabAPI" />
     </ItemGroup>
 
     <ItemGroup>
