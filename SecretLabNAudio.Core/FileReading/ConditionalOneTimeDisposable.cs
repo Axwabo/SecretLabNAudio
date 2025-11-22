@@ -4,6 +4,7 @@
 /// Conditionally disposes the given <see cref="IDisposable"/> when <see cref="Dispose"/> is called with disposing = true,
 /// then sets the stored disposable to null.
 /// </summary>
+[Obsolete("Disposables should be designed to accept multiple calls to Dispose()", true)]
 public sealed class ConditionalOneTimeDisposable
 {
 
