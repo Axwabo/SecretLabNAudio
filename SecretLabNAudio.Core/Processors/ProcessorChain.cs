@@ -74,6 +74,8 @@ public sealed class ProcessorChain : IAudioProcessor
 
     public void PopAll()
     {
+        if (_layers.Count < 2)
+            return;
         for (var i = 1; i < _layers.Count; i++)
             _layers[i].Dispose();
         _layers.RemoveRange(1, _layers.Count - 2);

@@ -127,16 +127,6 @@ public sealed partial class AudioPlayer : MonoBehaviour
             Debug.LogError(e);
         }
 
-        try
-        {
-            if (OwnsProcessor)
-                (SampleProvider as IAudioProcessor)?.Dispose();
-        }
-        catch (Exception e)
-        {
-            Debug.LogError(e);
-        }
-
         NoSamplesRead = null;
         Destroyed = null;
         HasEnded = IsPaused = false;
