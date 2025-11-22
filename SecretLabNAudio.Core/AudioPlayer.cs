@@ -16,7 +16,14 @@ public sealed partial class AudioPlayer : MonoBehaviour
     private static readonly byte[] EncoderBuffer = new byte[1024];
 
     /// <summary>The provider this player will read from. Set to null to skip updates.</summary>
-    /// <exception cref="ArgumentException"><inheritdoc cref="ThrowIfIncompatible" path="exception"/></exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when the given sample provider is not null and does not match the following criteria:
+    /// <para>
+    /// Encoding = <see cref="WaveFormatEncoding.IeeeFloat"/><br/>
+    /// Sample Rate = <see cref="SampleRate"/><br/>
+    /// Channels = <see cref="Channels"/>
+    /// </para>
+    /// </exception>
     public ISampleProvider? SampleProvider
     {
         get;

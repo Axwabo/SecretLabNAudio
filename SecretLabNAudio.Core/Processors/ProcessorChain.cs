@@ -2,10 +2,12 @@ using System.Collections.Generic;
 
 namespace SecretLabNAudio.Core.Processors;
 
+public delegate ISampleProvider ProviderMapper(ISampleProvider provider);
+
 public sealed class ProcessorChain : IAudioProcessor
 {
 
-    private readonly List<ProcessorLayer> _chain;
+    private readonly List<ProcessorLayer> _layers;
 
     public ISampleProvider Root
     {
@@ -21,56 +23,56 @@ public sealed class ProcessorChain : IAudioProcessor
         get
         {
             EnsureNotDisposed();
-            return _chain[^1].Provider;
+            return _layers[^1].Provider;
         }
     }
 
-    public IReadOnlyList<ProcessorLayer> Chain => _chain.AsReadOnly();
+    public IReadOnlyList<ProcessorLayer> Layers => _layers.AsReadOnly();
 
     public ProcessorChain(ISampleProvider root, bool isOwned = true)
     {
         Root = root;
-        _chain = [new ProcessorLayer(root, isOwned)];
+        _layers = [new ProcessorLayer(root, isOwned)];
     }
 
     /// <inheritdoc />
     public WaveFormat WaveFormat => Master.WaveFormat;
 
+    /// <inheritdoc />
+    public int Read(float[] buffer, int offset, int count) => Master.Read(buffer, offset, count);
+
     private void EnsureNotDisposed()
     {
-        if (_chain.Count == 0)
+        if (_layers.Count == 0)
             throw new ObjectDisposedException(nameof(ProcessorChain));
     }
 
-    public ProcessorChain Layer(Func<ISampleProvider, ISampleProvider> convert, bool isOwned = true)
+    public ProcessorChain Layer(ProviderMapper mapper, bool isOwned = true)
     {
         var master = Master;
-        var converted = convert(master);
+        var converted = mapper(master);
         if (master == converted)
             return this;
-        _chain.Add(new ProcessorLayer(converted, isOwned));
+        _layers.Add(new ProcessorLayer(converted, isOwned));
         return this;
     }
 
-    public ProcessorChain Swap(Func<ISampleProvider, ISampleProvider> convert, bool isOwned = true)
+    public ProcessorChain Swap(ProviderMapper mapper, bool isOwned = true)
     {
         EnsureNotDisposed();
-        return Pop().Layer(convert, isOwned);
+        return Pop().Layer(mapper, isOwned);
     }
 
     public ProcessorChain Pop()
     {
-        if (_chain.Count < 2)
+        if (_layers.Count < 2)
             return this;
-        _chain[^1].Dispose();
-        _chain.RemoveAt(_chain.Count - 1);
+        _layers[^1].Dispose();
+        _layers.RemoveAt(_layers.Count - 1);
         return this;
     }
 
     /// <inheritdoc />
-    public int Read(float[] buffer, int offset, int count) => Master.Read(buffer, offset, count);
-
-    /// <inheritdoc />
-    public void Dispose() => _chain.DisposeAllAndClear();
+    public void Dispose() => _layers.DisposeAllAndClear();
 
 }
