@@ -1,4 +1,5 @@
-﻿using SecretLabNAudio.Core.Providers;
+﻿using SecretLabNAudio.Core.Processors;
+using SecretLabNAudio.Core.Providers;
 using SecretLabNAudio.Core.SendEngines;
 using VoiceChat.Codec;
 using VoiceChat.Codec.Enums;
@@ -14,19 +15,33 @@ public sealed partial class AudioPlayer : MonoBehaviour
 
     private static readonly byte[] EncoderBuffer = new byte[1024];
 
-    private ISampleProvider? _sampleProvider;
-
     /// <summary>The provider this player will read from. Set to null to skip updates.</summary>
     /// <exception cref="ArgumentException"><inheritdoc cref="ThrowIfIncompatible" path="exception"/></exception>
     public ISampleProvider? SampleProvider
     {
-        get => _sampleProvider;
+        get;
         set
         {
             ThrowIfIncompatible(value);
-            _sampleProvider = value;
+            try
+            {
+                if (OwnsProcessor)
+                    (field as IAudioProcessor)?.Dispose();
+            }
+            catch (Exception e)
+            {
+                Debug.Log(e);
+            }
+
+            field = value;
         }
     }
+
+    /// <summary>Whether to dispose the <see cref="ISampleProvider"/> if it's an <see cref="IAudioProcessor"/>.</summary>
+    public bool OwnsProcessor { get; set; } = true;
+
+    /// <summary>If false, the <see cref="SampleProvider"/> will be set to null upon reaching its end.</summary>
+    public bool Endless { get; set; } = true;
 
     /// <summary>The <see cref="SpeakerToy"/> this player is attached to.</summary>
     public SpeakerToy Speaker { get; private set; } = null!;
@@ -96,25 +111,27 @@ public sealed partial class AudioPlayer : MonoBehaviour
             Debug.LogError(e);
         }
 
+        try
+        {
+            if (OwnsProcessor)
+                (SampleProvider as IAudioProcessor)?.Dispose();
+        }
+        catch (Exception e)
+        {
+            Debug.LogError(e);
+        }
+
         NoSamplesRead = null;
         Destroyed = null;
         HasEnded = IsPaused = false;
         SampleProvider = null;
         SendEngine = SendEngine.DefaultEngine;
         OutputMonitor = null;
+        Endless = OwnsProcessor = true;
         _remainingTime = 0;
     }
 
-    private void OnDestroy()
-    {
-        SampleProvider = null;
-        SendEngine = null;
-        OutputMonitor = null;
-        _encoder.Dispose();
-        Destroyed?.Invoke();
-        NoSamplesRead = null;
-        Destroyed = null;
-    }
+    private void OnDestroy() => _encoder.Dispose();
 
     private void ProcessPacket()
     {
@@ -135,6 +152,8 @@ public sealed partial class AudioPlayer : MonoBehaviour
             ClearBuffer();
             OutputMonitor?.OnEmpty();
             NoSamplesRead?.Invoke();
+            if (!Endless)
+                SampleProvider = null;
             return;
         }
 
@@ -150,11 +169,9 @@ public sealed partial class AudioPlayer : MonoBehaviour
         OutputMonitor?.OnRead(ReadBuffer.AsSpan()[..read]);
         if (SendEngine == null)
             return;
-#pragma warning disable CS0618
         if (MasterAmplification is not 1f)
             for (var i = 0; i < read; i++)
                 ReadBuffer[i] *= MasterAmplification;
-#pragma warning restore CS0618
         var encoded = _encoder.Encode(ReadBuffer, EncoderBuffer);
         SendEngine.Broadcast(new AudioMessage(Id, EncoderBuffer, encoded));
     }
