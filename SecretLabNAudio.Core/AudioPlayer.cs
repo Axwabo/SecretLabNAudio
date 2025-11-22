@@ -24,6 +24,10 @@ public sealed partial class AudioPlayer : MonoBehaviour
     /// Channels = <see cref="Channels"/>
     /// </para>
     /// </exception>
+    /// <remarks>Setting the provider changes the value of <see cref="OwnsProcessor"/> to whether the given provider is an <see cref="IAudioProcessor"/>.</remarks>
+    /// <seealso cref="AudioPlayerExtensions.Use"/>
+    /// <seealso cref="AudioPlayerExtensions.UseFile(AudioPlayer,string)"/>
+    /// <seealso cref="AudioPlayerExtensions.WithUnmanagedProvider(AudioPlayer,ISampleProvider)"/>
     public ISampleProvider? SampleProvider
     {
         get;
@@ -41,10 +45,12 @@ public sealed partial class AudioPlayer : MonoBehaviour
             }
 
             field = value;
+            OwnsProcessor = value is IAudioProcessor;
         }
     }
 
     /// <summary>Whether to dispose the <see cref="ISampleProvider"/> if it's an <see cref="IAudioProcessor"/>.</summary>
+    /// <remarks>This property is automatically set when the <see cref="SampleProvider"/> changes.</remarks>
     public bool OwnsProcessor { get; set; } = true;
 
     /// <summary>If false, the <see cref="SampleProvider"/> will be set to null upon reaching its end.</summary>

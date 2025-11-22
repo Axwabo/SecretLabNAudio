@@ -16,12 +16,7 @@ public class SampleProviderWrapper : IAudioProcessor
     public WaveFormat WaveFormat => _provider?.WaveFormat ?? throw new ObjectDisposedException(nameof(SampleProviderWrapper));
 
     /// <inheritdoc />
-    public int Read(float[] buffer, int offset, int count) => _provider != null
-        ? Read(_provider, buffer, offset, count)
-        : throw new ObjectDisposedException(nameof(SampleProviderWrapper));
-
-    protected virtual int Read(ISampleProvider provider, float[] buffer, int offset, int count)
-        => provider.Read(buffer, offset, count);
+    public int Read(float[] buffer, int offset, int count) => _provider?.Read(buffer, offset, count) ?? throw new ObjectDisposedException(nameof(SampleProviderWrapper));
 
     /// <inheritdoc />
     public void Dispose()

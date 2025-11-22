@@ -1,6 +1,4 @@
-using System.Diagnostics.CodeAnalysis;
 using SecretLabNAudio.Core.Processors;
-using SecretLabNAudio.Core.Providers;
 
 namespace SecretLabNAudio.Core.Extensions;
 
@@ -10,46 +8,42 @@ public static partial class AudioPlayerExtensions
     extension(AudioPlayer player)
     {
 
-        public bool TryGetStream([NotNullWhen(true)] out WaveStream? stream)
+        public T? RootAs<T>() => player.SampleProvider switch
         {
-            switch (player.SampleProvider)
-            {
-                case WaveStream waveStream:
-                    stream = waveStream;
-                    return true;
-                case IAudioProcessor processor:
-                    return processor.TryGetStream(out stream);
-                default:
-                    stream = null;
-                    return false;
-            }
-        }
+            T t => t,
+            IAudioProcessor processor when processor.TryGetRootAs(out T? result) => result,
+            _ => default
+        };
 
-        public WaveStream? Stream => player.TryGetStream(out var stream) ? stream : null;
-
-        public TimeSpan CurrentTime
+        public T? MasterAs<T>() => player.SampleProvider switch
         {
-            get => player.Stream?.CurrentTime ?? TimeSpan.Zero;
-            set => player.Stream?.CurrentTime = value;
-        }
-
-        public TimeSpan TotalTime => player.Stream?.TotalTime ?? TimeSpan.Zero;
+            T t => t,
+            IAudioProcessor processor when processor.TryGetMasterAs(out T? result) => result,
+            _ => default
+        };
 
         public AudioPlayer Restart()
         {
-            if (player.SampleProvider is RawSourceSampleProvider raw)
-                raw.Position = 0;
-            else
-                player.Stream?.Position = 0;
+            player.CurrentTime = TimeSpan.Zero;
             return player;
         }
 
         public AudioPlayer Loop(bool loop = true)
         {
-            if (player.SampleProvider is IAudioProcessor processor && processor.TryConvert(out StreamAudioProcessor? streamAudioProcessor))
-                streamAudioProcessor.Loop = loop;
+            // TODO: mutate processor if needed
+            player.RootAs<ILoopable>()?.Loop = loop;
             return player;
         }
+
+        public TimeSpan CurrentTime
+        {
+            get => player.RootAs<ISeekable>()?.CurrentTime ?? TimeSpan.Zero;
+            set => player.RootAs<ISeekable>()?.CurrentTime = value;
+        }
+
+        public TimeSpan TotalTime => player.RootAs<ISeekable>()?.TotalTime ?? TimeSpan.Zero;
+
+        public bool IsLooping => player.RootAs<ILoopable>()?.Loop ?? false;
 
     }
 

@@ -9,7 +9,7 @@ public static class AudioProcessorExtensions
     extension(IAudioProcessor processor)
     {
 
-        public bool TryConvert<T>([NotNullWhen(true)] out T? result) where T : IAudioProcessor
+        public bool TryGetRootAs<T>([NotNullWhen(true)] out T? result)
         {
             switch (processor)
             {
@@ -20,29 +20,35 @@ public static class AudioProcessorExtensions
                     result = t;
                     return true;
                 case ProcessorChain {Root: IAudioProcessor root}:
-                    return root.TryConvert(out result);
+                    return root.TryGetRootAs(out result);
                 default:
                     result = default;
                     return false;
             }
         }
 
-        public bool TryGetStream([NotNullWhen(true)] out WaveStream? stream)
+        public bool TryGetMasterAs<T>([NotNullWhen(true)] out T? result)
         {
-            if (processor.TryConvert(out StreamAudioProcessor? streamAudioProcessor))
+            switch (processor)
             {
-                stream = streamAudioProcessor.Stream;
-                return true;
+                case T t:
+                    result = t;
+                    return true;
+                case ProcessorChain {Master: T t}:
+                    result = t;
+                    return true;
+                case ProcessorChain {Master: IAudioProcessor root}:
+                    return root.TryGetRootAs(out result);
+                default:
+                    result = default;
+                    return false;
             }
-
-            stream = null;
-            return false;
         }
 
         public IAudioProcessor ToPlayerCompatible(bool isOwned = true)
             => processor.WaveFormat.SampleRate == AudioPlayer.SampleRate && processor.WaveFormat.Channels == AudioPlayer.Channels
                 ? processor
-                : processor.ToChain().ToPlayerCompatible();
+                : processor.ToChain(isOwned).ToPlayerCompatible(isOwned);
 
         public ProcessorChain ToChain(bool isOwned = true) => processor as ProcessorChain ?? new ProcessorChain(processor, isOwned);
 

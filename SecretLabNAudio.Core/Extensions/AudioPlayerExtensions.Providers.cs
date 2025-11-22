@@ -9,7 +9,8 @@ public static partial class AudioPlayerExtensions
     /// <param name="player">The player to cast the provider of.</param>
     /// <typeparam name="T">The type to cast the provider to.</typeparam>
     /// <returns>The <see cref="AudioPlayer.SampleProvider"/> cast to <typeparamref name="T"/>, or null if the type is not compatible.</returns>
-    public static T? ProviderAs<T>(this AudioPlayer player) where T : class => player.SampleProvider as T;
+    [Obsolete($"Call {nameof(ImmediateProviderAs)} to cast the {nameof(AudioPlayer.SampleProvider)} itself. To ignore special audio processors, use {nameof(RootAs)}/{nameof(MasterAs)}.", true)]
+    public static T? ProviderAs<T>(this AudioPlayer player) where T : class => player.ImmediateProviderAs<T>();
 
     /// <summary>
     /// Sets the <see cref="AudioPlayer.SampleProvider"/> of the <see cref="AudioPlayer"/>.
@@ -18,6 +19,7 @@ public static partial class AudioPlayerExtensions
     /// <param name="provider">The provider to set.</param>
     /// <returns>The <paramref name="player"/> itself.</returns>
     /// <remarks>This method ensures that the provider is compatible with the player by calling <see cref="SampleProviderExtensions.ToPlayerCompatible"/>.</remarks>
+    [Obsolete($"Prefer using audio processors with the Use methods. Call {nameof(WithUnmanagedProvider)} to set the provider and prevent automatic disposal.", true)]
     public static AudioPlayer WithProvider(this AudioPlayer player, ISampleProvider? provider)
     {
         player.SampleProvider = provider?.ToPlayerCompatible();
@@ -53,6 +55,48 @@ public static partial class AudioPlayerExtensions
             return player;
         player.SampleProvider = player.SampleProvider.Buffer(seconds);
         return player;
+    }
+
+    extension(AudioPlayer player)
+    {
+
+        /// <summary>
+        /// Safely casts the <see cref="AudioPlayer.SampleProvider"/> of the <see cref="AudioPlayer"/> type <typeparamref name="T"/>.
+        /// </summary>
+        /// <typeparam name="T">The type to cast the provider to.</typeparam>
+        /// <returns>The <see cref="AudioPlayer.SampleProvider"/> cast to <typeparamref name="T"/>, or null if the type is not compatible.</returns>
+        public T? ImmediateProviderAs<T>() where T : class => player.SampleProvider as T;
+
+        /// <summary>
+        /// Sets the <see cref="AudioPlayer.SampleProvider"/> of the <see cref="AudioPlayer"/> and prevents automatic disposal when the player is destroyed or the provider changes.
+        /// </summary>
+        /// <param name="provider">The provider to set.</param>
+        /// <returns>The <paramref name="player"/> itself.</returns>
+        /// <remarks>
+        /// Use this method if the provider is not disposable, or if you manage its lifetime yourself.
+        /// This method ensures that the provider is compatible with the player by calling <see cref="SampleProviderExtensions.ToPlayerCompatible"/>.
+        /// </remarks>
+        public AudioPlayer WithUnmanagedProvider(ISampleProvider? provider)
+        {
+            player.SampleProvider = provider?.ToPlayerCompatible();
+            player.OwnsProcessor = false;
+            return player;
+        }
+
+        /// <summary>
+        /// Sets the <see cref="AudioPlayer.SampleProvider"/> of the <see cref="AudioPlayer"/> by converting an <see cref="IWaveProvider"/>
+        /// and prevents automatic disposal when the player is destroyed or the provider changes.
+        /// </summary>
+        /// <param name="provider">The provider to set.</param>
+        /// <returns>The <paramref name="player"/> itself.</returns>
+        /// <remarks>
+        /// Use this method if the provider is not disposable, or if you manage its lifetime yourself.
+        /// This method ensures that the provider is compatible with the player by calling <see cref="WaveProviderExtensions.ToPlayerCompatible"/>.
+        /// </remarks>
+        /// <seealso cref="WithUnmanagedProvider(SecretLabNAudio.Core.AudioPlayer,NAudio.Wave.ISampleProvider?)"/>
+        public AudioPlayer WithUnmanagedProvider(IWaveProvider? provider)
+            => player.WithUnmanagedProvider(provider?.ToSampleProvider());
+
     }
 
 }

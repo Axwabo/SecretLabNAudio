@@ -100,6 +100,13 @@ public static partial class AudioPlayerExtensions
     }
 
     /// <summary>
+    /// Unpauses the <see cref="AudioPlayer"/>.
+    /// </summary>
+    /// <param name="player">The player to pause.</param>
+    /// <returns>The <paramref name="player"/> itself.</returns>
+    public static AudioPlayer Play(this AudioPlayer player) => player.Pause(false);
+
+    /// <summary>
     /// Sets the <see cref="AudioPlayer.SendEngine"/> of the <see cref="AudioPlayer"/>.
     /// </summary>
     /// <param name="player">The player to set the engine of.</param>
