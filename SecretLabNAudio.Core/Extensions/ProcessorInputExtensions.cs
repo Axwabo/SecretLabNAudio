@@ -6,17 +6,22 @@ namespace SecretLabNAudio.Core.Extensions;
 public static class ProcessorInputExtensions
 {
 
-    extension<T>(ICollection<T> inputs) where T : ProcessorInput
+    extension<T>(ICollection<T> inputs) where T : ProcessorLayer
     {
 
         public void DisposeAllAndClear()
         {
             foreach (var input in inputs)
-                if (input is {IsOwned: true, Provider: IDisposable disposable})
-                    disposable.Dispose();
+                input.Dispose();
             inputs.Clear();
         }
 
+    }
+
+    internal static void Dispose(this ProcessorLayer layer)
+    {
+        if (layer.IsOwned)
+            (layer.Provider as IDisposable)?.Dispose();
     }
 
 }

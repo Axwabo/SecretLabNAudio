@@ -13,7 +13,7 @@ public static class ProcessorChainExtensions
     extension(ProcessorChain chain)
     {
 
-        public ProcessorChain Pop<T>() => chain.Last is T ? chain.Pop() : chain;
+        public ProcessorChain Pop<T>() => chain.Master is T ? chain.Pop() : chain;
 
         public ProcessorChain Resample(int sampleRate)
             => chain.Pop<WdlResamplingSampleProvider>()

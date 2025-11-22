@@ -5,6 +5,8 @@ namespace SecretLabNAudio.Core.Processors;
 public sealed class ProcessorChain : IAudioProcessor
 {
 
+    private readonly List<ProcessorLayer> _chain;
+
     public ISampleProvider Root
     {
         get
@@ -14,7 +16,7 @@ public sealed class ProcessorChain : IAudioProcessor
         }
     }
 
-    public ISampleProvider Last
+    public ISampleProvider Master
     {
         get
         {
@@ -23,18 +25,16 @@ public sealed class ProcessorChain : IAudioProcessor
         }
     }
 
-    private readonly List<ProcessorInput> _chain;
-
-    public IReadOnlyList<ProcessorInput> Chain => _chain.AsReadOnly();
+    public IReadOnlyList<ProcessorLayer> Chain => _chain.AsReadOnly();
 
     public ProcessorChain(ISampleProvider root, bool isOwned = true)
     {
         Root = root;
-        _chain = [new ProcessorInput(root, isOwned)];
+        _chain = [new ProcessorLayer(root, isOwned)];
     }
 
     /// <inheritdoc />
-    public WaveFormat WaveFormat => Last.WaveFormat;
+    public WaveFormat WaveFormat => Master.WaveFormat;
 
     private void EnsureNotDisposed()
     {
@@ -44,15 +44,15 @@ public sealed class ProcessorChain : IAudioProcessor
 
     public ProcessorChain Layer(Func<ISampleProvider, ISampleProvider> convert, bool isOwned = true)
     {
-        var last = Last;
-        var converted = convert(last);
-        if (last == converted)
+        var master = Master;
+        var converted = convert(master);
+        if (master == converted)
             return this;
-        _chain.Add(new ProcessorInput(converted, isOwned));
+        _chain.Add(new ProcessorLayer(converted, isOwned));
         return this;
     }
 
-    public ProcessorChain Replace(Func<ISampleProvider, ISampleProvider> convert, bool isOwned = true)
+    public ProcessorChain Swap(Func<ISampleProvider, ISampleProvider> convert, bool isOwned = true)
     {
         EnsureNotDisposed();
         return Pop().Layer(convert, isOwned);
@@ -62,13 +62,13 @@ public sealed class ProcessorChain : IAudioProcessor
     {
         if (_chain.Count < 2)
             return this;
-
+        _chain[^1].Dispose();
         _chain.RemoveAt(_chain.Count - 1);
         return this;
     }
 
     /// <inheritdoc />
-    public int Read(float[] buffer, int offset, int count) => Last.Read(buffer, offset, count);
+    public int Read(float[] buffer, int offset, int count) => Master.Read(buffer, offset, count);
 
     /// <inheritdoc />
     public void Dispose() => _chain.DisposeAllAndClear();
