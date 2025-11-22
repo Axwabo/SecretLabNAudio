@@ -1,30 +1,86 @@
 namespace SecretLabNAudio.Core.Processors;
 
-public class StreamAudioProcessor : SampleProviderWrapper
+public class StreamAudioProcessor : IAudioProcessor, ISeekable, ILoopable
 {
 
-    public WaveStream Stream { get; }
+    private ISampleProvider? _provider;
 
+    public WaveStream Stream
+    {
+        get
+        {
+            EnsureNotDisposed();
+            return field;
+        }
+        private set;
+    }
+
+    /// <inheritdoc />
+    public TimeSpan CurrentTime
+    {
+        get => Stream.CurrentTime;
+        set => Stream.CurrentTime = value;
+    }
+
+    /// <inheritdoc />
+    public TimeSpan TotalTime => Stream.TotalTime;
+
+    /// <inheritdoc />
     public bool Loop { get; set; }
 
-    public StreamAudioProcessor(WaveStream stream) : this(stream, stream.ToSampleProvider()) => Stream = stream;
-
-    public StreamAudioProcessor(WaveStream stream, ISampleProvider provider) : base(provider, stream) => Stream = stream;
-
-    protected override int ReadFromProvider(ISampleProvider provider, float[] buffer, int offset, int count)
+    public StreamAudioProcessor(WaveStream stream) : this(stream, stream.ToSampleProvider())
     {
+    }
+
+    public StreamAudioProcessor(WaveStream stream, ISampleProvider provider)
+    {
+        _provider = provider;
+        Stream = stream;
+    }
+
+    /// <inheritdoc />
+    public WaveFormat WaveFormat
+    {
+        get
+        {
+            EnsureNotDisposed();
+            return _provider!.WaveFormat;
+        }
+    }
+
+    /// <inheritdoc />
+    public int Read(float[] buffer, int offset, int count)
+    {
+        EnsureNotDisposed();
         if (!Loop)
-            return provider.Read(buffer, offset, count);
+            return _provider!.Read(buffer, offset, count);
         var total = 0;
         while (total < count)
         {
-            var read = provider.Read(buffer, offset, count);
-            if (read == 0)
+            var target = count - total;
+            var read = _provider!.Read(buffer, offset + total, target);
+            if (read < target)
                 Stream.Position = 0;
             total += read;
         }
 
         return total;
+    }
+
+    private void EnsureNotDisposed()
+    {
+        if (_provider == null)
+            throw new ObjectDisposedException(nameof(StreamAudioProcessor));
+    }
+
+    /// <inheritdoc />
+    public void Dispose()
+    {
+        if (_provider == null)
+            return;
+        Stream.Dispose();
+        Stream = null!;
+        _provider = null;
     }
 
 }
