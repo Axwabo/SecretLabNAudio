@@ -1,7 +1,9 @@
-﻿namespace SecretLabNAudio.Core.Providers;
+﻿using SecretLabNAudio.Core.Processors;
+
+namespace SecretLabNAudio.Core.Providers;
 
 /// <summary>A sample provider reading from a float array.</summary>
-public sealed class RawSourceSampleProvider : ISampleProvider
+public sealed class RawSourceSampleProvider : IAudioProcessor, ISeekable
 {
 
     private readonly float[] _samples;
@@ -15,7 +17,7 @@ public sealed class RawSourceSampleProvider : ISampleProvider
     /// <summary>The current position of the provider.</summary>
     public int Position { get; set; }
 
-    /// <summary>The current position of the provider as a <see cref="TimeSpan"/>.</summary>
+    /// <inheritdoc/>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when setting a negative value or a value greater than <see cref="TotalTime"/>.</exception>
     public TimeSpan CurrentTime
     {
@@ -97,5 +99,10 @@ public sealed class RawSourceSampleProvider : ISampleProvider
     /// <remarks>The buffer reference is kept, so if you have access to the original buffer, changes in it will be reflected in both providers.</remarks>
     public RawSourceSampleProvider Copy(bool resetPosition = false)
         => new(_samples, Length, WaveFormat) {ClipName = ClipName, Position = resetPosition ? 0 : Position};
+
+    /// <inheritdoc />
+    public void Dispose()
+    {
+    }
 
 }
