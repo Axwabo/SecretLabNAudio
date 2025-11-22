@@ -56,7 +56,7 @@ public sealed class BufferedSampleProvider : ISampleProvider
     /// <summary>Clears the buffer.</summary>
     public void Clear() => _buffer.Clear();
 
-    /// <summary>Disposes the underlying playback buffer when this object is finalized, allowing its buffer to be used later.</summary>
+    /// <summary>Disposes the underlying playback buffer when this object is finalized, allowing for its buffer to be used later.</summary>
     ~BufferedSampleProvider() => _buffer.Dispose();
 
 }

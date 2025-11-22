@@ -27,14 +27,13 @@ public sealed class SampleProviderQueue : IAudioProcessor
     /// <inheritdoc/>
     public int Read(float[] buffer, int offset, int count)
     {
-        // TODO: safely advance
-        if (_current is null && !_queue.TryDequeue(out _current))
+        if (_current is null && !Next())
             return 0;
         var total = 0;
         while (total < count)
         {
             var target = count - total;
-            var read = _current.Provider.Read(buffer, total, target);
+            var read = _current!.Provider.Read(buffer, total, target);
             total += read;
             if (read < target && !Next())
                 break;
@@ -61,7 +60,11 @@ public sealed class SampleProviderQueue : IAudioProcessor
 
     /// <summary>Dequeues the next provider in the queue.</summary>
     /// <returns>True if a provider was dequeued, false if the queue is already empty.</returns>
-    public bool Next() => _queue.TryDequeue(out _current);
+    public bool Next()
+    {
+        _current?.Dispose();
+        return _queue.TryDequeue(out _current);
+    }
 
     /// <summary>Clears the queue.</summary>
     public void Clear() => _queue.Clear();
