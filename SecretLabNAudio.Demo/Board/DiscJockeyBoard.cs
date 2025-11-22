@@ -126,35 +126,15 @@ public sealed class DiscJockeyBoard : MonoBehaviour
         Outside.RunEffects(destroyCancellationToken);
     }
 
-    private void UpdateMusic(float value)
-    {
-        if (_provider != null)
-            _provider.MusicVolume = value + HalfOffset;
-    }
+    private void UpdateMusic(float value) => _provider?.MusicVolume = value + HalfOffset;
 
-    private void UpdateSpeed(float value)
-    {
-        if (_provider != null)
-            _provider.MusicSpeed = value * 2 + 1;
-    }
+    private void UpdateSpeed(float value) => _provider?.MusicSpeed = value * 2 + 1;
 
-    private void UpdateVoice(float value)
-    {
-        if (_provider != null)
-            _provider.VoiceVolume = value + HalfOffset;
-    }
+    private void UpdateVoice(float value) => _provider?.VoiceVolume = value + HalfOffset;
 
-    private void UpdatePitch(float value)
-    {
-        if (_provider != null)
-            _provider.VoicePitch = value + 1;
-    }
+    private void UpdatePitch(float value) => _provider?.VoicePitch = value + 1;
 
-    private void UpdateMaster(float value)
-    {
-        if (_provider != null)
-            _provider.MasterVolume = value * 2 + 1;
-    }
+    private void UpdateMaster(float value) => _provider?.MasterVolume = value * 2 + 1;
 
     private void DisposeProvider()
     {
