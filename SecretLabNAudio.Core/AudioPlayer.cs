@@ -53,7 +53,10 @@ public sealed partial class AudioPlayer : MonoBehaviour
     /// <remarks>This property is automatically set when the <see cref="SampleProvider"/> changes.</remarks>
     public bool OwnsProcessor { get; set; } = true;
 
-    /// <summary>If false, the <see cref="SampleProvider"/> will be set to null upon reaching its end.</summary>
+    /// <summary>
+    /// If true, the <see cref="SampleProvider"/> will always be read from.
+    /// If false, the <see cref="SampleProvider"/> will be set to null upon reaching its end.
+    /// </summary>
     public bool Endless { get; set; } = true;
 
     /// <summary>The <see cref="SpeakerToy"/> this player is attached to.</summary>

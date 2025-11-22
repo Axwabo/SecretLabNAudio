@@ -144,9 +144,10 @@ public static partial class AudioPlayerExtensions
     /// </summary>
     /// <param name="player">The player to unset the provider of.</param>
     /// <returns>The <paramref name="player"/> itself.</returns>
+    /// <seealso cref="AudioPlayer.Endless"/>
     public static AudioPlayer UnsetProviderOnEnd(this AudioPlayer player)
     {
-        player.NoSamplesRead += () => player.SampleProvider = null;
+        player.Endless = false;
         return player;
     }
 

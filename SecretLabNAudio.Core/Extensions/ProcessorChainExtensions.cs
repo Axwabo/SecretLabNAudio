@@ -27,24 +27,29 @@ public static class ProcessorChainExtensions
                 : chain.SwapTOrLayer<WdlResamplingSampleProvider>(provider => new WdlResamplingSampleProvider(provider, sampleRate));
 
         public ProcessorChain ToMono() => chain.SwapTOrLayer<MonoToStereoSampleProvider>(static provider => provider.ToMono());
-        
+
         public ProcessorChain ToPlayerCompatible()
         {
             var format = chain.Master.WaveFormat;
-            switch (format.SampleRate == AudioPlayer.SampleRate, format.Channels == AudioPlayer.Channels)
+            return (format.SampleRate == AudioPlayer.SampleRate, format.Channels == AudioPlayer.Channels) switch
             {
-                case (true, true):
-                    return chain;
-                case (false, false):
-                    return chain.Pop<WdlResamplingSampleProvider>();
-                case (true, false):
-                    return chain.ToMono();
-                case (false, true):
-                    return chain.Resample(AudioPlayer.SampleRate);
-            }
+                (true, true) => chain,
+                (false, false) => chain.Pop<WdlResamplingSampleProvider>().ToMono().Resample(AudioPlayer.SampleRate),
+                (true, false) => chain.ToMono(),
+                (false, true) => chain.Resample(AudioPlayer.SampleRate)
+            };
         }
 
         public ProcessorChain Buffer(double seconds) => chain.SwapTOrLayer<BufferedSampleProvider>(provider => new BufferedSampleProvider(provider, seconds));
+
+        public ProcessorChain Volume(float volume)
+        {
+            if (chain.Master is VolumeSampleProvider volumeSampleProvider)
+                volumeSampleProvider.Volume = volume;
+            else
+                chain.Layer(provider => provider.Volume(volume));
+            return chain;
+        }
 
     }
 
