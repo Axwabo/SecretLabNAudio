@@ -9,33 +9,42 @@ public static class AudioProcessorExtensions
     extension(IAudioProcessor processor)
     {
 
-        public bool TryGetStream([NotNullWhen(true)] out WaveStream? stream)
+        public bool TryConvert<T>([NotNullWhen(true)] out T? result) where T : IAudioProcessor
         {
             switch (processor)
             {
-                case ProcessorChain {Root: IAudioProcessor root}:
-                    return root.TryGetStream(out stream);
-                case StreamAudioProcessor streamAudioProcessor:
-                    stream = streamAudioProcessor.Stream;
+                case T t:
+                    result = t;
                     return true;
+                case ProcessorChain {Root: T t}:
+                    result = t;
+                    return true;
+                case ProcessorChain {Root: IAudioProcessor root}:
+                    return root.TryConvert(out result);
                 default:
-                    stream = null;
+                    result = default;
                     return false;
             }
+        }
+
+        public bool TryGetStream([NotNullWhen(true)] out WaveStream? stream)
+        {
+            if (processor.TryConvert(out StreamAudioProcessor? streamAudioProcessor))
+            {
+                stream = streamAudioProcessor.Stream;
+                return true;
+            }
+
+            stream = null;
+            return false;
         }
 
         public IAudioProcessor ToPlayerCompatible(bool isOwned = true)
             => processor.WaveFormat.SampleRate == AudioPlayer.SampleRate && processor.WaveFormat.Channels == AudioPlayer.Channels
                 ? processor
-                : (processor as ProcessorChain ?? new ProcessorChain(processor, isOwned)).ToPlayerCompatible();
+                : processor.ToChain().ToPlayerCompatible();
 
-    }
-
-    extension(ISampleProvider provider)
-    {
-
-        public IAudioProcessor ToPlayerCompatibleProcessor(bool isOwned = true)
-            => (provider as IAudioProcessor ?? new SampleProviderWrapper(provider)).ToPlayerCompatible(isOwned);
+        public ProcessorChain ToChain(bool isOwned = true) => processor as ProcessorChain ?? new ProcessorChain(processor, isOwned);
 
     }
 

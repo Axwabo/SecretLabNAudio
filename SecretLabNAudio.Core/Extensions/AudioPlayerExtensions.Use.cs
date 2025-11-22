@@ -18,6 +18,13 @@ public static partial class AudioPlayerExtensions
 
         public AudioPlayer UseFile(string path) => player.Use(CreateAudioProcessor.FromFile(path));
 
+        public AudioPlayer UseFile(string path, Action<ProcessorChain> process)
+        {
+            var chain = (player.UseFile(path).SampleProvider as IAudioProcessor)!.ToChain();
+            process(chain);
+            return player;
+        }
+
     }
 
 }

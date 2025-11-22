@@ -72,6 +72,13 @@ public sealed class ProcessorChain : IAudioProcessor
         return this;
     }
 
+    public void PopAll()
+    {
+        for (var i = 1; i < _layers.Count; i++)
+            _layers[i].Dispose();
+        _layers.RemoveRange(1, _layers.Count - 2);
+    }
+
     /// <inheritdoc />
     public void Dispose() => _layers.DisposeAllAndClear();
 

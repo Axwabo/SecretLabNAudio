@@ -1,5 +1,6 @@
 using NAudio.Wave.SampleProviders;
 using SecretLabNAudio.Core.Processors;
+using SecretLabNAudio.Core.Providers;
 
 namespace SecretLabNAudio.Core.Extensions;
 
@@ -42,6 +43,8 @@ public static class ProcessorChainExtensions
                     return chain.Resample(AudioPlayer.SampleRate);
             }
         }
+
+        public ProcessorChain Buffer(double seconds) => chain.SwapTOrLayer<BufferedSampleProvider>(provider => new BufferedSampleProvider(provider, seconds));
 
     }
 

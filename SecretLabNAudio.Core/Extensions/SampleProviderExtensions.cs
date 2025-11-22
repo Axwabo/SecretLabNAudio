@@ -1,4 +1,5 @@
 ﻿using NAudio.Wave.SampleProviders;
+using SecretLabNAudio.Core.Processors;
 using SecretLabNAudio.Core.Providers;
 
 namespace SecretLabNAudio.Core.Extensions;
@@ -6,6 +7,17 @@ namespace SecretLabNAudio.Core.Extensions;
 /// <summary>Extension methods for the <see cref="ISampleProvider"/> interface.</summary>
 public static class SampleProviderExtensions
 {
+
+    extension(ISampleProvider provider)
+    {
+
+        public IAudioProcessor ToCompatibleProcessor(bool isOwned = true)
+            => (provider as IAudioProcessor ?? new SampleProviderWrapper(provider)).ToPlayerCompatible(isOwned);
+
+        public ProcessorChain ToCompatibleChain(bool isOwned = true)
+            => provider.ToCompatibleProcessor(isOwned).ToChain(isOwned);
+
+    }
 
     /// <summary>Converts the provider to be compatible with <see cref="AudioPlayer"/>s.</summary>
     /// <param name="provider">The sample provider to convert.</param>
