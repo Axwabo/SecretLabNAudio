@@ -9,7 +9,6 @@ public static partial class AudioPlayerExtensions
     /// <param name="player">The player to cast the provider of.</param>
     /// <typeparam name="T">The type to cast the provider to.</typeparam>
     /// <returns>The <see cref="AudioPlayer.SampleProvider"/> cast to <typeparamref name="T"/>, or null if the type is not compatible.</returns>
-    [Obsolete("", true)] // TODO: add error message
     public static T? ProviderAs<T>(this AudioPlayer player) where T : class => player.SampleProvider as T;
 
     /// <summary>
@@ -19,7 +18,6 @@ public static partial class AudioPlayerExtensions
     /// <param name="provider">The provider to set.</param>
     /// <returns>The <paramref name="player"/> itself.</returns>
     /// <remarks>This method ensures that the provider is compatible with the player by calling <see cref="SampleProviderExtensions.ToPlayerCompatible"/>.</remarks>
-    [Obsolete("", true)] // TODO: add error message
     public static AudioPlayer WithProvider(this AudioPlayer player, ISampleProvider? provider)
     {
         player.SampleProvider = provider?.ToPlayerCompatible();

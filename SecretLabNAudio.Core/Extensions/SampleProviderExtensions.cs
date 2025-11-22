@@ -44,6 +44,7 @@ public static class SampleProviderExtensions
     /// <param name="seconds">The number of seconds to buffer.</param>
     /// <returns>A new <see cref="BufferedSampleProvider"/> that buffers the given provider.</returns>
     /// <seealso cref="BufferedSampleProvider"/>
+    [Obsolete("", error: true)] // TODO: add error message
     public static BufferedSampleProvider Buffer(this ISampleProvider provider, double seconds) => new(provider, seconds);
 
     /// <summary>Queues the <paramref name="other"/> sample provider after <paramref name="provider"/>.</summary>
@@ -51,6 +52,7 @@ public static class SampleProviderExtensions
     /// <param name="other">The sample provider to queue.</param>
     /// <returns>A <see cref="SampleProviderQueue"/> containing both providers.</returns>
     /// <remarks>The <paramref name="provider"/> is reused if it's already a <see cref="SampleProviderQueue"/>.</remarks>
+    [Obsolete("", error: true)] // TODO: add error message
     public static SampleProviderQueue Queue(this ISampleProvider provider, ISampleProvider other)
     {
         var queue = provider as SampleProviderQueue ?? new SampleProviderQueue(provider.WaveFormat);

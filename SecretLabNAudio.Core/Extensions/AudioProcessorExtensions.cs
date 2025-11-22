@@ -23,7 +23,20 @@ public static class AudioProcessorExtensions
                     return false;
             }
         }
-        
+
+        public IAudioProcessor ToPlayerCompatible(bool isOwned = true)
+            => processor.WaveFormat.SampleRate == AudioPlayer.SampleRate && processor.WaveFormat.Channels == AudioPlayer.Channels
+                ? processor
+                : (processor as ProcessorChain ?? new ProcessorChain(processor, isOwned)).ToPlayerCompatible();
+
+    }
+
+    extension(ISampleProvider provider)
+    {
+
+        public IAudioProcessor ToPlayerCompatibleProcessor(bool isOwned = true)
+            => (provider as IAudioProcessor ?? new SampleProviderWrapper(provider)).ToPlayerCompatible(isOwned);
+
     }
 
 }
