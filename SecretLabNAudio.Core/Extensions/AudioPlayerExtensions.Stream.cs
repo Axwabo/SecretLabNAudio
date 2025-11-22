@@ -8,10 +8,10 @@ public static partial class AudioPlayerExtensions
     extension(AudioPlayer player)
     {
 
-        public T? RootAs<T>() => player.SampleProvider switch
+        public T? SourceAs<T>() => player.SampleProvider switch
         {
             T t => t,
-            IAudioProcessor processor when processor.TryGetRootAs(out T? result) => result,
+            IAudioProcessor processor when processor.TryGetSourceAs(out T? result) => result,
             _ => default
         };
 
@@ -31,19 +31,19 @@ public static partial class AudioPlayerExtensions
         public AudioPlayer Loop(bool loop = true)
         {
             // TODO: mutate processor if needed
-            player.RootAs<ILoopable>()?.Loop = loop;
+            player.SourceAs<ILoopable>()?.Loop = loop;
             return player;
         }
 
         public TimeSpan CurrentTime
         {
-            get => player.RootAs<ISeekable>()?.CurrentTime ?? TimeSpan.Zero;
-            set => player.RootAs<ISeekable>()?.CurrentTime = value;
+            get => player.SourceAs<ISeekable>()?.CurrentTime ?? TimeSpan.Zero;
+            set => player.SourceAs<ISeekable>()?.CurrentTime = value;
         }
 
-        public TimeSpan TotalTime => player.RootAs<ISeekable>()?.TotalTime ?? TimeSpan.Zero;
+        public TimeSpan TotalTime => player.SourceAs<ISeekable>()?.TotalTime ?? TimeSpan.Zero;
 
-        public bool IsLooping => player.RootAs<ILoopable>()?.Loop ?? false;
+        public bool IsLooping => player.SourceAs<ILoopable>()?.Loop ?? false;
 
     }
 

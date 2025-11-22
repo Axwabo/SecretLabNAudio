@@ -9,7 +9,7 @@ public sealed class ProcessorChain : IAudioProcessor
 
     private readonly List<ProcessorLayer> _layers;
 
-    public ISampleProvider Root
+    public ISampleProvider Source
     {
         get
         {
@@ -29,10 +29,10 @@ public sealed class ProcessorChain : IAudioProcessor
 
     public IReadOnlyList<ProcessorLayer> Layers => _layers.AsReadOnly();
 
-    public ProcessorChain(ISampleProvider root, bool isOwned = true)
+    public ProcessorChain(ISampleProvider source, bool isOwned = true)
     {
-        Root = root;
-        _layers = [new ProcessorLayer(root, isOwned)];
+        Source = source;
+        _layers = [new ProcessorLayer(source, isOwned)];
     }
 
     /// <inheritdoc />

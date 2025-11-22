@@ -9,18 +9,18 @@ public static class AudioProcessorExtensions
     extension(IAudioProcessor processor)
     {
 
-        public bool TryGetRootAs<T>([NotNullWhen(true)] out T? result)
+        public bool TryGetSourceAs<T>([NotNullWhen(true)] out T? result)
         {
             switch (processor)
             {
                 case T t:
                     result = t;
                     return true;
-                case ProcessorChain {Root: T t}:
+                case ProcessorChain {Source: T t}:
                     result = t;
                     return true;
-                case ProcessorChain {Root: IAudioProcessor root}:
-                    return root.TryGetRootAs(out result);
+                case ProcessorChain {Source: IAudioProcessor source}:
+                    return source.TryGetSourceAs(out result);
                 default:
                     result = default;
                     return false;
@@ -37,8 +37,8 @@ public static class AudioProcessorExtensions
                 case ProcessorChain {Master: T t}:
                     result = t;
                     return true;
-                case ProcessorChain {Master: IAudioProcessor root}:
-                    return root.TryGetRootAs(out result);
+                case ProcessorChain {Master: IAudioProcessor master}:
+                    return master.TryGetMasterAs(out result);
                 default:
                     result = default;
                     return false;
