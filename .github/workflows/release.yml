@@ -2,7 +2,7 @@ name: Release
 
 on:
   release:
-    types: [ created ]
+    types: [ published ]
 
 permissions:
   contents: write
@@ -11,53 +11,24 @@ jobs:
 
   release:
     runs-on: ubuntu-latest
-
-    env:
-      ReferenceUrl: https://exmod-team.github.io/SL-References/Dev.zip
-      ReferencePath: ${{ github.workspace }}/References
-
     steps:
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
-      - name: Set Up .NET
-        uses: actions/setup-dotnet@v4.0.1
-        with:
-          dotnet-version: 9.0.x
-
-      - name: Download References
-        run: |
-          wget -O "References.zip" ${{ env.ReferenceUrl }}
-          unzip -d ${{ env.ReferencePath }} "References.zip"
-
-      - name: Rename Assembly-CSharp
-        working-directory: ${{ env.ReferencePath }}
-        run: mv Assembly-CSharp-Publicized.dll Assembly-CSharp.dll
+      - uses: Axwabo/scpsl-references-downloader@v1
 
       - name: Build
-        run: dotnet build -c:Release -o Output
+        run: dotnet build -c Release -o Out
 
       - name: Create Bundle
-        working-directory: Output
-        run: |
-          mkdir SecretLabNAudio
-          mkdir SecretLabNAudio/bin
-          mkdir SecretLabNAudio/LICENSES
-
-          mv SecretLabNAudio.dll SecretLabNAudio/bin
-          ls | grep -E "^(NAudio|NLayer|NVorbis)" | xargs -I {0} mv {0} SecretLabNAudio/bin
-
-          cp -r ../THIRD_PARTY_LICENSES SecretLabNAudio/LICENSES
-          cp ../LICENSE SecretLabNAudio/LICENSES/SecretLabNAudio.txt
-
-          cd SecretLabNAudio
-          zip -r ../SecretLabNAudio.zip .
+        working-directory: Out
+        run: ${{ github.workspace }}/bundle.sh
 
       - name: Upload Assets
         uses: softprops/action-gh-release@v2
         with:
-          files: Output/SecretLabNAudio*.dll,Output/SecretLabNAudio*.xml,Output/SecretLabNAudio.zip
+          files: Out/SecretLabNAudio*.dll,Out/SecretLabNAudio*.xml,Out/SecretLabNAudio.zip
 
       - name: Push to NuGet
-        working-directory: Output
+        working-directory: Out
         run: dotnet nuget push SecretLabNAudio.*.nupkg -k ${{ secrets.NUGET_API_KEY }} -s https://api.nuget.org/v3/index.json
