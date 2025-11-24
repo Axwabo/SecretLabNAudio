@@ -73,7 +73,7 @@ public sealed class SampleProviderQueue : IAudioProcessor
     public void Dispose()
     {
         _current?.Dispose();
-        foreach (var layer in _queue) 
+        foreach (var layer in _queue)
             layer.Dispose();
         _queue.Clear();
     }

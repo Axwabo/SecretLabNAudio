@@ -17,14 +17,13 @@ file sealed class DisposableMediaFoundationReader : StreamMediaFoundationReader
 
     private Stream? _stream;
 
-
     public DisposableMediaFoundationReader(Stream stream, bool closeOnDispose) : base(stream, new MediaFoundationReaderSettings())
         => _stream = closeOnDispose ? stream : null;
 
     protected override void Dispose(bool disposing)
     {
         base.Dispose(disposing);
-        if(!disposing)
+        if (!disposing)
             return;
         _stream?.Dispose();
         _stream = null;
