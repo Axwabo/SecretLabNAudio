@@ -1,3 +1,4 @@
+using SecretLabNAudio.Core.Extensions.Providers;
 using SecretLabNAudio.Core.Providers;
 
 namespace SecretLabNAudio.Core.Extensions;
@@ -26,7 +27,7 @@ public static partial class AudioPlayerExtensions
         /// </remarks>
         public AudioPlayer WithUnmanagedProvider(ISampleProvider? provider)
         {
-            player.SampleProvider = provider?.ToPlayerCompatible();
+            player.SampleProvider = provider == null ? null : NonProcessorExtensions.ToPlayerCompatible(provider);
             player.OwnsProcessor = false;
             return player;
         }

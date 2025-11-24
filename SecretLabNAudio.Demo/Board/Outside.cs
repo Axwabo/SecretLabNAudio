@@ -3,6 +3,7 @@ using System.Threading;
 using CustomPlayerEffects;
 using MapGeneration;
 using PlayerRoles.PlayableScps.Scp079;
+using SecretLabNAudio.Core.Extensions;
 using SecretLabNAudio.Core.Pools;
 
 namespace SecretLabNAudio.Demo.Board;

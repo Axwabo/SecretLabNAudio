@@ -1,4 +1,6 @@
-﻿namespace SecretLabNAudio.Core;
+﻿using SecretLabNAudio.Core.Extensions;
+
+namespace SecretLabNAudio.Core;
 
 public partial class AudioPlayer
 {

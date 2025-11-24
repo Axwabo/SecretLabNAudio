@@ -1,5 +1,6 @@
 ﻿using System.Buffers;
 using System.Collections.Generic;
+using SecretLabNAudio.Core.Extensions.Providers;
 using SecretLabNAudio.Core.Processors;
 using SecretLabNAudio.Core.Providers;
 
@@ -25,7 +26,7 @@ public static class WaveStreamExtensions
     /// <returns>A <see cref="RawSourceSampleProvider"/> containing the read samples.</returns>
     /// <seealso cref="WaveProviderExtensions.ToPlayerCompatible"/>
     public static RawSourceSampleProvider ReadPlayerCompatibleSamples(this WaveStream stream, bool seekToBeginning = true)
-        => stream.ReadSamples(WaveProviderExtensions.ToPlayerCompatible, seekToBeginning);
+        => stream.ReadSamples(NonProcessorExtensions.ToPlayerCompatible, seekToBeginning);
 
     /// <summary>
     /// Fully reads the stream and creates a buffer for the read samples.

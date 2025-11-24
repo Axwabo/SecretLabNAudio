@@ -1,4 +1,5 @@
-﻿using VoiceChat.Networking;
+﻿using SecretLabNAudio.Core.Extensions;
+using VoiceChat.Networking;
 
 namespace SecretLabNAudio.Core.Providers;
 

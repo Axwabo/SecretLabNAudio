@@ -1,4 +1,6 @@
-﻿namespace SecretLabNAudio.Core.Pools;
+﻿using SecretLabNAudio.Core.Extensions;
+
+namespace SecretLabNAudio.Core.Pools;
 
 /// <summary>Provides methods to reuse <see cref="AudioPlayer"/> components.</summary>
 public static class AudioPlayerPool

@@ -1,4 +1,5 @@
-﻿using SecretLabNAudio.Core.Processors;
+﻿using SecretLabNAudio.Core.Extensions;
+using SecretLabNAudio.Core.Processors;
 using SecretLabNAudio.Core.Providers;
 using SecretLabNAudio.Core.SendEngines;
 using VoiceChat.Codec;

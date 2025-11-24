@@ -1,7 +1,11 @@
+using SecretLabNAudio.Core.Providers;
+
 namespace SecretLabNAudio.Core.Extensions;
 
 public static partial class AudioPlayerExtensions
 {
+
+    private const string PreferUse = $"Prefer using audio processors with the Use methods. Call {nameof(WithUnmanagedProvider)} to set the provider and prevent automatic disposal.";
 
     /// <summary>
     /// Safely casts the <see cref="AudioPlayer.SampleProvider"/> of the <see cref="AudioPlayer"/> type <typeparamref name="T"/>.
@@ -19,7 +23,7 @@ public static partial class AudioPlayerExtensions
     /// <param name="provider">The provider to set.</param>
     /// <returns>The <paramref name="player"/> itself.</returns>
     /// <remarks>This method ensures that the provider is compatible with the player by calling <see cref="SampleProviderExtensions.ToPlayerCompatible"/>.</remarks>
-    [Obsolete($"Prefer using audio processors with the Use methods. Call {nameof(WithUnmanagedProvider)} to set the provider and prevent automatic disposal.", true)]
+    [Obsolete(PreferUse, true)]
     public static AudioPlayer WithProvider(this AudioPlayer player, ISampleProvider? provider)
     {
         player.SampleProvider = provider?.ToPlayerCompatible();
@@ -33,12 +37,12 @@ public static partial class AudioPlayerExtensions
     /// <param name="provider">The provider to set.</param>
     /// <returns>The <paramref name="player"/> itself.</returns>
     /// <seealso cref="WithProvider(SecretLabNAudio.Core.AudioPlayer,NAudio.Wave.ISampleProvider?)"/>
-    [Obsolete("", true)] // TODO: add error message
+    [Obsolete(PreferUse, true)]
     public static AudioPlayer WithProvider(this AudioPlayer player, IWaveProvider? provider)
         => player.WithProvider(provider?.ToSampleProvider());
 
     /// <summary>
-    /// Sets the provider of the <see cref="AudioPlayer"/> to be a <see cref="Providers.BufferedSampleProvider"/>, reading ahead by <paramref name="seconds"/>.
+    /// Sets the provider of the <see cref="AudioPlayer"/> to be a <see cref="BufferedSampleProvider"/>, reading ahead by <paramref name="seconds"/>.
     /// </summary>
     /// <param name="player">The player to buffer.</param>
     /// <param name="seconds">The number of seconds to buffer ahead.</param>

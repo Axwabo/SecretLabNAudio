@@ -1,4 +1,4 @@
-﻿using SecretLabNAudio.Core.Processors;
+﻿using SecretLabNAudio.Core.Extensions.Providers;
 
 namespace SecretLabNAudio.Core.Extensions;
 
@@ -10,20 +10,9 @@ public static class WaveProviderExtensions
     extension(IWaveProvider waveProvider)
     {
 
-        /// <summary>
-        /// Converts the wave provider to an <see cref="AudioPlayer"/>-compatible <see cref="ISampleProvider"/>.
-        /// </summary>
-        /// <returns>An <see cref="ISampleProvider"/> that is compatible with the <see cref="AudioPlayer"/>.</returns>
-        /// <seealso cref="SampleProviderExtensions.ToPlayerCompatible"/>
-        public ISampleProvider ToPlayerCompatible()
-            => waveProvider.ToSampleProvider().ToPlayerCompatible();
-
-        public IAudioProcessor ToCompatibleProcessor()
-            => waveProvider is not WaveStream stream
-                ? new SampleProviderWrapper(waveProvider.ToSampleProvider()).ToPlayerCompatible()
-                : new StreamAudioProcessor(stream).ToPlayerCompatible();
-
-        public ProcessorChain ToCompatibleChain() => waveProvider.ToCompatibleProcessor().ToChain();
+        /// <inheritdoc cref="NonProcessorExtensions.ToPlayerCompatible(IWaveProvider)"/>
+        [Obsolete($"Use Providers.{nameof(NonProcessorExtensions)}.{nameof(NonProcessorExtensions.ToPlayerCompatible)} instead.", true)]
+        public ISampleProvider ToPlayerCompatible() => NonProcessorExtensions.ToPlayerCompatible(waveProvider);
 
     }
 

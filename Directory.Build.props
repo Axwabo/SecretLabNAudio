@@ -32,7 +32,6 @@
         <Using Include="LabApi.Features.Wrappers" />
         <Using Include="Mirror" />
         <Using Include="NAudio.Wave" />
-        <Using Include="SecretLabNAudio.Core.Extensions" />
         <Using Include="UnityEngine" />
         <Using Include="UnityEngine.Object" Alias="Object" />
     </ItemGroup>
