@@ -2,7 +2,7 @@ using NAudio.Wave.SampleProviders;
 using SecretLabNAudio.Core.Processors;
 using SecretLabNAudio.Core.Providers;
 
-namespace SecretLabNAudio.Core.Extensions;
+namespace SecretLabNAudio.Core.Extensions.Processors;
 
 public static class ProcessorChainExtensions
 {

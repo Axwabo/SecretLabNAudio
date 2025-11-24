@@ -1,5 +1,6 @@
 ﻿using System.Buffers;
 using System.Collections.Generic;
+using SecretLabNAudio.Core.Processors;
 using SecretLabNAudio.Core.Providers;
 
 namespace SecretLabNAudio.Core.Extensions;
@@ -13,6 +14,7 @@ public static class WaveStreamExtensions
     /// <summary>Wraps the stream in a <see cref="LoopingWaveProvider"/>.</summary>
     /// <param name="stream">The <see cref="WaveStream"/> to wrap.</param>
     /// <returns>The <see cref="LoopingWaveProvider"/> wrapping the stream.</returns>
+    [Obsolete($"Create a {nameof(StreamAudioProcessor)} and set {nameof(StreamAudioProcessor.Loop)} to true instead.", true)]
     public static LoopingWaveProvider Loop(this WaveStream stream) => new(stream);
 
     /// <summary>

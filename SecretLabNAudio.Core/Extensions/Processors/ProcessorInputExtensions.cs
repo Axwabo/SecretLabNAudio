@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using SecretLabNAudio.Core.Processors;
 
-namespace SecretLabNAudio.Core.Extensions;
+namespace SecretLabNAudio.Core.Extensions.Processors;
 
 public static class ProcessorInputExtensions
 {
