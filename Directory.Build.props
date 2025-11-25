@@ -15,16 +15,16 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Reference Include="mscorlib" Private="false" />
-        <Reference Include="System" Private="false" />
-        <Reference Include="System.Core" Private="false" />
-        <Reference Include="System.Data" Private="false" />
+        <Reference Include="mscorlib" />
+        <Reference Include="System" />
+        <Reference Include="System.Core" />
+        <Reference Include="System.Data" />
     </ItemGroup>
 
     <ItemGroup>
-        <Reference Include="Assembly-CSharp" Private="false" />
-        <Reference Include="Mirror" Private="false" />
-        <Reference Include="UnityEngine.CoreModule" Private="false" />
+        <Reference Include="Assembly-CSharp" />
+        <Reference Include="Mirror" />
+        <Reference Include="UnityEngine.CoreModule" />
     </ItemGroup>
 
     <ItemGroup>
