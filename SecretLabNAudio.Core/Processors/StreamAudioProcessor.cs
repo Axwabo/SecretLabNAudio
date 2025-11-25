@@ -1,6 +1,6 @@
 namespace SecretLabNAudio.Core.Processors;
 
-public class StreamAudioProcessor : IAudioProcessor, ISeekable, ILoopable
+public sealed class StreamAudioProcessor : IAudioProcessor, ISeekable, ILoopable
 {
 
     private ISampleProvider? _provider;

@@ -1,6 +1,9 @@
 namespace SecretLabNAudio.Core.Processors;
 
-public class SampleProviderWrapper : IAudioProcessor
+/// <summary>
+/// A simple wrapper for the <see cref="ISampleProvider"/> class, optionally disposing of the related resource.
+/// </summary>
+public sealed class SampleProviderWrapper : IAudioProcessor
 {
 
     private ISampleProvider? _provider;

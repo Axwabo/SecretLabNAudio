@@ -32,7 +32,7 @@ public static class SampleProviderExtensions
         /// <param name="other">The sample provider to queue.</param>
         /// <returns>A <see cref="SampleProviderQueue"/> containing both providers.</returns>
         /// <remarks>The <paramref name="provider"/> is reused if it's already a <see cref="SampleProviderQueue"/>.</remarks>
-        [Obsolete($"Safe cast or call the constructor instead, then invoke {nameof(SampleProviderQueue.Enqueue)}.", true)]
+        [Obsolete($"Prefer using the AudioQueue class. Safe cast or call the constructor instead, then invoke {nameof(SampleProviderQueue.Enqueue)}.", true)]
         public SampleProviderQueue Queue(ISampleProvider other)
         {
             var queue = provider as SampleProviderQueue ?? new SampleProviderQueue(provider.WaveFormat);

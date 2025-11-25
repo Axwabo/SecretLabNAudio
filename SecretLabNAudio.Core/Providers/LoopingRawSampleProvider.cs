@@ -3,7 +3,7 @@
 namespace SecretLabNAudio.Core.Providers;
 
 /// <summary>Wraps a <see cref="RawSourceSampleProvider"/> and restart it when reaching the end.</summary>
-public sealed class LoopingRawSampleProvider : IAudioProcessor, ISeekable, ILoopable
+public sealed class LoopingRawSampleProvider : ISampleProvider, ISeekable, ILoopable
 {
 
     /// <summary>The <see cref="RawSourceSampleProvider"/> to loop.</summary>
@@ -46,8 +46,5 @@ public sealed class LoopingRawSampleProvider : IAudioProcessor, ISeekable, ILoop
 
         return total;
     }
-
-    /// <inheritdoc />
-    public void Dispose() => Provider.Dispose();
 
 }

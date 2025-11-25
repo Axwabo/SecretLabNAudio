@@ -1,7 +1,6 @@
 using SecretLabNAudio.Core.Extensions.Processors;
 using SecretLabNAudio.Core.FileReading;
 using SecretLabNAudio.Core.Processors;
-using SecretLabNAudio.Core.Providers;
 
 namespace SecretLabNAudio.Core.Extensions;
 
@@ -27,16 +26,16 @@ public static partial class AudioPlayerExtensions
             return player.Use(chain);
         }
 
-        public AudioPlayer UseQueue() => player.Use(new SampleProviderQueue(AudioPlayer.SupportedFormat));
+        public AudioPlayer UseQueue() => player.Use(new AudioQueue(AudioPlayer.SupportedFormat));
 
         public AudioPlayer UseShortClip(string name, bool loop = false)
             => ShortClipCache.TryGet(name, out var provider)
-                ? player.Use(loop ? provider.Loop() : provider)
+                ? player.WithUnmanagedProvider(loop ? provider.Loop() : provider)
                 : player;
 
         public AudioPlayer UseExactShortClip(string name, bool loop = false)
             => ShortClipCache.TryGet(name, out var provider, false)
-                ? player.Use(loop ? provider.Loop() : provider)
+                ? player.WithUnmanagedProvider(loop ? provider.Loop() : provider)
                 : player;
 
     }
