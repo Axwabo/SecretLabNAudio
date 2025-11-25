@@ -4,6 +4,7 @@ public sealed class StreamAudioProcessor : IAudioProcessor, ISeekable, ILoopable
 {
 
     private ISampleProvider? _provider;
+    private IDisposable? _disposable;
 
     public WaveStream Stream
     {
@@ -28,13 +29,14 @@ public sealed class StreamAudioProcessor : IAudioProcessor, ISeekable, ILoopable
     /// <inheritdoc />
     public bool Loop { get; set; }
 
-    public StreamAudioProcessor(WaveStream stream) : this(stream, stream.ToSampleProvider())
+    public StreamAudioProcessor(WaveStream stream, bool isOwned = true) : this(stream, stream.ToSampleProvider(), isOwned)
     {
     }
 
-    public StreamAudioProcessor(WaveStream stream, ISampleProvider provider)
+    public StreamAudioProcessor(WaveStream stream, ISampleProvider provider, bool isOwned = true)
     {
         _provider = provider;
+        _disposable = isOwned ? stream : null;
         Stream = stream;
     }
 
@@ -76,10 +78,8 @@ public sealed class StreamAudioProcessor : IAudioProcessor, ISeekable, ILoopable
     /// <inheritdoc />
     public void Dispose()
     {
-        if (_provider == null)
-            return;
-        Stream.Dispose();
-        Stream = null!;
+        _disposable?.Dispose();
+        _disposable = null;
         _provider = null;
     }
 

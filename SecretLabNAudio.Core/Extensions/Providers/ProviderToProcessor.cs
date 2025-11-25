@@ -21,12 +21,12 @@ public static class ProviderToProcessor
     extension(IWaveProvider provider)
     {
 
-        public IAudioProcessor ToCompatibleProcessor()
+        public IAudioProcessor ToCompatibleProcessor(bool isOwned = true)
             => provider is not WaveStream stream
                 ? AudioProcessorExtensions.ToPlayerCompatible(new SampleProviderWrapper(provider.ToSampleProvider()))
-                : AudioProcessorExtensions.ToPlayerCompatible(new StreamAudioProcessor(stream));
+                : AudioProcessorExtensions.ToPlayerCompatible(new StreamAudioProcessor(stream, isOwned));
 
-        public ProcessorChain ToCompatibleChain() => provider.ToCompatibleProcessor().ToChain();
+        public ProcessorChain ToCompatibleChain(bool isOwned = true) => provider.ToCompatibleProcessor(isOwned).ToChain();
 
     }
 
