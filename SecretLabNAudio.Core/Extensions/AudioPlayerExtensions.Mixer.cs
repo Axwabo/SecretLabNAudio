@@ -16,6 +16,12 @@ public static partial class AudioPlayerExtensions
             _ => default
         };
 
+        public AudioPlayer MixAnonymous(ISampleProvider input, bool isOwned = true)
+            => player.UseMixer(mixer => mixer.AddAnonymous(input, isOwned));
+
+        public AudioPlayer MixNamed(ISampleProvider input, string inputName, bool isOwned = true)
+            => player.UseMixer(mixer => mixer.AddNamed(input, inputName, isOwned));
+
         public AudioPlayer MixFileAnonymous(string path, bool loop = false)
             => player.UseMixer(mixer => mixer.AddFileAnonymous(path, loop));
 

@@ -1,3 +1,4 @@
+using NAudio.Wave.SampleProviders;
 using SecretLabNAudio.Core.Extensions.Processors;
 using SecretLabNAudio.Core.FileReading;
 using SecretLabNAudio.Core.Processors;
@@ -26,9 +27,25 @@ public static partial class AudioPlayerExtensions
             return player.Use(chain);
         }
 
-        public AudioPlayer UseQueue() => player.Use(new AudioQueue(AudioPlayer.SupportedFormat));
+        public AudioPlayer UseQueue()
+        {
+            var queue = new AudioQueue(AudioPlayer.SupportedFormat);
+            if (player.SampleProvider is not Mixer mixer)
+                return player.Use(queue);
+            mixer.AddAnonymous(queue);
+            return player;
+        }
 
-        public AudioPlayer UseMixer() => player.Use(new Mixer(AudioPlayer.SupportedFormat));
+        public AudioPlayer UseMixer()
+        {
+            var mixer = player.Mixer ?? new Mixer(AudioPlayer.SupportedFormat);
+            if (player.SampleProvider is MixingSampleProvider mixingSampleProvider)
+                foreach (var provider in mixingSampleProvider.MixerInputs)
+                    mixer.AddAnonymous(provider, false);
+            else if (player.SampleProvider is not Mixer and { } provider)
+                mixer.AddAnonymous(provider, provider is IAudioProcessor);
+            return player.Use(mixer);
+        }
 
         public AudioPlayer UseMixer(Action<Mixer> mix)
         {

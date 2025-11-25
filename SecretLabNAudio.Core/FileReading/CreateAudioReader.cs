@@ -14,15 +14,20 @@ public static class CreateAudioReader
     private static AudioReaderFactoryResult Result(Stream source, string type, bool closeOnDispose)
         => AudioReaderFactoryManager.GetFactory(type).FromStream(source, closeOnDispose);
 
-    private static WaveStream GetStream(this AudioReaderFactoryResult result, string fileType)
-        => result.Stream ?? throw new NotSupportedException($"Factory for {fileType} did not return a WaveStream");
-
-    private static ISampleProvider GetProvider(this AudioReaderFactoryResult result, string fileType, bool convertStream) => result switch
+    extension(AudioReaderFactoryResult result)
     {
-        (_, { } provider) => provider,
-        ({ } stream, _) when convertStream => stream.ToSampleProvider(),
-        _ => throw new NotSupportedException($"Factory for {fileType} did not return a SampleProvider")
-    };
+
+        private WaveStream GetStream(string fileType)
+            => result.Stream ?? throw new NotSupportedException($"Factory for {fileType} did not return a WaveStream");
+
+        private ISampleProvider GetProvider(string fileType, bool convertStream) => result switch
+        {
+            (_, { } provider) => provider,
+            ({ } stream, _) when convertStream => stream.ToSampleProvider(),
+            _ => throw new NotSupportedException($"Factory for {fileType} did not return a SampleProvider")
+        };
+
+    }
 
     /// <summary>
     /// Creates a <see cref="WaveStream"/> from the given file path.

@@ -13,23 +13,28 @@ public static class TryCreateAudioReader
             ? create(factory)
             : default;
 
-    private static bool TryGetStream(this AudioReaderFactoryResult result, [NotNullWhen(true)] out WaveStream? stream)
+    extension(AudioReaderFactoryResult result)
     {
-        stream = result.Stream;
-        return stream != null;
-    }
 
-    private static bool StreamAndProvider(this AudioReaderFactoryResult result, [NotNullWhen(true)] out WaveStream? stream, [NotNullWhen(true)] out ISampleProvider? provider)
-    {
-        if (result is ({ } resultStream, { } resultProvider))
+        private bool TryGetStream([NotNullWhen(true)] out WaveStream? stream)
         {
-            (stream, provider) = (resultStream, resultProvider);
-            return true;
+            stream = result.Stream;
+            return stream != null;
         }
 
-        stream = null;
-        provider = null;
-        return false;
+        private bool StreamAndProvider([NotNullWhen(true)] out WaveStream? stream, [NotNullWhen(true)] out ISampleProvider? provider)
+        {
+            if (result is ({ } resultStream, { } resultProvider))
+            {
+                (stream, provider) = (resultStream, resultProvider);
+                return true;
+            }
+
+            stream = null;
+            provider = null;
+            return false;
+        }
+
     }
 
     /// <summary>

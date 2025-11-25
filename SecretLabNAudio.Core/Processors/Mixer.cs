@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using NAudio.Utils;
 using SecretLabNAudio.Core.Extensions.Processors;
 
 namespace SecretLabNAudio.Core.Processors;
@@ -7,6 +8,9 @@ public delegate void MixerInputEnded(MixerInput input, ref bool keep);
 
 public sealed class Mixer : IAudioProcessor
 {
+
+    [ThreadStatic]
+    private static float[]? _mixerBuffer;
 
     private readonly List<MixerInput> _inputs = [];
 
@@ -30,17 +34,26 @@ public sealed class Mixer : IAudioProcessor
 
     public event MixerInputEnded? InputEnded;
 
-    public void AddNamed(ISampleProvider input, string name, bool isOwned = true) => _inputs.Add(new MixerInput(name, input, isOwned));
+    public Mixer AddNamed(ISampleProvider input, string name, bool isOwned = true)
+    {
+        _inputs.Add(new MixerInput(name, input, isOwned));
+        return this;
+    }
 
-    public void AddAnonymous(ISampleProvider input, bool isOwned = true) => _inputs.Add(new MixerInput(null, input, isOwned));
+    public Mixer AddAnonymous(ISampleProvider input, bool isOwned = true)
+    {
+        _inputs.Add(new MixerInput(null, input, isOwned));
+        return this;
+    }
 
-    public void Remove(MixerInput input)
+    public Mixer Remove(MixerInput input)
     {
         if (_inputs.Remove(input))
             input.Dispose();
+        return this;
     }
 
-    public void Remove(ISampleProvider provider)
+    public Mixer Remove(ISampleProvider provider)
     {
         for (var i = 0; i < _inputs.Count; i++)
         {
@@ -49,23 +62,31 @@ public sealed class Mixer : IAudioProcessor
             Remove(i);
             break;
         }
+
+        return this;
     }
 
-    public void RemoveAllByName(string name, StringComparison comparison = StringComparison.OrdinalIgnoreCase)
+    public Mixer RemoveAllByName(string name, StringComparison comparison = StringComparison.OrdinalIgnoreCase)
     {
         for (var i = _inputs.Count - 1; i >= 0; i--)
             if (string.Equals(name, _inputs[i].Name, comparison))
                 Remove(i);
+        return this;
     }
 
-    public void RemoveAll(Func<MixerInput, bool> match)
+    public Mixer RemoveAll(Func<MixerInput, bool> match)
     {
         for (var i = _inputs.Count - 1; i >= 0; i--)
             if (match(_inputs[i]))
                 Remove(i);
+        return this;
     }
 
-    public void RemoveAll() => _inputs.DisposeAllAndClear();
+    public Mixer RemoveAll()
+    {
+        _inputs.DisposeAllAndClear();
+        return this;
+    }
 
     private void Remove(int index)
     {
@@ -76,29 +97,35 @@ public sealed class Mixer : IAudioProcessor
     /// <inheritdoc />
     public int Read(float[] buffer, int offset, int count)
     {
-        var read = 0;
+        _mixerBuffer = BufferHelpers.Ensure(_mixerBuffer, count);
+        var total = 0;
         for (var i = _inputs.Count - 1; i >= 0; i--)
         {
             var input = _inputs[i];
             var provider = input.Provider;
-            var readFromProvider = provider.Read(buffer, offset, count);
-            if (readFromProvider != 0)
-            {
-                read = Math.Max(read, readFromProvider);
+            var read = provider.Read(_mixerBuffer, offset, count);
+            MixInto(buffer, offset, read, total);
+            var ended = read < total;
+            total = Math.Max(total, read);
+            if (!ended)
                 continue;
-            }
-
-            var keep = false;
-            InputEnded?.Invoke(input, ref keep);
-            if (keep)
-                continue;
-            input.Dispose();
-            _inputs.RemoveAt(i);
+            InputEnded?.Invoke(input, ref ended);
+            if (ended)
+                Remove(input);
         }
 
-        if (ReadFully && read < count)
-            Array.Clear(buffer, read, count - read);
-        return read;
+        if (ReadFully && total < count)
+            Array.Clear(buffer, total, count - total);
+        return total;
+    }
+
+    private static void MixInto(float[] buffer, int offset, int read, int total)
+    {
+        for (var j = 0; j < read; j++)
+            if (j <= total)
+                buffer[offset + j] += _mixerBuffer![j];
+            else
+                buffer[offset + j] = _mixerBuffer![j];
     }
 
     /// <inheritdoc />

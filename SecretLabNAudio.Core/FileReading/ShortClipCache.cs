@@ -146,16 +146,21 @@ public static class ShortClipCache
         }
     }
 
-    private static string FileName(this string path, bool trimExtension)
-        => trimExtension
-            ? Path.GetFileNameWithoutExtension(path)
-            : Path.GetFileName(path);
-
-    private static string RemoveExtension(this string name, bool trimExtension)
+    extension(string path)
     {
-        if (trimExtension)
-            name = Path.ChangeExtension(name, null);
-        return name;
+
+        private string FileName(bool trimExtension)
+            => trimExtension
+                ? Path.GetFileNameWithoutExtension(path)
+                : Path.GetFileName(path);
+
+        private string RemoveExtension(bool trimExtension)
+        {
+            if (trimExtension)
+                path = Path.ChangeExtension(path, null);
+            return path;
+        }
+
     }
 
 }
