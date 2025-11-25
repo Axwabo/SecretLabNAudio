@@ -17,16 +17,24 @@ public static partial class AudioPlayerExtensions
             return player;
         }
 
-        public AudioPlayer UseFile(string path) => player.Use(CreateAudioProcessor.FromFile(path));
+        public AudioPlayer UseFile(string path, bool loop = false) => player.Use(StreamAudioProcessor.FromFile(path, loop));
 
-        public AudioPlayer UseFile(string path, Action<ProcessorChain> process)
+        public AudioPlayer UseFile(string path, Action<ProcessorChain> process, bool loop = false)
         {
-            var chain = CreateAudioProcessor.FromFile(path).ToChain();
+            var chain = StreamAudioProcessor.FromFile(path, loop).ToChain();
             process(chain);
             return player.Use(chain);
         }
 
         public AudioPlayer UseQueue() => player.Use(new AudioQueue(AudioPlayer.SupportedFormat));
+
+        public AudioPlayer UseMixer() => player.Use(new Mixer(AudioPlayer.SupportedFormat));
+
+        public AudioPlayer UseMixer(Action<Mixer> mix)
+        {
+            mix(player.UseMixer().Mixer!);
+            return player;
+        }
 
         public AudioPlayer UseShortClip(string name, bool loop = false)
             => ShortClipCache.TryGet(name, out var provider)

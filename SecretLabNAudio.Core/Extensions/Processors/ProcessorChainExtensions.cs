@@ -28,6 +28,8 @@ public static class ProcessorChainExtensions
 
         public ProcessorChain ToMono() => chain.SwapTOrLayer<MonoToStereoSampleProvider>(static provider => provider.ToMono());
 
+        public ProcessorChain ToStereo() => chain.SwapTOrLayer<MonoToStereoSampleProvider>(static provider => provider.ToStereo());
+
         public ProcessorChain ToPlayerCompatible()
         {
             var format = chain.Master.WaveFormat;
@@ -37,6 +39,20 @@ public static class ProcessorChainExtensions
                 (false, false) => chain.Pop<WdlResamplingSampleProvider>().ToMono().Resample(AudioPlayer.SampleRate),
                 (true, false) => chain.ToMono(),
                 (false, true) => chain.Resample(AudioPlayer.SampleRate)
+            };
+        }
+
+        public ProcessorChain EnsureFormat(int sampleRate, int channels)
+        {
+            var format = chain.Master.WaveFormat;
+            return (format.SampleRate == sampleRate, format.Channels == channels) switch
+            {
+                (true, true) => chain,
+                (false, false) when channels == 1 => chain.Pop<WdlResamplingSampleProvider>().ToMono().Resample(sampleRate),
+                (false, false) => chain.Pop<MonoToStereoSampleProvider>().Resample(sampleRate).ToStereo(),
+                (true, false) when channels == 1 => chain.ToMono(),
+                (true, false) => chain.ToStereo(),
+                (false, true) => chain.Resample(sampleRate)
             };
         }
 
