@@ -8,30 +8,11 @@ public delegate T ProviderMapper<out T>(ISampleProvider current) where T : ISamp
 public static class ProcessorChainExtensions
 {
 
+    private delegate ProcessorChain MapAndRetrieve(ProcessorChain chain, ProviderMapper mapper, bool isOwned);
+
     /// <param name="chain">The audio processor chain.</param>
     extension(ProcessorChain chain)
     {
-
-        public ProcessorChain Layer<T>(ProviderMapper<T> mapper, out T provider, bool isOwned = true) where T : ISampleProvider
-        {
-            chain.Layer(current => mapper(current), isOwned);
-            provider = (T) chain.Master;
-            return chain;
-        }
-
-        public ProcessorChain Pop<T>() => chain.Master is T ? chain.Pop() : chain;
-
-        public ProcessorChain SwapTOrLayer<T>(ProviderMapper mapper, bool isOwned = true)
-            => chain.Master is T
-                ? chain.Swap(mapper, isOwned)
-                : chain.Layer(mapper, isOwned);
-
-        public ProcessorChain SwapTOrLayer<T>(ProviderMapper<T> mapper, out T provider, bool isOwned = true) where T : ISampleProvider
-        {
-            chain.SwapTOrLayer<T>(current => mapper(current), isOwned);
-            provider = (T) chain.Master;
-            return chain;
-        }
 
         public ProcessorChain Resample(int sampleRate)
             => chain.Master.WaveFormat.SampleRate == sampleRate
@@ -72,7 +53,21 @@ public static class ProcessorChainExtensions
 
         public ProcessorChain Volume(float volume = 1) => chain.SwapTOrLayer<VolumeSampleProvider>(provider => provider.Volume(volume));
 
-        public bool TryGetLayer<T>([NotNullWhen(true)] out ProcessorLayer? layer, [NotNullWhen(true)] out T? provider)
+        public ProcessorChain Volume(out VolumeSampleProvider provider, float volume = 1f) => chain.ConvertAndRetrieve(provider => provider.Volume(volume), out provider);
+
+    }
+
+    extension<T>(ProcessorChain chain)
+    {
+
+        public ProcessorChain Pop() => chain.Master is T ? chain.Pop() : chain;
+
+        public ProcessorChain SwapTOrLayer(ProviderMapper mapper, bool isOwned = true)
+            => chain.Master is T
+                ? chain.Swap(mapper, isOwned)
+                : chain.Layer(mapper, isOwned);
+
+        public bool TryGetLayer([NotNullWhen(true)] out ProcessorLayer? layer, [NotNullWhen(true)] out T? provider)
         {
             foreach (var processorLayer in chain.Layers)
             {
@@ -88,7 +83,28 @@ public static class ProcessorChainExtensions
             return false;
         }
 
-        public bool TryGetLayer<T>([NotNullWhen(true)] out T? layer) => chain.TryGetLayer(out _, out layer);
+        public bool TryGetLayer([NotNullWhen(true)] out T? layer) => chain.TryGetLayer(out _, out layer);
+
+    }
+
+    extension<T>(ProcessorChain chain) where T : ISampleProvider
+    {
+
+        private static ProcessorChain LayerAndRetrieve(ProcessorChain processorChain, ProviderMapper providerMapper, bool owned)
+            => processorChain.Layer(providerMapper, owned);
+
+        public ProcessorChain Layer(ProviderMapper<T> mapper, out T provider, bool isOwned = true)
+            => chain.ConvertAndRetrieve(mapper, LayerAndRetrieve<T>, out provider, isOwned);
+
+        public ProcessorChain SwapTOrLayer(ProviderMapper<T> mapper, out T provider, bool isOwned = true)
+            => chain.ConvertAndRetrieve(mapper, SwapTOrLayer<T>, out provider, isOwned);
+
+        private ProcessorChain ConvertAndRetrieve(ProviderMapper<T> mapper, MapAndRetrieve mapAndRetrieve, out T provider, bool isOwned)
+        {
+            mapAndRetrieve(chain, current => mapper(current), isOwned);
+            provider = (T) chain.Master;
+            return chain;
+        }
 
     }
 
