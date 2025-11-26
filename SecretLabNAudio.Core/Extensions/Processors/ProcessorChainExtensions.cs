@@ -3,6 +3,8 @@ using SecretLabNAudio.Core.Providers;
 
 namespace SecretLabNAudio.Core.Extensions.Processors;
 
+public delegate T ProviderMapper<out T>(ISampleProvider current) where T : ISampleProvider;
+
 public static class ProcessorChainExtensions
 {
 
@@ -10,12 +12,26 @@ public static class ProcessorChainExtensions
     extension(ProcessorChain chain)
     {
 
+        public ProcessorChain Layer<T>(ProviderMapper<T> mapper, out T provider, bool isOwned = true) where T : ISampleProvider
+        {
+            chain.Layer(current => mapper(current), isOwned);
+            provider = (T) chain.Master;
+            return chain;
+        }
+
         public ProcessorChain Pop<T>() => chain.Master is T ? chain.Pop() : chain;
 
         public ProcessorChain SwapTOrLayer<T>(ProviderMapper mapper, bool isOwned = true)
             => chain.Master is T
                 ? chain.Swap(mapper, isOwned)
                 : chain.Layer(mapper, isOwned);
+
+        public ProcessorChain SwapTOrLayer<T>(ProviderMapper<T> mapper, out T provider, bool isOwned = true) where T : ISampleProvider
+        {
+            chain.SwapTOrLayer<T>(current => mapper(current), isOwned);
+            provider = (T) chain.Master;
+            return chain;
+        }
 
         public ProcessorChain Resample(int sampleRate)
             => chain.Master.WaveFormat.SampleRate == sampleRate
@@ -54,7 +70,7 @@ public static class ProcessorChainExtensions
 
         public ProcessorChain Buffer(double seconds) => chain.SwapTOrLayer<BufferedSampleProvider>(provider => new BufferedSampleProvider(provider, seconds));
 
-        public ProcessorChain Volume(float volume) => chain.SwapTOrLayer<VolumeSampleProvider>(provider => provider.Volume(volume));
+        public ProcessorChain Volume(float volume = 1) => chain.SwapTOrLayer<VolumeSampleProvider>(provider => provider.Volume(volume));
 
         public bool TryGetLayer<T>([NotNullWhen(true)] out ProcessorLayer? layer, [NotNullWhen(true)] out T? provider)
         {

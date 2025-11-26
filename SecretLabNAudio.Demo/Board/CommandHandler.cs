@@ -23,7 +23,7 @@ internal static class CommandHandler
             return;
         }
 
-        if (!TryCreateAudioReader.Stream(path, out var stream))
+        if (!TryCreateAudioProcessor.FromFile(path, out var processor))
         {
             ev.Reply("DJ#Failed to create audio stream!", false);
             return;
@@ -35,7 +35,7 @@ internal static class CommandHandler
             return;
         }
 
-        DiscJockeyBoard.Instance.Play(player, stream, Path.GetFileName(path));
+        DiscJockeyBoard.Instance.Play(player, processor, Path.GetFileName(path));
         ev.Reply("DJ#Playing...", true);
     }
 

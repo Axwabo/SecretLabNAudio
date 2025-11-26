@@ -1,5 +1,6 @@
 using SecretLabNAudio.Core.Extensions;
 using SecretLabNAudio.Core.Pools;
+using SecretLabNAudio.Core.Processors;
 
 namespace SecretLabNAudio.Demo.Board;
 
@@ -46,10 +47,10 @@ public sealed class DiscJockeyBoard : MonoBehaviour
         Instance = board.GameObject.AddComponent<DiscJockeyBoard>();
         var transform = board.Transform;
 
-        Instance._speaker = AudioPlayerPool.Rent(StageSettings, stage.Transform)
+        Instance._player = AudioPlayerPool.Rent(StageSettings, stage.Transform)
             .WithFilteredSendEngine(p => !p.IsAlive || p.IsOutside())
             .WithOutputMonitor(visualizer);
-        Outside.PlaceSpeakers(Instance._speaker.Id);
+        Outside.PlaceSpeakers(Instance._player.Id);
 
         Instance._music = Slider.Create(transform, Vector3.right * 0.4f, SliderRotation, "🎵", "Music");
         Instance._speed = Slider.Create(transform, Vector3.right * 0.5f, SliderRotation, "⏩", "Speed", 0);
@@ -62,13 +63,13 @@ public sealed class DiscJockeyBoard : MonoBehaviour
 
     public static bool CanHearStageSpeaker(Player player) => Vector3.Distance(StagePosition, player.Camera.position) <= StageRange;
 
-    private DiscJockeySampleProvider? _provider;
+    private DiscJockeyProcessor? _provider;
 
     public Player? Owner { get; private set; }
 
 #nullable disable
 
-    private AudioPlayer _speaker;
+    private AudioPlayer _player;
 
     private Slider _music;
 
@@ -104,7 +105,7 @@ public sealed class DiscJockeyBoard : MonoBehaviour
         DisposeProvider();
     }
 
-    public void Play(Player player, WaveStream stream, string label)
+    public void Play(Player player, StreamAudioProcessor stream, string label)
     {
         var ownerChanged = Owner != player;
         if (Owner != null && ownerChanged)
@@ -114,14 +115,14 @@ public sealed class DiscJockeyBoard : MonoBehaviour
             Outside.MuteSpeakers(player);
 
         DisposeProvider();
-        _provider = new DiscJockeySampleProvider(stream, player);
+        _player.Use(_provider = new DiscJockeyProcessor(stream, player));
         UpdateMusic(_music.Value);
         UpdateSpeed(_speed.Value);
         UpdateVoice(_voice.Value);
         UpdatePitch(_pitch.Value);
         UpdateMaster(_master.Value);
-        _speaker.SampleProvider = _provider;
-        _speaker.ClearBuffer();
+        _player.SampleProvider = _provider;
+        _player.ClearBuffer();
         _disc.Provider = _provider;
         _disc.Label = label;
         Outside.RunEffects(destroyCancellationToken);

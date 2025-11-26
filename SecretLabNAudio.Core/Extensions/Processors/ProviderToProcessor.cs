@@ -1,6 +1,4 @@
-using SecretLabNAudio.Core.Extensions.Processors;
-
-namespace SecretLabNAudio.Core.Extensions.Providers;
+namespace SecretLabNAudio.Core.Extensions.Processors;
 
 public static class ProviderToProcessor
 {

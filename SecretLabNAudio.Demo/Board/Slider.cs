@@ -95,8 +95,7 @@ public sealed class Slider : MonoBehaviour
     {
         if (_holder == null)
             return;
-        // NW forgot to add IsDestroyed to the Player wrapper
-        if (!_holder.ReferenceHub)
+        if (!_holder.IsDestroyed)
         {
             Release(_holder);
             return;

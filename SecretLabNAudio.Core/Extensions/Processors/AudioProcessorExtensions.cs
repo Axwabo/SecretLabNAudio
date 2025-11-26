@@ -18,6 +18,8 @@ public static class AudioProcessorExtensions
                     return true;
                 case ProcessorChain {Source: IAudioProcessor source}:
                     return source.TryGetSourceAs(out result);
+                case Mixer mixer when mixer.TryGetSingleMixerInput(out IAudioProcessor? mixerProcessor):
+                    return mixerProcessor.TryGetSourceAs(out result);
                 case Mixer mixer:
                     return mixer.TryGetSingleMixerInput(out result);
                 default:
@@ -38,6 +40,8 @@ public static class AudioProcessorExtensions
                     return true;
                 case ProcessorChain {Master: IAudioProcessor master}:
                     return master.TryGetMasterAs(out result);
+                case Mixer mixer when mixer.TryGetSingleMixerInput(out IAudioProcessor? mixerProcessor):
+                    return mixerProcessor.TryGetMasterAs(out result);
                 case Mixer mixer:
                     return mixer.TryGetSingleMixerInput(out result);
                 default:
@@ -72,6 +76,10 @@ public static class AudioProcessorExtensions
                 : processor.ToChain(isOwned).ToFormat(sampleRate, channels);
 
         public ProcessorChain ToChain(bool isOwned = true) => processor as ProcessorChain ?? new ProcessorChain(processor, isOwned);
+
+        public Mixer MixWith(ISampleProvider other, bool isOtherOwned = true, bool isThisOwned = true)
+            => (processor as Mixer ?? new Mixer(processor, isThisOwned))
+                .AddAnonymous(other, isOtherOwned);
 
     }
 
