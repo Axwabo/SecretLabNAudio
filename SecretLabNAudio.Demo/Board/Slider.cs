@@ -95,7 +95,7 @@ public sealed class Slider : MonoBehaviour
     {
         if (_holder == null)
             return;
-        if (!_holder.IsDestroyed)
+        if (_holder.IsDestroyed)
         {
             Release(_holder);
             return;
