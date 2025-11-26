@@ -1,5 +1,4 @@
 ﻿using SecretLabNAudio.Core.Extensions;
-using SecretLabNAudio.Core.Processors;
 
 namespace SecretLabNAudio.Core.Providers;
 

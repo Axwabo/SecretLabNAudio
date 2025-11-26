@@ -1,7 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System.IO;
-
-namespace SecretLabNAudio.Core.FileReading;
+﻿namespace SecretLabNAudio.Core.FileReading;
 
 /// <summary>Methods for creating <see cref="WaveStream"/>s and <see cref="ISampleProvider"/>s with the try pattern.</summary>
 /// <remarks>This class does not protect against nonexistent files.</remarks>

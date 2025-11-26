@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using SecretLabNAudio.Core.Extensions;
+﻿using SecretLabNAudio.Core.Extensions;
 using VoiceChat.Playbacks;
 
 namespace SecretLabNAudio.Core.Pools;

@@ -1,6 +1,4 @@
-﻿using VoiceChat.Networking;
-
-namespace SecretLabNAudio.Core.SendEngines;
+﻿namespace SecretLabNAudio.Core.SendEngines;
 
 /// <summary>The base class for broadcasting <see cref="AudioMessage"/>s.</summary>
 public class SendEngine

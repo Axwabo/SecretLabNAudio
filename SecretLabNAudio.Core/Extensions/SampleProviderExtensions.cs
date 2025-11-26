@@ -28,10 +28,10 @@ public static class SampleProviderExtensions
         [Obsolete("Call the constructor instead.", true)]
         public BufferedSampleProvider Buffer(double seconds) => new(provider, seconds);
 
-        /// <summary>Queues the <paramref name="other"/> sample provider after <paramref name="provider"/>.</summary>
+        /// <summary>Queues the <paramref name="other"/> sample provider after provider.</summary>
         /// <param name="other">The sample provider to queue.</param>
         /// <returns>A <see cref="SampleProviderQueue"/> containing both providers.</returns>
-        /// <remarks>The <paramref name="provider"/> is reused if it's already a <see cref="SampleProviderQueue"/>.</remarks>
+        /// <remarks>The provider is reused if it's already a <see cref="SampleProviderQueue"/>.</remarks>
         [Obsolete($"Prefer using the AudioQueue class. Safe cast or call the constructor instead, then invoke {nameof(SampleProviderQueue.Enqueue)}.", true)]
         public SampleProviderQueue Queue(ISampleProvider other)
         {
@@ -43,7 +43,7 @@ public static class SampleProviderExtensions
         /// <summary>Sets the volume of the sample provider.</summary>
         /// <param name="volume">The volume to set.</param>
         /// <returns>The original or a new <see cref="VolumeSampleProvider"/> with the specified volume.</returns>
-        /// <remarks>This method returns the <paramref name="provider"/> itself if it's a <see cref="VolumeSampleProvider"/>.</remarks>
+        /// <remarks>This method returns the provider itself if it's a <see cref="VolumeSampleProvider"/>.</remarks>
         public VolumeSampleProvider Volume(float volume = 1)
         {
             if (provider is not VolumeSampleProvider volumeProvider)

@@ -1,6 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
-using SecretLabNAudio.Core.Processors;
-
 namespace SecretLabNAudio.Core.Extensions.Processors;
 
 public static class AudioProcessorExtensions

@@ -1,5 +1,3 @@
-using SecretLabNAudio.Core.Processors;
-
 namespace SecretLabNAudio.Core.Extensions;
 
 public static partial class AudioPlayerExtensions

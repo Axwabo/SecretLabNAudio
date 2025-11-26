@@ -1,4 +1,3 @@
-using System.IO;
 using System.Linq;
 using NAudio.Wave.SampleProviders;
 using SecretLabNAudio.Core.FileReading;
@@ -17,7 +16,7 @@ public static partial class AudioPlayerExtensions
         /// Adds a mixer input to the <see cref="AudioPlayer"/>.
         /// </summary>
         /// <param name="input">The input to add to the mixer.</param>
-        /// <returns>The <paramref name="player"/> itself.</returns>
+        /// <returns>The player itself.</returns>
         /// <remarks>
         /// The method changes the provider to a new <see cref="MixingSampleProvider"/> only if it's not already that type.
         /// The input is run through <see cref="SampleProviderExtensions.ToPlayerCompatible"/> to ensure the correct wave format.
@@ -37,7 +36,7 @@ public static partial class AudioPlayerExtensions
         /// Removes a mixer input from the <see cref="AudioPlayer"/>.
         /// </summary>
         /// <param name="input">The input to remove from the mixer.</param>
-        /// <returns>The <paramref name="player"/> itself.</returns>
+        /// <returns>The player itself.</returns>
         /// <remarks>No operation is performed if the <see cref="AudioPlayer.SampleProvider"/> is not a <see cref="MixingSampleProvider"/>.</remarks>
         /// <seealso cref="AddMixerInput(SecretLabNAudio.Core.AudioPlayer,ISampleProvider)"/>
         /// <seealso cref="MixingSampleProvider.RemoveMixerInput"/>
@@ -51,7 +50,7 @@ public static partial class AudioPlayerExtensions
         /// <summary>
         /// Removes all mixer inputs from the <see cref="AudioPlayer"/>.
         /// </summary>
-        /// <returns>The <paramref name="player"/> itself.</returns>
+        /// <returns>The player itself.</returns>
         /// <remarks>No operation is performed if the <see cref="AudioPlayer.SampleProvider"/> is not a <see cref="MixingSampleProvider"/>.</remarks>
         /// <seealso cref="RemoveMixerInput(AudioPlayer,ISampleProvider)"/>
         /// <seealso cref="MixingSampleProvider.RemoveAllMixerInputs"/>
@@ -69,7 +68,7 @@ public static partial class AudioPlayerExtensions
         /// <param name="removed">The number of removed inputs.</param>
         /// <param name="trimExtension">Whether to trim the file extension from the name.</param>
         /// <param name="ignoreCase">Whether to ignore case when comparing the names.</param>
-        /// <returns>The <paramref name="player"/> itself.</returns>
+        /// <returns>The player itself.</returns>
         [Obsolete("", true)] // TODO: add error message
         public AudioPlayer RemoveMixerInputsByName(string name, out int removed, bool trimExtension = true, bool ignoreCase = true)
         {
@@ -102,7 +101,7 @@ public static partial class AudioPlayerExtensions
         /// <param name="name">The name to search for.</param>
         /// <param name="trimExtension">Whether to trim the file extension from the name.</param>
         /// <param name="ignoreCase">Whether to ignore case when comparing the names.</param>
-        /// <returns>The <paramref name="player"/> itself.</returns>
+        /// <returns>The player itself.</returns>
         [Obsolete("", true)] // TODO: add error message
         public AudioPlayer RemoveMixerInputsByName(string name, bool trimExtension = true, bool ignoreCase = true)
             => player.RemoveMixerInputsByName(name, out _, trimExtension, ignoreCase);
@@ -117,7 +116,7 @@ public static partial class AudioPlayerExtensions
         /// </summary>
         /// <param name="name">The key to search for.</param>
         /// <param name="trimExtension">Whether to trim the file extension from the inputted <paramref name="name"/>.</param>
-        /// <returns>The <paramref name="player"/> itself.</returns>
+        /// <returns>The player itself.</returns>
         [Obsolete("", true)] // TODO: add error message
         public AudioPlayer AddMixerShortClip(string name, bool trimExtension = true)
             => !ShortClipCache.TryGet(name, out var provider, trimExtension)

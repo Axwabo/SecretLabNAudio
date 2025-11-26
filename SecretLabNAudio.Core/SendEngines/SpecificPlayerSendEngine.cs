@@ -1,5 +1,3 @@
-using VoiceChat.Networking;
-
 namespace SecretLabNAudio.Core.SendEngines;
 
 /// <summary>A send engine that targets a specific player.</summary>

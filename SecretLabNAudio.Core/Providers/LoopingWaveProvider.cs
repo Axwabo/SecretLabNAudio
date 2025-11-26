@@ -1,6 +1,4 @@
-﻿using SecretLabNAudio.Core.Processors;
-
-namespace SecretLabNAudio.Core.Providers;
+﻿namespace SecretLabNAudio.Core.Providers;
 
 /// <summary>Wraps a <see cref="WaveStream"/> and restarts it when reaching the end.</summary>
 [Obsolete($"Use {nameof(StreamAudioProcessor)} instead.", true)]

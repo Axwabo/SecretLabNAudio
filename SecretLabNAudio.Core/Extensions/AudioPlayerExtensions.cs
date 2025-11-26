@@ -22,7 +22,7 @@ public static partial class AudioPlayerExtensions
         /// Applies the given <see cref="SpeakerSettings"/> to the <see cref="AudioPlayer"/>.
         /// </summary>
         /// <param name="settings">The settings to apply.</param>
-        /// <returns>The <paramref name="player"/> itself.</returns>
+        /// <returns>The player itself.</returns>
         public AudioPlayer ApplySettings(SpeakerSettings settings)
             => player.PatchSpeaker(SpeakerToyExtensions.ApplySettings, settings);
 
@@ -30,7 +30,7 @@ public static partial class AudioPlayerExtensions
         /// Sets the controller ID of the <see cref="AudioPlayer"/>.
         /// </summary>
         /// <param name="id">The ID to set.</param>
-        /// <returns>The <paramref name="player"/> itself.</returns>
+        /// <returns>The player itself.</returns>
         public AudioPlayer WithId(byte id)
             => player.PatchSpeaker(SpeakerToyExtensions.WithId, id);
 
@@ -38,7 +38,7 @@ public static partial class AudioPlayerExtensions
         /// Sets the volume of the <see cref="AudioPlayer"/>.
         /// </summary>
         /// <param name="volume">The volume to set.</param>
-        /// <returns>The <paramref name="player"/> itself.</returns>
+        /// <returns>The player itself.</returns>
         public AudioPlayer WithVolume(float volume)
             => player.PatchSpeaker(SpeakerToyExtensions.WithVolume, volume);
 
@@ -46,7 +46,7 @@ public static partial class AudioPlayerExtensions
         /// Sets the minimum full volume distance of the <see cref="AudioPlayer"/>.
         /// </summary>
         /// <param name="minDistance">The minimum distance to set.</param>
-        /// <returns>The <paramref name="player"/> itself.</returns>
+        /// <returns>The player itself.</returns>
         /// <seealso cref="SpeakerSettings.MinDistance"/>
         public AudioPlayer WithMinDistance(float minDistance)
             => player.PatchSpeaker(SpeakerToyExtensions.WithMinDistance, minDistance);
@@ -55,7 +55,7 @@ public static partial class AudioPlayerExtensions
         /// Sets the maximum audible distance of the <see cref="AudioPlayer"/>.
         /// </summary>
         /// <param name="maxDistance">The maximum distance to set.</param>
-        /// <returns>The <paramref name="player"/> itself.</returns>
+        /// <returns>The player itself.</returns>
         /// <seealso cref="SpeakerSettings.MaxDistance"/>
         public AudioPlayer WithMaxDistance(float maxDistance)
             => player.PatchSpeaker(SpeakerToyExtensions.WithMaxDistance, maxDistance);
@@ -64,7 +64,7 @@ public static partial class AudioPlayerExtensions
         /// Sets whether the <see cref="AudioPlayer"/> is spatial (3D sound).
         /// /// </summary>
         /// <param name="isSpatial">Whether the player should be spatial.</param>
-        /// <returns>The <paramref name="player"/> itself.</returns>
+        /// <returns>The player itself.</returns>
         public AudioPlayer WithSpatial(bool isSpatial = true)
             => player.PatchSpeaker(SpeakerToyExtensions.WithSpatial, isSpatial);
 
@@ -73,7 +73,7 @@ public static partial class AudioPlayerExtensions
         /// This is different from <see cref="WithVolume"/>, which changes the volume of the <see cref="SpeakerToy"/>.
         /// </summary>
         /// <param name="scalar">The scalar to multiply samples by before encoding. 1 is normal volume, 2 is double volume, 0.5 is half volume, etc.</param>
-        /// <returns>The <paramref name="player"/> itself.</returns>
+        /// <returns>The player itself.</returns>
         /// <remarks>
         /// This can be used to amplify audio without requiring a <see cref="VolumeSampleProvider"/>.
         /// The <see cref="AudioPlayer.OutputMonitor"/> is not affected by this.
@@ -88,7 +88,7 @@ public static partial class AudioPlayerExtensions
         /// Pauses (or unpauses) the <see cref="AudioPlayer"/>.
         /// </summary>
         /// <param name="pause">Whether to pause the player.</param>
-        /// <returns>The <paramref name="player"/> itself.</returns>
+        /// <returns>The player itself.</returns>
         public AudioPlayer Pause(bool pause = true)
         {
             player.IsPaused = pause;
@@ -98,14 +98,14 @@ public static partial class AudioPlayerExtensions
         /// <summary>
         /// Unpauses the <see cref="AudioPlayer"/>.
         /// </summary>
-        /// <returns>The <paramref name="player"/> itself.</returns>
+        /// <returns>The player itself.</returns>
         public AudioPlayer Play() => player.Pause(false);
 
         /// <summary>
         /// Sets the <see cref="AudioPlayer.SendEngine"/> of the <see cref="AudioPlayer"/>.
         /// </summary>
         /// <param name="engine">The engine to send audio with.</param>
-        /// <returns>The <paramref name="player"/> itself.</returns>
+        /// <returns>The player itself.</returns>
         public AudioPlayer WithSendEngine(SendEngine engine)
         {
             player.SendEngine = engine;
@@ -116,7 +116,7 @@ public static partial class AudioPlayerExtensions
         /// Sets the <see cref="AudioPlayer.SendEngine"/> of the <see cref="AudioPlayer"/> to a <see cref="FilteredSendEngine"/>.
         /// </summary>
         /// <param name="filter">The condition to satisfy for a <see cref="Player"/> to receive the audio.</param>
-        /// <returns>The <paramref name="player"/> itself.</returns>
+        /// <returns>The player itself.</returns>
         public AudioPlayer WithFilteredSendEngine(Predicate<Player> filter)
             => player.WithSendEngine(new FilteredSendEngine(filter));
 
@@ -124,7 +124,7 @@ public static partial class AudioPlayerExtensions
         /// Sets the <see cref="AudioPlayer.OutputMonitor"/> of the <see cref="AudioPlayer"/> to the given <see cref="IAudioPacketMonitor"/>.
         /// </summary>
         /// <param name="monitor">The monitor to set.</param>
-        /// <returns>The <paramref name="player"/> itself.</returns>
+        /// <returns>The player itself.</returns>
         public AudioPlayer WithOutputMonitor(IAudioPacketMonitor monitor)
         {
             player.OutputMonitor = monitor;
@@ -134,7 +134,7 @@ public static partial class AudioPlayerExtensions
         /// <summary>
         /// Sets the <see cref="AudioPlayer.SampleProvider"/> to <see langword="null"/> of the <see cref="AudioPlayer"/> when no samples are read.
         /// </summary>
-        /// <returns>The <paramref name="player"/> itself.</returns>
+        /// <returns>The player itself.</returns>
         /// <seealso cref="AudioPlayer.AlwaysRead"/>
         public AudioPlayer UnsetProviderOnEnd()
         {
@@ -145,7 +145,7 @@ public static partial class AudioPlayerExtensions
         /// <summary>
         /// Destroys the <see cref="AudioPlayer"/> when no samples are read.
         /// </summary>
-        /// <returns>The <paramref name="player"/> itself.</returns>
+        /// <returns>The player itself.</returns>
         public AudioPlayer DestroyOnEnd()
         {
             player.NoSamplesRead += player.Destroy;
@@ -155,7 +155,7 @@ public static partial class AudioPlayerExtensions
         /// <summary>
         /// Returns the <see cref="AudioPlayer"/> to the pool when no samples are read.
         /// </summary>
-        /// <returns>The <paramref name="player"/> itself.</returns>
+        /// <returns>The player itself.</returns>
         public AudioPlayer PoolOnEnd()
         {
             player.NoSamplesRead += () => AudioPlayerPool.Return(player);
@@ -166,7 +166,7 @@ public static partial class AudioPlayerExtensions
         /// Disposes of the given resource when the <see cref="AudioPlayer"/> is destroyed or disabled.
         /// </summary>
         /// <param name="disposable">The resource to dispose of.</param>
-        /// <returns>The <paramref name="player"/> itself.</returns>
+        /// <returns>The player itself.</returns>
         [Obsolete("Prefer using audio processors instead.", true)]
         public AudioPlayer DisposeOnDestroy(IDisposable disposable)
         {

@@ -1,6 +1,4 @@
-﻿using System.IO;
-
-namespace SecretLabNAudio.Core.FileReading;
+﻿namespace SecretLabNAudio.Core.FileReading;
 
 internal sealed class AiffReaderFactory : IAudioReaderFactory
 {

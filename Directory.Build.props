@@ -29,6 +29,9 @@
 
     <ItemGroup>
         <Using Include="System" />
+        <Using Include="System.Collections.Generic" />
+        <Using Include="System.Diagnostics.CodeAnalysis" />
+        <Using Include="System.IO" />
         <Using Include="LabApi.Features.Wrappers" />
         <Using Include="Mirror" />
         <Using Include="NAudio.Wave" />

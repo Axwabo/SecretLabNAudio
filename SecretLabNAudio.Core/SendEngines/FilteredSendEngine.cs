@@ -1,6 +1,4 @@
-﻿using VoiceChat.Networking;
-
-namespace SecretLabNAudio.Core.SendEngines;
+﻿namespace SecretLabNAudio.Core.SendEngines;
 
 /// <summary>Restricts sending <see cref="AudioMessage"/>s to players based on a predicate.</summary>
 public class FilteredSendEngine : SendEngine

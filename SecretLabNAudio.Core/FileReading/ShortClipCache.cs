@@ -1,6 +1,3 @@
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.IO;
 using System.Linq;
 using SecretLabNAudio.Core.Extensions;
 using SecretLabNAudio.Core.Providers;

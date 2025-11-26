@@ -1,7 +1,5 @@
 ﻿using System.Buffers;
-using System.Collections.Generic;
 using SecretLabNAudio.Core.Extensions.Providers;
-using SecretLabNAudio.Core.Processors;
 using SecretLabNAudio.Core.Providers;
 
 namespace SecretLabNAudio.Core.Extensions;

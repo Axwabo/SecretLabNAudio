@@ -1,6 +1,4 @@
-﻿using SecretLabNAudio.Core.Processors;
-
-namespace SecretLabNAudio.Core.Providers;
+﻿namespace SecretLabNAudio.Core.Providers;
 
 /// <summary>Wraps a <see cref="RawSourceSampleProvider"/> and restart it when reaching the end.</summary>
 public sealed class LoopingRawSampleProvider : ISampleProvider, ISeekable, ILoopable

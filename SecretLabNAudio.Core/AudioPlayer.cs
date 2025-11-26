@@ -1,10 +1,8 @@
 ﻿using SecretLabNAudio.Core.Extensions;
-using SecretLabNAudio.Core.Processors;
 using SecretLabNAudio.Core.Providers;
 using SecretLabNAudio.Core.SendEngines;
 using VoiceChat.Codec;
 using VoiceChat.Codec.Enums;
-using VoiceChat.Networking;
 
 namespace SecretLabNAudio.Core;
 

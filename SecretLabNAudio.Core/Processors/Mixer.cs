@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using NAudio.Utils;
 using SecretLabNAudio.Core.Extensions.Processors;
 

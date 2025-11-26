@@ -27,7 +27,7 @@ public static class NonProcessorExtensions
         /// <returns>The converted provider.</returns>
         /// <exception cref="ArgumentException">Thrown if the format's encoding is not IEEEFloat.</exception>
         /// <remarks>The method first mixes down to mono (if necessary), then resamples (if necessary).
-        /// If the format is already compatible, the original <paramref name="provider"/> is returned.</remarks>
+        /// If the format is already compatible, the original provider is returned.</remarks>
         /// <seealso cref="AudioPlayer.SupportedFormat"/>
         public ISampleProvider ToPlayerCompatible()
         {
@@ -42,9 +42,9 @@ public static class NonProcessorExtensions
 
         /// <summary>Mixes two sample providers.</summary>
         /// <param name="other">The other sample provider to mix with.</param>
-        /// <returns><paramref name="provider"/> if it's a <see cref="MixingSampleProvider"/>, otherwise, a new one containing both providers.</returns>
-        /// <exception cref="ArgumentException">Thrown if the <paramref name="other"/> provider's format does not match that of <paramref name="provider"/>.</exception>
-        /// <remarks>This method returns <paramref name="provider"/> if it's a <see cref="MixingSampleProvider"/>.</remarks>
+        /// <returns>provider if it's a <see cref="MixingSampleProvider"/>, otherwise, a new one containing both providers.</returns>
+        /// <exception cref="ArgumentException">Thrown if the <paramref name="other"/> provider's format does not match that of provider.</exception>
+        /// <remarks>This method returns provider if it's a <see cref="MixingSampleProvider"/>.</remarks>
         public MixingSampleProvider MixWith(ISampleProvider other)
         {
             if (provider is not MixingSampleProvider mixing)
@@ -56,7 +56,7 @@ public static class NonProcessorExtensions
         /// <summary>Sets the volume of the sample provider.</summary>
         /// <param name="volume">The volume to set.</param>
         /// <returns>The original or a new <see cref="VolumeSampleProvider"/> with the specified volume.</returns>
-        /// <remarks>This method returns the <paramref name="provider"/> itself if it's a <see cref="VolumeSampleProvider"/>.</remarks>
+        /// <remarks>This method returns the provider itself if it's a <see cref="VolumeSampleProvider"/>.</remarks>
         public VolumeSampleProvider Volume(float volume = 1)
         {
             if (provider is not VolumeSampleProvider volumeProvider)

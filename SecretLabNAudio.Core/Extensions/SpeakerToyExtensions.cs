@@ -12,7 +12,7 @@ public static class SpeakerToyExtensions
         /// Applies the given <see cref="SpeakerSettings"/> to the <see cref="SpeakerToy"/>.
         /// </summary>
         /// <param name="settings">The settings to apply.</param>
-        /// <returns>The <paramref name="speaker"/> itself.</returns>
+        /// <returns>The speaker itself.</returns>
         public SpeakerToy ApplySettings(SpeakerSettings settings)
         {
             speaker.IsSpatial = settings.IsSpatial;
@@ -26,7 +26,7 @@ public static class SpeakerToyExtensions
         /// Sets the controller ID of the <see cref="SpeakerToy"/>.
         /// </summary>
         /// <param name="id">The ID to set.</param>
-        /// <returns>The <paramref name="speaker"/> itself.</returns>
+        /// <returns>The speaker itself.</returns>
         public SpeakerToy WithId(byte id)
         {
             speaker.ControllerId = id;
@@ -37,7 +37,7 @@ public static class SpeakerToyExtensions
         /// Sets the volume of the <see cref="SpeakerToy"/>.
         /// </summary>
         /// <param name="volume">The volume to set.</param>
-        /// <returns>The <paramref name="speaker"/> itself.</returns>
+        /// <returns>The speaker itself.</returns>
         public SpeakerToy WithVolume(float volume)
         {
             speaker.Volume = volume;
@@ -48,7 +48,7 @@ public static class SpeakerToyExtensions
         /// Sets the minimum full volume distance of the <see cref="SpeakerToy"/>.
         /// </summary>
         /// <param name="minDistance">The minimum distance to set.</param>
-        /// <returns>The <paramref name="speaker"/> itself.</returns>
+        /// <returns>The speaker itself.</returns>
         public SpeakerToy WithMinDistance(float minDistance)
         {
             speaker.MinDistance = minDistance;
@@ -59,7 +59,7 @@ public static class SpeakerToyExtensions
         /// Sets the maximum audible distance of the <see cref="SpeakerToy"/>.
         /// </summary>
         /// <param name="maxDistance">The maximum distance to set.</param>
-        /// <returns>The <paramref name="speaker"/> itself.</returns>
+        /// <returns>The speaker itself.</returns>
         public SpeakerToy WithMaxDistance(float maxDistance)
         {
             speaker.MaxDistance = maxDistance;
@@ -70,7 +70,7 @@ public static class SpeakerToyExtensions
         /// Sets whether the <see cref="SpeakerToy"/> should use spatial audio.
         /// </summary>
         /// <param name="isSpatial">Whether the speaker should use spatial audio.</param>
-        /// <returns>The <paramref name="speaker"/> itself.</returns>
+        /// <returns>The speaker itself.</returns>
         public SpeakerToy WithSpatial(bool isSpatial = true)
         {
             speaker.IsSpatial = isSpatial;

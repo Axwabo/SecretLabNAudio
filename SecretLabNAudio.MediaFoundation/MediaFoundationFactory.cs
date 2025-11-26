@@ -1,5 +1,4 @@
-﻿using System.IO;
-using SecretLabNAudio.Core.FileReading;
+﻿using SecretLabNAudio.Core.FileReading;
 
 namespace SecretLabNAudio.MediaFoundation;
 

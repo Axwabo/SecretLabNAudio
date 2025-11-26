@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using SecretLabNAudio.Core.Extensions.Processors;
 
 namespace SecretLabNAudio.Core.Processors;

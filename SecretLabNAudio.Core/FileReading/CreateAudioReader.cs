@@ -1,5 +1,4 @@
-﻿using System.IO;
-using StreamAndProvider = (NAudio.Wave.WaveStream Stream, NAudio.Wave.ISampleProvider Provider);
+﻿using StreamAndProvider = (NAudio.Wave.WaveStream Stream, NAudio.Wave.ISampleProvider Provider);
 
 namespace SecretLabNAudio.Core.FileReading;
 

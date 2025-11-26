@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using LabApi.Loader.Features.Plugins;
+﻿using LabApi.Loader.Features.Plugins;
 using LabApi.Loader.Features.Plugins.Enums;
 using SecretLabNAudio.Core.FileReading;
 
