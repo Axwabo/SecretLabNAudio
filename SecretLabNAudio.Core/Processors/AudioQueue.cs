@@ -4,7 +4,7 @@ using SecretLabNAudio.Core.Providers;
 
 namespace SecretLabNAudio.Core.Processors;
 
-/// <summary>A sample provider reading from a queue of providers.</summary>
+/// <summary>An audio processor reading from a queue of providers.</summary>
 public sealed class AudioQueue : IAudioProcessor
 {
 
@@ -14,6 +14,8 @@ public sealed class AudioQueue : IAudioProcessor
 
     /// <summary>A read-only collection representing the underlying queue. Does not contain <seealso cref="Current"/>.</summary>
     public IReadOnlyCollection<ProcessorLayer> Queue => _queue;
+
+    public ProcessorLayer? CurrentLayer => _current;
 
     /// <summary>Gets the active provider (if any).</summary>
     public ISampleProvider? Current => _current?.Provider;
@@ -28,14 +30,14 @@ public sealed class AudioQueue : IAudioProcessor
     /// <inheritdoc/>
     public int Read(float[] buffer, int offset, int count)
     {
-        // TODO: safely advance
-        if (_current is null && !_queue.TryDequeue(out _current))
+        if (_current is null && !Next())
             return 0;
+        var provider = _current!.Provider;
         var total = 0;
         while (total < count)
         {
             var target = count - total;
-            var read = _current.Provider.Read(buffer, total, target);
+            var read = provider.Read(buffer, total, target);
             total += read;
             if (read < target && !Next())
                 break;
@@ -62,7 +64,11 @@ public sealed class AudioQueue : IAudioProcessor
 
     /// <summary>Dequeues the next provider in the queue.</summary>
     /// <returns>True if a provider was dequeued, false if the queue is already empty.</returns>
-    public bool Next() => _queue.TryDequeue(out _current);
+    public bool Next()
+    {
+        _current?.Dispose();
+        return _queue.TryDequeue(out _current);
+    }
 
     /// <summary>Clears the queue.</summary>
     public void Clear() => _queue.Clear();

@@ -24,7 +24,7 @@ public static partial class AudioPlayerExtensions
         /// </remarks>
         /// <seealso cref="RemoveMixerInput(SecretLabNAudio.Core.AudioPlayer,NAudio.Wave.ISampleProvider)"/>
         /// <seealso cref="MixingSampleProvider.AddMixerInput(ISampleProvider)"/>
-        [Obsolete($"Use {nameof(MixAnonymous)} instead.", true)]
+        [Obsolete($"Use {nameof(Mix)} instead.", true)]
         public AudioPlayer AddMixerInput(ISampleProvider input)
         {
             player.SampleProvider = player.SampleProvider == null

@@ -17,11 +17,11 @@ public static partial class AudioPlayerExtensions
             return player;
         }
 
-        public AudioPlayer UseFile(string path, bool loop = false) => player.Use(StreamAudioProcessor.FromFile(path, loop));
+        public AudioPlayer UseFile(string path, bool loop = false) => player.Use(StreamAudioProcessor.CreateFromFile(path, loop));
 
         public AudioPlayer UseFile(string path, Action<ProcessorChain> process, bool loop = false)
         {
-            var chain = StreamAudioProcessor.FromFile(path, loop).ToChain();
+            var chain = StreamAudioProcessor.CreateFromFile(path, loop).ToChain();
             process(chain);
             return player.Use(chain);
         }

@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using SecretLabNAudio.Core.FileReading;
 using SecretLabNAudio.Core.Processors;
 
@@ -15,8 +17,25 @@ public static class StreamProcessorExtensions
             return processor;
         }
 
-        public static StreamAudioProcessor FromFile(string path, bool loop = false)
+    }
+
+    extension(StreamAudioProcessor)
+    {
+
+        public static StreamAudioProcessor CreateFromFile(string path, bool loop = false)
             => CreateAudioProcessor.FromFile(path).WithLoop(loop);
+
+        public static bool TryCreateFromFile(string path, bool loop, [NotNullWhen(true)] out StreamAudioProcessor? processor)
+        {
+            if (!File.Exists(path) || !TryCreateAudioProcessor.FromFile(path, out var result))
+            {
+                processor = null;
+                return false;
+            }
+
+            processor = result.WithLoop(loop);
+            return true;
+        }
 
     }
 

@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using NAudio.Wave.SampleProviders;
 using SecretLabNAudio.Core.Processors;
 using SecretLabNAudio.Core.Providers;
@@ -56,6 +57,24 @@ public static class ProcessorChainExtensions
         public ProcessorChain Buffer(double seconds) => chain.SwapTOrLayer<BufferedSampleProvider>(provider => new BufferedSampleProvider(provider, seconds));
 
         public ProcessorChain Volume(float volume) => chain.SwapTOrLayer<VolumeSampleProvider>(provider => provider.Volume(volume));
+
+        public bool TryGetLayer<T>([NotNullWhen(true)] out ProcessorLayer? layer, [NotNullWhen(true)] out T? provider)
+        {
+            foreach (var processorLayer in chain.Layers)
+            {
+                if (processorLayer is not {Provider: T t})
+                    continue;
+                layer = processorLayer;
+                provider = t;
+                return true;
+            }
+
+            layer = null;
+            provider = default;
+            return false;
+        }
+
+        public bool TryGetLayer<T>([NotNullWhen(true)] out T? layer) => chain.TryGetLayer(out _, out layer);
 
     }
 
