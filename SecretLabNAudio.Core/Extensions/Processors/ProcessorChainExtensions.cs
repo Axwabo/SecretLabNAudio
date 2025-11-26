@@ -8,7 +8,12 @@ public delegate T ProviderMapper<out T>(ISampleProvider current) where T : ISamp
 public static class ProcessorChainExtensions
 {
 
-    private delegate ProcessorChain MapAndRetrieve(ProcessorChain chain, ProviderMapper mapper, bool isOwned);
+    extension<T>(ProviderMapper<T> mapper) where T : ISampleProvider
+    {
+
+        private ProviderMapper AsNonGeneric => current => mapper(current);
+
+    }
 
     /// <param name="chain">The audio processor chain.</param>
     extension(ProcessorChain chain)
@@ -53,8 +58,6 @@ public static class ProcessorChainExtensions
 
         public ProcessorChain Volume(float volume = 1) => chain.SwapTOrLayer<VolumeSampleProvider>(provider => provider.Volume(volume));
 
-        public ProcessorChain Volume(out VolumeSampleProvider provider, float volume = 1f) => chain.ConvertAndRetrieve(provider => provider.Volume(volume), out provider);
-
     }
 
     extension<T>(ProcessorChain chain)
@@ -90,18 +93,16 @@ public static class ProcessorChainExtensions
     extension<T>(ProcessorChain chain) where T : ISampleProvider
     {
 
-        private static ProcessorChain LayerAndRetrieve(ProcessorChain processorChain, ProviderMapper providerMapper, bool owned)
-            => processorChain.Layer(providerMapper, owned);
-
         public ProcessorChain Layer(ProviderMapper<T> mapper, out T provider, bool isOwned = true)
-            => chain.ConvertAndRetrieve(mapper, LayerAndRetrieve<T>, out provider, isOwned);
+        {
+            chain.Layer(mapper.AsNonGeneric, isOwned);
+            provider = (T) chain.Master;
+            return chain;
+        }
 
         public ProcessorChain SwapTOrLayer(ProviderMapper<T> mapper, out T provider, bool isOwned = true)
-            => chain.ConvertAndRetrieve(mapper, SwapTOrLayer<T>, out provider, isOwned);
-
-        private ProcessorChain ConvertAndRetrieve(ProviderMapper<T> mapper, MapAndRetrieve mapAndRetrieve, out T provider, bool isOwned)
         {
-            mapAndRetrieve(chain, current => mapper(current), isOwned);
+            chain.SwapTOrLayer<T>(mapper.AsNonGeneric, isOwned);
             provider = (T) chain.Master;
             return chain;
         }
