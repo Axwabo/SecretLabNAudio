@@ -59,7 +59,7 @@ public sealed class Disc : MonoBehaviour
 
     private double _previousTime;
 
-    public DiscJockeyProcessor? Provider
+    public DiscJockeyAudioProcessor? Provider
     {
         get;
         set

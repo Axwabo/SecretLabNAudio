@@ -4,7 +4,7 @@ using SecretLabNAudio.Core.Processors;
 
 namespace SecretLabNAudio.Demo;
 
-public sealed class DiscJockeyProcessor : IAudioProcessor
+public sealed class DiscJockeyAudioProcessor : IAudioProcessor
 {
 
     private readonly StreamAudioProcessor _stream;
@@ -46,7 +46,7 @@ public sealed class DiscJockeyProcessor : IAudioProcessor
 
     public TimeSpan TotalTime => _stream.TotalTime;
 
-    public DiscJockeyProcessor(StreamAudioProcessor stream, Player owner)
+    public DiscJockeyAudioProcessor(StreamAudioProcessor stream, Player owner)
     {
         _stream = stream;
 

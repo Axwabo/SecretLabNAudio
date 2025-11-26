@@ -63,7 +63,7 @@ public sealed class DiscJockeyBoard : MonoBehaviour
 
     public static bool CanHearStageSpeaker(Player player) => Vector3.Distance(StagePosition, player.Camera.position) <= StageRange;
 
-    private DiscJockeyProcessor? _provider;
+    private DiscJockeyAudioProcessor? _provider;
 
     public Player? Owner { get; private set; }
 
@@ -113,7 +113,7 @@ public sealed class DiscJockeyBoard : MonoBehaviour
             Outside.MuteSpeakers(player);
 
         // the previous processor will be disposed, and it'll also be disposed when the player is destroyed
-        _player.Use(_provider = new DiscJockeyProcessor(stream, player));
+        _player.Use(_provider = new DiscJockeyAudioProcessor(stream, player));
         UpdateMusic(_music.Value);
         UpdateSpeed(_speed.Value);
         UpdateVoice(_voice.Value);
