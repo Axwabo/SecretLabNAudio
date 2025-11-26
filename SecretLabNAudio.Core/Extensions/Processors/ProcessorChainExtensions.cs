@@ -7,10 +7,7 @@ namespace SecretLabNAudio.Core.Extensions.Processors;
 public static class ProcessorChainExtensions
 {
 
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="chain"></param>
+    /// <param name="chain">The audio processor chain.</param>
     extension(ProcessorChain chain)
     {
 
@@ -42,7 +39,7 @@ public static class ProcessorChainExtensions
             };
         }
 
-        public ProcessorChain EnsureFormat(int sampleRate, int channels)
+        public ProcessorChain ToFormat(int sampleRate, int channels)
         {
             var format = chain.Master.WaveFormat;
             return (format.SampleRate == sampleRate, format.Channels == channels) switch
@@ -58,14 +55,7 @@ public static class ProcessorChainExtensions
 
         public ProcessorChain Buffer(double seconds) => chain.SwapTOrLayer<BufferedSampleProvider>(provider => new BufferedSampleProvider(provider, seconds));
 
-        public ProcessorChain Volume(float volume)
-        {
-            if (chain.Master is VolumeSampleProvider volumeSampleProvider)
-                volumeSampleProvider.Volume = volume;
-            else
-                chain.Layer(provider => provider.Volume(volume));
-            return chain;
-        }
+        public ProcessorChain Volume(float volume) => chain.SwapTOrLayer<VolumeSampleProvider>(provider => provider.Volume(volume));
 
     }
 

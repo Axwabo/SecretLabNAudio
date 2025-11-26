@@ -29,6 +29,8 @@ public static class WaveFormatExtensions
         /// <returns>The duration in seconds for the specified number of samples.</returns>
         public TimeSpan Time(int samples) => TimeSpan.FromSeconds(format.Seconds(samples));
 
+        public bool Matches(int sampleRate, int channels) => format.SampleRate == sampleRate && format.Channels == channels;
+
     }
 
     /// <summary>

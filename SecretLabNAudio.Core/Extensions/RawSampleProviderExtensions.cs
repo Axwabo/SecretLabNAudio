@@ -39,6 +39,8 @@ public static class RawSampleProviderExtensions
         /// <returns>A new <see cref="LoopingRawSampleProvider"/> that wraps the given provider.</returns>
         public LoopingRawSampleProvider Loop() => new(provider);
 
+        public ISampleProvider WithLoop(bool loop) => loop ? provider.Loop() : provider;
+
     }
 
 }

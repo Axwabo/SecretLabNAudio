@@ -60,8 +60,13 @@ public sealed class ProcessorChain : IAudioProcessor
 
     public ProcessorChain Swap(ProviderMapper mapper, bool isOwned = true)
     {
-        EnsureNotDisposed();
-        return Pop().Layer(mapper, isOwned);
+        var master = Master;
+        var converted = mapper(master);
+        if (master == converted)
+            return this;
+        Pop();
+        _layers.Add(new ProcessorLayer(converted, isOwned));
+        return this;
     }
 
     public ProcessorChain Pop()

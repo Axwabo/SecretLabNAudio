@@ -122,6 +122,7 @@ public static class SpeakerToyPool
         o.SetActive(false);
         if (o.TryGetComponent(out PooledSpeaker _))
             return;
+        o.transform.parent = null;
         o.AddComponent<PooledSpeaker>();
         NetworkServer.UnSpawn(o);
     }

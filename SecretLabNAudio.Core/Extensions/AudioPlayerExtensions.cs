@@ -148,7 +148,6 @@ public static partial class AudioPlayerExtensions
         /// <returns>The <paramref name="player"/> itself.</returns>
         public AudioPlayer DestroyOnEnd()
         {
-            player.UnsetProviderOnEnd();
             player.NoSamplesRead += player.Destroy;
             return player;
         }
@@ -168,6 +167,7 @@ public static partial class AudioPlayerExtensions
         /// </summary>
         /// <param name="disposable">The resource to dispose of.</param>
         /// <returns>The <paramref name="player"/> itself.</returns>
+        [Obsolete("Prefer using audio processors instead.", true)]
         public AudioPlayer DisposeOnDestroy(IDisposable disposable)
         {
             player.Destroyed += disposable.Dispose;

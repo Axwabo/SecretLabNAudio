@@ -21,6 +21,8 @@ public static class AudioProcessorExtensions
                     return true;
                 case ProcessorChain {Source: IAudioProcessor source}:
                     return source.TryGetSourceAs(out result);
+                case Mixer mixer:
+                    return mixer.TryGetSingleMixerInput(out result);
                 default:
                     result = default;
                     return false;
@@ -39,6 +41,8 @@ public static class AudioProcessorExtensions
                     return true;
                 case ProcessorChain {Master: IAudioProcessor master}:
                     return master.TryGetMasterAs(out result);
+                case Mixer mixer:
+                    return mixer.TryGetSingleMixerInput(out result);
                 default:
                     result = default;
                     return false;
@@ -61,14 +65,14 @@ public static class AudioProcessorExtensions
         }
 
         public IAudioProcessor ToPlayerCompatible(bool isOwned = true)
-            => processor.WaveFormat.SampleRate == AudioPlayer.SampleRate && processor.WaveFormat.Channels == AudioPlayer.Channels
+            => processor.WaveFormat.Matches(AudioPlayer.SampleRate, AudioPlayer.Channels)
                 ? processor
                 : processor.ToChain(isOwned).ToPlayerCompatible();
 
-        public IAudioProcessor EnsureFormat(int sampleRate, int channels, bool isOwned = true)
-            => processor.WaveFormat.SampleRate == sampleRate && processor.WaveFormat.Channels == channels
+        public IAudioProcessor ToFormat(int sampleRate, int channels, bool isOwned = true)
+            => processor.WaveFormat.Matches(sampleRate, channels)
                 ? processor
-                : processor.ToChain(isOwned).EnsureFormat(sampleRate, channels);
+                : processor.ToChain(isOwned).ToFormat(sampleRate, channels);
 
         public ProcessorChain ToChain(bool isOwned = true) => processor as ProcessorChain ?? new ProcessorChain(processor, isOwned);
 

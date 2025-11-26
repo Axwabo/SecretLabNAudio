@@ -27,7 +27,7 @@ public sealed partial class AudioPlayer : MonoBehaviour
     /// </exception>
     /// <remarks>Setting the provider changes the value of <see cref="OwnsProcessor"/> to whether the given provider is an <see cref="IAudioProcessor"/>.</remarks>
     /// <seealso cref="AudioPlayerExtensions.Use"/>
-    /// <seealso cref="AudioPlayerExtensions.UseFile(AudioPlayer,string)"/>
+    /// <seealso cref="AudioPlayerExtensions.UseFile(AudioPlayer,string,bool)"/>
     /// <seealso cref="AudioPlayerExtensions.WithUnmanagedProvider(AudioPlayer,ISampleProvider)"/>
     public ISampleProvider? SampleProvider
     {

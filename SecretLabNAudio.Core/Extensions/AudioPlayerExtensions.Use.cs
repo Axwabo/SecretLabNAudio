@@ -1,4 +1,3 @@
-using NAudio.Wave.SampleProviders;
 using SecretLabNAudio.Core.Extensions.Processors;
 using SecretLabNAudio.Core.FileReading;
 using SecretLabNAudio.Core.Processors;
@@ -36,31 +35,28 @@ public static partial class AudioPlayerExtensions
             return player;
         }
 
-        public AudioPlayer UseMixer()
+        public AudioPlayer UseMixer(bool keepInputs = true)
         {
-            var mixer = player.Mixer ?? new Mixer(AudioPlayer.SupportedFormat);
-            if (player.SampleProvider is MixingSampleProvider mixingSampleProvider)
-                foreach (var provider in mixingSampleProvider.MixerInputs)
-                    mixer.AddAnonymous(provider, false);
-            else if (player.SampleProvider is not Mixer and { } provider)
+            var mixer = keepInputs && player.Mixer is { } existing ? existing : new Mixer(AudioPlayer.SupportedFormat);
+            if (player.SampleProvider is not Mixer and { } provider)
                 mixer.AddAnonymous(provider, provider is IAudioProcessor);
             return player.Use(mixer);
         }
 
-        public AudioPlayer UseMixer(Action<Mixer> mix)
+        public AudioPlayer UseMixer(Action<Mixer> mix, bool keepInputs = true)
         {
-            mix(player.UseMixer().Mixer!);
+            mix(player.UseMixer(keepInputs).Mixer!);
             return player;
         }
 
         public AudioPlayer UseShortClip(string name, bool loop = false)
             => ShortClipCache.TryGet(name, out var provider)
-                ? player.WithUnmanagedProvider(loop ? provider.Loop() : provider)
+                ? player.WithUnmanagedProvider(provider.WithLoop(loop))
                 : player;
 
         public AudioPlayer UseExactShortClip(string name, bool loop = false)
             => ShortClipCache.TryGet(name, out var provider, false)
-                ? player.WithUnmanagedProvider(loop ? provider.Loop() : provider)
+                ? player.WithUnmanagedProvider(provider.WithLoop(loop))
                 : player;
 
     }
