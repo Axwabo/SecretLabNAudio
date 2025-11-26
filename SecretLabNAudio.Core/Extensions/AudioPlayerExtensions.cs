@@ -135,10 +135,10 @@ public static partial class AudioPlayerExtensions
         /// Sets the <see cref="AudioPlayer.SampleProvider"/> to <see langword="null"/> of the <see cref="AudioPlayer"/> when no samples are read.
         /// </summary>
         /// <returns>The <paramref name="player"/> itself.</returns>
-        /// <seealso cref="AudioPlayer.Endless"/>
+        /// <seealso cref="AudioPlayer.AlwaysRead"/>
         public AudioPlayer UnsetProviderOnEnd()
         {
-            player.Endless = false;
+            player.AlwaysRead = false;
             return player;
         }
 

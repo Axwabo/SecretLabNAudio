@@ -54,14 +54,16 @@ public sealed partial class AudioPlayer : MonoBehaviour
     /// <remarks>This property is automatically set when the <see cref="SampleProvider"/> changes.</remarks>
     public bool OwnsProcessor { get; set; } = true;
 
-    /// <summary>
-    /// If true, the <see cref="SampleProvider"/> will always be read from.
-    /// If false, the <see cref="SampleProvider"/> will be set to null upon reaching its end.
-    /// </summary>
-    public bool Endless { get; set; } = true;
-
     /// <summary>The <see cref="SpeakerToy"/> this player is attached to.</summary>
     public SpeakerToy Speaker { get; private set; } = null!;
+
+    /// <summary>The controller ID of this player.</summary>
+    /// <seealso cref="SpeakerToy.ControllerId"/>
+    public byte Id
+    {
+        get => Speaker.ControllerId;
+        set => Speaker.ControllerId = value;
+    }
 
     /// <summary>
     /// The <see cref="SendEngine"/> used to broadcast audio messages.
@@ -85,17 +87,15 @@ public sealed partial class AudioPlayer : MonoBehaviour
     /// <summary>True if playback has finished on the previous frame (fewer samples were read than requested).</summary>
     public bool HasEnded { get; private set; }
 
-    /// <summary>The controller ID of this player.</summary>
-    /// <seealso cref="SpeakerToy.ControllerId"/>
-    public byte Id
-    {
-        get => Speaker.ControllerId;
-        set => Speaker.ControllerId = value;
-    }
+    /// <summary>
+    /// If true, the <see cref="SampleProvider"/> will be read from continuously.
+    /// If false, the <see cref="SampleProvider"/> will be set to null upon reaching its end.
+    /// </summary>
+    public bool AlwaysRead { get; set; } = true;
 
     /// <summary>Invoked every frame when no samples were read from the <see cref="SampleProvider"/>.</summary>
     /// <remarks>The provider is not set to null by default.</remarks>
-    /// <seealso cref="AudioPlayerExtensions.UnsetProviderOnEnd"/>
+    /// <seealso cref="AlwaysRead"/>
     /// <seealso cref="HasEnded"/>
     public event Action? NoSamplesRead;
 
@@ -134,7 +134,7 @@ public sealed partial class AudioPlayer : MonoBehaviour
         SampleProvider = null;
         SendEngine = SendEngine.DefaultEngine;
         OutputMonitor = null;
-        Endless = OwnsProcessor = true;
+        AlwaysRead = OwnsProcessor = true;
         _remainingTime = 0;
     }
 
@@ -159,7 +159,7 @@ public sealed partial class AudioPlayer : MonoBehaviour
             ClearBuffer();
             OutputMonitor?.OnEmpty();
             NoSamplesRead?.Invoke();
-            if (!Endless)
+            if (!AlwaysRead)
                 SampleProvider = null;
             return;
         }
