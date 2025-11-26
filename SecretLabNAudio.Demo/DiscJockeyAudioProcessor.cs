@@ -63,6 +63,6 @@ public sealed class DiscJockeyAudioProcessor : IAudioProcessor
 
     public int Read(float[] buffer, int offset, int count) => _master.Read(buffer, offset, count);
 
-    public void Dispose() => _master.Dispose();
+    public void Dispose() => _master.Dispose(); // disposes of all used resources, including the stream and voice providers
 
 }
