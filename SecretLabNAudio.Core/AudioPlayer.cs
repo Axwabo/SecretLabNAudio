@@ -185,7 +185,7 @@ public sealed partial class AudioPlayer : MonoBehaviour
     public void ClearBuffer()
     {
         _remainingTime = 0;
-        (SampleProvider as BufferedSampleProvider)?.Clear();
+        this.MasterAs<BufferedSampleProvider>()?.Clear();
     }
 
     /// <summary>Destroys the player and its <see cref="Speaker"/>.</summary>

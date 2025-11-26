@@ -3,6 +3,7 @@
 namespace SecretLabNAudio.Core.Extensions;
 
 /// <summary>Extension methods for the <see cref="IWaveProvider"/> interface.</summary>
+[Obsolete($"Use Providers.{nameof(NonProcessorExtensions)} instead.", true)]
 public static class WaveProviderExtensions
 {
 

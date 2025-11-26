@@ -96,13 +96,11 @@ public sealed class DiscJockeyBoard : MonoBehaviour
 
     private void OnDestroy()
     {
-        Instance = null;
         _music.ValueChanged -= UpdateMusic;
         _speed.ValueChanged -= UpdateSpeed;
         _voice.ValueChanged -= UpdateVoice;
         _pitch.ValueChanged -= UpdatePitch;
         _master.ValueChanged -= UpdateMaster;
-        DisposeProvider();
     }
 
     public void Play(Player player, StreamAudioProcessor stream, string label)
@@ -114,14 +112,13 @@ public sealed class DiscJockeyBoard : MonoBehaviour
         if (ownerChanged)
             Outside.MuteSpeakers(player);
 
-        DisposeProvider();
+        // the previous processor will be disposed, and it'll also be disposed when the player is destroyed
         _player.Use(_provider = new DiscJockeyProcessor(stream, player));
         UpdateMusic(_music.Value);
         UpdateSpeed(_speed.Value);
         UpdateVoice(_voice.Value);
         UpdatePitch(_pitch.Value);
         UpdateMaster(_master.Value);
-        _player.SampleProvider = _provider;
         _player.ClearBuffer();
         _disc.Provider = _provider;
         _disc.Label = label;
@@ -137,12 +134,5 @@ public sealed class DiscJockeyBoard : MonoBehaviour
     private void UpdatePitch(float value) => _provider?.VoicePitch = value + 1;
 
     private void UpdateMaster(float value) => _provider?.MasterVolume = value * 2 + 1;
-
-    private void DisposeProvider()
-    {
-        _provider?.Dispose();
-        _provider = null;
-        _disc.Provider = null;
-    }
 
 }

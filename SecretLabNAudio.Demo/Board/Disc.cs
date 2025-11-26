@@ -59,8 +59,6 @@ public sealed class Disc : MonoBehaviour
 
     private double _previousTime;
 
-    private DiscJockeyProcessor? _provider;
-
     public DiscJockeyProcessor? Provider
     {
         get;
@@ -88,7 +86,5 @@ public sealed class Disc : MonoBehaviour
         _previousTime = currentTime;
         _time.Arguments[0] = Provider.CurrentTime.ToString("mm':'ss");
     }
-
-    private void OnDestroy() => _provider = null;
 
 }

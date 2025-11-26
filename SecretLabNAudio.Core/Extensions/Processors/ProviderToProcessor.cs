@@ -24,7 +24,7 @@ public static class ProviderToProcessor
     {
 
         public IAudioProcessor ToCompatibleProcessor(bool isOwned = true)
-            => AudioProcessorExtensions.ToPlayerCompatible(WaveProviderToProcessor(provider, isOwned));
+            => WaveProviderToProcessor(provider, isOwned).ToPlayerCompatible();
 
         public ProcessorChain ToCompatibleChain(bool isOwned = true) => provider.ToCompatibleProcessor(isOwned).ToChain();
 
