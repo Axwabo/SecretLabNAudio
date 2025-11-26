@@ -9,7 +9,7 @@ public sealed class Mixer : IAudioProcessor
 {
 
     [ThreadStatic]
-    private static float[]? _mixerBuffer;
+    private static float[]? _readBuffer;
 
     private readonly List<MixerInput> _inputs = [];
 
@@ -96,14 +96,18 @@ public sealed class Mixer : IAudioProcessor
     /// <inheritdoc />
     public int Read(float[] buffer, int offset, int count)
     {
-        _mixerBuffer = BufferHelpers.Ensure(_mixerBuffer, count);
+        _readBuffer = BufferHelpers.Ensure(_readBuffer, count);
+        var readSpan = _readBuffer.AsSpan()[..count];
+        var targetSpan = buffer.AsSpan()[offset..(offset + count)];
+        targetSpan.Clear();
         var total = 0;
         for (var i = _inputs.Count - 1; i >= 0; i--)
         {
             var input = _inputs[i];
             var provider = input.Provider;
-            var read = provider.Read(_mixerBuffer, offset, count);
-            MixInto(buffer, offset, read, total);
+            var read = provider.Read(_readBuffer, 0, count);
+            for (var j = 0; j < read; j++)
+                targetSpan[j] += readSpan[j];
             var ended = read < total;
             total = Math.Max(total, read);
             if (!ended)
@@ -113,18 +117,7 @@ public sealed class Mixer : IAudioProcessor
                 Remove(input);
         }
 
-        if (ReadFully && total < count)
-            Array.Clear(buffer, total, count - total);
-        return total;
-    }
-
-    private static void MixInto(float[] buffer, int offset, int read, int total)
-    {
-        for (var j = 0; j < read; j++)
-            if (j <= total)
-                buffer[offset + j] += _mixerBuffer![j];
-            else
-                buffer[offset + j] = _mixerBuffer![j];
+        return ReadFully ? count : total;
     }
 
     /// <inheritdoc />
