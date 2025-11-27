@@ -19,6 +19,7 @@ public static class StreamProcessorExtensions
     extension(StreamAudioProcessor)
     {
 
+        /// <inheritdoc cref="CreateAudioProcessor.FromFile"/>
         public static StreamAudioProcessor CreateFromFile(string path, bool loop = false)
             => CreateAudioProcessor.FromFile(path).WithLoop(loop);
 

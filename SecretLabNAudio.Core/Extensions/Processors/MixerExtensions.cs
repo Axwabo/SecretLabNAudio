@@ -9,35 +9,35 @@ public static class MixerExtensions
     extension(Mixer mixer)
     {
 
-        public Mixer AddFileAnonymous(string path, bool loop = false)
-            => mixer.AddAnonymous(StreamAudioProcessor.CreateFromFile(path, loop));
+        public Mixer AddFileAnonymous(string path, bool loop = false, Process? process = null)
+            => mixer.AddAnonymous(StreamAudioProcessor.CreateFromFile(path, loop).Process(process));
 
-        public Mixer AddFileNamed(string path, string inputName, bool loop = false)
-            => mixer.AddNamed(StreamAudioProcessor.CreateFromFile(path, loop), inputName);
+        public Mixer AddFileNamed(string path, string inputName, bool loop = false, Process? process = null)
+            => mixer.AddNamed(StreamAudioProcessor.CreateFromFile(path, loop).Process(process), inputName);
 
-        public Mixer AddShortClipAnonymous(string name, bool loop = false)
+        public Mixer AddShortClipAnonymous(string name, bool loop = false, Process? process = null)
             => ShortClipCache.TryGet(name, out var provider)
-                ? mixer.AddAnonymous(provider.WithLoop(loop), false)
+                ? mixer.AddAnonymous(provider.WithLoop(loop).Process(process), false)
                 : mixer;
 
-        public Mixer AddShortClip(string name, bool loop = false)
+        public Mixer AddShortClip(string name, bool loop = false, Process? process = null)
             => ShortClipCache.TryGet(name, out var provider)
-                ? mixer.AddNamed(provider.WithLoop(loop), provider.ClipName!, false)
+                ? mixer.AddNamed(provider.WithLoop(loop).Process(process), provider.ClipName!, false)
                 : mixer;
 
-        public Mixer AddShortClipNamed(string clipName, string inputName, bool loop = false)
+        public Mixer AddShortClipNamed(string clipName, string inputName, bool loop = false, Process? process = null)
             => ShortClipCache.TryGet(clipName, out var provider)
-                ? mixer.AddNamed(provider.WithLoop(loop), inputName, false)
+                ? mixer.AddNamed(provider.WithLoop(loop).Process(process), inputName, false)
                 : mixer;
 
-        public Mixer TryAddFileAnonymous(string path, bool loop = false)
+        public Mixer TryAddFileAnonymous(string path, bool loop = false, Process? process = null)
             => StreamAudioProcessor.TryCreateFromFile(path, loop, out var processor)
-                ? mixer.AddAnonymous(processor)
+                ? mixer.AddAnonymous(processor.Process(process))
                 : mixer;
 
-        public Mixer TryAddFileNamed(string path, string inputName, bool loop = false)
+        public Mixer TryAddFileNamed(string path, string inputName, bool loop = false, Process? process = null)
             => StreamAudioProcessor.TryCreateFromFile(path, loop, out var processor)
-                ? mixer.AddNamed(processor, inputName)
+                ? mixer.AddNamed(processor.Process(process), inputName)
                 : mixer;
 
         public Mixer RemoveAllByImmediateType<T>()

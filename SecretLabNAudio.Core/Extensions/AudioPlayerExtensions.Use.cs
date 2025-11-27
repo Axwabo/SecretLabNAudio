@@ -3,8 +3,6 @@ using SecretLabNAudio.Core.FileReading;
 
 namespace SecretLabNAudio.Core.Extensions;
 
-public delegate void Process(ProcessorChain chain);
-
 public static partial class AudioPlayerExtensions
 {
 

@@ -44,6 +44,7 @@ public static class SampleProviderExtensions
         /// <param name="volume">The volume to set.</param>
         /// <returns>The original or a new <see cref="VolumeSampleProvider"/> with the specified volume.</returns>
         /// <remarks>This method returns the provider itself if it's a <see cref="VolumeSampleProvider"/>.</remarks>
+        [Obsolete($"Use Providers.{nameof(NonProcessorExtensions)}.{nameof(NonProcessorExtensions.Volume)} instead.", true)]
         public VolumeSampleProvider Volume(float volume = 1)
         {
             if (provider is not VolumeSampleProvider volumeProvider)

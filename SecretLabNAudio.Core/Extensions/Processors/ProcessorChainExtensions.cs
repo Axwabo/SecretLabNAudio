@@ -1,4 +1,5 @@
 using NAudio.Wave.SampleProviders;
+using SecretLabNAudio.Core.Extensions.Providers;
 using SecretLabNAudio.Core.Providers;
 
 namespace SecretLabNAudio.Core.Extensions.Processors;
@@ -56,7 +57,7 @@ public static class ProcessorChainExtensions
 
         public ProcessorChain Buffer(double seconds) => chain.SwapTOrLayer<BufferedSampleProvider>(provider => new BufferedSampleProvider(provider, seconds));
 
-        public ProcessorChain Volume(float volume = 1) => chain.SwapTOrLayer<VolumeSampleProvider>(provider => provider.Volume(volume));
+        public ProcessorChain Volume(float volume = 1) => chain.SwapTOrLayer<VolumeSampleProvider>(provider => NonProcessorExtensions.Volume(provider, volume));
 
     }
 
