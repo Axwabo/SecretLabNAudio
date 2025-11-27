@@ -9,17 +9,11 @@ public static partial class AudioPlayerExtensions
 
     private const string PreferUse = $"Prefer using audio processors with Use methods. Call {nameof(WithUnmanagedProvider)} instead to set the provider and prevent automatic disposal.";
 
-    /// <param name="player">The player to cast the provider of.</param>
+    private const string PreferImmediate = $"Call {nameof(ImmediateProviderAs)} to cast the {nameof(AudioPlayer.SampleProvider)} itself. To ignore special audio processors, use {nameof(SourceAs)}/{nameof(MasterAs)}/{nameof(SingleInputAs)}.";
+
+    /// <param name="player">The player to set the provider of.</param>
     extension(AudioPlayer player)
     {
-
-        /// <summary>
-        /// Safely casts the <see cref="AudioPlayer.SampleProvider"/> of the <see cref="AudioPlayer"/> type <typeparamref name="T"/>.
-        /// </summary>
-        /// <typeparam name="T">The type to cast the provider to.</typeparam>
-        /// <returns>The <see cref="AudioPlayer.SampleProvider"/> cast to <typeparamref name="T"/>, or null if the type is not compatible.</returns>
-        [Obsolete($"Call {nameof(ImmediateProviderAs)} to cast the {nameof(AudioPlayer.SampleProvider)} itself. To ignore special audio processors, use {nameof(SourceAs)}/{nameof(MasterAs)}.", true)]
-        public T? ProviderAs<T>() where T : class => player.ImmediateProviderAs<T>();
 
         /// <summary>
         /// Sets the <see cref="AudioPlayer.SampleProvider"/> of the <see cref="AudioPlayer"/>.
@@ -63,20 +57,8 @@ public static partial class AudioPlayerExtensions
             return player;
         }
 
-    }
-
-    extension(AudioPlayer player)
-    {
-
         /// <summary>
-        /// Safely casts the <see cref="AudioPlayer.SampleProvider"/> of the <see cref="AudioPlayer"/> type <typeparamref name="T"/>.
-        /// </summary>
-        /// <typeparam name="T">The type to cast the provider to.</typeparam>
-        /// <returns>The <see cref="AudioPlayer.SampleProvider"/> cast to <typeparamref name="T"/>, or null if the type is not compatible.</returns>
-        public T? ImmediateProviderAs<T>() where T : class => player.SampleProvider as T;
-
-        /// <summary>
-        /// Sets the <see cref="AudioPlayer.SampleProvider"/> of the <see cref="AudioPlayer"/> and prevents automatic disposal when the player is destroyed or the provider changes.
+        /// Sets the <see cref="AudioPlayer.SampleProvider"/> of the <see cref="AudioPlayer"/>, and prevents automatic disposal when the player is destroyed or the provider changes.
         /// </summary>
         /// <param name="provider">The provider to set.</param>
         /// <returns>The player itself.</returns>
@@ -87,12 +69,12 @@ public static partial class AudioPlayerExtensions
         public AudioPlayer WithUnmanagedProvider(ISampleProvider? provider)
         {
             player.SampleProvider = provider == null ? null : NonProcessorExtensions.ToPlayerCompatible(provider);
-            player.OwnsProcessor = false;
+            player.OwnsProvider = false;
             return player;
         }
 
         /// <summary>
-        /// Sets the <see cref="AudioPlayer.SampleProvider"/> of the <see cref="AudioPlayer"/> by converting an <see cref="IWaveProvider"/>
+        /// Sets the <see cref="AudioPlayer.SampleProvider"/> of the <see cref="AudioPlayer"/> by converting an <see cref="IWaveProvider"/>,
         /// and prevents automatic disposal when the player is destroyed or the provider changes.
         /// </summary>
         /// <param name="provider">The provider to set.</param>
@@ -104,6 +86,23 @@ public static partial class AudioPlayerExtensions
         /// <seealso cref="AudioPlayerExtensions.WithUnmanagedProvider(SecretLabNAudio.Core.AudioPlayer,NAudio.Wave.ISampleProvider?)"/>
         public AudioPlayer WithUnmanagedProvider(IWaveProvider? provider)
             => player.WithUnmanagedProvider(provider?.ToSampleProvider());
+
+    }
+
+    /// <param name="player">The player to cast the provider of.</param>
+    extension(AudioPlayer player)
+    {
+
+        /// <inheritdoc cref="ImmediateProviderAs"/>
+        [Obsolete(PreferImmediate, true)]
+        public T? ProviderAs<T>() where T : class => player.ImmediateProviderAs<T>();
+
+        /// <summary>
+        /// Safely casts the <see cref="AudioPlayer.SampleProvider"/> of the <see cref="AudioPlayer"/> type <typeparamref name="T"/>.
+        /// </summary>
+        /// <typeparam name="T">The type to cast the provider to.</typeparam>
+        /// <returns>The <see cref="AudioPlayer.SampleProvider"/> cast to <typeparamref name="T"/>, or null if the type is not compatible.</returns>
+        public T? ImmediateProviderAs<T>() => player.SampleProvider is T t ? t : default;
 
     }
 

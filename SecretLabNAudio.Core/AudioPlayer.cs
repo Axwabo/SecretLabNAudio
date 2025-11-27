@@ -23,7 +23,7 @@ public sealed partial class AudioPlayer : MonoBehaviour
     /// Channels = <see cref="Channels"/>
     /// </para>
     /// </exception>
-    /// <remarks>Setting the provider changes the value of <see cref="OwnsProcessor"/> to whether the given provider is an <see cref="IAudioProcessor"/>.</remarks>
+    /// <remarks>Setting the provider changes the value of <see cref="OwnsProvider"/> to whether the given provider is an <see cref="IAudioProcessor"/>.</remarks>
     /// <seealso cref="AudioPlayerExtensions.Use"/>
     /// <seealso cref="AudioPlayerExtensions.UseFile(AudioPlayer,string,bool)"/>
     /// <seealso cref="AudioPlayerExtensions.WithUnmanagedProvider(AudioPlayer,ISampleProvider)"/>
@@ -35,8 +35,8 @@ public sealed partial class AudioPlayer : MonoBehaviour
             ThrowIfIncompatible(value);
             try
             {
-                if (OwnsProcessor)
-                    (field as IAudioProcessor)?.Dispose();
+                if (OwnsProvider)
+                    (field as IDisposable)?.Dispose();
             }
             catch (Exception e)
             {
@@ -44,13 +44,13 @@ public sealed partial class AudioPlayer : MonoBehaviour
             }
 
             field = value;
-            OwnsProcessor = value is IAudioProcessor;
+            OwnsProvider = value is IAudioProcessor;
         }
     }
 
-    /// <summary>Whether to dispose the <see cref="ISampleProvider"/> if it's an <see cref="IAudioProcessor"/>.</summary>
+    /// <summary>Whether to dispose of the <see cref="SampleProvider"/> when the provider is changed or this component is pooled/destroyed.</summary>
     /// <remarks>This property is automatically set when the <see cref="SampleProvider"/> changes.</remarks>
-    public bool OwnsProcessor { get; set; } = true;
+    public bool OwnsProvider { get; set; } = true;
 
     /// <summary>The <see cref="SpeakerToy"/> this player is attached to.</summary>
     public SpeakerToy Speaker { get; private set; } = null!;
@@ -132,7 +132,7 @@ public sealed partial class AudioPlayer : MonoBehaviour
         SampleProvider = null;
         SendEngine = SendEngine.DefaultEngine;
         OutputMonitor = null;
-        AlwaysRead = OwnsProcessor = true;
+        AlwaysRead = OwnsProvider = true;
         _remainingTime = 0;
     }
 

@@ -131,6 +131,12 @@ public static partial class AudioPlayerExtensions
             return player;
         }
 
+        public AudioPlayer WithProviderOwnership(bool isOwned = true)
+        {
+            player.OwnsProvider = isOwned;
+            return player;
+        }
+
         /// <summary>
         /// Sets the <see cref="AudioPlayer.SampleProvider"/> to <see langword="null"/> of the <see cref="AudioPlayer"/> when no samples are read.
         /// </summary>

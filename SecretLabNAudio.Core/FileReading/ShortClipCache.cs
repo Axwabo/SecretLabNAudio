@@ -9,13 +9,14 @@ namespace SecretLabNAudio.Core.FileReading;
 /// <b>Do not use this for storing lengthy audio, stream the files instead.</b> 
 /// </summary>
 /// <remarks>
-/// The cache is case-isensitive (ignores case).
+/// The cache is case-insensitive (ignores case).
 /// Audio is automatically converted to <see cref="WaveStreamExtensions.ReadPlayerCompatibleSamples">player-compatible samples</see>.
 /// </remarks>
 /// <seealso cref="IAudioReaderFactory"/>
 /// <seealso cref="AudioReaderFactoryManager"/>
 /// <seealso cref="TryCreateAudioReader"/>
-/// <seealso cref="AudioPlayerExtensions.AddMixerShortClip"/>
+/// <seealso cref="AudioPlayerExtensions.UseShortClip"/>
+/// <seealso cref="AudioPlayerExtensions.UseFile(AudioPlayer,string,bool)"/>
 public static class ShortClipCache
 {
 
@@ -59,20 +60,38 @@ public static class ShortClipCache
     /// If an entry already exists, it will be overwritten.
     /// Audio is automatically converted to <see cref="WaveStreamExtensions.ReadPlayerCompatibleSamples">player-compatible samples</see>.
     /// </remarks>
+    /// <seealso cref="AudioPlayerExtensions.UseFile(AudioPlayer,string,bool)"/>
     public static RawSourceSampleProvider? AddFromFile(string path, bool trimExtension = true)
-    {
-        if (!TryRead(path, out var provider))
-            return null;
-        Add(path.FileName(trimExtension), provider, trimExtension);
-        return provider;
-    }
+        => AddFromFile(path, null, trimExtension);
 
-    /// <inheritdoc cref="AddFromFile(string,bool)"/>
+    /// <summary><inheritdoc cref="AddFromFile(string,bool)" path="summary"/></summary>
+    /// <param name="path">The path to the file.</param>
+    /// <param name="maxDuration">If not null and the file's duration is longer than this value, it will not be added to the cache.</param>
+    /// <param name="trimExtension">Whether to trim the file extension from the name.</param>
+    /// <remarks>
+    /// <inheritdoc cref="AddFromFile(string,bool)" path="remarks"/>
+    /// Audio file duration may be an estimate for compressed files.
+    /// </remarks>
+    /// <seealso cref="AudioPlayerExtensions.UseFile(AudioPlayer,string,bool)"/>
+    public static RawSourceSampleProvider? AddFromFile(string path, TimeSpan? maxDuration, bool trimExtension = true)
+        => AddFromFile(path, path.FileName(trimExtension), maxDuration);
+
+    /// <summary><inheritdoc cref="AddFromFile(string,bool)" path="summary"/></summary>
     /// <param name="path">The path to the file.</param>
     /// <param name="name">The key to add by.</param>
-    public static RawSourceSampleProvider? AddFromFile(string path, string name)
+    /// <remarks><inheritdoc cref="AddFromFile(string,bool)" path="remarks"/></remarks>
+    /// <seealso cref="AudioPlayerExtensions.UseFile(AudioPlayer,string,bool)"/>
+    public static RawSourceSampleProvider? AddFromFile(string path, string name) => AddFromFile(path, name, null);
+
+    /// <summary><inheritdoc cref="AddFromFile(string,bool)" path="summary"/></summary>
+    /// <param name="path">The path to the file.</param>
+    /// <param name="name">The key to add by.</param>
+    /// <param name="maxDuration">If not null and the file's duration is longer than this value, the file will not be added to the cache.</param>
+    /// <remarks><inheritdoc cref="AddFromFile(string,TimeSpan?,bool)"/></remarks>
+    /// <seealso cref="AudioPlayerExtensions.UseFile(AudioPlayer,string,bool)"/>
+    public static RawSourceSampleProvider? AddFromFile(string path, string name, TimeSpan? maxDuration)
     {
-        if (!TryRead(path, out var provider))
+        if (!TryRead(path, out var provider, maxDuration))
             return null;
         Add(name, provider, false);
         return provider;
@@ -87,21 +106,66 @@ public static class ShortClipCache
     /// <returns>The number of clips added to the cache.</returns>
     /// <remarks><inheritdoc cref="AddFromFile(string,bool)"/></remarks>
     /// <seealso cref="AddFromFile(string,bool)"/>
+    /// <seealso cref="AudioPlayerExtensions.UseFile(AudioPlayer,string,bool)"/>
     public static int AddAllFromFiles(bool trimExtension, params IEnumerable<string> paths)
+        => AddAllFromFiles(trimExtension, null, paths);
+
+    /// <summary><inheritdoc cref="AddAllFromFiles(bool,IEnumerable{string})" path="summary"/></summary>
+    /// <param name="trimExtension">Whether to trim the file extension from the names.</param>
+    /// <param name="maxDuration">If not null and a file's duration is longer than this value, the file will not be added to the cache.</param>
+    /// <param name="paths">The fully qualified paths to the files.</param>
+    /// <returns>The number of clips added to the cache.</returns>
+    /// <remarks><inheritdoc cref="AddFromFile(string,TimeSpan?,bool)"/></remarks>
+    /// <seealso cref="AddFromFile(string,bool)"/>
+    /// <seealso cref="AudioPlayerExtensions.UseFile(AudioPlayer,string,bool)"/>
+    public static int AddAllFromFiles(bool trimExtension, TimeSpan? maxDuration, params IEnumerable<string> paths)
     {
         var count = 0;
         foreach (var path in paths)
-            if (AddFromFile(path, trimExtension) != null)
+            if (AddFromFile(path, maxDuration, trimExtension) != null)
                 count++;
         return count;
     }
 
-    /// <inheritdoc cref="AddAllFromFiles(bool,IEnumerable{string})"/>
+    /// <summary><inheritdoc cref="AddAllFromFiles(bool,IEnumerable{string})" path="summary"/></summary>
     /// <param name="baseDirectory">The base directory to combine with the paths.</param>
     /// <param name="trimExtension">Whether to trim the file extension from the names.</param>
     /// <param name="paths">The paths to the files relative to <paramref name="baseDirectory"/>.</param>
+    /// <returns>The number of clips added to the cache.</returns>
+    /// <remarks><inheritdoc cref="AddFromFile(string,bool)"/></remarks>
+    /// <seealso cref="AddFromFile(string,bool)"/>
+    /// <seealso cref="AudioPlayerExtensions.UseFile(AudioPlayer,string,bool)"/>
     public static int AddAllFromFiles(string baseDirectory, bool trimExtension, params IEnumerable<string> paths)
-        => AddAllFromFiles(trimExtension, paths.Select(e => Path.Combine(baseDirectory, e)));
+        => AddAllFromFiles(baseDirectory, trimExtension, null, paths);
+
+    /// <summary><inheritdoc cref="AddAllFromFiles(bool,IEnumerable{string})" path="summary"/></summary>
+    /// <param name="baseDirectory">The base directory to combine with the paths.</param>
+    /// <param name="trimExtension">Whether to trim the file extension from the names.</param>
+    /// <param name="maxDuration">If not null and a file's duration is longer than this value, the file will not be added to the cache.</param>
+    /// <param name="paths">The paths to the files relative to <paramref name="baseDirectory"/>.</param>
+    /// <returns>The number of clips added to the cache.</returns>
+    /// <remarks><inheritdoc cref="AddFromFile(string,TimeSpan?,bool)"/></remarks>
+    /// <seealso cref="AddFromFile(string,TimeSpan?,bool)"/>
+    /// <seealso cref="AudioPlayerExtensions.UseFile(AudioPlayer,string,bool)"/>
+    public static int AddAllFromFiles(string baseDirectory, bool trimExtension, TimeSpan? maxDuration, params IEnumerable<string> paths)
+        => AddAllFromFiles(trimExtension, maxDuration, paths.Select(e => Path.Combine(baseDirectory, e)));
+
+    /// <summary>
+    /// Adds all audio files from a directory to the cache with keys based on files' names.
+    /// <b>Do not use this for storing lengthy audio, stream the files instead.</b>
+    /// </summary>
+    /// <param name="directoryPath">The directory to find files in.</param>
+    /// <param name="trimExtension">Whether to trim the file extension from the names.</param>
+    /// <param name="maxDuration">If not null and a file's duration is longer than this value, the file will not be added to the cache.</param>
+    /// <param name="searchOption">Whether to search only in the directory itself, or enter subdirectories as well.</param>
+    /// <returns>The number of clips added to the cache.</returns>
+    /// <remarks><inheritdoc cref="AddFromFile(string,TimeSpan?,bool)"/></remarks>
+    public static int AddAllFromDirectory(
+        string directoryPath,
+        bool trimExtension = true,
+        TimeSpan? maxDuration = null,
+        SearchOption searchOption = SearchOption.TopDirectoryOnly
+    ) => AddAllFromFiles(trimExtension, maxDuration, Directory.EnumerateFiles(directoryPath));
 
     /// <summary>Attempts to retrieve a clip from the cache.</summary>
     /// <param name="name">The key to search by.</param>
@@ -124,9 +188,11 @@ public static class ShortClipCache
         return true;
     }
 
-    private static bool TryRead(string path, [NotNullWhen(true)] out RawSourceSampleProvider? provider)
+    private static bool TryRead(string path, [NotNullWhen(true)] out RawSourceSampleProvider? provider, TimeSpan? maxDuration)
     {
-        if (!File.Exists(path) || !TryCreateAudioReader.Stream(path, out var stream))
+        if (!File.Exists(path)
+            || !TryCreateAudioReader.Stream(path, out var stream)
+            || maxDuration.HasValue && stream.TotalTime > maxDuration.Value)
         {
             provider = null;
             return false;

@@ -12,8 +12,7 @@ public static partial class AudioPlayerExtensions
         public AudioPlayer Use(IAudioProcessor processor, bool isOwned = true)
         {
             player.SampleProvider = processor.ToPlayerCompatible(isOwned);
-            player.OwnsProcessor = isOwned;
-            return player;
+            return player.WithProviderOwnership(isOwned);
         }
 
         public AudioPlayer UseFile(string path, bool loop = false) => player.Use(StreamAudioProcessor.CreateFromFile(path, loop));
