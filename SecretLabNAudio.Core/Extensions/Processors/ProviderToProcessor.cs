@@ -20,7 +20,7 @@ public static class ProviderToProcessor
         public ProcessorChain ToCompatibleChain(bool isOwned = true)
             => provider.ToCompatibleProcessor(isOwned).ToChain(isOwned);
 
-        internal ISampleProvider Process(Process? process)
+        internal ISampleProvider Process(ModifyChain? process)
         {
             if (process == null)
                 return provider;

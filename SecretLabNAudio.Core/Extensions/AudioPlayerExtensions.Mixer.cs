@@ -15,15 +15,15 @@ public static partial class AudioPlayerExtensions
             => player.UseMixer(mixer => mixer.AddNamed(input, inputName, isOwned));
 
         public AudioPlayer MixFile(string path, bool loop = false, float volume = 1)
-            => player.MixFile(path, volume.AmplifyProcessorChain, loop);
+            => player.MixFile(path, volume.ModifyChainIfNot1, loop);
 
         public AudioPlayer MixFile(string path, string inputName, bool loop = false, float volume = 1)
-            => player.MixFile(path, inputName, volume.AmplifyProcessorChain, loop);
+            => player.MixFile(path, inputName, volume.ModifyChainIfNot1, loop);
 
-        public AudioPlayer MixFile(string path, Process? process, bool loop = false)
+        public AudioPlayer MixFile(string path, ModifyChain? process, bool loop = false)
             => player.UseMixer(mixer => mixer.AddFileAnonymous(path, loop, process));
 
-        public AudioPlayer MixFile(string path, string inputName, Process? process, bool loop = false)
+        public AudioPlayer MixFile(string path, string inputName, ModifyChain? process, bool loop = false)
             => player.UseMixer(mixer => mixer.AddFileNamed(path, inputName, loop, process));
 
         public AudioPlayer MixFileSafe(string path, bool loop = false)

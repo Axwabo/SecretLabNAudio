@@ -17,8 +17,8 @@ public static partial class AudioPlayerExtensions
 
         public AudioPlayer UseFile(string path, bool loop = false) => player.Use(StreamAudioProcessor.CreateFromFile(path, loop));
 
-        public AudioPlayer UseFile(string path, Process process, bool loop = false)
-            => player.Use((IAudioProcessor) StreamAudioProcessor.CreateFromFile(path, loop).Process(process));
+        public AudioPlayer UseFile(string path, ModifyChain modify, bool loop = false)
+            => player.Use((IAudioProcessor) StreamAudioProcessor.CreateFromFile(path, loop).Process(modify));
 
         public AudioPlayer UseQueue()
         {
