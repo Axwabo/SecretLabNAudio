@@ -3,6 +3,8 @@ using SecretLabNAudio.Core.FileReading;
 
 namespace SecretLabNAudio.Core.Extensions;
 
+public delegate void Process(ProcessorChain chain);
+
 public static partial class AudioPlayerExtensions
 {
 
@@ -17,12 +19,8 @@ public static partial class AudioPlayerExtensions
 
         public AudioPlayer UseFile(string path, bool loop = false) => player.Use(StreamAudioProcessor.CreateFromFile(path, loop));
 
-        public AudioPlayer UseFile(string path, Action<ProcessorChain> process, bool loop = false)
-        {
-            var chain = StreamAudioProcessor.CreateFromFile(path, loop).ToChain();
-            process(chain);
-            return player.Use(chain);
-        }
+        public AudioPlayer UseFile(string path, Process process, bool loop = false)
+            => player.Use((IAudioProcessor) StreamAudioProcessor.CreateFromFile(path, loop).Process(process));
 
         public AudioPlayer UseQueue()
         {
@@ -35,7 +33,9 @@ public static partial class AudioPlayerExtensions
 
         public AudioPlayer UseMixer(bool keepInputs = true)
         {
-            var mixer = keepInputs && player.Mixer is { } existing ? existing : new Mixer(AudioPlayer.SupportedFormat);
+            if (!keepInputs)
+                return player.Use(new Mixer(AudioPlayer.SupportedFormat));
+            var mixer = player.Mixer ?? new Mixer(AudioPlayer.SupportedFormat);
             if (player.SampleProvider is not Mixer and { } provider)
                 mixer.AddAnonymous(provider, provider is IAudioProcessor);
             return player.Use(mixer);

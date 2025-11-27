@@ -1,3 +1,4 @@
+using SecretLabNAudio.Core.FileReading;
 using SecretLabNAudio.Core.Providers;
 
 namespace SecretLabNAudio.Core.Extensions.Processors;
@@ -13,6 +14,21 @@ public static class MixerExtensions
 
         public Mixer AddFileNamed(string path, string inputName, bool loop = false)
             => mixer.AddNamed(StreamAudioProcessor.CreateFromFile(path, loop), inputName);
+
+        public Mixer AddShortClipAnonymous(string name, bool loop = false)
+            => ShortClipCache.TryGet(name, out var provider)
+                ? mixer.AddAnonymous(provider.WithLoop(loop), false)
+                : mixer;
+
+        public Mixer AddShortClip(string name, bool loop = false)
+            => ShortClipCache.TryGet(name, out var provider)
+                ? mixer.AddNamed(provider.WithLoop(loop), provider.ClipName!, false)
+                : mixer;
+
+        public Mixer AddShortClipNamed(string clipName, string inputName, bool loop = false)
+            => ShortClipCache.TryGet(clipName, out var provider)
+                ? mixer.AddNamed(provider.WithLoop(loop), inputName, false)
+                : mixer;
 
         public Mixer TryAddFileAnonymous(string path, bool loop = false)
             => StreamAudioProcessor.TryCreateFromFile(path, loop, out var processor)

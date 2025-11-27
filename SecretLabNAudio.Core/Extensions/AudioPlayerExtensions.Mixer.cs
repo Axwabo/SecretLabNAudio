@@ -33,6 +33,13 @@ public static partial class AudioPlayerExtensions
         public AudioPlayer MixFileSafe(string path, string inputName, bool loop = false)
             => player.UseMixer(mixer => mixer.TryAddFileNamed(path, inputName, loop));
 
+        public AudioPlayer MixShortClip(string name, bool loop = false) => player.UseMixer(mixer => mixer.AddShortClip(name, loop));
+
+        public AudioPlayer MixShortClip(string clipName, string inputName, bool loop = false)
+            => player.UseMixer(mixer => mixer.AddShortClipNamed(clipName, inputName, loop));
+
+        public AudioPlayer MixShortClipAnonymous(string name, bool loop = false) => player.UseMixer(mixer => mixer.AddShortClipAnonymous(name, loop));
+
     }
 
 }
