@@ -1,5 +1,3 @@
-using SecretLabNAudio.Core.Extensions.Processors;
-
 namespace SecretLabNAudio.Core.Extensions;
 
 public static partial class AudioPlayerExtensions
@@ -7,20 +5,6 @@ public static partial class AudioPlayerExtensions
 
     extension(AudioPlayer player)
     {
-
-        public T? SourceAs<T>() => player.SampleProvider switch
-        {
-            T t => t,
-            IAudioProcessor processor when processor.TryGetSourceAs(out T? result) => result,
-            _ => default
-        };
-
-        public T? MasterAs<T>() => player.SampleProvider switch
-        {
-            T t => t,
-            IAudioProcessor processor when processor.TryGetMasterAs(out T? result) => result,
-            _ => default
-        };
 
         public AudioPlayer Restart()
         {
@@ -30,7 +14,6 @@ public static partial class AudioPlayerExtensions
 
         public AudioPlayer Loop(bool loop = true)
         {
-            // TODO: mutate processor if needed
             player.SourceAs<ILoopable>()?.Loop = loop;
             return player;
         }

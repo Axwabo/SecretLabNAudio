@@ -10,14 +10,16 @@ public static class WaveStreamExtensions
 
     private const int BufferLength = 4800;
 
+    /// <summary>Wraps the stream in a <see cref="LoopingWaveProvider"/>.</summary>
     /// <param name="stream">The <see cref="WaveStream"/> to wrap.</param>
+    /// <returns>The <see cref="LoopingWaveProvider"/> wrapping the stream.</returns>
+    [Obsolete($"Create a {nameof(StreamAudioProcessor)} and set {nameof(StreamAudioProcessor.Loop)} to true instead.", true)]
+    // ReSharper disable once MoveToExtensionBlock
+    public static LoopingWaveProvider Loop(this WaveStream stream) => new(stream);
+
+    /// <param name="stream">The <see cref="WaveStream"/> to read samples from.</param>
     extension(WaveStream stream)
     {
-
-        /// <summary>Wraps the stream in a <see cref="LoopingWaveProvider"/>.</summary>
-        /// <returns>The <see cref="LoopingWaveProvider"/> wrapping the stream.</returns>
-        [Obsolete($"Create a {nameof(StreamAudioProcessor)} and set {nameof(StreamAudioProcessor.Loop)} to true instead.", true)]
-        public LoopingWaveProvider Loop() => new(stream);
 
         /// <summary>
         /// Fully reads the stream in an <see cref="AudioPlayer"/>-compatible format and creates a buffer for the read samples.
@@ -91,6 +93,11 @@ public static class WaveStreamExtensions
             throw;
         }
 
+        ReadBuffered(provider, ref array, ref total, firstBuffer, totalRead);
+    }
+
+    private static void ReadBuffered(ISampleProvider provider, ref float[] array, ref int total, float[] firstBuffer, int totalRead)
+    {
         var buffers = new List<float[]> {firstBuffer};
         try
         {
