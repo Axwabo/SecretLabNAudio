@@ -81,6 +81,15 @@ public static class AudioProcessorExtensions
             => (processor as Mixer ?? new Mixer(processor, isThisOwned))
                 .AddAnonymous(other, isOtherOwned);
 
+        internal IAudioProcessor Process(ModifyChain? process)
+        {
+            if (process == null)
+                return processor;
+            var chain = processor.ToCompatibleChain();
+            process(chain);
+            return chain;
+        }
+
     }
 
 }

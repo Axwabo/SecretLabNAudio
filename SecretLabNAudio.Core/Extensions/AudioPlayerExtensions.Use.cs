@@ -15,10 +15,11 @@ public static partial class AudioPlayerExtensions
             return player.WithProviderOwnership(isOwned);
         }
 
-        public AudioPlayer UseFile(string path, bool loop = false) => player.Use(StreamAudioProcessor.CreateFromFile(path, loop));
+        public AudioPlayer UseFile(string path, bool loop = false, float volume = 1)
+            => player.Use(StreamAudioProcessor.CreateFromFile(path, loop).Process(volume.ModifyChainIfNot1));
 
         public AudioPlayer UseFile(string path, ModifyChain modify, bool loop = false)
-            => player.Use((IAudioProcessor) StreamAudioProcessor.CreateFromFile(path, loop).Process(modify));
+            => player.Use(StreamAudioProcessor.CreateFromFile(path, loop).Process(modify));
 
         public AudioPlayer UseQueue()
         {
@@ -33,7 +34,9 @@ public static partial class AudioPlayerExtensions
         {
             if (!keepInputs)
                 return player.Use(new Mixer(AudioPlayer.SupportedFormat));
-            var mixer = player.Mixer ?? new Mixer(AudioPlayer.SupportedFormat);
+            if (player.Mixer != null)
+                return player;
+            var mixer = new Mixer(AudioPlayer.SupportedFormat);
             if (player.SampleProvider is not Mixer and { } provider)
                 mixer.AddAnonymous(provider, provider is IAudioProcessor);
             return player.Use(mixer);
@@ -45,14 +48,15 @@ public static partial class AudioPlayerExtensions
             return player;
         }
 
-        public AudioPlayer UseShortClip(string name, bool loop = false)
-            => ShortClipCache.TryGet(name, out var provider)
-                ? player.WithUnmanagedProvider(provider.WithLoop(loop))
-                : player;
+        public AudioPlayer UseShortClip(string name, bool loop = false, float volume = 1)
+            => player.UseShortClipHelper(name, false, loop, volume);
 
-        public AudioPlayer UseExactShortClip(string name, bool loop = false)
-            => ShortClipCache.TryGet(name, out var provider, false)
-                ? player.WithUnmanagedProvider(provider.WithLoop(loop))
+        public AudioPlayer UseExactShortClip(string name, bool loop = false, float volume = 1)
+            => player.UseShortClipHelper(name, false, loop, volume);
+
+        private AudioPlayer UseShortClipHelper(string name, bool trimExtension, bool loop, float volume)
+            => ShortClipCache.TryGet(name, out var provider, trimExtension)
+                ? player.WithUnmanagedProvider(provider.WithLoop(loop).Process(volume.ModifyChainIfNot1))
                 : player;
 
     }
