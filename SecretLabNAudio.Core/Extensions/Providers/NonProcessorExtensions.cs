@@ -2,11 +2,14 @@ using NAudio.Wave.SampleProviders;
 
 namespace SecretLabNAudio.Core.Extensions.Providers;
 
-/// <summary>Extension methods for the <see cref="ISampleProvider"/> interface.</summary>
+/// <summary>
+/// Extension methods for the <see cref="ISampleProvider"/> interface.
+/// These methods are meant for providers that aren't audio processors.
+/// </summary>
 public static class NonProcessorExtensions
 {
 
-    /// <param name="provider">Wave provider to convert.</param>
+    /// <param name="provider">The wave provider to convert.</param>
     extension(IWaveProvider provider)
     {
 

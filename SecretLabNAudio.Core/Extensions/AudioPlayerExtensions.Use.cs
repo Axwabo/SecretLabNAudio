@@ -15,6 +15,14 @@ public static partial class AudioPlayerExtensions
             return player.WithProviderOwnership(isOwned);
         }
 
+        /// <summary>
+        /// Replaces the <see cref="AudioPlayer.SampleProvider"/> with a file stream processor.
+        /// </summary>
+        /// <param name="path">The path to the file.</param>
+        /// <param name="loop">Whether to loop the file.</param>
+        /// <param name="volume">The volume of the input.</param>
+        /// <returns>The player itself.</returns>
+        /// <include file='../XmlDocs/Files.xml' path='doc/NotSupported/exception'/>
         public AudioPlayer UseFile(string path, bool loop = false, float volume = 1)
             => player.Use(StreamAudioProcessor.CreateFromFile(path, loop).Process(volume.ModifyChainIfNot1));
 
@@ -38,7 +46,7 @@ public static partial class AudioPlayerExtensions
                 return player;
             var mixer = new Mixer(AudioPlayer.SupportedFormat);
             if (player.SampleProvider is not Mixer and { } provider)
-                mixer.AddAnonymous(provider, provider is IAudioProcessor);
+                mixer.AddAnonymous(provider, player.OwnsProvider);
             return player.Use(mixer);
         }
 

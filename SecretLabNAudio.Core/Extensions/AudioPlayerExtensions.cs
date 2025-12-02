@@ -131,6 +131,11 @@ public static partial class AudioPlayerExtensions
             return player;
         }
 
+        /// <summary>
+        /// Sets the <see cref="AudioPlayer.OwnsProvider"/> of the <see cref="AudioPlayer"/>.
+        /// </summary>
+        /// <param name="isOwned">Whether to dispose of the <see cref="AudioPlayer.SampleProvider"/> when the provider is changed or the player is pooled/destroyed.</param>
+        /// <returns>The player itself.</returns>
         public AudioPlayer WithProviderOwnership(bool isOwned = true)
         {
             player.OwnsProvider = isOwned;

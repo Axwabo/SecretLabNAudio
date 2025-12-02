@@ -25,7 +25,7 @@ public sealed partial class AudioPlayer : MonoBehaviour
     /// </exception>
     /// <remarks>Setting the provider changes the value of <see cref="OwnsProvider"/> to whether the given provider is an <see cref="IAudioProcessor"/>.</remarks>
     /// <seealso cref="AudioPlayerExtensions.Use"/>
-    /// <seealso cref="AudioPlayerExtensions.UseFile(AudioPlayer,string,bool)"/>
+    /// <seealso cref="AudioPlayerExtensions.UseFile(AudioPlayer,string,bool,float)"/>
     /// <seealso cref="AudioPlayerExtensions.WithUnmanagedProvider(AudioPlayer,ISampleProvider)"/>
     public ISampleProvider? SampleProvider
     {
@@ -153,12 +153,7 @@ public sealed partial class AudioPlayer : MonoBehaviour
 
         if (read == 0)
         {
-            HasEnded = true;
-            ClearBuffer();
-            OutputMonitor?.OnEmpty();
-            NoSamplesRead?.Invoke();
-            if (!AlwaysRead)
-                SampleProvider = null;
+            End();
             return;
         }
 
@@ -181,11 +176,21 @@ public sealed partial class AudioPlayer : MonoBehaviour
         SendEngine.Broadcast(new AudioMessage(Id, EncoderBuffer, encoded));
     }
 
-    /// <summary>Resets the amount of samples to send and clears the <see cref="SampleProvider"/>'s buffer if it's a <see cref="BufferedSampleProvider"/>.</summary>
+    private void End()
+    {
+        HasEnded = true;
+        ClearBuffer();
+        OutputMonitor?.OnEmpty();
+        NoSamplesRead?.Invoke();
+        if (!AlwaysRead)
+            SampleProvider = null;
+    }
+
+    /// <summary>Resets the amount of samples to send and clears the buffer of the single <see cref="BufferedSampleProvider"/> input (if present).</summary>
     public void ClearBuffer()
     {
         _remainingTime = 0;
-        this.MasterAs<BufferedSampleProvider>()?.Clear();
+        this.SingleInputAs<BufferedSampleProvider>()?.Clear();
     }
 
     /// <summary>Destroys the player and its <see cref="Speaker"/>.</summary>

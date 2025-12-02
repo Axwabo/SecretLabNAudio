@@ -108,12 +108,12 @@ public sealed class Mixer : IAudioProcessor
             var read = provider.Read(_readBuffer, 0, count);
             for (var j = 0; j < read; j++)
                 targetSpan[j] += readSpan[j];
-            var ended = read < total;
+            var remove = read < total;
             total = Math.Max(total, read);
-            if (!ended)
+            if (!remove)
                 continue;
-            InputEnded?.Invoke(input, ref ended);
-            if (ended)
+            InputEnded?.Invoke(input, ref remove);
+            if (remove)
                 Remove(input);
         }
 
