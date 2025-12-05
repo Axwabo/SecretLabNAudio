@@ -38,11 +38,12 @@ public static partial class AudioPlayerExtensions
         /// <summary>
         /// Adds an anonymous file input to the mixer.
         /// </summary>
-        /// <param name="path">The path to the file,</param>
+        /// <param name="path">The path to the file.</param>
         /// <param name="loop">Whether to loop the file.</param>
         /// <param name="volume">The volume of the input.</param>
         /// <returns>The player itself.</returns>
         /// <include file='../XmlDocs/Files.xml' path='doc/NotSupported/exception'/>
+        /// <exception cref="FileNotFoundException">Thrown if the file does not exist.</exception>
         /// <seealso cref="UseMixer(AudioPlayer,bool)"/>
         public AudioPlayer MixFile(string path, bool loop = false, float volume = 1)
             => player.MixFile(path, volume.ModifyChainIfNot1, loop);
@@ -50,7 +51,7 @@ public static partial class AudioPlayerExtensions
         /// <summary>
         /// Adds a named file input to the mixer.
         /// </summary>
-        /// <param name="path">The path to the file,</param>
+        /// <param name="path">The path to the file.</param>
         /// <param name="inputName">The name of the mixer input.</param>
         /// <param name="loop">Whether to loop the file.</param>
         /// <param name="volume">The volume of the input.</param>
@@ -59,15 +60,30 @@ public static partial class AudioPlayerExtensions
         public AudioPlayer MixFile(string path, string inputName, bool loop = false, float volume = 1)
             => player.MixFile(path, inputName, volume.ModifyChainIfNot1, loop);
 
+        /// <summary>
+        /// Adds an anonymous file input to the mixer with optional processing using a <see cref="ProcessorChain"/>.
+        /// </summary>
+        /// <param name="path">The path to the file.</param>
+        /// <param name="process">An optional <see cref="ModifyChain"/> specifying how to process the stream.</param>
+        /// <param name="loop">Whether to loop the file.</param>
         /// <returns>The player itself.</returns>
+        /// <include file='../XmlDocs/Files.xml' path='doc/NotSupported/exception'/>
         public AudioPlayer MixFile(string path, ModifyChain? process, bool loop = false)
             => player.UseMixer(mixer => mixer.AddFileAnonymous(path, loop, process));
 
+        /// <summary>
+        /// Adds a named file input to the mixer with optional processing using a <see cref="ProcessorChain"/>.
+        /// </summary>
+        /// <param name="path">The path to the file.</param>
+        /// <param name="inputName">The name of the mixer input.</param>
+        /// <param name="process">An optional <see cref="ModifyChain"/> specifying how to process the stream.</param>
+        /// <param name="loop">Whether to loop the file.</param>
         /// <returns>The player itself.</returns>
+        /// <include file='../XmlDocs/Files.xml' path='doc/NotSupported/exception'/>
         public AudioPlayer MixFile(string path, string inputName, ModifyChain? process, bool loop = false)
             => player.UseMixer(mixer => mixer.AddFileNamed(path, inputName, loop, process));
 
-        /// <returns>The player itself.</returns>
+        /// <inheritdoc cref="MixFile(AudioPlayer,string,bool,float)"/>
         public AudioPlayer MixFileSafe(string path, bool loop = false)
             => player.UseMixer(mixer => mixer.TryAddFileAnonymous(path, loop));
 
@@ -83,6 +99,11 @@ public static partial class AudioPlayerExtensions
         public AudioPlayer MixShortClip(string clipName, string inputName, bool loop = false)
             => player.UseMixer(mixer => mixer.AddShortClipNamed(clipName, inputName, loop));
 
+        /// <summary>
+        /// Adds an anonymous short clip to the mixer. 
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="loop"></param>
         /// <returns>The player itself.</returns>
         public AudioPlayer MixShortClipAnonymous(string name, bool loop = false)
             => player.UseMixer(mixer => mixer.AddShortClipAnonymous(name, loop));

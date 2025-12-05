@@ -14,6 +14,7 @@ public sealed class AudioQueue : IAudioProcessor
     /// <summary>A read-only collection representing the underlying queue. Does not contain <seealso cref="Current"/>.</summary>
     public IReadOnlyCollection<ProcessorLayer> Queue => _queue;
 
+    /// <summary>Gets the active <see cref="ProcessorLayer"/> (if any).</summary>
     public ProcessorLayer? CurrentLayer => _current;
 
     /// <summary>Gets the active provider (if any).</summary>
@@ -52,7 +53,7 @@ public sealed class AudioQueue : IAudioProcessor
 
     /// <summary>Queues a provider to be read from.</summary>
     /// <param name="provider">The <see cref="ISampleProvider"/> to queue.</param>
-    /// <param name="isOwned"></param>
+    /// <param name="isOwned">Whether to dispose of the <paramref name="provider"/> after it has ended or if this queue gets disposed.</param>
     /// <exception cref="FormatException">Thrown if the provider's wave format does not match this provider's <see cref="WaveFormat"/>.</exception>
     public void Enqueue(ISampleProvider provider, bool isOwned)
     {
@@ -69,16 +70,20 @@ public sealed class AudioQueue : IAudioProcessor
         return _queue.TryDequeue(out _current);
     }
 
-    /// <summary>Clears the queue.</summary>
-    public void Clear() => _queue.Clear();
+    /// <summary>Clears the queue and disposes of owned queued providers.</summary>
+    /// <remarks>The current layer is kept active. Call <see cref="Next"/> to end it.</remarks>
+    public void Clear()
+    {
+        foreach (var layer in _queue)
+            layer.Dispose();
+        _queue.Clear();
+    }
 
     /// <inheritdoc />
     public void Dispose()
     {
         _current?.Dispose();
-        foreach (var layer in _queue)
-            layer.Dispose();
-        _queue.Clear();
+        Clear();
     }
 
 }

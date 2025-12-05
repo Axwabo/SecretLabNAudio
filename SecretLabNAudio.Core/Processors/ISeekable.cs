@@ -1,5 +1,6 @@
 namespace SecretLabNAudio.Core.Processors;
 
+/// <summary>An interface specifying a duration and a modifiable current time of the audio resource.</summary>
 public interface ISeekable
 {
 

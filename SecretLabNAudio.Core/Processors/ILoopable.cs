@@ -1,5 +1,6 @@
 namespace SecretLabNAudio.Core.Processors;
 
+/// <summary>An interface specifying whether the resource can be looped.</summary>
 public interface ILoopable
 {
 

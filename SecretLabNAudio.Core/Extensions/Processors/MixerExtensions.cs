@@ -3,12 +3,21 @@ using SecretLabNAudio.Core.Providers;
 
 namespace SecretLabNAudio.Core.Extensions.Processors;
 
+/// <summary>Extension methods for the <see cref="Mixer"/> class.</summary>
 public static class MixerExtensions
 {
 
+    /// <param name="mixer">The mixer to modify.</param>
     extension(Mixer mixer)
     {
 
+        /// <summary>
+        /// Adds an anonymous file input.
+        /// </summary>
+        /// <param name="path">The path to the file.</param>
+        /// <param name="loop">Whether to loop the file.</param>
+        /// <param name="process">An optional <see cref="ModifyChain"/> specifying how to process the stream.</param>
+        /// <returns>The mixer itself.</returns>
         public Mixer AddFileAnonymous(string path, bool loop = false, ModifyChain? process = null)
             => mixer.AddAnonymous(StreamAudioProcessor.CreateFromFile(path, loop).Process(process));
 
@@ -46,12 +55,9 @@ public static class MixerExtensions
         public Mixer RemoveAllBySourceType<T>()
             => mixer.RemoveAll(static e => e.Provider is T || e.Provider is IAudioProcessor provider && provider.TryGetSourceAs(out T? _));
 
-        public Mixer RemoveAllShortClips()
-        {
-            mixer.RemoveAllByImmediateType<RawSourceSampleProvider>();
-            mixer.RemoveAllByImmediateType<LoopingRawSampleProvider>();
-            return mixer;
-        }
+        public Mixer RemoveAllShortClips() => mixer
+            .RemoveAllByImmediateType<RawSourceSampleProvider>()
+            .RemoveAllByImmediateType<LoopingRawSampleProvider>();
 
         public Mixer RemoveAllStreamProcessors() => mixer.RemoveAllBySourceType<StreamAudioProcessor>();
 

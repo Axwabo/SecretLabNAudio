@@ -4,9 +4,9 @@ public static class ProviderToProcessor
 {
 
     public static IAudioProcessor WaveProviderToProcessor(IWaveProvider provider, bool isOwned)
-        => provider is not WaveStream stream
-            ? new SampleProviderWrapper(provider.ToSampleProvider())
-            : new StreamAudioProcessor(stream, isOwned);
+        => provider is WaveStream stream
+            ? new StreamAudioProcessor(stream, isOwned)
+            : new SampleProviderWrapper(provider.ToSampleProvider());
 
     public static IAudioProcessor SampleProviderToProcessor(ISampleProvider provider) => (provider as IAudioProcessor ?? new SampleProviderWrapper(provider));
 

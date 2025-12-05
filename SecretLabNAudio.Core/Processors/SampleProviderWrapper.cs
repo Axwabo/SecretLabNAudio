@@ -9,6 +9,11 @@ public sealed class SampleProviderWrapper : IAudioProcessor
     private ISampleProvider? _provider;
     private IDisposable? _disposable;
 
+    /// <summary>
+    /// Creates a new <see cref="SampleProviderWrapper"/>.
+    /// </summary>
+    /// <param name="provider">The sample provider to wrap.</param>
+    /// <param name="disposable">The object to dispose. May be equivalent to <paramref name="provider"/>.</param>
     public SampleProviderWrapper(ISampleProvider provider, IDisposable? disposable = null)
     {
         _provider = provider;

@@ -1,5 +1,9 @@
 namespace SecretLabNAudio.Core.Extensions.Processors;
 
+/// <summary>
+/// A delegate to modify a <see cref="ProcessorChain"/> that returns the passed chain itself.
+/// These delegates can be <b>chain</b>ed.
+/// </summary>
 public delegate ProcessorChain ModifyChain(ProcessorChain chain);
 
 public static class ModifyChainExtensions

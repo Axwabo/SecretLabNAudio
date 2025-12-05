@@ -6,6 +6,10 @@ namespace SecretLabNAudio.Core.Extensions;
 public static partial class AudioPlayerExtensions
 {
 
+    /// <summary>
+    /// Extension methods that modify the <see cref="AudioPlayer.SampleProvider"/>.
+    /// </summary>
+    /// <param name="player">The player to modify.</param>
     extension(AudioPlayer player)
     {
 

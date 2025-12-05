@@ -1,11 +1,13 @@
 namespace SecretLabNAudio.Core.Processors;
 
+/// <summary>A loopable, managed <see cref="IAudioProcessor"/> wrapping a <see cref="WaveStream"/>.</summary>
 public sealed class StreamAudioProcessor : IAudioProcessor, ISeekable, ILoopable
 {
 
     private ISampleProvider? _provider;
     private IDisposable? _disposable;
 
+    /// <summary>The <see cref="WaveStream"/> that is encapsulated.</summary>
     public WaveStream Stream
     {
         get
@@ -13,7 +15,6 @@ public sealed class StreamAudioProcessor : IAudioProcessor, ISeekable, ILoopable
             EnsureNotDisposed();
             return field;
         }
-        private set;
     }
 
     /// <inheritdoc />
@@ -29,10 +30,21 @@ public sealed class StreamAudioProcessor : IAudioProcessor, ISeekable, ILoopable
     /// <inheritdoc />
     public bool Loop { get; set; }
 
+    /// <summary>
+    /// Creates a new <see cref="StreamAudioProcessor"/>, and automaically converts the stream to an <see cref="ISampleProvider"/>.
+    /// </summary>
+    /// <param name="stream">The <see cref="WaveStream"/> to encapsulate.</param>
+    /// <param name="isOwned">Whether to dispose of the <paramref name="stream"/> when this object is disposed.</param>
     public StreamAudioProcessor(WaveStream stream, bool isOwned = true) : this(stream, stream.ToSampleProvider(), isOwned)
     {
     }
 
+    /// <summary>
+    /// Creates a new <see cref="StreamAudioProcessor"/> with a caller-provided <see cref="ISampleProvider"/>.
+    /// </summary>
+    /// <param name="stream">The <see cref="WaveStream"/> to encapsulate.</param>
+    /// <param name="provider">The <see cref="ISampleProvider"/> corresponding to the <paramref name="stream"/>.</param>
+    /// <param name="isOwned">Whether to dispose of the <paramref name="stream"/> when this object is disposed.</param>
     public StreamAudioProcessor(WaveStream stream, ISampleProvider provider, bool isOwned = true)
     {
         _provider = provider;
