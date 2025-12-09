@@ -96,7 +96,7 @@ public sealed class RawSourceSampleProvider : ISampleProvider, ISeekable, ILoopa
         {
             var read = Read(bufferSpan[total..]);
             total += read;
-            if (read < count)
+            if (read == 0)
                 Position = 0;
         }
 
