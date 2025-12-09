@@ -14,9 +14,19 @@ public static class ProviderToProcessor
     extension(ISampleProvider provider)
     {
 
+        /// <summary>
+        /// Wraps the provider in a <see cref="SampleProviderWrapper"/>, and ensures that its format matches <see cref="AudioPlayer.SupportedFormat"/>.
+        /// </summary>
+        /// <param name="isOwned">Whether to dispose of the <paramref name="provider"/> if format conversion is required.</param>
+        /// <returns>A player-compatible <see cref="IAudioProcessor"/> (<see cref="ProcessorChain"/> if conversion was performed).</returns>
         public IAudioProcessor ToCompatibleProcessor(bool isOwned = true)
             => SampleProviderToProcessor(provider).ToPlayerCompatible(isOwned);
 
+        /// <summary>
+        /// Creates a <see cref="ProcessorChain"/>
+        /// </summary>
+        /// <param name="isOwned"></param>
+        /// <returns></returns>
         public ProcessorChain ToCompatibleChain(bool isOwned = true)
             => provider.ToCompatibleProcessor(isOwned).ToChain(isOwned);
 

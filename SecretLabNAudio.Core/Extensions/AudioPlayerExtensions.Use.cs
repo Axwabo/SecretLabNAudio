@@ -35,10 +35,16 @@ public static partial class AudioPlayerExtensions
 
         public AudioPlayer UseQueue()
         {
-            var queue = new AudioQueue(AudioPlayer.SupportedFormat);
-            if (player.SampleProvider is not Mixer mixer)
-                return player.Use(queue);
-            mixer.AddAnonymous(queue);
+            var queue = player.Queue;
+            if (queue != null)
+                return player;
+            player.Use(new AudioQueue(AudioPlayer.SupportedFormat));
+            return player;
+        }
+
+        public AudioPlayer UseQueue(Action<AudioQueue> queue)
+        {
+            queue(player.UseQueue().Queue!);
             return player;
         }
 

@@ -4,7 +4,7 @@
 public static class WaveFormatExtensions
 {
 
-    /// <param name="format">The <see cref="WaveFormat"/> to calculate the sample count for.</param>
+    /// <param name="format">The <see cref="WaveFormat"/> reference.</param>
     extension(WaveFormat format)
     {
 
@@ -29,6 +29,12 @@ public static class WaveFormatExtensions
         /// <returns>The duration in seconds for the specified number of samples.</returns>
         public TimeSpan Time(int samples) => TimeSpan.FromSeconds(format.Seconds(samples));
 
+        /// <summary>
+        /// Checks whether the format matches a certain sample rate and channel count.
+        /// </summary>
+        /// <param name="sampleRate">The sample rate to match.</param>
+        /// <param name="channels">The number of channels to match.</param>
+        /// <returns>Whether both properties match.</returns>
         public bool Matches(int sampleRate, int channels) => format.SampleRate == sampleRate && format.Channels == channels;
 
     }

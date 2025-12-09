@@ -5,9 +5,15 @@ namespace SecretLabNAudio.Core.Extensions.Processors;
 public static class StreamProcessorExtensions
 {
 
+    /// <param name="processor">The processor to modify.</param>
     extension(StreamAudioProcessor processor)
     {
 
+        /// <summary>
+        /// Sets the <see cref="StreamAudioProcessor.Loop"/> property.
+        /// </summary>
+        /// <param name="loop">Whether to loop the processor.</param>
+        /// <returns>The processor itself.</returns>
         public StreamAudioProcessor WithLoop(bool loop)
         {
             processor.Loop = loop;
@@ -16,6 +22,7 @@ public static class StreamProcessorExtensions
 
     }
 
+    /// <summary>Methods to create a <see cref="StreamAudioProcessor"/> from a file.</summary>
     extension(StreamAudioProcessor)
     {
 

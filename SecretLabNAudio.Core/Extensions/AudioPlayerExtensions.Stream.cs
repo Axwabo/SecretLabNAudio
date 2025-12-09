@@ -3,9 +3,14 @@ namespace SecretLabNAudio.Core.Extensions;
 public static partial class AudioPlayerExtensions
 {
 
+    /// <param name="player">The player to modify the input of.</param>
     extension(AudioPlayer player)
     {
 
+        /// <summary>
+        /// Sets the current time of the single <see cref="ISeekable"/> input to 0.
+        /// </summary>
+        /// <returns>The player itself.</returns>
         public AudioPlayer Restart()
         {
             player.CurrentTime = TimeSpan.Zero;
