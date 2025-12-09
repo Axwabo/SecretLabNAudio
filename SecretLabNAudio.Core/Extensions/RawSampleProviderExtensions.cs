@@ -37,9 +37,14 @@ public static class RawSampleProviderExtensions
 
         /// <summary>Loops the given <see cref="RawSourceSampleProvider"/>.</summary>
         /// <returns>A new <see cref="LoopingRawSampleProvider"/> that wraps the given provider.</returns>
+        [Obsolete($"Use {nameof(WithLoop)} instead.", true)]
         public LoopingRawSampleProvider Loop() => new(provider);
 
-        public ISampleProvider WithLoop(bool loop) => loop ? provider.Loop() : provider;
+        public RawSourceSampleProvider WithLoop(bool loop = true)
+        {
+            provider.Loop = loop;
+            return provider;
+        }
 
     }
 

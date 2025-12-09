@@ -1,6 +1,7 @@
 ﻿namespace SecretLabNAudio.Core.Providers;
 
 /// <summary>Wraps a <see cref="RawSourceSampleProvider"/> and restart it when reaching the end.</summary>
+[Obsolete($"Use {nameof(RawSourceSampleProvider)} instead.", true)]
 public sealed class LoopingRawSampleProvider : ISampleProvider, ISeekable, ILoopable
 {
 

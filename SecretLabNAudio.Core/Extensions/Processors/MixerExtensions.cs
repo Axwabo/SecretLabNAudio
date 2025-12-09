@@ -55,11 +55,11 @@ public static class MixerExtensions
         public Mixer RemoveAllBySourceType<T>()
             => mixer.RemoveAll(static e => e.Provider is T || e.Provider is IAudioProcessor provider && provider.TryGetSourceAs(out T? _));
 
-        public Mixer RemoveAllShortClips() => mixer
-            .RemoveAllByImmediateType<RawSourceSampleProvider>()
-            .RemoveAllByImmediateType<LoopingRawSampleProvider>();
+        public Mixer RemoveAllShortClips()
+            => mixer.RemoveAllByImmediateType<RawSourceSampleProvider>();
 
-        public Mixer RemoveAllStreamProcessors() => mixer.RemoveAllBySourceType<StreamAudioProcessor>();
+        public Mixer RemoveAllStreamProcessors()
+            => mixer.RemoveAllBySourceType<StreamAudioProcessor>();
 
         public Mixer RemoveAllByName(string name, bool ignoreCase = true)
             => mixer.RemoveAllByName(name, ignoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal);

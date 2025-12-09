@@ -3,7 +3,7 @@
 namespace SecretLabNAudio.Core.Providers;
 
 /// <summary>A sample provider reading from a float array.</summary>
-public sealed class RawSourceSampleProvider : ISampleProvider, ISeekable
+public sealed class RawSourceSampleProvider : ISampleProvider, ISeekable, ILoopable
 {
 
     private readonly float[] _samples;
@@ -16,6 +16,9 @@ public sealed class RawSourceSampleProvider : ISampleProvider, ISeekable
 
     /// <summary>The current position of the provider.</summary>
     public int Position { get; set; }
+
+    /// <inheritdoc />
+    public bool Loop { get; set; }
 
     /// <inheritdoc/>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when setting a negative value or a value greater than <see cref="TotalTime"/>.</exception>
@@ -83,12 +86,29 @@ public sealed class RawSourceSampleProvider : ISampleProvider, ISeekable
     /// <inheritdoc/>
     public int Read(float[] buffer, int offset, int count)
     {
-        if (Position < 0)
+        if (Position < 0 || _samples.Length == 0)
             return 0;
-        var target = Mathf.Clamp(Length - Position, 0, count);
+        var bufferSpan = buffer.AsSpan(offset, count);
+        if (!Loop)
+            return Read(bufferSpan);
+        var total = 0;
+        while (total < count)
+        {
+            var read = Read(bufferSpan[total..]);
+            total += read;
+            if (read == 0)
+                Position = 0;
+        }
+
+        return count;
+    }
+
+    private int Read(Span<float> buffer)
+    {
+        var target = Mathf.Clamp(Length - Position, 0, buffer.Length);
         if (target == 0)
             return 0;
-        Array.Copy(_samples, Position, buffer, offset, target);
+        _samples.AsSpan(Position, target).CopyTo(buffer);
         Position += target;
         return target;
     }
