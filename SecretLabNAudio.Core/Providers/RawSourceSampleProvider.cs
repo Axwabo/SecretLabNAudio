@@ -86,7 +86,7 @@ public sealed class RawSourceSampleProvider : ISampleProvider, ISeekable, ILoopa
     /// <inheritdoc/>
     public int Read(float[] buffer, int offset, int count)
     {
-        if (Position < 0 || _samples.Length == 0)
+        if (Position < 0 || Length == 0)
             return 0;
         var bufferSpan = buffer.AsSpan(offset, count);
         if (!Loop)
