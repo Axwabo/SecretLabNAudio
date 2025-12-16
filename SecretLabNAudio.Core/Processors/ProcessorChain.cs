@@ -2,6 +2,10 @@ using SecretLabNAudio.Core.Extensions.Processors;
 
 namespace SecretLabNAudio.Core.Processors;
 
+/// <summary>
+/// A delegate to create a new <see cref="ISampleProvider"/> based on the current one or return the given provider itself,
+/// </summary>
+/// <param name="provider">The provider to map.</param>
 public delegate ISampleProvider ProviderMapper(ISampleProvider provider);
 
 public sealed class ProcessorChain : IAudioProcessor
@@ -53,17 +57,6 @@ public sealed class ProcessorChain : IAudioProcessor
         var converted = mapper(master);
         if (master == converted)
             return this;
-        _layers.Add(new ProcessorLayer(converted, isOwned));
-        return this;
-    }
-
-    public ProcessorChain Swap(ProviderMapper mapper, bool isOwned = true)
-    {
-        var master = Master;
-        var converted = mapper(master);
-        if (master == converted)
-            return this;
-        Pop();
         _layers.Add(new ProcessorLayer(converted, isOwned));
         return this;
     }

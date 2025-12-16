@@ -4,11 +4,18 @@ using SecretLabNAudio.Core.Providers;
 
 namespace SecretLabNAudio.Core.Extensions.Processors;
 
+/// <inheritdoc cref="ProviderMapper"/>
+/// <typeparam name="T">The type of provider that will be returned.</typeparam>
 public delegate T ProviderMapper<out T>(ISampleProvider current) where T : ISampleProvider;
 
+/// <summary>
+/// Extension methods for <see cref="ProcessorChain"/>s.
+/// </summary>
 public static class ProcessorChainExtensions
 {
 
+    /// <param name="mapper">The mapper to convert.</param>
+    /// <typeparam name="T">The type of mapper.</typeparam>
     extension<T>(ProviderMapper<T> mapper) where T : ISampleProvider
     {
 
@@ -20,13 +27,34 @@ public static class ProcessorChainExtensions
     extension(ProcessorChain chain)
     {
 
+        public ProcessorChain Swap(ProviderMapper mapper, bool isOwned = true)
+            => chain.Pop().Layer(mapper, isOwned);
+
+        /// <summary>
+        /// Resamples the chain to the given sample rate if needed.
+        /// </summary>
+        /// <param name="sampleRate">The target sample rate.</param>
+        /// <returns>The chain itself.</returns>
+        /// <remarks>The <see cref="ProcessorChain.Master"/> <see cref="WdlResamplingSampleProvider"/> will be swapped if needed.</remarks>
         public ProcessorChain Resample(int sampleRate)
             => chain.Master.WaveFormat.SampleRate == sampleRate
                 ? chain
-                : chain.SwapTOrLayer<WdlResamplingSampleProvider>(provider => new WdlResamplingSampleProvider(provider, sampleRate));
+                : chain.SwapTOrLayer<WdlResamplingSampleProvider>(provider => provider.WaveFormat.SampleRate == sampleRate
+                    ? provider
+                    : new WdlResamplingSampleProvider(provider, sampleRate)
+                );
 
+        /// <summary>
+        /// Mixes down the chain to mono if needed.
+        /// </summary>
+        /// <returns>The chain itself.</returns>
+        /// <remarks>The <see cref="ProcessorChain.Master"/> <see cref="MonoToStereoSampleProvider"/> will be swapped if needed.</remarks>
         public ProcessorChain ToMono() => chain.SwapTOrLayer<MonoToStereoSampleProvider>(static provider => provider.ToMono());
 
+        /// <summary>
+        /// Converts the chain to stereo if needed.
+        /// </summary>
+        /// <returns>The chain itself.</returns>
         public ProcessorChain ToStereo() => chain.SwapTOrLayer<MonoToStereoSampleProvider>(static provider => provider.ToStereo());
 
         public ProcessorChain ToPlayerCompatible()

@@ -5,15 +5,31 @@ namespace SecretLabNAudio.Core.Extensions;
 public static partial class AudioPlayerExtensions
 {
 
+    /// <param name="player">The player to get the provider of.</param>
     extension(AudioPlayer player)
     {
 
+        /// <summary>
+        /// Safely casts the single input to an <see cref="AudioQueue"/>.
+        /// </summary>
+        /// <remarks>
+        /// The single input may be:
+        /// <list type="number">
+        /// <item>the immediate <see cref="AudioPlayer.SampleProvider"/></item>
+        /// <item>the only input if the <see cref="AudioPlayer.SampleProvider"/> is a <see cref="Mixer"/></item>
+        /// </list>
+        /// </remarks>
         public AudioQueue? Queue => player.SingleInputAs<AudioQueue>();
 
+        /// <summary>
+        /// Safely casts the <see cref="AudioPlayer.SampleProvider"/> to a <see cref="Mixer"/>.
+        /// </summary>
         public Mixer? Mixer => player.ImmediateProviderAs<Mixer>();
 
     }
 
+    /// <param name="player">The player to get the provider of.</param>
+    /// <typeparam name="T">The type to convert the provider to.</typeparam>
     extension<T>(AudioPlayer player)
     {
 
