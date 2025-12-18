@@ -24,7 +24,7 @@ public static class AudioProcessorExtensions
                 : processor.ToChain(isOwned).ToFormat(sampleRate, channels);
 
         /// <summary>
-        /// Safely casts the processr to a <see cref="ProcessorChain"/> or wraps it in one.
+        /// Safely casts the processor to a <see cref="ProcessorChain"/> or wraps it in one.
         /// </summary>
         /// <param name="isOwned">Whether to dispose of this processor when the newly created <see cref="ProcessorChain"/> is disposed.</param>
         /// <returns>The processor as a chain or a newly created chain with the processor as the source.</returns>
@@ -38,7 +38,7 @@ public static class AudioProcessorExtensions
         {
             if (process == null)
                 return processor;
-            var chain = processor.ToCompatibleChain(); // TODO: don't convert automatically
+            var chain = processor.ToChain();
             process(chain);
             return chain;
         }

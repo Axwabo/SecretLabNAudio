@@ -46,7 +46,7 @@ public static partial class AudioPlayerExtensions
         /// <exception cref="FileNotFoundException">Thrown if the file does not exist.</exception>
         /// <seealso cref="UseMixer(AudioPlayer,bool)"/>
         public AudioPlayer MixFile(string path, bool loop = false, float volume = 1)
-            => player.MixFile(path, volume.ModifyChainIfNot1, loop);
+            => player.MixFile(path, ModifyChain.AmplifyIfNot1(volume), loop);
 
         /// <summary>
         /// Adds a named file input to the mixer.
@@ -58,7 +58,7 @@ public static partial class AudioPlayerExtensions
         /// <returns>The player itself.</returns>
         /// <include file='../XmlDocs/Files.xml' path='doc/NotSupported/exception'/>
         public AudioPlayer MixFile(string path, string inputName, bool loop = false, float volume = 1)
-            => player.MixFile(path, inputName, volume.ModifyChainIfNot1, loop);
+            => player.MixFile(path, inputName, ModifyChain.AmplifyIfNot1(volume), loop);
 
         /// <summary>
         /// Adds an anonymous file input to the mixer with optional processing using a <see cref="ProcessorChain"/>.

@@ -16,7 +16,8 @@ public static partial class AudioPlayerExtensions
         public AudioPlayer Use(IAudioProcessor processor, bool isOwned = true)
         {
             player.SampleProvider = processor.ToPlayerCompatible(isOwned);
-            return player.WithProviderOwnership(isOwned);
+            player.OwnsProvider = isOwned;
+            return player;
         }
 
         /// <summary>
@@ -26,12 +27,26 @@ public static partial class AudioPlayerExtensions
         /// <param name="loop">Whether to loop the file.</param>
         /// <param name="volume">The volume of the input.</param>
         /// <returns>The player itself.</returns>
+        /// <remarks>The stream will be converted to be player-compatible.</remarks>
         /// <include file='../XmlDocs/Files.xml' path='doc/NotSupported/exception'/>
+        /// <exception cref="FileNotFoundException">Thrown if the file does not exist.</exception>
+        /// <seealso cref="ProcessorChainExtensions.ToPlayerCompatible"/>
         public AudioPlayer UseFile(string path, bool loop = false, float volume = 1)
-            => player.Use(StreamAudioProcessor.CreateFromFile(path, loop).Process(volume.ModifyChainIfNot1));
+            => player.UseFile(path, ModifyChain.AmplifyIfNot1(volume), loop);
 
-        public AudioPlayer UseFile(string path, ModifyChain modify, bool loop = false)
-            => player.Use(StreamAudioProcessor.CreateFromFile(path, loop).Process(modify));
+        /// <summary>
+        /// Replaces the <see cref="AudioPlayer.SampleProvider"/> with a file stream processor. 
+        /// </summary>
+        /// <param name="path">The path to the file.</param>
+        /// <param name="modify">A delegate to process the provider. If null, a <see cref="ProcessorChain"/> will only be created if format conversion is required.</param>
+        /// <param name="loop">Whether to loop the file.</param>
+        /// <returns>The player itself.</returns>
+        /// <remarks>The stream will be converted to be player-compatible.</remarks>
+        /// <include file='../XmlDocs/Files.xml' path='doc/NotSupported/exception'/>
+        /// <exception cref="FileNotFoundException">Thrown if the file does not exist.</exception>
+        /// <seealso cref="ProcessorChainExtensions.ToPlayerCompatible"/>
+        public AudioPlayer UseFile(string path, ModifyChain? modify, bool loop = false)
+            => player.Use(StreamAudioProcessor.CreateFromFile(path, loop).ToCompatibleProcessor().Process(modify));
 
         public AudioPlayer UseQueue()
         {
@@ -74,7 +89,7 @@ public static partial class AudioPlayerExtensions
 
         private AudioPlayer UseShortClipHelper(string name, bool trimExtension, bool loop, float volume)
             => ShortClipCache.TryGet(name, out var provider, trimExtension)
-                ? player.WithUnmanagedProvider(provider.WithLoop(loop).Process(volume.ModifyChainIfNot1))
+                ? player.WithUnmanagedProvider(provider.WithLoop(loop).Process(ModifyChain.AmplifyIfNot1(volume)))
                 : player;
 
     }

@@ -12,26 +12,29 @@ public static class ModifyChainExtensions
     extension(ModifyChain? process)
     {
 
-        [return: NotNullIfNotNull(nameof(process)), NotNullIfNotNull(nameof(other))]
-        public ModifyChain? Then(ModifyChain? other)
+        [return: NotNullIfNotNull(nameof(process)), NotNullIfNotNull(nameof(next))]
+        public ModifyChain? Then(ModifyChain? next)
             => process == null
-                ? other
-                : other == null
+                ? next
+                : next == null
                     ? process
-                    : chain => other(process(chain));
+                    : chain => next(process(chain));
 
-        public ModifyChain PreAmplify(float volume) => volume.ModifyChain.Then(process);
+        [return: NotNullIfNotNull(nameof(process)), NotNullIfNotNull(nameof(previous))]
+        public ModifyChain? Prepend(ModifyChain? previous) => previous.Then(process);
+
+        public ModifyChain PreAmplify(float volume) => Amplify(volume).Then(process);
 
     }
 
-    extension(float volume)
+    extension(ModifyChain)
     {
 
-        public ModifyChain? ModifyChainIfNot1 => Mathf.Approximately(1, volume)
+        public static ModifyChain Amplify(float volume) => chain => chain.Volume(volume);
+
+        public static ModifyChain? AmplifyIfNot1(float volume) => Mathf.Approximately(1, volume)
             ? null
             : chain => chain.Volume(volume);
-
-        public ModifyChain ModifyChain => chain => chain.Volume(volume);
 
     }
 
