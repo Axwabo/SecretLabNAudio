@@ -1,5 +1,6 @@
 namespace SecretLabNAudio.Core.Extensions.Processors;
 
+/// <summary>Methods to convert an NAudio <see cref="ISampleProvider"/> into an <see cref="IAudioProcessor"/>.</summary>
 public static class ProviderToProcessor
 {
 
@@ -17,7 +18,7 @@ public static class ProviderToProcessor
         /// <summary>
         /// Wraps the provider in a <see cref="SampleProviderWrapper"/>, and ensures that its format matches <see cref="AudioPlayer.SupportedFormat"/>.
         /// </summary>
-        /// <param name="isOwned">Whether to dispose of the <paramref name="provider"/> if format conversion is required.</param>
+        /// <param name="isOwned">Whether to dispose of the provider if format conversion is required.</param>
         /// <returns>A player-compatible <see cref="IAudioProcessor"/> (<see cref="ProcessorChain"/> if conversion was performed).</returns>
         public IAudioProcessor ToCompatibleProcessor(bool isOwned = true)
             => SampleProviderToProcessor(provider).ToPlayerCompatible(isOwned);
@@ -41,6 +42,7 @@ public static class ProviderToProcessor
 
     }
 
+    /// <param name="provider">The provider to wrap.</param>
     extension(IWaveProvider provider)
     {
 

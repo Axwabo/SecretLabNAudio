@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc>
+    <Add>
+        <Anonymous>
+            <param name="input">The sample provider.</param>
+            <param name="isOwned">Whether to dispose of the provider when the input is removed or when this mixer is disposed.</param>
+        </Anonymous>
+        <Named>
+            <param name="input">The sample provider.</param>
+            <param name="name">The name of the input.</param>
+            <param name="isOwned">Whether to dispose of the provider when the input is removed or when this mixer is disposed.</param>
+        </Named>
+        <exception cref="T:System.ArgumentException">
+            Thrown if the <paramref name="input" />'s sample rate or channels differ from the
+            <see cref="P:SecretLabNAudio.Core.Processors.Mixer.WaveFormat" /> of this instance.
+        </exception>
+    </Add>
+</doc>

@@ -1,10 +1,19 @@
 using NAudio.Utils;
+using SecretLabNAudio.Core.Extensions;
 using SecretLabNAudio.Core.Extensions.Processors;
 
 namespace SecretLabNAudio.Core.Processors;
 
+/// <summary>
+/// A delegate that's invoked after a mixer input provided fewer samples than requested.
+/// </summary>
+/// <param name="input">The input that has ended.</param>
+/// <param name="keep">Whether to keep the input in the mixer, allowing for it to provide samples when new data is available.</param>
 public delegate void MixerInputEnded(MixerInput input, ref bool keep);
 
+/// <summary>
+/// An audio processor that mixes inputs together.
+/// </summary>
 public sealed class Mixer : IAudioProcessor
 {
 
@@ -13,38 +22,75 @@ public sealed class Mixer : IAudioProcessor
 
     private readonly List<MixerInput> _inputs = [];
 
+    /// <summary>The list of inputs.</summary>
     public IReadOnlyList<MixerInput> Inputs { get; }
 
+    /// <summary>
+    /// Creates a mixer with no inputs.
+    /// </summary>
+    /// <param name="waveFormat">The format of the mixer.</param>
     public Mixer(WaveFormat waveFormat)
     {
         WaveFormat = waveFormat;
         Inputs = _inputs.AsReadOnly();
     }
 
+    /// <summary>
+    /// Creates a mixer with a single anonymous input.
+    /// </summary>
+    /// <include file='../XmlDocs/Mixer.xml' path='doc/Add/Anonymous/param'/>
+    /// <remarks>The <see cref="WaveFormat"/> will be set to the <paramref name="input"/>'s format.</remarks>
     public Mixer(ISampleProvider input, bool isOwned = true) : this(input.WaveFormat)
         => AddAnonymous(input, isOwned);
 
+    /// <summary>
+    /// Creates a mixer with a single named input.
+    /// </summary>
+    /// <include file='../XmlDocs/Mixer.xml' path='doc/Add/Named/param'/>
+    /// <remarks>The <see cref="WaveFormat"/> will be set to the <paramref name="input"/>'s format.</remarks>
     public Mixer(ISampleProvider input, string name, bool isOwned = true) : this(input.WaveFormat)
         => AddNamed(input, name, isOwned);
 
+    /// <inheritdoc />
     public WaveFormat WaveFormat { get; }
 
+    /// <include file='../XmlDocs/Providers.xml' path='doc/ReadFully/summary'/>
     public bool ReadFully { get; set; }
 
+    /// <summary>Invoked after an input provided fewer samples than requested.</summary>
     public event MixerInputEnded? InputEnded;
 
+    /// <summary>
+    /// Adds a named input to the mixer.
+    /// </summary>
+    /// <include file='../XmlDocs/Mixer.xml' path='doc/Add/Named/param'/>
+    /// <returns>The mixer itself.</returns>
+    /// <include file='../XmlDocs/Mixer.xml' path='doc/Add/exception'/>
     public Mixer AddNamed(ISampleProvider input, string name, bool isOwned = true)
     {
+        ThrowIfIncompatible(input);
         _inputs.Add(new MixerInput(name, input, isOwned));
         return this;
     }
 
+    /// <summary>
+    /// Adds an anonymous input to the provider (with a <see langword="null"/> <see cref="MixerInput.Name"/>).
+    /// </summary>
+    /// <include file='../XmlDocs/Mixer.xml' path='doc/Add/Anonymous/param'/>
+    /// <returns>The mixer itself.</returns>
+    /// <include file='../XmlDocs/Mixer.xml' path='doc/Add/exception'/>
     public Mixer AddAnonymous(ISampleProvider input, bool isOwned = true)
     {
+        ThrowIfIncompatible(input);
         _inputs.Add(new MixerInput(null, input, isOwned));
         return this;
     }
 
+    /// <summary>
+    /// Removes the given <see cref="MixerInput"/> if it's part of the mixer.
+    /// </summary>
+    /// <param name="input">The input to remove.</param>
+    /// <returns>The mixer itself.</returns>
     public Mixer Remove(MixerInput input)
     {
         if (_inputs.Remove(input))
@@ -52,6 +98,11 @@ public sealed class Mixer : IAudioProcessor
         return this;
     }
 
+    /// <summary>
+    /// Removes the first input whose <see cref="ProcessorLayer.Provider"/> equals <paramref name="provider"/>.
+    /// </summary>
+    /// <param name="provider">The provider to match.</param>
+    /// <returns>The mixer itself.</returns>
     public Mixer Remove(ISampleProvider provider)
     {
         for (var i = 0; i < _inputs.Count; i++)
@@ -65,6 +116,12 @@ public sealed class Mixer : IAudioProcessor
         return this;
     }
 
+    /// <summary>
+    /// Removes all inputs whose <see cref="MixerInput.Name"/> equals <paramref name="name"/>.
+    /// </summary>
+    /// <param name="name">The name to match.</param>
+    /// <param name="comparison">The string comparison method to use.</param>
+    /// <returns>The mixer itself.</returns>
     public Mixer RemoveAllByName(string name, StringComparison comparison = StringComparison.OrdinalIgnoreCase)
     {
         for (var i = _inputs.Count - 1; i >= 0; i--)
@@ -73,6 +130,11 @@ public sealed class Mixer : IAudioProcessor
         return this;
     }
 
+    /// <summary>
+    /// Removes all inputs matching the given predicate.
+    /// </summary>
+    /// <param name="match">The predicate to use.</param>
+    /// <returns>The mixer itself.</returns>
     public Mixer RemoveAll(Func<MixerInput, bool> match)
     {
         for (var i = _inputs.Count - 1; i >= 0; i--)
@@ -81,6 +143,10 @@ public sealed class Mixer : IAudioProcessor
         return this;
     }
 
+    /// <summary>
+    /// Removes all mixer inputs.
+    /// </summary>
+    /// <returns>The mixer itself.</returns>
     public Mixer RemoveAll()
     {
         _inputs.DisposeAllAndClear();
@@ -91,6 +157,12 @@ public sealed class Mixer : IAudioProcessor
     {
         _inputs[index].Dispose();
         _inputs.RemoveAt(index);
+    }
+
+    private void ThrowIfIncompatible(ISampleProvider input)
+    {
+        if (!WaveFormat.Matches(input.WaveFormat))
+            throw new ArgumentException($"The input's WaveFormat does not match the format of the Mixer.", nameof(input));
     }
 
     /// <inheritdoc />

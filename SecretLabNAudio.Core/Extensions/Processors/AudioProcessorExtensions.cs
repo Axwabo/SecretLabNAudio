@@ -1,12 +1,55 @@
 namespace SecretLabNAudio.Core.Extensions.Processors;
 
+/// <summary>Extension methods for the <see cref="IAudioProcessor"/> interface.</summary>
 public static class AudioProcessorExtensions
 {
 
+    /// <param name="processor">The audio processor to modify.</param>
     extension(IAudioProcessor processor)
     {
 
-        public bool TryGetSourceAs<T>([NotNullWhen(true)] out T? result)
+        /// <summary>
+        /// Mixes down and resamples the processor to be compatible with <see cref="AudioPlayer.SupportedFormat"/> if needed.
+        /// </summary>
+        /// <param name="isOwned">Whether to dispose this processor when the newly created <see cref="ProcessorChain"/> is disposed.</param>
+        /// <returns>The processor itself if the format is already compatible, otherwise, a player-compatible <see cref="ProcessorChain"/>.</returns>
+        public IAudioProcessor ToPlayerCompatible(bool isOwned = true)
+            => processor.WaveFormat.Matches(AudioPlayer.SampleRate, AudioPlayer.Channels)
+                ? processor
+                : processor.ToChain(isOwned).ToPlayerCompatible();
+
+        public IAudioProcessor ToFormat(int sampleRate, int channels, bool isOwned = true)
+            => processor.WaveFormat.Matches(sampleRate, channels)
+                ? processor
+                : processor.ToChain(isOwned).ToFormat(sampleRate, channels);
+
+        /// <summary>
+        /// Safely casts the processr to a <see cref="ProcessorChain"/> or wraps it in one.
+        /// </summary>
+        /// <param name="isOwned">Whether to dispose of this processor when the newly created <see cref="ProcessorChain"/> is disposed.</param>
+        /// <returns>The processor as a chain or a newly created chain with the processor as the source.</returns>
+        public ProcessorChain ToChain(bool isOwned = true) => processor as ProcessorChain ?? new ProcessorChain(processor, isOwned);
+
+        public Mixer MixWith(ISampleProvider other, bool isOtherOwned = true, bool isThisOwned = true)
+            => (processor as Mixer ?? new Mixer(processor, isThisOwned))
+                .AddAnonymous(other, isOtherOwned);
+
+        internal IAudioProcessor Process(ModifyChain? process)
+        {
+            if (process == null)
+                return processor;
+            var chain = processor.ToCompatibleChain(); // TODO: don't convert automatically
+            process(chain);
+            return chain;
+        }
+
+    }
+
+    /// <param name="processor">The audio processor to extract from.</param>
+    extension<T>(IAudioProcessor processor)
+    {
+
+        public bool TryGetSourceAs([NotNullWhen(true)] out T? result)
         {
             switch (processor)
             {
@@ -28,7 +71,7 @@ public static class AudioProcessorExtensions
             }
         }
 
-        public bool TryGetMasterAs<T>([NotNullWhen(true)] out T? result)
+        public bool TryGetMasterAs([NotNullWhen(true)] out T? result)
         {
             switch (processor)
             {
@@ -50,7 +93,7 @@ public static class AudioProcessorExtensions
             }
         }
 
-        public bool TryGetSingleMixerInput<T>([NotNullWhen(true)] out T? result)
+        public bool TryGetSingleMixerInput([NotNullWhen(true)] out T? result)
         {
             switch (processor)
             {
@@ -63,31 +106,6 @@ public static class AudioProcessorExtensions
                     result = default;
                     return false;
             }
-        }
-
-        public IAudioProcessor ToPlayerCompatible(bool isOwned = true)
-            => processor.WaveFormat.Matches(AudioPlayer.SampleRate, AudioPlayer.Channels)
-                ? processor
-                : processor.ToChain(isOwned).ToPlayerCompatible();
-
-        public IAudioProcessor ToFormat(int sampleRate, int channels, bool isOwned = true)
-            => processor.WaveFormat.Matches(sampleRate, channels)
-                ? processor
-                : processor.ToChain(isOwned).ToFormat(sampleRate, channels);
-
-        public ProcessorChain ToChain(bool isOwned = true) => processor as ProcessorChain ?? new ProcessorChain(processor, isOwned);
-
-        public Mixer MixWith(ISampleProvider other, bool isOtherOwned = true, bool isThisOwned = true)
-            => (processor as Mixer ?? new Mixer(processor, isThisOwned))
-                .AddAnonymous(other, isOtherOwned);
-
-        internal IAudioProcessor Process(ModifyChain? process)
-        {
-            if (process == null)
-                return processor;
-            var chain = processor.ToCompatibleChain();
-            process(chain);
-            return chain;
         }
 
     }

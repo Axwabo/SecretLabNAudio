@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc>
+    <ReadFully>
+        <summary>
+            Whether to pad out the read buffer with zeroes if more samples are requested than available.
+            If set to true, makes the provider never-ending.
+        </summary>
+    </ReadFully>
+</doc>
