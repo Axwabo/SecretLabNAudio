@@ -13,6 +13,7 @@ public static class CreateAudioReader
     private static AudioReaderFactoryResult Result(Stream source, string type, bool closeOnDispose)
         => AudioReaderFactoryManager.GetFactory(type).FromStream(source, closeOnDispose);
 
+    /// <param name="result">The result to extract from.</param>
     extension(AudioReaderFactoryResult result)
     {
 

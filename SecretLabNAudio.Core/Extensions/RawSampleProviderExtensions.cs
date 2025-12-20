@@ -40,6 +40,11 @@ public static class RawSampleProviderExtensions
         [Obsolete($"Use {nameof(WithLoop)} instead.", true)]
         public LoopingRawSampleProvider Loop() => new(provider);
 
+        /// <summary>
+        /// Sets the <see cref="RawSourceSampleProvider.Loop"/> property.
+        /// </summary>
+        /// <param name="loop">Whether to loop the provider.</param>
+        /// <returns>The <see cref="RawSourceSampleProvider"/> itself.</returns>
         public RawSourceSampleProvider WithLoop(bool loop = true)
         {
             provider.Loop = loop;

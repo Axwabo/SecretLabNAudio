@@ -37,6 +37,11 @@ public static class WaveFormatExtensions
         /// <returns>Whether both properties match.</returns>
         public bool Matches(int sampleRate, int channels) => format.SampleRate == sampleRate && format.Channels == channels;
 
+        /// <summary>
+        /// Checks whether the format matches the <paramref name="other"/>'s sample rate and channel count.
+        /// </summary>
+        /// <param name="other">The format to match.</param>
+        /// <returns>Whether the sample rate and channel count match.</returns>
         public bool Matches(WaveFormat other) => format.Matches(other.SampleRate, other.Channels);
 
     }

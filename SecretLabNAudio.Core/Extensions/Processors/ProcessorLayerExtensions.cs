@@ -1,11 +1,18 @@
 namespace SecretLabNAudio.Core.Extensions.Processors;
 
-public static class ProcessorInputExtensions
+/// <summary>
+/// Extension methods for <see cref="ProcessorLayer"/>s.
+/// </summary>
+public static class ProcessorLayerExtensions
 {
 
+    /// <param name="inputs">The inputs to dispose of.</param>
+    /// <typeparam name="T">The type of processor layer.</typeparam>
     extension<T>(ICollection<T> inputs) where T : ProcessorLayer
     {
 
+        /// <summary>Disposes of all owned layers and clears the collection.</summary>
+        /// <seealso cref="ProcessorLayer.IsOwned"/>
         public void DisposeAllAndClear()
         {
             foreach (var input in inputs)
