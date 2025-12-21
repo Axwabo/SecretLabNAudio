@@ -69,7 +69,7 @@ public static partial class AudioPlayerExtensions
         /// <returns>The player itself.</returns>
         /// <include file='../XmlDocs/Files.xml' path='doc/NotSupported/exception'/>
         public AudioPlayer MixFile(string path, ModifyChain? process, bool loop = false)
-            => player.UseMixer(mixer => mixer.AddFileAnonymous(path, loop, process));
+            => player.UseMixer(mixer => mixer.AddFileAnonymous(path, loop, process.Prepend(ProcessorChainExtensions.ToPlayerCompatible)));
 
         /// <summary>
         /// Adds a named file input to the mixer with optional processing using a <see cref="ProcessorChain"/>.
@@ -81,11 +81,11 @@ public static partial class AudioPlayerExtensions
         /// <returns>The player itself.</returns>
         /// <include file='../XmlDocs/Files.xml' path='doc/NotSupported/exception'/>
         public AudioPlayer MixFile(string path, string inputName, ModifyChain? process, bool loop = false)
-            => player.UseMixer(mixer => mixer.AddFileNamed(path, inputName, loop, process));
+            => player.UseMixer(mixer => mixer.AddFileNamed(path, inputName, loop, process.Prepend(ProcessorChainExtensions.ToPlayerCompatible)));
 
         /// <inheritdoc cref="MixFile(AudioPlayer,string,bool,float)"/>
         public AudioPlayer MixFileSafe(string path, bool loop = false)
-            => player.UseMixer(mixer => mixer.TryAddFileAnonymous(path, loop));
+            => player.UseMixer(mixer => mixer.TryAddFileAnonymous(path, loop, ProcessorChainExtensions.ToPlayerCompatible));
 
         /// <returns>The player itself.</returns>
         public AudioPlayer MixFileSafe(string path, string inputName, bool loop = false)

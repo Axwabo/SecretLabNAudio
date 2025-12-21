@@ -18,6 +18,11 @@ public static class AudioProcessorExtensions
                 ? processor
                 : processor.ToChain(isOwned).ToPlayerCompatible();
 
+        /// <summary>
+        /// Resamples and changes the channel layout to be compatible with the given sample rate and channel count if needed.
+        /// </summary>
+        /// <inheritdoc cref="ProcessorChainExtensions.ToFormat"/>
+        /// <returns>The processor itself if the format is already compatible, otherwise, a compatible <see cref="ProcessorChain"/>.</returns>
         public IAudioProcessor ToFormat(int sampleRate, int channels, bool isOwned = true)
             => processor.WaveFormat.Matches(sampleRate, channels)
                 ? processor
@@ -30,11 +35,26 @@ public static class AudioProcessorExtensions
         /// <returns>The processor as a chain or a newly created chain with the processor as the source.</returns>
         public ProcessorChain ToChain(bool isOwned = true) => processor as ProcessorChain ?? new ProcessorChain(processor, isOwned);
 
+        /// <summary>
+        /// Mixes the <paramref name="other"/> provider with this one.
+        /// </summary>
+        /// <param name="other">The provider to add to the mixer anonymously.</param>
+        /// <param name="isOtherOwned">Whether to dispose of <paramref name="other"/> when the mixer is disposed or when if input is removed.</param>
+        /// <param name="isThisOwned">
+        /// When creating a new <see cref="Mixer"/>,
+        /// specifies whether to dispose of the current provider when the mixer is disposed or if the current input is removed.
+        /// </param>
+        /// <returns>The current provider as a <see cref="Mixer"/> or a new mixer with both providers added as inputs.</returns>
         public Mixer MixWith(ISampleProvider other, bool isOtherOwned = true, bool isThisOwned = true)
             => (processor as Mixer ?? new Mixer(processor, isThisOwned))
                 .AddAnonymous(other, isOtherOwned);
 
-        internal IAudioProcessor Process(ModifyChain? process)
+        /// <summary>
+        /// Processes the processor, given a <see cref="ModifyChain"/> delegate.
+        /// </summary>
+        /// <param name="process">The method to use to modify the chain.</param>
+        /// <returns>The processor itself if <paramref name="process"/> is null, otherwise, a processed <see cref="ProcessorChain"/> with the source as the processor.</returns>
+        public IAudioProcessor Process(ModifyChain? process)
         {
             if (process == null)
                 return processor;
@@ -49,13 +69,15 @@ public static class AudioProcessorExtensions
     extension<T>(IAudioProcessor processor)
     {
 
+        /// <summary>
+        /// Attempts to get the source (original) processor.
+        /// </summary>
+        /// <param name="result">The found processor. <see langword="null"/> if no source was found.</param>
+        /// <returns>Whether the source was found.</returns>
         public bool TryGetSourceAs([NotNullWhen(true)] out T? result)
         {
             switch (processor)
             {
-                case T t:
-                    result = t;
-                    return true;
                 case ProcessorChain {Source: T t}:
                     result = t;
                     return true;
@@ -65,6 +87,9 @@ public static class AudioProcessorExtensions
                     return mixerProcessor.TryGetSourceAs(out result);
                 case Mixer mixer:
                     return mixer.TryGetSingleMixerInput(out result);
+                case T t:
+                    result = t;
+                    return true;
                 default:
                     result = default;
                     return false;

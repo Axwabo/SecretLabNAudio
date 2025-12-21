@@ -2,6 +2,9 @@ using SecretLabNAudio.Core.FileReading;
 
 namespace SecretLabNAudio.Core.Extensions.Processors;
 
+/// <summary>
+/// Extension methods for the <see cref="StreamAudioProcessor"/> class.
+/// </summary>
 public static class StreamProcessorExtensions
 {
 

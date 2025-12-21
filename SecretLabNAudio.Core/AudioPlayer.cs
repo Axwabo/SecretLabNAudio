@@ -32,6 +32,8 @@ public sealed partial class AudioPlayer : MonoBehaviour
         get;
         set
         {
+            if (value == field)
+                return;
             ThrowIfIncompatible(value);
             try
             {
