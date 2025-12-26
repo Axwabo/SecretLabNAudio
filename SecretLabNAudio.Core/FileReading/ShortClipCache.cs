@@ -165,7 +165,7 @@ public static class ShortClipCache
         bool trimExtension = true,
         TimeSpan? maxDuration = null,
         SearchOption searchOption = SearchOption.TopDirectoryOnly
-    ) => AddAllFromFiles(trimExtension, maxDuration, Directory.EnumerateFiles(directoryPath));
+    ) => AddAllFromFiles(trimExtension, maxDuration, Directory.EnumerateFiles(directoryPath, "*", searchOption));
 
     /// <summary>Attempts to retrieve a clip from the cache.</summary>
     /// <param name="name">The key to search by.</param>
