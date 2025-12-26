@@ -102,6 +102,16 @@ public static partial class AudioPlayerExtensions
         public AudioPlayer Play() => player.Pause(false);
 
         /// <summary>
+        /// Sets <seealso cref="AudioPlayer.SampleProvider"/> to <see langword="null"/>, effectively stopping playback.
+        /// </summary>
+        /// <returns>The player itself.</returns>
+        public AudioPlayer Stop()
+        {
+            player.SampleProvider = null;
+            return player;
+        }
+
+        /// <summary>
         /// Sets the <see cref="AudioPlayer.SendEngine"/> of the <see cref="AudioPlayer"/>.
         /// </summary>
         /// <param name="engine">The engine to send audio with.</param>

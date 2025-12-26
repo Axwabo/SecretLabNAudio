@@ -13,6 +13,13 @@ public static partial class AudioPlayerExtensions
     extension(AudioPlayer player)
     {
 
+        /// <summary>
+        /// Converts the processor to be player-compatible, then sets the <see cref="AudioPlayer.SampleProvider"/> and <seealso cref="AudioPlayer.OwnsProvider"/> properties.
+        /// </summary>
+        /// <param name="processor">The processor to read from.</param>
+        /// <param name="isOwned">Whether to dispose of the processor when the player is destroyed or pooled.</param>
+        /// <returns>The player itself.</returns>
+        /// <seealso cref="ProcessorChainExtensions.ToPlayerCompatible"/>
         public AudioPlayer Use(IAudioProcessor processor, bool isOwned = true)
         {
             player.SampleProvider = processor.ToPlayerCompatible(isOwned);
@@ -48,6 +55,11 @@ public static partial class AudioPlayerExtensions
         public AudioPlayer UseFile(string path, ModifyChain? modify, bool loop = false)
             => player.Use(StreamAudioProcessor.CreateFromFile(path, loop).ToCompatibleProcessor().Process(modify));
 
+        /// <summary>
+        /// If the single input is not an <see cref="AudioQueue"/>, replaces the <see cref="AudioPlayer.SampleProvider"/> with a new one.
+        /// </summary>
+        /// <returns>The player itself.</returns>
+        /// <seealso cref="SingleInputAs"/>
         public AudioPlayer UseQueue()
         {
             var queue = player.Queue;
@@ -57,6 +69,11 @@ public static partial class AudioPlayerExtensions
             return player;
         }
 
+        /// <summary>
+        /// If the single input is not an <see cref="AudioQueue"/>, replaces the <see cref="AudioPlayer.SampleProvider"/> with a new one.
+        /// </summary>
+        /// <param name="queue">A delegate to add items to the queue with.</param>
+        /// <returns>The player itself.</returns>
         public AudioPlayer UseQueue(Action<AudioQueue> queue)
         {
             queue(player.UseQueue().Queue!);
@@ -70,7 +87,7 @@ public static partial class AudioPlayerExtensions
             if (player.Mixer != null)
                 return player;
             var mixer = new Mixer(AudioPlayer.SupportedFormat);
-            if (player.SampleProvider is not Mixer and { } provider)
+            if (player.SampleProvider is { } provider)
                 mixer.AddAnonymous(provider, player.OwnsProvider);
             return player.Use(mixer);
         }
@@ -85,7 +102,7 @@ public static partial class AudioPlayerExtensions
             => player.UseShortClipHelper(name, false, loop, volume);
 
         public AudioPlayer UseExactShortClip(string name, bool loop = false, float volume = 1)
-            => player.UseShortClipHelper(name, false, loop, volume);
+            => player.UseShortClipHelper(name, true, loop, volume);
 
         private AudioPlayer UseShortClipHelper(string name, bool trimExtension, bool loop, float volume)
             => ShortClipCache.TryGet(name, out var provider, trimExtension)

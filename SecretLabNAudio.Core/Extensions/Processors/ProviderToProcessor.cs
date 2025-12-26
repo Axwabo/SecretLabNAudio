@@ -4,12 +4,25 @@ namespace SecretLabNAudio.Core.Extensions.Processors;
 public static class ProviderToProcessor
 {
 
+    /// <summary>
+    /// Converts the wave provider to a sample provider, and wraps it in an appropriate <see cref="IAudioProcessor"/>.
+    /// </summary>
+    /// <param name="provider">The provider to wrap.</param>
+    /// <param name="isOwned">Whether to dispose of the provider when the processor is disposed.</param>
+    /// <returns>A <see cref="StreamAudioProcessor"/> if the provider is a <see cref="WaveStream"/>, otherwise, a <see cref="SampleProviderWrapper"/>.</returns>
     public static IAudioProcessor WaveProviderToProcessor(IWaveProvider provider, bool isOwned)
         => provider is WaveStream stream
             ? new StreamAudioProcessor(stream, isOwned)
-            : new SampleProviderWrapper(provider.ToSampleProvider());
+            : isOwned
+                ? new SampleProviderWrapper(provider.ToSampleProvider(), provider as IDisposable)
+                : new SampleProviderWrapper(provider.ToSampleProvider());
 
-    public static IAudioProcessor SampleProviderToProcessor(ISampleProvider provider) => (provider as IAudioProcessor ?? new SampleProviderWrapper(provider));
+    /// <summary>
+    /// Safely casts the sample provider to an <see cref="IAudioProcessor"/> or wraps it.
+    /// </summary>
+    /// <param name="provider">The provider to convert.</param>
+    /// <returns>The provider as an <see cref="IAudioProcessor"/> or a new <see cref="SampleProviderWrapper"/> if the provider isn't an audio processor.</returns>
+    public static IAudioProcessor SampleProviderToProcessor(ISampleProvider provider) => provider as IAudioProcessor ?? new SampleProviderWrapper(provider);
 
     /// <param name="provider">The sample provider to convert.</param>
     extension(ISampleProvider provider)
@@ -23,6 +36,7 @@ public static class ProviderToProcessor
         public IAudioProcessor ToCompatibleProcessor(bool isOwned = true)
             => SampleProviderToProcessor(provider).ToPlayerCompatible(isOwned);
 
+        // TODO: lazy docs??
         /// <summary>
         /// Creates a <see cref="ProcessorChain"/>
         /// </summary>

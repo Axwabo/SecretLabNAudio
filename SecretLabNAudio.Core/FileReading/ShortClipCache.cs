@@ -209,6 +209,7 @@ public static class ShortClipCache
         }
     }
 
+    /// <param name="path">The path string.</param>
     extension(string path)
     {
 
