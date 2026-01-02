@@ -17,7 +17,7 @@
     </Add>
     <AddProcess>
         <exception cref="T:System.ArgumentException">
-            Thrown if the processed <paramref name="input"/>'s sample rate or channels differ from the
+            Thrown if the processed input's sample rate or channels differ from the
             <see cref="P:SecretLabNAudio.Core.Processors.Mixer.WaveFormat"/>
             of the mixer.
         </exception>
