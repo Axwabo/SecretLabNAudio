@@ -68,12 +68,15 @@ public sealed class SpeakerPersonalization : MonoBehaviour
     }
 
     private void SendSyncVars(Player player, SpeakerSettings previous, SpeakerSettings current)
-        => SpeakerSyncVars.SendFakeSyncVars(player.Connection, Speaker.Base, (
-            Mathf.Approximately(previous.Volume, current.Volume) ? null : current.Volume,
-            previous.IsSpatial == current.IsSpatial ? null : current.IsSpatial,
-            Mathf.Approximately(previous.MinDistance, current.MinDistance) ? null : current.MinDistance,
-            Mathf.Approximately(previous.MaxDistance, current.MaxDistance) ? null : current.MaxDistance
-        ));
+    {
+        if (player.ConnectionToClient is {isReady: true} connection)
+            SpeakerSyncVars.SendFakeSyncVars(connection, Speaker.Base, (
+                Mathf.Approximately(previous.Volume, current.Volume) ? null : current.Volume,
+                previous.IsSpatial == current.IsSpatial ? null : current.IsSpatial,
+                Mathf.Approximately(previous.MinDistance, current.MinDistance) ? null : current.MinDistance,
+                Mathf.Approximately(previous.MaxDistance, current.MaxDistance) ? null : current.MaxDistance
+            ));
+    }
 
     private void ResyncAll(SpeakerSettings previousSettings)
     {
@@ -98,7 +101,5 @@ public sealed class SpeakerPersonalization : MonoBehaviour
     }
 
     private void OnDisable() => _settingsPerPlayer.Clear();
-
-    private void OnDestroy() => _settingsPerPlayer.Clear();
 
 }
