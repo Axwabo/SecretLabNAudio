@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <doc>
-    <exception cref="T:System.IO.FileNotFoundException">Thrown if the file does not exist.</exception>
+    <exception name="NotFound" cref="T:System.IO.FileNotFoundException">Thrown if the file does not exist.</exception>
     <exception cref="T:System.NotSupportedException">
         Thrown if there was no registered factory for the file type, or if the factory didn't return a
         <see cref="T:NAudio.Wave.WaveStream"/>.
