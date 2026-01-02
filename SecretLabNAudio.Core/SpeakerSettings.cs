@@ -22,6 +22,21 @@ public readonly record struct SpeakerSettings
     };
 
     /// <summary>
+    /// Non-spatial SpeakerToy settings that can be heard anywhere.
+    /// <para>
+    /// <see cref="IsSpatial"/> = false<br/>
+    /// <see cref="Volume"/> = 1<br/>
+    /// <see cref="MinDistance"/> = 0 (has no effect)<br/>
+    /// <see cref="MaxDistance"/> = <see cref="float.MaxValue"/>
+    /// </para>
+    /// </summary>
+    public static SpeakerSettings GloballyAudible { get; } = new()
+    {
+        Volume = 1,
+        MaxDistance = float.MaxValue
+    };
+
+    /// <summary>
     /// Gets the settings of the given <see cref="AudioPlayer"/>.
     /// </summary>
     /// <param name="player">The player to get the settings from.</param>
@@ -54,7 +69,8 @@ public readonly record struct SpeakerSettings
     /// <summary>The volume of the speaker.</summary>
     public float Volume { get; init; }
 
-    /// <summary>Minimum distance where attentuation begins at. Up until this distance the audio is heard at full volume.</summary>
+    /// <summary>Minimum distance where attenuation begins at. Up until this distance the audio is heard at full volume.</summary>
+    /// <remarks>Has no effect when <see cref="IsSpatial"/> is false.</remarks>
     public float MinDistance { get; init; }
 
     /// <summary>Maximum distance of the speaker. From this distance and beyond, the audio is completely inaudible.</summary>

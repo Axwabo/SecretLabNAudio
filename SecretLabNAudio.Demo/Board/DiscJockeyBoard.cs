@@ -34,8 +34,7 @@ public sealed class DiscJockeyBoard : MonoBehaviour
 
     public static void SetUpStage()
     {
-        var stage = SpawnableCullingParent.Create(Vector3.zero, StageSize);
-        stage.Base.NetworkBoundsPosition = StagePosition; // NW couldn't make a properly working wrapper
+        var stage = SpawnableCullingParent.Create(StagePosition, StageSize);
 
         var text = TextToy.Create(VisualizerPosition, VisualizerRotation, VisualizerScale, stage.Transform);
         text.IsStatic = true;
