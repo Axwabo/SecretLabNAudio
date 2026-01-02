@@ -110,7 +110,7 @@ public static class ProcessorChainExtensions
         }
 
         /// <summary>
-        /// 
+        /// TODO
         /// </summary>
         /// <param name="seconds"></param>
         /// <returns>The chain itself.</returns>

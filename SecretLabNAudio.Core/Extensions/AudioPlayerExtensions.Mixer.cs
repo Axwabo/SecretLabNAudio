@@ -134,7 +134,10 @@ public static partial class AudioPlayerExtensions
             return player;
         }
 
-        /// <inheritdoc cref="MixerExtensions.RemoveAllByName"/>
+        /// <summary><inheritdoc cref="MixerExtensions.RemoveAllByName" path="summary"/></summary>
+        /// <param name="name">The name to match.</param>
+        /// <param name="ignoreCase">Whether to ignore case.</param>
+        /// <remarks><inheritdoc cref="MixerExtensions.RemoveAllByName" path="remarks"/></remarks>
         /// <returns>The player itself.</returns>
         public AudioPlayer RemoveNamedMixerInputs(string name, bool ignoreCase = true)
         {
@@ -142,7 +145,7 @@ public static partial class AudioPlayerExtensions
             return player;
         }
 
-        /// <inheritdoc cref="MixerExtensions.RemoveAllShortClips"/>
+        /// <summary><inheritdoc cref="MixerExtensions.RemoveAllShortClips" path="summary"/></summary>
         /// <returns>The player itself.</returns>
         public AudioPlayer RemoveShortClipMixerInputs()
         {
@@ -150,7 +153,7 @@ public static partial class AudioPlayerExtensions
             return player;
         }
 
-        /// <inheritdoc cref="MixerExtensions.RemoveAllStreamProcessors"/>
+        /// <summary><inheritdoc cref="MixerExtensions.RemoveAllStreamProcessors" path="summary"/></summary>
         /// <returns>The player itself.</returns>
         public AudioPlayer RemoveStreamProcessorMixerInputs()
         {

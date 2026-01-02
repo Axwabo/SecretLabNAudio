@@ -31,7 +31,7 @@ public static class ModifyChainExtensions
         /// Creates a new delegate that applies the <paramref name="previous"/> modification, then the current one.
         /// </summary>
         /// <param name="previous">The modification to execute first.</param>
-        /// <returns><see langword="null"/> if both delegates are null, the delegate itself if only one is specified, or a new delegate if neither are null.</returns>
+        /// <returns><inheritdoc cref="Then" path="returns"/></returns>
         [return: NotNullIfNotNull(nameof(current)), NotNullIfNotNull(nameof(previous))]
         public ModifyChain? Prepend(ModifyChain? previous) => previous.Then(current);
 
@@ -58,7 +58,7 @@ public static class ModifyChainExtensions
         public static ModifyChain Amplify(float volume) => chain => chain.Volume(volume);
 
         /// <summary>
-        /// Creates a new <see cref="ModifyChain"/> that sets the volume of the chain if the volume is not 1.
+        /// If <paramref name="volume"/> is not 1, creates a new <see cref="ModifyChain"/> that sets the volume of the chain.
         /// </summary>
         /// <param name="volume">The volume to set.</param>
         /// <returns><see langword="null"/> if <paramref name="volume"/> is approximately 1, a new delegate otherwise.</returns>

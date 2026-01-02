@@ -108,7 +108,7 @@ public static partial class AudioPlayerExtensions
             => player.RemoveMixerInputsByName(name, out _, trimExtension, ignoreCase);
 
         /// <inheritdoc cref="AddMixerInput(AudioPlayer,ISampleProvider)"/>
-        [Obsolete($"Convert the provider to a processor via {nameof(ProviderToProcessor)}.{nameof(ProviderToProcessor.ToCompatibleChain)}, and call {nameof(Mix)} instead.", true)]
+        [Obsolete($"Convert the provider to a processor via {nameof(ProviderToProcessor)}.{nameof(ProviderToProcessor.ToCompatibleProcessor)}, and call {nameof(Mix)} instead.", true)]
         public AudioPlayer AddMixerInput(IWaveProvider input)
             => player.AddMixerInput(input.ToSampleProvider());
 
