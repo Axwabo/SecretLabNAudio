@@ -50,8 +50,8 @@ This library has a number of open-source dependencies. See [Attributions](ATTRIB
 4. Extract the necessary files from the `bin/` directory of the archive as **dependencies**
     - `NAudio.Core.dll` is **always required**
     - `NLayer` and `NLayer.NAudioSpport.dll` for `.mp3` support (optional)
-    - `NAudio.Vorbis.dll` and `NVorbis.dll` for `.ogg` support (optional)
-    - `NAudio.Wasapi.dll` for Media Foundation support (optional, WIndows-only)
+    - `NAudio.Vorbis.dll`, `NVorbis.dll` and `System.ValueTuple.dll` for `.ogg` support (optional)
+    - `NAudio.Wasapi.dll` for Media Foundation support (optional, Windows-only)
 5. Optionally download the necessary **plugin(s)** from the releases page
     - `SecretLabNAudio.NLayer.dll` for `.mp3` support
     - `SecretLabNAudio.NVorbis.dll` for `.ogg` support
