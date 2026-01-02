@@ -15,11 +15,8 @@ public static partial class AudioPlayerExtensions
         /// <param name="input">The provider to add.</param>
         /// <param name="isOwned">Whether to dispose of the input when the mixer is disposed or if the input is removed.</param>
         /// <returns>The player itself.</returns>
-        /// <remarks>
-        /// If the <see cref="AudioPlayer.SampleProvider"/> is not a mixer, it will be replaced with one.
-        /// The existing provider (if present) will be added as an anonymous mixer input.
-        /// </remarks>
-        /// <seealso cref="UseMixer(AudioPlayer,bool)"/>
+        /// <include file='../XmlDocs/Mixer.xml' path='doc/Player/remarks'/>
+        /// <seealso cref="UseMixer(AudioPlayer,Action{Mixer},bool)"/>
         public AudioPlayer Mix(ISampleProvider input, bool isOwned = true)
             => player.UseMixer(mixer => mixer.AddAnonymous(input, isOwned));
 
@@ -30,8 +27,8 @@ public static partial class AudioPlayerExtensions
         /// <param name="inputName">The name of the mixer input.</param>
         /// <param name="isOwned">Whether to dispose of the input when the mixer is disposed or if the input is removed.</param>
         /// <returns>The player itself.</returns>
-        /// <remarks><inheritdoc cref="Mix(AudioPlayer,ISampleProvider,bool)" path="remarks"/></remarks>
-        /// <seealso cref="UseMixer(AudioPlayer,bool)"/>
+        /// <include file='../XmlDocs/Mixer.xml' path='doc/Player/remarks'/>
+        /// <seealso cref="UseMixer(AudioPlayer,Action{Mixer},bool)"/>
         public AudioPlayer Mix(ISampleProvider input, string inputName, bool isOwned = true)
             => player.UseMixer(mixer => mixer.AddNamed(input, inputName, isOwned));
 
@@ -42,9 +39,9 @@ public static partial class AudioPlayerExtensions
         /// <param name="loop">Whether to loop the file.</param>
         /// <param name="volume">The volume of the input.</param>
         /// <returns>The player itself.</returns>
-        /// <include file='../XmlDocs/Files.xml' path='doc/NotSupported/exception'/>
-        /// <exception cref="FileNotFoundException">Thrown if the file does not exist.</exception>
-        /// <seealso cref="UseMixer(AudioPlayer,bool)"/>
+        /// <include file='../XmlDocs/Mixer.xml' path='doc/Player/remarks'/>
+        /// <include file='../XmlDocs/Files.xml' path='doc/exception'/>
+        /// <seealso cref="UseMixer(AudioPlayer,Action{Mixer},bool)"/>
         public AudioPlayer MixFile(string path, bool loop = false, float volume = 1)
             => player.MixFile(path, ModifyChain.AmplifyIfNot1(volume), loop);
 
@@ -56,7 +53,9 @@ public static partial class AudioPlayerExtensions
         /// <param name="loop">Whether to loop the file.</param>
         /// <param name="volume">The volume of the input.</param>
         /// <returns>The player itself.</returns>
-        /// <include file='../XmlDocs/Files.xml' path='doc/NotSupported/exception'/>
+        /// <include file='../XmlDocs/Mixer.xml' path='doc/Player/remarks'/>
+        /// <include file='../XmlDocs/Files.xml' path='doc/exception'/>
+        /// <seealso cref="UseMixer(AudioPlayer,Action{Mixer},bool)"/>
         public AudioPlayer MixFile(string path, string inputName, bool loop = false, float volume = 1)
             => player.MixFile(path, inputName, ModifyChain.AmplifyIfNot1(volume), loop);
 
@@ -67,7 +66,9 @@ public static partial class AudioPlayerExtensions
         /// <param name="process">An optional <see cref="ModifyChain"/> specifying how to process the stream.</param>
         /// <param name="loop">Whether to loop the file.</param>
         /// <returns>The player itself.</returns>
-        /// <include file='../XmlDocs/Files.xml' path='doc/NotSupported/exception'/>
+        /// <include file='../XmlDocs/Mixer.xml' path='doc/Player/remarks'/>
+        /// <include file='../XmlDocs/Files.xml' path='doc/exception'/>
+        /// <seealso cref="UseMixer(AudioPlayer,Action{Mixer},bool)"/>
         public AudioPlayer MixFile(string path, ModifyChain? process, bool loop = false)
             => player.UseMixer(mixer => mixer.AddFileAnonymous(path, loop, process.Prepend(ProcessorChainExtensions.ToPlayerCompatible)));
 
@@ -79,7 +80,9 @@ public static partial class AudioPlayerExtensions
         /// <param name="process">An optional <see cref="ModifyChain"/> specifying how to process the stream.</param>
         /// <param name="loop">Whether to loop the file.</param>
         /// <returns>The player itself.</returns>
-        /// <include file='../XmlDocs/Files.xml' path='doc/NotSupported/exception'/>
+        /// <include file='../XmlDocs/Files.xml' path='doc/exception'/>
+        /// <include file='../XmlDocs/Mixer.xml' path='doc/Player/remarks'/>
+        /// <seealso cref="UseMixer(AudioPlayer,Action{Mixer},bool)"/>
         public AudioPlayer MixFile(string path, string inputName, ModifyChain? process, bool loop = false)
             => player.UseMixer(mixer => mixer.AddFileNamed(path, inputName, loop, process.Prepend(ProcessorChainExtensions.ToPlayerCompatible)));
 
@@ -100,13 +103,25 @@ public static partial class AudioPlayerExtensions
             => player.UseMixer(mixer => mixer.AddShortClipNamed(clipName, inputName, loop));
 
         /// <summary>
-        /// Adds an anonymous short clip to the mixer. 
+        /// Adds an anonymous short clip input to the mixer. 
         /// </summary>
-        /// <param name="name"></param>
-        /// <param name="loop"></param>
+        /// <param name="name">The name of the clip.</param>
+        /// <param name="loop">Whether to loop the input.</param>
         /// <returns>The player itself.</returns>
+        /// <seealso cref="MixerExtensions.AddShortClipAnonymous"/>
         public AudioPlayer MixShortClipAnonymous(string name, bool loop = false)
             => player.UseMixer(mixer => mixer.AddShortClipAnonymous(name, loop));
+
+        /// <summary>
+        /// Removes all mixer inputs if the immediate provider is a <see cref="Mixer"/>.
+        /// </summary>
+        /// <returns>The player itself.</returns>
+        /// <seealso cref="ImmediateProviderAs{T}"/>
+        public AudioPlayer ClearMixerInputs()
+        {
+            player.Mixer?.RemoveAll();
+            return player;
+        }
 
     }
 

@@ -1,5 +1,6 @@
 using System.Linq;
 using NAudio.Wave.SampleProviders;
+using SecretLabNAudio.Core.Extensions.Processors;
 using SecretLabNAudio.Core.FileReading;
 using SecretLabNAudio.Core.Providers;
 
@@ -54,7 +55,7 @@ public static partial class AudioPlayerExtensions
         /// <remarks>No operation is performed if the <see cref="AudioPlayer.SampleProvider"/> is not a <see cref="MixingSampleProvider"/>.</remarks>
         /// <seealso cref="RemoveMixerInput(AudioPlayer,ISampleProvider)"/>
         /// <seealso cref="MixingSampleProvider.RemoveAllMixerInputs"/>
-        [Obsolete("", true)] // TODO: add error message
+        [Obsolete($"Use {nameof(ClearMixerInputs)} instead.", true)]
         public AudioPlayer RemoveAllMixerInputs()
         {
             player.ProviderAs<MixingSampleProvider>()?.RemoveAllMixerInputs();
@@ -107,7 +108,7 @@ public static partial class AudioPlayerExtensions
             => player.RemoveMixerInputsByName(name, out _, trimExtension, ignoreCase);
 
         /// <inheritdoc cref="AddMixerInput(AudioPlayer,ISampleProvider)"/>
-        [Obsolete("", true)] // TODO: add error message
+        [Obsolete($"Convert the provider to a processor via {nameof(ProviderToProcessor)}.{nameof(ProviderToProcessor.ToCompatibleChain)}, and call {nameof(Mix)} instead.", true)]
         public AudioPlayer AddMixerInput(IWaveProvider input)
             => player.AddMixerInput(input.ToSampleProvider());
 
@@ -117,7 +118,7 @@ public static partial class AudioPlayerExtensions
         /// <param name="name">The key to search for.</param>
         /// <param name="trimExtension">Whether to trim the file extension from the inputted <paramref name="name"/>.</param>
         /// <returns>The player itself.</returns>
-        [Obsolete("", true)] // TODO: add error message
+        [Obsolete($"Use {nameof(MixShortClip)} or {nameof(MixShortClipAnonymous)} instead.", true)]
         public AudioPlayer AddMixerShortClip(string name, bool trimExtension = true)
             => !ShortClipCache.TryGet(name, out var provider, trimExtension)
                 ? player

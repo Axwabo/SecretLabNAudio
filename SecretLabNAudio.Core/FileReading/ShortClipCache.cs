@@ -168,25 +168,43 @@ public static class ShortClipCache
     ) => AddAllFromFiles(trimExtension, maxDuration, Directory.EnumerateFiles(directoryPath, "*", searchOption));
 
     /// <summary>Attempts to retrieve a clip from the cache.</summary>
-    /// <param name="name">The key to search by.</param>
-    /// <param name="provider">The resulting provider if there was a provider found, null otherwise.</param>
+    /// <param name="name">The key to search for.</param>
+    /// <param name="provider">The copy of the resulting provider if there was a provider found, null otherwise.</param>
     /// <param name="trimExtension">Whether to trim the file extension from the name.</param>
     /// <returns>Whether a provider was found.</returns>
-    /// <remarks>This method returns a copy of the original and sets the <see cref="RawSourceSampleProvider.ClipName"/> to the key.</remarks>
+    /// <remarks>The position of the copied provider is set to 0.</remarks>
     /// <seealso cref="RawSourceSampleProvider.Copy"/>
     public static bool TryGet(string name, [NotNullWhen(true)] out RawSourceSampleProvider? provider, bool trimExtension = true)
     {
-        var key = name.RemoveExtension(trimExtension);
-        if (!Clips.TryGetValue(key, out var original))
+        if (!Clips.TryGetValue(name.RemoveExtension(trimExtension), out var original))
         {
             provider = null;
             return false;
         }
 
         provider = original.Copy(true);
-        provider.ClipName = key;
         return true;
     }
+
+    /// <summary>Attempts to retrieve a clip from the cache.</summary>
+    /// <param name="name">The key to search for.</param>
+    /// <param name="trimExtension">Whether to trim the file extension from the name.</param>
+    /// <returns>A copy of the original provider if it was found, <see langword="null"/> otherwise.</returns>
+    /// <remarks>The position of the returned provider is set to 0.</remarks>
+    /// <seealso cref="RawSourceSampleProvider.Copy"/>
+    public static RawSourceSampleProvider? GetSafe(string name, bool trimExtension = true)
+        => Clips.TryGetValue(name.RemoveExtension(trimExtension), out var original)
+            ? original.Copy(true)
+            : null;
+
+    /// <summary>Retrieves a clip from the cache.</summary>
+    /// <param name="name">The key to search for.</param>
+    /// <param name="trimExtension">Whether to trim the file extension from the name.</param>
+    /// <returns>A copy of the original provider.</returns>
+    /// <remarks>The position of the returned provider is set to 0.</remarks>
+    /// <seealso cref="RawSourceSampleProvider.Copy"/>
+    /// <exception cref="KeyNotFoundException">Thrown if no clip was added with the given key.</exception>
+    public static RawSourceSampleProvider Get(string name, bool trimExtension = true) => GetSafe(name, trimExtension) ?? throw new KeyNotFoundException();
 
     private static bool TryRead(string path, [NotNullWhen(true)] out RawSourceSampleProvider? provider, TimeSpan? maxDuration)
     {

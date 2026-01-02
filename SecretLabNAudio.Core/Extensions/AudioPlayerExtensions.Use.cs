@@ -35,8 +35,7 @@ public static partial class AudioPlayerExtensions
         /// <param name="volume">The volume of the input.</param>
         /// <returns>The player itself.</returns>
         /// <remarks>The stream will be converted to be player-compatible.</remarks>
-        /// <include file='../XmlDocs/Files.xml' path='doc/NotSupported/exception'/>
-        /// <exception cref="FileNotFoundException">Thrown if the file does not exist.</exception>
+        /// <include file='../XmlDocs/Files.xml' path='doc/exception'/>
         /// <seealso cref="ProcessorChainExtensions.ToPlayerCompatible"/>
         public AudioPlayer UseFile(string path, bool loop = false, float volume = 1)
             => player.UseFile(path, ModifyChain.AmplifyIfNot1(volume), loop);
@@ -49,8 +48,7 @@ public static partial class AudioPlayerExtensions
         /// <param name="loop">Whether to loop the file.</param>
         /// <returns>The player itself.</returns>
         /// <remarks>The stream will be converted to be player-compatible.</remarks>
-        /// <include file='../XmlDocs/Files.xml' path='doc/NotSupported/exception'/>
-        /// <exception cref="FileNotFoundException">Thrown if the file does not exist.</exception>
+        /// <include file='../XmlDocs/Files.xml' path='doc/exception'/>
         /// <seealso cref="ProcessorChainExtensions.ToPlayerCompatible"/>
         public AudioPlayer UseFile(string path, ModifyChain? modify, bool loop = false)
             => player.Use(StreamAudioProcessor.CreateFromFile(path, loop).ToCompatibleProcessor().Process(modify));
