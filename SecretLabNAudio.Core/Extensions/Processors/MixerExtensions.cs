@@ -93,7 +93,7 @@ public static class MixerExtensions
             => mixer.RemoveAll(static e => e.Provider is T);
 
         public Mixer RemoveAllBySourceType<T>()
-            => mixer.RemoveAll(static e => e.Provider is T || e.Provider is IAudioProcessor provider && provider.TryGetSourceAs(out T? _));
+            => mixer.RemoveAll(static e => e.Provider is IAudioProcessor provider ? provider.TryGetSourceAs(out T? _) : e.Provider is T);
 
         public Mixer RemoveAllShortClips()
             => mixer.RemoveAllByImmediateType<RawSourceSampleProvider>();

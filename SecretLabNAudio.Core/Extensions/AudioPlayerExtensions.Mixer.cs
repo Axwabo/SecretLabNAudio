@@ -112,14 +112,49 @@ public static partial class AudioPlayerExtensions
         public AudioPlayer MixShortClipAnonymous(string name, bool loop = false)
             => player.UseMixer(mixer => mixer.AddShortClipAnonymous(name, loop));
 
-        /// <summary>
-        /// Removes all mixer inputs if the immediate provider is a <see cref="Mixer"/>.
-        /// </summary>
+    }
+
+    /// <param name="player">The player to remove input(s) from if the <see cref="ImmediateProviderAs{T}">immediate provider</see> is a <see cref="Mixer"/>.</param>
+    extension(AudioPlayer player)
+    {
+
+        /// <inheritdoc cref="Mixer.RemoveAll()"/>
         /// <returns>The player itself.</returns>
-        /// <seealso cref="ImmediateProviderAs{T}"/>
-        public AudioPlayer ClearMixerInputs()
+        public AudioPlayer RemoveMixerInputs()
         {
             player.Mixer?.RemoveAll();
+            return player;
+        }
+
+        /// <inheritdoc cref="Mixer.RemoveAll(Func{MixerInput,bool})"/>
+        /// <returns>The player itself.</returns>
+        public AudioPlayer RemoveMixerInputs(Func<MixerInput, bool> match)
+        {
+            player.Mixer?.RemoveAll(match);
+            return player;
+        }
+
+        /// <inheritdoc cref="MixerExtensions.RemoveAllByName"/>
+        /// <returns>The player itself.</returns>
+        public AudioPlayer RemoveNamedMixerInputs(string name, bool ignoreCase = true)
+        {
+            player.Mixer?.RemoveAllByName(name, ignoreCase);
+            return player;
+        }
+
+        /// <inheritdoc cref="MixerExtensions.RemoveAllShortClips"/>
+        /// <returns>The player itself.</returns>
+        public AudioPlayer RemoveShortClipMixerInputs()
+        {
+            player.Mixer?.RemoveAllShortClips();
+            return player;
+        }
+
+        /// <inheritdoc cref="MixerExtensions.RemoveAllStreamProcessors"/>
+        /// <returns>The player itself.</returns>
+        public AudioPlayer RemoveStreamProcessorMixerInputs()
+        {
+            player.Mixer?.RemoveAllStreamProcessors();
             return player;
         }
 

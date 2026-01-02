@@ -41,7 +41,7 @@ public static partial class AudioPlayerExtensions
         /// <remarks>No operation is performed if the <see cref="AudioPlayer.SampleProvider"/> is not a <see cref="MixingSampleProvider"/>.</remarks>
         /// <seealso cref="AddMixerInput(SecretLabNAudio.Core.AudioPlayer,ISampleProvider)"/>
         /// <seealso cref="MixingSampleProvider.RemoveMixerInput"/>
-        [Obsolete("", true)] // TODO: add error message
+        [Obsolete($"Get the {nameof(Mixer)}, and call {nameof(Mixer)}.{nameof(Mixer.Remove)} instead.", true)]
         public AudioPlayer RemoveMixerInput(ISampleProvider input)
         {
             player.ProviderAs<MixingSampleProvider>()?.RemoveMixerInput(input);
@@ -55,7 +55,7 @@ public static partial class AudioPlayerExtensions
         /// <remarks>No operation is performed if the <see cref="AudioPlayer.SampleProvider"/> is not a <see cref="MixingSampleProvider"/>.</remarks>
         /// <seealso cref="RemoveMixerInput(AudioPlayer,ISampleProvider)"/>
         /// <seealso cref="MixingSampleProvider.RemoveAllMixerInputs"/>
-        [Obsolete($"Use {nameof(ClearMixerInputs)} instead.", true)]
+        [Obsolete($"Use {nameof(RemoveMixerInputs)} instead.", true)]
         public AudioPlayer RemoveAllMixerInputs()
         {
             player.ProviderAs<MixingSampleProvider>()?.RemoveAllMixerInputs();
@@ -70,7 +70,7 @@ public static partial class AudioPlayerExtensions
         /// <param name="trimExtension">Whether to trim the file extension from the name.</param>
         /// <param name="ignoreCase">Whether to ignore case when comparing the names.</param>
         /// <returns>The player itself.</returns>
-        [Obsolete("", true)] // TODO: add error message
+        [Obsolete($"Use {nameof(RemoveNamedMixerInputs)} instead.", true)]
         public AudioPlayer RemoveMixerInputsByName(string name, out int removed, bool trimExtension = true, bool ignoreCase = true)
         {
             if (player.SampleProvider is not MixingSampleProvider mixing)
@@ -103,7 +103,7 @@ public static partial class AudioPlayerExtensions
         /// <param name="trimExtension">Whether to trim the file extension from the name.</param>
         /// <param name="ignoreCase">Whether to ignore case when comparing the names.</param>
         /// <returns>The player itself.</returns>
-        [Obsolete("", true)] // TODO: add error message
+        [Obsolete($"Use {nameof(RemoveNamedMixerInputs)} instead.", true)]
         public AudioPlayer RemoveMixerInputsByName(string name, bool trimExtension = true, bool ignoreCase = true)
             => player.RemoveMixerInputsByName(name, out _, trimExtension, ignoreCase);
 
