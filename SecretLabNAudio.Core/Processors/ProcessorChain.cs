@@ -40,7 +40,7 @@ public sealed class ProcessorChain : IAudioProcessor
     /// The list of layers, beginning with <see cref="Source"/>.
     /// If there are intermediate layers, those are in the order they were added in.
     /// </summary>
-    public IReadOnlyList<ProcessorLayer> Layers => _layers.AsReadOnly();
+    public IReadOnlyList<ProcessorLayer> Layers { get; }
 
     /// <summary>
     /// Creates a new <see cref="ProcessorChain"/>.
@@ -51,6 +51,7 @@ public sealed class ProcessorChain : IAudioProcessor
     {
         Source = source;
         _layers = [new ProcessorLayer(source, isOwned)];
+        Layers = _layers.AsReadOnly();
     }
 
     /// <inheritdoc />
