@@ -54,6 +54,32 @@ public static partial class AudioPlayerExtensions
             => player.Use(StreamAudioProcessor.CreateFromFile(path, loop).ToCompatibleProcessor().Process(modify));
 
         /// <summary>
+        /// If the file exists and is supported, replaces the <see cref="AudioPlayer.SampleProvider"/> with a file stream processor.
+        /// </summary>
+        /// <param name="path">The path to the file.</param>
+        /// <param name="loop">Whether to loop the file.</param>
+        /// <param name="volume">The volume of the input.</param>
+        /// <returns>The player itself.</returns>
+        /// <remarks>The stream will be converted to be player-compatible.</remarks>
+        /// <seealso cref="ProcessorChainExtensions.ToPlayerCompatible"/>
+        public AudioPlayer UseFileSafe(string path, bool loop = false, float volume = 1)
+            => player.UseFileSafe(path, ModifyChain.AmplifyIfNot1(volume), loop);
+
+        /// <summary>
+        /// If the file exists and is supported, replaces the <see cref="AudioPlayer.SampleProvider"/> with a file stream processor. 
+        /// </summary>
+        /// <param name="path">The path to the file.</param>
+        /// <param name="modify">A delegate to process the provider. If null, a <see cref="ProcessorChain"/> will only be created if format conversion is required.</param>
+        /// <param name="loop">Whether to loop the file.</param>
+        /// <returns>The player itself.</returns>
+        /// <remarks>The stream will be converted to be player-compatible.</remarks>
+        /// <seealso cref="ProcessorChainExtensions.ToPlayerCompatible"/>
+        public AudioPlayer UseFileSafe(string path, ModifyChain? modify, bool loop = false)
+            => StreamAudioProcessor.TryCreateFromFile(path, loop, out var processor)
+                ? player.Use(processor.ToCompatibleProcessor().Process(modify))
+                : player;
+
+        /// <summary>
         /// If the single input is not an <see cref="AudioQueue"/>, replaces the <see cref="AudioPlayer.SampleProvider"/> with a new one.
         /// </summary>
         /// <returns>The player itself.</returns>
