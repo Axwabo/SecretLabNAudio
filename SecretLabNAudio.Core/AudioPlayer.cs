@@ -137,7 +137,7 @@ public sealed partial class AudioPlayer : MonoBehaviour
         SampleProvider = null;
         SendEngine = SendEngine.DefaultEngine;
         OutputMonitor = null;
-        AlwaysRead = OwnsProvider = true;
+        AlwaysRead = true;
         _remainingTime = 0;
     }
 
