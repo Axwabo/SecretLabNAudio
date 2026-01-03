@@ -84,9 +84,9 @@ public static partial class AudioPlayerExtensions
         /// <param name="keepInputs">Whether to keep the current non-<see cref="Mixer"/> <see cref="AudioPlayer.SampleProvider"/> as an input.</param>
         /// <returns>The player itself.</returns>
         /// <remarks>
-        /// If <paramref name="keepInputs"/> is false, a new <see cref="Mixer"/> will be created.<br/>
-        /// If <paramref name="keepInputs"/> is true, and the current provider is a <see cref="Mixer"/>, nothing happens.<br/>
-        /// If <paramref name="keepInputs"/> is true, and the current provider is not a <see cref="Mixer"/>, the provider is set to a new mixer,
+        /// If <paramref name="keepInputs"/> is false: a new <see cref="Mixer"/> will be created.<br/>
+        /// If <paramref name="keepInputs"/> is true, and the current provider is a <see cref="Mixer"/>: nothing happens.<br/>
+        /// If <paramref name="keepInputs"/> is true, and the current provider is not a <see cref="Mixer"/>: the provider is set to a new mixer,
         /// and if the provider is set, the provider is added as an anonymous input with an ownership equivalent to <see cref="AudioPlayer.OwnsProvider"/>.
         /// </remarks>
         public AudioPlayer UseMixer(bool keepInputs = true)

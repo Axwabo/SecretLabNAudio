@@ -33,6 +33,14 @@ public static partial class AudioPlayerExtensions
     extension<T>(AudioPlayer player)
     {
 
+        /// <summary>
+        /// Gets the source (original) provider of type <typeparamref name="T"/>.
+        /// </summary>
+        /// <returns>The source provider of type <typeparamref name="T"/> if it was found, <see langword="null"/> otherwise.</returns>
+        /// <remarks>
+        /// If the <see cref="AudioPlayer.SampleProvider"/> is of type <typeparamref name="T"/>, it will be returned.<br/>
+        /// If the <see cref="AudioPlayer.SampleProvider"/> is an <see cref="IAudioProcessor"/>, <see cref="AudioProcessorExtensions.TryGetSourceAs"/> will be called.
+        /// </remarks>
         public T? SourceAs() => player.SampleProvider switch
         {
             T t => t,
@@ -40,6 +48,14 @@ public static partial class AudioPlayerExtensions
             _ => default
         };
 
+        /// <summary>
+        /// Gets the master (final) provider of type <typeparamref name="T"/>.
+        /// </summary>
+        /// <returns>The master provider of type <typeparamref name="T"/> if it was found, <see langword="null"/> otherwise.</returns>
+        /// <remarks>
+        /// If the <see cref="AudioPlayer.SampleProvider"/> is of type <typeparamref name="T"/>, it will be returned.<br/>
+        /// If the <see cref="AudioPlayer.SampleProvider"/> is an <see cref="IAudioProcessor"/>, <see cref="AudioProcessorExtensions.TryGetMasterAs"/> will be called.
+        /// </remarks>
         public T? MasterAs() => player.SampleProvider switch
         {
             T t => t,
@@ -47,6 +63,14 @@ public static partial class AudioPlayerExtensions
             _ => default
         };
 
+        /// <summary>
+        /// Gets the single mixer input of type <typeparamref name="T"/>.
+        /// </summary>
+        /// <returns>The single input of type <typeparamref name="T"/> if it was found, <see langword="null"/> otherwise.</returns>
+        /// <remarks>
+        /// If the <see cref="AudioPlayer.SampleProvider"/> is of type <typeparamref name="T"/>, it will be returned.<br/>
+        /// If the <see cref="AudioPlayer.SampleProvider"/> is an <see cref="IAudioProcessor"/>, <see cref="AudioProcessorExtensions.TryGetSingleMixerInput"/> will be called.
+        /// </remarks>
         public T? SingleInputAs() => player.SampleProvider switch
         {
             T t => t,

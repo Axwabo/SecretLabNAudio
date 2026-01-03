@@ -29,6 +29,7 @@ public static partial class AudioPlayerExtensions
         /// <returns>The player itself.</returns>
         /// <include file='../XmlDocs/Mixer.xml' path='doc/Player/remarks'/>
         /// <seealso cref="UseMixer(AudioPlayer,Action{Mixer},bool)"/>
+        /// <seealso cref="MixerExtensions.AddFileNamed"/>
         public AudioPlayer Mix(ISampleProvider input, string inputName, bool isOwned = true)
             => player.UseMixer(mixer => mixer.AddNamed(input, inputName, isOwned));
 
@@ -42,6 +43,7 @@ public static partial class AudioPlayerExtensions
         /// <include file='../XmlDocs/Mixer.xml' path='doc/Player/remarks'/>
         /// <include file='../XmlDocs/Files.xml' path='doc/exception'/>
         /// <seealso cref="UseMixer(AudioPlayer,Action{Mixer},bool)"/>
+        /// <seealso cref="MixerExtensions.AddFileAnonymous"/>
         public AudioPlayer MixFile(string path, bool loop = false, float volume = 1)
             => player.MixFile(path, ModifyChain.AmplifyIfNot1(volume), loop);
 
@@ -56,6 +58,7 @@ public static partial class AudioPlayerExtensions
         /// <include file='../XmlDocs/Mixer.xml' path='doc/Player/remarks'/>
         /// <include file='../XmlDocs/Files.xml' path='doc/exception'/>
         /// <seealso cref="UseMixer(AudioPlayer,Action{Mixer},bool)"/>
+        /// <seealso cref="MixerExtensions.AddFileNamed"/>
         public AudioPlayer MixFile(string path, string inputName, bool loop = false, float volume = 1)
             => player.MixFile(path, inputName, ModifyChain.AmplifyIfNot1(volume), loop);
 
@@ -69,6 +72,7 @@ public static partial class AudioPlayerExtensions
         /// <include file='../XmlDocs/Mixer.xml' path='doc/Player/remarks'/>
         /// <include file='../XmlDocs/Files.xml' path='doc/exception'/>
         /// <seealso cref="UseMixer(AudioPlayer,Action{Mixer},bool)"/>
+        /// <seealso cref="MixerExtensions.AddFileAnonymous"/>
         public AudioPlayer MixFile(string path, ModifyChain? process, bool loop = false)
             => player.UseMixer(mixer => mixer.AddFileAnonymous(path, loop, process.Prepend(ProcessorChainExtensions.ToPlayerCompatible)));
 
@@ -80,37 +84,107 @@ public static partial class AudioPlayerExtensions
         /// <param name="process">An optional <see cref="ModifyChain"/> specifying how to process the stream.</param>
         /// <param name="loop">Whether to loop the file.</param>
         /// <returns>The player itself.</returns>
-        /// <include file='../XmlDocs/Files.xml' path='doc/exception'/>
         /// <include file='../XmlDocs/Mixer.xml' path='doc/Player/remarks'/>
+        /// <include file='../XmlDocs/Files.xml' path='doc/exception'/>
         /// <seealso cref="UseMixer(AudioPlayer,Action{Mixer},bool)"/>
+        /// <seealso cref="MixerExtensions.AddFileNamed"/>
         public AudioPlayer MixFile(string path, string inputName, ModifyChain? process, bool loop = false)
             => player.UseMixer(mixer => mixer.AddFileNamed(path, inputName, loop, process.Prepend(ProcessorChainExtensions.ToPlayerCompatible)));
 
-        /// <inheritdoc cref="MixFile(AudioPlayer,string,bool,float)"/>
-        public AudioPlayer MixFileSafe(string path, bool loop = false)
-            => player.UseMixer(mixer => mixer.TryAddFileAnonymous(path, loop, ProcessorChainExtensions.ToPlayerCompatible));
-
+        /// <summary>
+        /// Attempts to add an anonymous file input to the mixer without throwing an exception if the file is not found or is not supported.
+        /// </summary>
+        /// <param name="path">The path to the file.</param>
+        /// <param name="loop">Whether to loop the file.</param>
+        /// <param name="volume">The volume of the input.</param>
         /// <returns>The player itself.</returns>
-        public AudioPlayer MixFileSafe(string path, string inputName, bool loop = false)
-            => player.UseMixer(mixer => mixer.TryAddFileNamed(path, inputName, loop));
+        /// <include file='../XmlDocs/Mixer.xml' path='doc/Player/remarks'/>
+        /// <seealso cref="UseMixer(AudioPlayer,Action{Mixer},bool)"/>
+        /// <seealso cref="MixerExtensions.TryAddFileAnonymous"/>
+        public AudioPlayer MixFileSafe(string path, bool loop = false, float volume = 1)
+            => player.MixFileSafe(path, ModifyChain.AmplifyIfNot1(volume), loop);
 
+        /// <summary>
+        /// Attempts to add a named file input to the mixer without throwing an exception if the file is not found or is not supported.
+        /// </summary>
+        /// <param name="path">The path to the file.</param>
+        /// <param name="inputName">The name of the mixer input.</param>
+        /// <param name="loop">Whether to loop the file.</param>
+        /// <param name="volume">The volume of the input.</param>
         /// <returns>The player itself.</returns>
-        public AudioPlayer MixShortClip(string name, bool loop = false)
-            => player.UseMixer(mixer => mixer.AddShortClip(name, loop));
+        /// <include file='../XmlDocs/Mixer.xml' path='doc/Player/remarks'/>
+        /// <seealso cref="UseMixer(AudioPlayer,Action{Mixer},bool)"/>
+        /// <seealso cref="MixerExtensions.TryAddFileNamed"/>
+        public AudioPlayer MixFileSafe(string path, string inputName, bool loop = false, float volume = 1)
+            => player.MixFileSafe(path, inputName, ModifyChain.AmplifyIfNot1(volume), loop);
 
+        /// <summary>
+        /// Attempts to add an anonymous file input to the mixer without throwing an exception if the file is not found or is not supported, with optional processing using a <see cref="ProcessorChain"/>.
+        /// </summary>
+        /// <param name="path">The path to the file.</param>
+        /// <param name="process">An optional <see cref="ModifyChain"/> specifying how to process the stream.</param>
+        /// <param name="loop">Whether to loop the file.</param>
         /// <returns>The player itself.</returns>
-        public AudioPlayer MixShortClip(string clipName, string inputName, bool loop = false)
-            => player.UseMixer(mixer => mixer.AddShortClipNamed(clipName, inputName, loop));
+        /// <include file='../XmlDocs/Mixer.xml' path='doc/Player/remarks'/>
+        /// <seealso cref="UseMixer(AudioPlayer,Action{Mixer},bool)"/>
+        /// <seealso cref="MixerExtensions.TryAddFileAnonymous"/>
+        public AudioPlayer MixFileSafe(string path, ModifyChain? process, bool loop = false)
+            => player.UseMixer(mixer => mixer.TryAddFileAnonymous(path, loop, process.Prepend(ProcessorChainExtensions.ToPlayerCompatible)));
+
+        /// <summary>
+        /// Attempts to add a named file input to the mixer without throwing an exception if the file is not found or is not supported, with optional processing using a <see cref="ProcessorChain"/>.
+        /// </summary>
+        /// <param name="path">The path to the file.</param>
+        /// <param name="inputName">The name of the mixer input.</param>
+        /// <param name="process">An optional <see cref="ModifyChain"/> specifying how to process the stream.</param>
+        /// <param name="loop">Whether to loop the file.</param>
+        /// <returns>The player itself.</returns>
+        /// <include file='../XmlDocs/Mixer.xml' path='doc/Player/remarks'/>
+        /// <seealso cref="UseMixer(AudioPlayer,Action{Mixer},bool)"/>
+        /// <seealso cref="MixerExtensions.TryAddFileNamed"/>
+        public AudioPlayer MixFileSafe(string path, string inputName, ModifyChain? process, bool loop = false)
+            => player.UseMixer(mixer => mixer.TryAddFileNamed(path, inputName, loop, process.Prepend(ProcessorChainExtensions.ToPlayerCompatible)));
+
+        /// <summary>
+        /// Adds a short clip input to the mixer (if a clip with the given name was registered).
+        /// The mixer input's name will be set to the original clip name.
+        /// </summary>
+        /// <param name="name">The name of the clip.</param>
+        /// <param name="loop">Whether to loop the clip.</param>
+        /// <param name="volume">The volume of the input.</param>
+        /// <returns>The player itself.</returns>
+        /// <include file='../XmlDocs/Mixer.xml' path='doc/Player/remarks'/>
+        /// <seealso cref="UseMixer(AudioPlayer,Action{Mixer},bool)"/>
+        /// <seealso cref="MixerExtensions.AddShortClip"/>
+        public AudioPlayer MixShortClip(string name, bool loop = false, float volume = 1)
+            => player.UseMixer(mixer => mixer.AddShortClip(name, loop, ModifyChain.AmplifyIfNot1(volume)));
+
+        /// <summary>
+        /// Adds a named short clip input to the mixer (if a clip with the given name was registered).
+        /// </summary>
+        /// <param name="clipName">The name of the clip.</param>
+        /// <param name="inputName">The name of the mixer input.</param>
+        /// <param name="loop">Whether to loop the clip.</param>
+        /// <param name="volume">The volume of the input.</param>
+        /// <returns>The player itself.</returns>
+        /// <include file='../XmlDocs/Mixer.xml' path='doc/Player/remarks'/>
+        /// <seealso cref="UseMixer(AudioPlayer,Action{Mixer},bool)"/>
+        /// <seealso cref="MixerExtensions.AddShortClipNamed"/>
+        public AudioPlayer MixShortClip(string clipName, string inputName, bool loop = false, float volume = 1)
+            => player.UseMixer(mixer => mixer.AddShortClipNamed(clipName, inputName, loop, ModifyChain.AmplifyIfNot1(volume)));
 
         /// <summary>
         /// Adds an anonymous short clip input to the mixer. 
         /// </summary>
         /// <param name="name">The name of the clip.</param>
         /// <param name="loop">Whether to loop the input.</param>
+        /// <param name="volume">The volume of the input.</param>
         /// <returns>The player itself.</returns>
+        /// <include file='../XmlDocs/Mixer.xml' path='doc/Player/remarks'/>
+        /// <seealso cref="UseMixer(AudioPlayer,Action{Mixer},bool)"/>
         /// <seealso cref="MixerExtensions.AddShortClipAnonymous"/>
-        public AudioPlayer MixShortClipAnonymous(string name, bool loop = false)
-            => player.UseMixer(mixer => mixer.AddShortClipAnonymous(name, loop));
+        public AudioPlayer MixShortClipAnonymous(string name, bool loop = false, float volume = 1)
+            => player.UseMixer(mixer => mixer.AddShortClipAnonymous(name, loop, ModifyChain.AmplifyIfNot1(volume)));
 
     }
 

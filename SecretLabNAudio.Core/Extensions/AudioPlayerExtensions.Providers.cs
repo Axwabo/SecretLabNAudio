@@ -83,7 +83,7 @@ public static partial class AudioPlayerExtensions
         /// Use this method if the provider is not disposable, or if you manage its lifetime yourself.
         /// This method ensures that the provider is compatible with the player by calling <see cref="WaveProviderExtensions.ToPlayerCompatible"/>.
         /// </remarks>
-        /// <seealso cref="AudioPlayerExtensions.WithUnmanagedProvider(SecretLabNAudio.Core.AudioPlayer,NAudio.Wave.ISampleProvider?)"/>
+        /// <seealso cref="WithUnmanagedProvider(SecretLabNAudio.Core.AudioPlayer,NAudio.Wave.ISampleProvider?)"/>
         public AudioPlayer WithUnmanagedProvider(IWaveProvider? provider)
             => player.WithUnmanagedProvider(provider?.ToSampleProvider());
 
@@ -98,7 +98,7 @@ public static partial class AudioPlayerExtensions
         public T? ProviderAs<T>() where T : class => player.ImmediateProviderAs<T>();
 
         /// <summary>
-        /// Safely casts the <see cref="AudioPlayer.SampleProvider"/> of the <see cref="AudioPlayer"/> type <typeparamref name="T"/>.
+        /// Safely casts the <see cref="AudioPlayer.SampleProvider"/> of the <see cref="AudioPlayer"/> to type <typeparamref name="T"/>.
         /// </summary>
         /// <typeparam name="T">The type to cast the provider to.</typeparam>
         /// <returns>The <see cref="AudioPlayer.SampleProvider"/> cast to <typeparamref name="T"/>, or null if the type is not compatible.</returns>
