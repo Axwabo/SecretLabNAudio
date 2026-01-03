@@ -66,6 +66,7 @@ public static class AudioProcessorExtensions
     }
 
     /// <param name="processor">The audio processor to extract from.</param>
+    /// <typeparam name="T">The type of object to extract.</typeparam>
     extension<T>(IAudioProcessor processor)
     {
 
@@ -74,6 +75,25 @@ public static class AudioProcessorExtensions
         /// </summary>
         /// <param name="result">The found processor. <see langword="null"/> if no source was found.</param>
         /// <returns>Whether the source was found.</returns>
+        /// <remarks>
+        /// The order of processor checks is as follows:
+        /// <list type="number">
+        /// <item><description>
+        /// <see cref="ProcessorChain"/> with a <see cref="ProcessorChain.Source">source</see> of type <typeparamref name="T"/>
+        /// = the source of the chain as <typeparamref name="T"/>
+        /// </description></item>
+        /// <item><description>
+        /// <see cref="ProcessorChain"/> with an <see cref="IAudioProcessor"/> <see cref="ProcessorChain.Source">source</see>
+        /// = <see cref="TryGetSourceAs"/> called with the source processor
+        /// </description></item>
+        /// <item><description>
+        /// <see cref="Mixer"/> with a <see cref="TryGetSingleMixerInput">single input</see> of type <see cref="IAudioProcessor"/>
+        /// = <see cref="TryGetSourceAs"/> called with the single input
+        /// </description></item>
+        /// <item><description><see cref="Mixer"/> = <see cref="TryGetSingleMixerInput"/> called with the mixer</description></item>
+        /// <item><description>of type <typeparamref name="T"/> = processor as <typeparamref name="T"/></description></item>
+        /// </list>
+        /// </remarks>
         public bool TryGetSourceAs([NotNullWhen(true)] out T? result)
         {
             switch (processor)
@@ -96,6 +116,30 @@ public static class AudioProcessorExtensions
             }
         }
 
+        /// <summary>
+        /// Attempts to get the master (final) processor.
+        /// </summary>
+        /// <param name="result">The found processor. <see langword="null"/> if no master was found.</param>
+        /// <returns>Whether the source was found.</returns>
+        /// <remarks>
+        /// The order of processor checks is as follows:
+        /// <list type="number">
+        /// <item><description>of type <typeparamref name="T"/> = processor as <typeparamref name="T"/></description></item>
+        /// <item><description>
+        /// <see cref="ProcessorChain"/> with a <see cref="ProcessorChain.Master">master</see> of type <typeparamref name="T"/>
+        /// = the master of the chain as <typeparamref name="T"/>
+        /// </description></item>
+        /// <item><description>
+        /// <see cref="ProcessorChain"/> with an <see cref="IAudioProcessor"/> <see cref="ProcessorChain.Master">master</see>
+        /// = <see cref="TryGetMasterAs"/> called with the master processor
+        /// </description></item>
+        /// <item><description>
+        /// <see cref="Mixer"/> with a <see cref="TryGetSingleMixerInput">single input</see> of type <see cref="IAudioProcessor"/>
+        /// = <see cref="TryGetMasterAs"/> called with the single input
+        /// </description></item>
+        /// <item><description><see cref="Mixer"/> = <see cref="TryGetSingleMixerInput"/> called with the mixer</description></item>
+        /// </list>
+        /// </remarks>
         public bool TryGetMasterAs([NotNullWhen(true)] out T? result)
         {
             switch (processor)
@@ -118,6 +162,17 @@ public static class AudioProcessorExtensions
             }
         }
 
+        /// <summary>
+        /// Attempts to get the single mixer input.
+        /// </summary>
+        /// <param name="result">The single input. <see langword="null"/> if there isn't exactly 1 input of type <typeparamref name="T"/>.</param>
+        /// <returns>Whether there was exactly 1 input found.</returns>
+        /// <remarks>
+        /// This method does not directly check the processor against type <typeparamref name="T"/>.<br/>
+        /// It first checks if the processor is a <see cref="Mixer"/>.<br/>
+        /// If the processor is a <see cref="ProcessorChain"/>, it tries calls <see cref="TryGetSingleMixerInput"/>
+        /// on the <see cref="ProcessorChain.Source"/> if it's an <see cref="IAudioProcessor"/>.
+        /// </remarks>
         public bool TryGetSingleMixerInput([NotNullWhen(true)] out T? result)
         {
             switch (processor)
@@ -125,7 +180,7 @@ public static class AudioProcessorExtensions
                 case Mixer {Inputs: [{Provider: T t}]}:
                     result = t;
                     return true;
-                case ProcessorChain {Master: IAudioProcessor master}:
+                case ProcessorChain {Source: IAudioProcessor master}:
                     return master.TryGetSingleMixerInput(out result);
                 default:
                     result = default;

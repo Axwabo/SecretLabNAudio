@@ -52,7 +52,7 @@ public sealed partial class AudioPlayer : MonoBehaviour
 
     /// <summary>Whether to dispose of the <see cref="SampleProvider"/> when the provider is changed or this component is pooled/destroyed.</summary>
     /// <remarks>This property is automatically set when the <see cref="SampleProvider"/> changes.</remarks>
-    public bool OwnsProvider { get; set; } = true;
+    public bool OwnsProvider { get; set; }
 
     /// <summary>The <see cref="SpeakerToy"/> this player is attached to.</summary>
     public SpeakerToy Speaker { get; private set; } = null!;

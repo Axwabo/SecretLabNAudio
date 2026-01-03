@@ -27,6 +27,10 @@ public static class ProcessorChainExtensions
     extension(ProcessorChain chain)
     {
 
+        /// <summary>
+        /// Calls <see cref="ProcessorChain.Pop"/> before <see cref="ProcessorChain.Layer">layering</see> a new provider.
+        /// </summary>
+        /// <inheritdoc cref="ProcessorChain.Layer"/>
         public ProcessorChain Swap(ProviderMapper mapper, bool isOwned = true)
             => chain.Pop().Layer(mapper, isOwned);
 
@@ -110,10 +114,11 @@ public static class ProcessorChainExtensions
         }
 
         /// <summary>
-        /// TODO
+        /// Buffers the chain so it reads ahead by the given capacity.
         /// </summary>
-        /// <param name="seconds"></param>
+        /// <param name="seconds">The number of seconds to read ahead.</param>
         /// <returns>The chain itself.</returns>
+        /// <seealso cref="BufferedSampleProvider"/>
         public ProcessorChain Buffer(double seconds) => chain.SwapTOrLayer<BufferedSampleProvider>(provider => new BufferedSampleProvider(provider, seconds));
 
         /// <summary>
@@ -131,7 +136,7 @@ public static class ProcessorChainExtensions
 
     }
 
-    /// <param name="chain">The processor chain.</param>
+    /// <param name="chain">The audio processor chain.</param>
     /// <typeparam name="T">The type to check for.</typeparam>
     extension<T>(ProcessorChain chain)
     {
@@ -155,6 +160,12 @@ public static class ProcessorChainExtensions
                 ? chain.Swap(mapper, isOwned)
                 : chain.Layer(mapper, isOwned);
 
+        /// <summary>
+        /// Attempts to get the first layer whose provider is of type <typeparamref name="T"/>.
+        /// </summary>
+        /// <param name="layer">The layer if found, <see langword="null"/> otherwise.</param>
+        /// <param name="provider">The provider if found, <see langword="null"/> otherwise.</param>
+        /// <returns>Whether a layer was found.</returns>
         public bool TryGetLayer([NotNullWhen(true)] out ProcessorLayer? layer, [NotNullWhen(true)] out T? provider)
         {
             foreach (var processorLayer in chain.Layers)
@@ -171,13 +182,28 @@ public static class ProcessorChainExtensions
             return false;
         }
 
-        public bool TryGetLayer([NotNullWhen(true)] out T? layer) => chain.TryGetLayer(out _, out layer);
+        /// <summary>
+        /// Attempts to get the first provider of type <typeparamref name="T"/> from the list of layers.
+        /// </summary>
+        /// <param name="provider">The provider if found, <see langword="null"/> otherwise.</param>
+        /// <returns>Whether a layer was found.</returns>
+        public bool TryGetLayer([NotNullWhen(true)] out T? provider) => chain.TryGetLayer(out _, out provider);
 
     }
 
+    /// <param name="chain">The audio processor chain to modify.</param>
+    /// <typeparam name="T">The type of provider to map to.</typeparam>
     extension<T>(ProcessorChain chain) where T : ISampleProvider
     {
 
+        /// <summary>
+        /// Layers a new provider by mapping the <see cref="ProcessorChain.Master"/> and exports the created provider.
+        /// </summary>
+        /// <param name="mapper">The delegate to use to convert the provider.</param>
+        /// <param name="provider">The newly created provider.</param>
+        /// <param name="isOwned">Whether the new layer should be disposed when chain is disposed or if the layer is removed.</param>
+        /// <returns>The chain itself.</returns>
+        /// <seealso cref="ProcessorChain.Layer"/>
         public ProcessorChain Layer(ProviderMapper<T> mapper, out T provider, bool isOwned = true)
         {
             chain.Layer(mapper.AsNonGeneric, isOwned);
@@ -185,6 +211,14 @@ public static class ProcessorChainExtensions
             return chain;
         }
 
+        /// <summary>
+        /// Swaps the master layer if it's of type <typeparamref name="T"/>, adds a new layer otherwise, and exports the created provider.
+        /// </summary>
+        /// <param name="mapper">The delegate to use to convert the provider.</param>
+        /// <param name="provider">The newly created provider.</param>
+        /// <param name="isOwned">Whether the new layer should be disposed when chain is disposed or if the layer is removed.</param>
+        /// <returns>The chain itself.</returns>
+        /// <seealso cref="SwapTOrLayer{T}(ProcessorChain,ProviderMapper,bool)"/>
         public ProcessorChain SwapTOrLayer(ProviderMapper<T> mapper, out T provider, bool isOwned = true)
         {
             chain.SwapTOrLayer<T>(mapper.AsNonGeneric, isOwned);

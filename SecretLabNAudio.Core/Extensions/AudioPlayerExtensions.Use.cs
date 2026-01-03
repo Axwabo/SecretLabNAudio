@@ -78,6 +78,17 @@ public static partial class AudioPlayerExtensions
             return player;
         }
 
+        /// <summary>
+        /// Sets the <see cref="AudioPlayer.SampleProvider"/> to a <see cref="Mixer"/>.
+        /// </summary>
+        /// <param name="keepInputs">Whether to keep the current non-<see cref="Mixer"/> <see cref="AudioPlayer.SampleProvider"/> as an input.</param>
+        /// <returns>The player itself.</returns>
+        /// <remarks>
+        /// If <paramref name="keepInputs"/> is false, a new <see cref="Mixer"/> will be created.<br/>
+        /// If <paramref name="keepInputs"/> is true, and the current provider is a <see cref="Mixer"/>, nothing happens.<br/>
+        /// If <paramref name="keepInputs"/> is true, and the current provider is not a <see cref="Mixer"/>, the provider is set to a new mixer,
+        /// and if the provider is set, the provider is added as an anonymous input with an ownership equivalent to <see cref="AudioPlayer.OwnsProvider"/>.
+        /// </remarks>
         public AudioPlayer UseMixer(bool keepInputs = true)
         {
             if (!keepInputs)
@@ -90,17 +101,39 @@ public static partial class AudioPlayerExtensions
             return player.Use(mixer);
         }
 
+        /// <summary><inheritdoc cref="UseMixer(AudioPlayer,bool)" path="summary"/></summary>
+        /// <param name="mix">A delegate to add inputs to the mixer with.</param>
+        /// <param name="keepInputs">Whether to keep the current non-<see cref="Mixer"/> <see cref="AudioPlayer.SampleProvider"/> as an input.</param>
+        /// <remarks><inheritdoc cref="UseMixer(AudioPlayer,bool)" path="remarks"/></remarks>
         public AudioPlayer UseMixer(Action<Mixer> mix, bool keepInputs = true)
         {
             mix(player.UseMixer(keepInputs).Mixer!);
             return player;
         }
 
+        /// <summary>
+        /// Replaces the <see cref="AudioPlayer.SampleProvider"/> with a short clip (if a clip with the given name was registered).
+        /// </summary>
+        /// <param name="name">The name of the clip. The file extension is trimmed from the end.</param>
+        /// <param name="loop">Whether to loop the clip.</param>
+        /// <param name="volume">The volume of the clip.</param>
+        /// <returns>The player itself.</returns>
+        /// <seealso cref="UseExactShortClip"/>
+        /// <seealso cref="ShortClipCache.TryGet"/>
         public AudioPlayer UseShortClip(string name, bool loop = false, float volume = 1)
-            => player.UseShortClipHelper(name, false, loop, volume);
-
-        public AudioPlayer UseExactShortClip(string name, bool loop = false, float volume = 1)
             => player.UseShortClipHelper(name, true, loop, volume);
+
+        /// <summary>
+        /// Replaces the <see cref="AudioPlayer.SampleProvider"/> with a short clip (if a clip with the given name was registered).
+        /// </summary>
+        /// <param name="name">The name of the clip.</param>
+        /// <param name="loop">Whether to loop the clip.</param>
+        /// <param name="volume">The volume of the clip.</param>
+        /// <returns>The player itself.</returns>
+        /// <seealso cref="UseExactShortClip"/>
+        /// <seealso cref="ShortClipCache.TryGet"/>
+        public AudioPlayer UseExactShortClip(string name, bool loop = false, float volume = 1)
+            => player.UseShortClipHelper(name, false, loop, volume);
 
         private AudioPlayer UseShortClipHelper(string name, bool trimExtension, bool loop, float volume)
             => ShortClipCache.TryGet(name, out var provider, trimExtension)
