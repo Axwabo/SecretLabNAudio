@@ -7,6 +7,7 @@
 
     <Target Name="NotifyIncompleteSetup" BeforeTargets="PrepareForBuild" Condition="$(ReferencePath) == ''">
         <PropertyGroup>
+            <Props>$(MSBuildThisFileDirectory)ReferencePath.props.user</Props>
             <Template><![CDATA[
 <Project>
     <PropertyGroup>
@@ -15,7 +16,7 @@
 </Project>
             ]]></Template>
         </PropertyGroup>
-        <WriteLinesToFile File="$(MSBuildThisFileDirectory)ReferencePath.props.user" Lines="$(Template)" Condition="!Exists('$(MSBuildThisFileDirectory)ReferencePath.props.user')" />
+        <WriteLinesToFile File="$(Props)" Lines="$(Template)" Condition="!Exists($(Props))" />
         <Error Text="The ReferencePath property is not specified! Make sure to set the property in the ReferencePath.props.user file." />
     </Target>
 </Project>
