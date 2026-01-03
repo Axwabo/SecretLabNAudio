@@ -2,7 +2,7 @@
 
 /// <summary>Wraps a <see cref="WaveStream"/> and restarts it when reaching the end.</summary>
 [Obsolete($"Use {nameof(StreamAudioProcessor)} instead.", true)]
-public sealed class LoopingWaveProvider : IWaveProvider, IDisposable
+public sealed class LoopingWaveProvider : IWaveProvider, IDisposable, ISeekable
 {
 
     /// <summary>The <see cref="WaveStream"/> to loop.</summary>
@@ -28,5 +28,15 @@ public sealed class LoopingWaveProvider : IWaveProvider, IDisposable
 
     /// <inheritdoc/>
     public void Dispose() => Stream.Dispose();
+
+    /// <inheritdoc />
+    public TimeSpan CurrentTime
+    {
+        get => Stream.CurrentTime;
+        set => Stream.CurrentTime = value;
+    }
+
+    /// <inheritdoc />
+    public TimeSpan TotalTime => Stream.CurrentTime;
 
 }
