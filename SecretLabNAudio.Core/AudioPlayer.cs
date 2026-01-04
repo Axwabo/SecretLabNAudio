@@ -45,7 +45,7 @@ public sealed partial class AudioPlayer : MonoBehaviour
             }
             catch (Exception e)
             {
-                Debug.Log(e);
+                Debug.LogError(e);
             }
 
             field = value;
