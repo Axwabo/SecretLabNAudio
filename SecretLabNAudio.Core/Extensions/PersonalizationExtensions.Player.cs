@@ -71,6 +71,19 @@ public static partial class PersonalizationExtensions
             return player;
         }
 
+        /// <summary>
+        /// Attaches a <see cref="SpeakerPersonalization"/> component, and sets the <see cref="AudioPlayer.SendEngine"/> of the <see cref="AudioPlayer"/> to a <see cref="LivePersonalizedSendEngine"/>.
+        /// </summary>
+        /// <param name="transform">A delegate that transforms the personalized settings.</param>
+        /// <param name="baseEngine">
+        /// The base engine used to construct the <see cref="LivePersonalizedSendEngine"/>.
+        /// If <see langword="null"/>, <see cref="SendEngine.DefaultEngine"/> will be used.
+        /// </param>
+        /// <returns>The <see cref="AudioPlayer"/> itself with the personalized send engine set.</returns>
+        /// <seealso cref="PersonalizedSettingsTransform"/>
+        public AudioPlayer WithLivePersonalizedSendEngine(PersonalizedSettingsTransform transform, SendEngine? baseEngine = null)
+            => player.WithLivePersonalizedSendEngine(player.AddPersonalization(), transform, baseEngine);
+
     }
 
 }
