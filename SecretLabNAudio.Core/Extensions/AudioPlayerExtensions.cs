@@ -99,13 +99,13 @@ public static partial class AudioPlayerExtensions
         /// Unpauses the <see cref="AudioPlayer"/>.
         /// </summary>
         /// <returns>The player itself.</returns>
-        public AudioPlayer Play() => player.Pause(false);
+        public AudioPlayer Resume() => player.Pause(false);
 
         /// <summary>
         /// Sets <seealso cref="AudioPlayer.SampleProvider"/> to <see langword="null"/>, effectively stopping playback.
         /// </summary>
         /// <returns>The player itself.</returns>
-        public AudioPlayer Stop()
+        public AudioPlayer WithoutProvider()
         {
             player.SampleProvider = null;
             return player;
