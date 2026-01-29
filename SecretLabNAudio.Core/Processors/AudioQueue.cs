@@ -49,17 +49,18 @@ public sealed class AudioQueue : IAudioProcessor
     /// <summary>Queues a provider to be read from.</summary>
     /// <param name="provider">The <see cref="ISampleProvider"/> to queue.</param>
     /// <exception cref="FormatException">Thrown if the provider's wave format does not match this provider's <see cref="WaveFormat"/>.</exception>
-    public void Enqueue(ISampleProvider provider) => Enqueue(provider, true);
+    public AudioQueue Enqueue(ISampleProvider provider) => Enqueue(provider, true);
 
     /// <summary>Queues a provider to be read from.</summary>
     /// <param name="provider">The <see cref="ISampleProvider"/> to queue.</param>
     /// <param name="isOwned">Whether to dispose of the <paramref name="provider"/> after it has ended or if this queue gets disposed.</param>
     /// <exception cref="FormatException">Thrown if the provider's wave format does not match this provider's <see cref="WaveFormat"/>.</exception>
-    public void Enqueue(ISampleProvider provider, bool isOwned)
+    public AudioQueue Enqueue(ISampleProvider provider, bool isOwned)
     {
         if (!WaveFormat.Equals(provider.WaveFormat))
             throw new FormatException("The provider's wave format must match the queue's format.");
         _queue.Enqueue(new ProcessorLayer(provider, isOwned));
+        return this;
     }
 
     /// <summary>Dequeues the next provider in the queue.</summary>
