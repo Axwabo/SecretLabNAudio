@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc>
+    <Speaker>
+        <Rent>
+            <summary>
+                Rents a
+                <see cref="T:LabApi.Features.Wrappers.SpeakerToy" />
+                from the pool, or creates a new one if no
+                <see cref="T:LabApi.Features.Wrappers.SpeakerToy" />
+                is pooled.
+            </summary>
+        </Rent>
+        <TryGet>
+            <remarks>
+                The
+                <see cref="P:LabApi.Features.Wrappers.SpeakerToy.ControllerId" />
+                of the returned speaker may already be occupied.
+                Assign an ID yourself by setting it or calling
+                <see cref="M:SecretLabNAudio.Core.Extensions.SpeakerToyExtensions.WithId" />.
+                Speaker settings may also vary.
+            </remarks>
+        </TryGet>
+    </Speaker>
+</doc>
