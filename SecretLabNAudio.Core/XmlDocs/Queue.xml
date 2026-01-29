@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc>
+    <Add>
+        <param name="input">The sample provider.</param>
+        <param name="isOwned">Whether to dispose of the provider when it ends or when this queue is disposed.</param>
+        <exception cref="T:System.ArgumentException">
+            Thrown if the<paramref name="input" />'s sample rate or channels differ from the
+            <see cref="P:SecretLabNAudio.Core.Processors.AudioQueue.WaveFormat" />
+            of this instance.
+        </exception>
+    </Add>
+    <AddProcess>
+        <exception cref="T:System.ArgumentException">
+            Thrown if the processed input's sample rate or channels differ from the
+            <see cref="P:SecretLabNAudio.Core.Processors.AudioQueue.WaveFormat" />
+            of the queue.
+        </exception>
+    </AddProcess>
+    <AddClip>
+        <exception cref="T:System.ArgumentException">
+            Thrown if the queue's
+            <see cref="P:SecretLabNAudio.Core.Processors.AudioQueue.WaveFormat" />
+            is not <see cref="P:SecretLabNAudio.Core.AudioPlayer.SupportedFormat">player-compatible</see>.
+        </exception>
+    </AddClip>
+    <Player>
+        <remarks>
+            If the
+            <see cref="P:SecretLabNAudio.Core.AudioPlayer.SampleProvider" />
+            is not a mixer, it will be replaced with one.
+            The existing provider (if present) will be added as an anonymous mixer input.
+        </remarks>
+    </Player>
+</doc>
