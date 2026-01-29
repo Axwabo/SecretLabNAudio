@@ -23,14 +23,7 @@ public partial class AudioPlayer
 
     /// <summary>Checks if the given provider is not compatible with <see cref="AudioPlayer"/>s.</summary>
     /// <param name="provider">The provider to check. Null values are skipped.</param>
-    /// <exception cref="ArgumentException">
-    /// Thrown when the given sample provider is not null and does not match the following criteria:
-    /// <para>
-    /// Encoding = <see cref="WaveFormatEncoding.IeeeFloat"/><br/>
-    /// Sample Rate = <see cref="SampleRate"/><br/>
-    /// Channels = <see cref="Channels"/>
-    /// </para>
-    /// </exception>
+    /// <include file='XmlDocs/Providers.xml' path='doc/Format/exception'/>
     public static void ThrowIfIncompatible(ISampleProvider? provider)
     {
         if (provider is {WaveFormat: not {SampleRate: SampleRate, Channels: Channels, Encoding: WaveFormatEncoding.IeeeFloat}})

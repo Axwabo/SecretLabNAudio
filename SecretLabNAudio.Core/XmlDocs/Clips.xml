@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc>
+    <Add>
+        <FromFile>
+            <summary>
+                Attempts to add the samples from the given file to the cache.
+                <b>Do not use this for storing lengthy audio, stream the files instead.</b>
+            </summary>
+            <returns>
+                A
+                <see cref="T:SecretLabNAudio.Core.Providers.RawSourceSampleProvider" />
+                if the clip was added to the cache.
+                If the file doesn't exist, no <see cref="T:SecretLabNAudio.Core.FileReading.IAudioReaderFactory">factory</see> was registered for the type, or no
+                <see cref="T:NAudio.Wave.WaveStream" />
+                was returned.
+            </returns>
+        </FromFile>
+        <FromFiles>
+            <summary>
+                Attempts to add the clips from the given files to the cache with keys based on files' names.
+                <b>Do not use this for storing lengthy audio, stream the files instead.</b>
+            </summary>
+        </FromFiles>
+        <NoTime>
+            <remarks>
+                If an entry already exists, it will be overwritten.
+                Audio is automatically converted to <see cref="M:SecretLabNAudio.Core.Extensions.WaveStreamExtensions.ReadPlayerCompatibleSamples">player-compatible samples</see>.
+            </remarks>
+        </NoTime>
+        <Time>
+            <remarks>
+                If an entry already exists, it will be overwritten.
+                Audio is automatically converted to <see cref="M:SecretLabNAudio.Core.Extensions.WaveStreamExtensions.ReadPlayerCompatibleSamples">player-compatible samples</see>.
+                Audio file duration may be an estimate for compressed files.
+            </remarks>
+        </Time>
+    </Add>
+</doc>

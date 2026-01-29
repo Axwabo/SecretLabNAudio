@@ -30,7 +30,7 @@ public static class ShortClipCache
     /// <param name="name">The key to add by.</param>
     /// <param name="provider">The clip to store.</param>
     /// <param name="trimExtension">Whether to trim the file extension from the name.</param>
-    /// <exception cref="ArgumentException"><inheritdoc cref="AudioPlayer.ThrowIfIncompatible" path="exception"/></exception>
+    /// <include file='../XmlDocs/Providers.xml' path='doc/Format/exception'/>
     /// <remarks>If an entry already exists, it will be overwritten.</remarks>
     public static void Add(string name, RawSourceSampleProvider provider, bool trimExtension = true)
     {
@@ -46,48 +46,39 @@ public static class ShortClipCache
     public static bool Remove(string name, [NotNullWhen(true)] out RawSourceSampleProvider? provider, bool trimExtension = true)
         => Clips.Remove(name.RemoveExtension(trimExtension), out provider);
 
-    /// <summary>
-    /// Attempts to add the samples from the given file to the cache.
-    /// <b>Do not use this for storing lengthy audio, stream the files instead.</b> 
-    /// </summary>
+    /// <include file='../XmlDocs/Clips.xml' path='doc/Add/FromFile/summary'/>
     /// <param name="path">The path to the file.</param>
     /// <param name="trimExtension">Whether to trim the file extension from the name.</param>
-    /// <returns>
-    /// A <see cref="RawSourceSampleProvider"/> if the clip was added to the cache.
-    /// If the file doesn't exist, no <see cref="IAudioReaderFactory">factory</see> was registered for the type, or no <see cref="WaveStream"/> was returned.
-    /// </returns>
-    /// <remarks>
-    /// If an entry already exists, it will be overwritten.
-    /// Audio is automatically converted to <see cref="WaveStreamExtensions.ReadPlayerCompatibleSamples">player-compatible samples</see>.
-    /// </remarks>
+    /// <include file='../XmlDocs/Clips.xml' path='doc/Add/FromFile/returns'/>
+    /// <include file='../XmlDocs/Clips.xml' path='doc/Add/NoTime/remarks'/>
     /// <seealso cref="AudioPlayerExtensions.UseFile(AudioPlayer,string,bool,float)"/>
     public static RawSourceSampleProvider? AddFromFile(string path, bool trimExtension = true)
         => AddFromFile(path, null, trimExtension);
 
-    /// <summary><inheritdoc cref="AddFromFile(string,bool)" path="summary"/></summary>
+    /// <include file='../XmlDocs/Clips.xml' path='doc/Add/FromFile/summary'/>
     /// <param name="path">The path to the file.</param>
     /// <param name="maxDuration">If not null and the file's duration is longer than this value, it will not be added to the cache.</param>
     /// <param name="trimExtension">Whether to trim the file extension from the name.</param>
-    /// <remarks>
-    /// <inheritdoc cref="AddFromFile(string,bool)" path="remarks"/>
-    /// Audio file duration may be an estimate for compressed files.
-    /// </remarks>
+    /// <include file='../XmlDocs/Clips.xml' path='doc/Add/FromFile/returns'/>
+    /// <include file='../XmlDocs/Clips.xml' path='doc/Add/Time/remarks'/>
     /// <seealso cref="AudioPlayerExtensions.UseFile(AudioPlayer,string,bool,float)"/>
     public static RawSourceSampleProvider? AddFromFile(string path, TimeSpan? maxDuration, bool trimExtension = true)
         => AddFromFile(path, path.FileName(trimExtension), maxDuration);
 
-    /// <summary><inheritdoc cref="AddFromFile(string,bool)" path="summary"/></summary>
+    /// <include file='../XmlDocs/Clips.xml' path='doc/Add/FromFile/summary'/>
     /// <param name="path">The path to the file.</param>
     /// <param name="name">The key to add by.</param>
-    /// <remarks><inheritdoc cref="AddFromFile(string,bool)" path="remarks"/></remarks>
+    /// <include file='../XmlDocs/Clips.xml' path='doc/Add/FromFile/returns'/>
+    /// <include file='../XmlDocs/Clips.xml' path='doc/Add/NoTime.remarks'/>
     /// <seealso cref="AudioPlayerExtensions.UseFile(AudioPlayer,string,bool,float)"/>
     public static RawSourceSampleProvider? AddFromFile(string path, string name) => AddFromFile(path, name, null);
 
-    /// <summary><inheritdoc cref="AddFromFile(string,bool)" path="summary"/></summary>
+    /// <include file='../XmlDocs/Clips.xml' path='doc/Add/FromFile'/>
     /// <param name="path">The path to the file.</param>
     /// <param name="name">The key to add by.</param>
     /// <param name="maxDuration">If not null and the file's duration is longer than this value, the file will not be added to the cache.</param>
-    /// <remarks><inheritdoc cref="AddFromFile(string,TimeSpan?,bool)"/></remarks>
+    /// <include file='../XmlDocs/Clips.xml' path='doc/Add/FromFile/returns'/>
+    /// <include file='../XmlDocs/Clips.xml' path='doc/Add/Time/remarks'/>
     /// <seealso cref="AudioPlayerExtensions.UseFile(AudioPlayer,string,bool,float)"/>
     public static RawSourceSampleProvider? AddFromFile(string path, string name, TimeSpan? maxDuration)
     {
@@ -97,25 +88,22 @@ public static class ShortClipCache
         return provider;
     }
 
-    /// <summary>
-    /// Attempts to add the clips from the given files to the cache with keys based on files' names.
-    /// <b>Do not use this for storing lengthy audio, stream the files instead.</b> 
-    /// </summary>
+    /// <include file='../XmlDocs/Clips.xml' path='doc/Add/FromFiles'/>
     /// <param name="trimExtension">Whether to trim the file extension from the names.</param>
     /// <param name="paths">The fully qualified paths to the files.</param>
     /// <returns>The number of clips added to the cache.</returns>
-    /// <remarks><inheritdoc cref="AddFromFile(string,bool)"/></remarks>
+    /// <include file='../XmlDocs/Clips.xml' path='doc/Add/NoTime/remarks'/>
     /// <seealso cref="AddFromFile(string,bool)"/>
     /// <seealso cref="AudioPlayerExtensions.UseFile(AudioPlayer,string,bool,float)"/>
     public static int AddAllFromFiles(bool trimExtension, params IEnumerable<string> paths)
         => AddAllFromFiles(trimExtension, null, paths);
 
-    /// <summary><inheritdoc cref="AddAllFromFiles(bool,IEnumerable{string})" path="summary"/></summary>
+    /// <include file='../XmlDocs/Clips.xml' path='doc/Add/FromFiles'/>
     /// <param name="trimExtension">Whether to trim the file extension from the names.</param>
     /// <param name="maxDuration">If not null and a file's duration is longer than this value, the file will not be added to the cache.</param>
     /// <param name="paths">The fully qualified paths to the files.</param>
     /// <returns>The number of clips added to the cache.</returns>
-    /// <remarks><inheritdoc cref="AddFromFile(string,TimeSpan?,bool)"/></remarks>
+    /// <include file='../XmlDocs/Clips.xml' path='doc/Add/Time/remarks'/>
     /// <seealso cref="AddFromFile(string,bool)"/>
     /// <seealso cref="AudioPlayerExtensions.UseFile(AudioPlayer,string,bool,float)"/>
     public static int AddAllFromFiles(bool trimExtension, TimeSpan? maxDuration, params IEnumerable<string> paths)
@@ -127,24 +115,24 @@ public static class ShortClipCache
         return count;
     }
 
-    /// <summary><inheritdoc cref="AddAllFromFiles(bool,IEnumerable{string})" path="summary"/></summary>
+    /// <include file='../XmlDocs/Clips.xml' path='doc/Add/FromFiles'/>
     /// <param name="baseDirectory">The base directory to combine with the paths.</param>
     /// <param name="trimExtension">Whether to trim the file extension from the names.</param>
     /// <param name="paths">The paths to the files relative to <paramref name="baseDirectory"/>.</param>
     /// <returns>The number of clips added to the cache.</returns>
-    /// <remarks><inheritdoc cref="AddFromFile(string,bool)"/></remarks>
+    /// <include file='../XmlDocs/Clips.xml' path='doc/Add/NoTime/remarks'/>
     /// <seealso cref="AddFromFile(string,bool)"/>
     /// <seealso cref="AudioPlayerExtensions.UseFile(AudioPlayer,string,bool,float)"/>
     public static int AddAllFromFiles(string baseDirectory, bool trimExtension, params IEnumerable<string> paths)
         => AddAllFromFiles(baseDirectory, trimExtension, null, paths);
 
-    /// <summary><inheritdoc cref="AddAllFromFiles(bool,IEnumerable{string})" path="summary"/></summary>
+    /// <include file='../XmlDocs/Clips.xml' path='doc/Add/FromFiles'/>
     /// <param name="baseDirectory">The base directory to combine with the paths.</param>
     /// <param name="trimExtension">Whether to trim the file extension from the names.</param>
     /// <param name="maxDuration">If not null and a file's duration is longer than this value, the file will not be added to the cache.</param>
     /// <param name="paths">The paths to the files relative to <paramref name="baseDirectory"/>.</param>
     /// <returns>The number of clips added to the cache.</returns>
-    /// <remarks><inheritdoc cref="AddFromFile(string,TimeSpan?,bool)"/></remarks>
+    /// <include file='../XmlDocs/Clips.xml' path='doc/Add/Time/remarks'/>
     /// <seealso cref="AddFromFile(string,TimeSpan?,bool)"/>
     /// <seealso cref="AudioPlayerExtensions.UseFile(AudioPlayer,string,bool,float)"/>
     public static int AddAllFromFiles(string baseDirectory, bool trimExtension, TimeSpan? maxDuration, params IEnumerable<string> paths)
@@ -159,7 +147,7 @@ public static class ShortClipCache
     /// <param name="maxDuration">If not null and a file's duration is longer than this value, the file will not be added to the cache.</param>
     /// <param name="searchOption">Whether to search only in the directory itself, or enter subdirectories as well.</param>
     /// <returns>The number of clips added to the cache.</returns>
-    /// <remarks><inheritdoc cref="AddFromFile(string,TimeSpan?,bool)"/></remarks>
+    /// <include file='../XmlDocs/Clips.xml' path='doc/Add/Time/remarks'/>
     public static int AddAllFromDirectory(
         string directoryPath,
         bool trimExtension = true,
