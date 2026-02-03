@@ -219,7 +219,7 @@ public static partial class AudioPlayerExtensions
             return player;
         }
 
-        /// <summary><inheritdoc cref="MixerExtensions.RemoveAllShortClips" path="summary"/></summary>
+        /// <include file='../XmlDocs/Mixer.xml' path='doc/RemoveAllShortClips/summary'/>
         /// <returns>The player itself.</returns>
         public AudioPlayer RemoveShortClipMixerInputs()
         {

@@ -104,17 +104,10 @@ public static partial class AudioPlayerExtensions
             return player;
         }
 
-        /// <summary>
-        /// Sets the <see cref="AudioPlayer.SampleProvider"/> to a <see cref="Mixer"/>.
-        /// </summary>
+        /// <include file='../XmlDocs/Mixer.xml' path='doc/Use/summary'/>
         /// <param name="keepInputs">Whether to keep the current non-<see cref="Mixer"/> <see cref="AudioPlayer.SampleProvider"/> as an input.</param>
         /// <returns>The player itself.</returns>
-        /// <remarks>
-        /// If <paramref name="keepInputs"/> is false: a new <see cref="Mixer"/> will be created.<br/>
-        /// If <paramref name="keepInputs"/> is true, and the current provider is a <see cref="Mixer"/>: nothing happens.<br/>
-        /// If <paramref name="keepInputs"/> is true, and the current provider is not a <see cref="Mixer"/>: the provider is set to a new mixer,
-        /// and if the provider is set, the provider is added as an anonymous input with an ownership equivalent to <see cref="AudioPlayer.OwnsProvider"/>.
-        /// </remarks>
+        /// <include file='../XmlDocs/Mixer.xml' path='doc/Use/remarks'/>
         public AudioPlayer UseMixer(bool keepInputs = true)
         {
             if (!keepInputs)
@@ -127,10 +120,10 @@ public static partial class AudioPlayerExtensions
             return player.Use(mixer);
         }
 
-        /// <summary><inheritdoc cref="UseMixer(AudioPlayer,bool)" path="summary"/></summary>
+        /// <include file='../XmlDocs/Mixer.xml' path='doc/Use/summary'/>
         /// <param name="mix">A delegate to add inputs to the mixer with.</param>
         /// <param name="keepInputs">Whether to keep the current non-<see cref="Mixer"/> <see cref="AudioPlayer.SampleProvider"/> as an input.</param>
-        /// <remarks><inheritdoc cref="UseMixer(AudioPlayer,bool)" path="remarks"/></remarks>
+        /// <include file='../XmlDocs/Mixer.xml' path='doc/Use/remarks'/>
         public AudioPlayer UseMixer(Action<Mixer> mix, bool keepInputs = true)
         {
             mix(player.UseMixer(keepInputs).Mixer!);

@@ -55,4 +55,37 @@
             is used.
         </remarks>
     </RemoveAllByName>
+    <RemoveAllShortClips>
+        <summary>
+            Removes all mixer inputs whose source is a
+            <see cref="T:SecretLabNAudio.Core.Providers.RawSourceSampleProvider" />.
+        </summary>
+    </RemoveAllShortClips>
+    <Use>
+        <summary>
+            Sets the
+            <see cref="P:SecretLabNAudio.Core.AudioPlayer.SampleProvider" />
+            to a
+            <see cref="T:SecretLabNAudio.Core.Processors.Mixer" />.
+        </summary>
+        <remarks>
+            If
+            <paramref name="keepInputs" />
+            is false: a new
+            <see cref="Mixer" />
+            will be created.
+            <br />
+            If
+            <paramref name="keepInputs" />
+            is true, and the current provider is a
+            <see cref="T:SecretLabNAudio.Core.Processors.Mixer" />: nothing happens.
+            <br />
+            If
+            <paramref name="keepInputs" />
+            is true, and the current provider is not a
+            <see cref="T:SecretLabNAudio.Core.Processors.Mixer" />: the provider is set to a new mixer,
+            and if the provider is set, the provider is added as an anonymous input with an ownership equivalent to
+            <see cref="P:SecretLabNAudio.Core.AudioPlayer.OwnsProvider" />.
+        </remarks>
+    </Use>
 </doc>

@@ -130,9 +130,7 @@ public static class MixerExtensions
         public Mixer RemoveAllBySourceType<T>()
             => mixer.RemoveAll(static e => e.Provider is IAudioProcessor provider ? provider.TryGetSourceAs(out T? _) : e.Provider is T);
 
-        /// <summary>
-        /// Removes all inputs whose source is a <see cref="RawSourceSampleProvider"/>.
-        /// </summary>
+        /// <include file='../../XmlDocs/Mixer.xml' path='doc/RemoveAllShortClips/summary'/>
         /// <returns>The mixer itself.</returns>
         /// <seealso cref="RemoveAllBySourceType"/>
         public Mixer RemoveAllShortClips()

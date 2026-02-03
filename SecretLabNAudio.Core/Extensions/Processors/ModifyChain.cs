@@ -31,7 +31,7 @@ public static class ModifyChainExtensions
         /// Creates a new delegate that applies the <paramref name="previous"/> modification, then the current one.
         /// </summary>
         /// <param name="previous">The modification to execute first.</param>
-        /// <returns><inheritdoc cref="Then" path="returns"/></returns>
+        /// <returns><see langword="null"/> if both delegates are null, the delegate itself if only one is specified, or a new delegate if neither are null.</returns>
         [return: NotNullIfNotNull(nameof(current)), NotNullIfNotNull(nameof(previous))]
         public ModifyChain? Prepend(ModifyChain? previous) => previous.Then(current);
 
