@@ -13,7 +13,10 @@ public sealed class SpecificPlayerSendEngine : SendEngine
 
     /// <summary>Creates a new <see cref="SpecificPlayerSendEngine"/>.</summary>
     /// <param name="target">The player to send messages to.</param>
-    /// <remarks><inheritdoc cref="SpecificPlayerSendEngine" path="remarks"/></remarks>
+    /// <remarks>
+    /// Consider your use case before using this class.
+    /// If you want to send the same output to potentially multiple players, use the <see cref="FilteredSendEngine"/>.
+    /// </remarks>
     public SpecificPlayerSendEngine(Player target) => Target = target;
 
     /// <summary>Sends the message to the <see cref="Target"/>.</summary>

@@ -36,7 +36,7 @@ public static class StreamProcessorExtensions
         /// <param name="loop">Whether to loop the processor.</param>
         /// <returns>An audio processor that reads from the file.</returns>
         /// <include file='../../XmlDocs/Files.xml' path='doc/exception'/>
-        /// <remarks><inheritdoc cref="CreateAudioProcessor.FromFile" path="remarks"/></remarks>
+        /// <remarks>The underlying file stream is automatically disposed when the processor is disposed.</remarks>
         public static StreamAudioProcessor CreateFromFile(string path, bool loop = false)
             => CreateAudioProcessor.FromFile(path).WithLoop(loop);
 
