@@ -208,10 +208,10 @@ public static partial class AudioPlayerExtensions
             return player;
         }
 
-        /// <summary><inheritdoc cref="MixerExtensions.RemoveAllByName" path="summary"/></summary>
+        /// <include file='../XmlDocs/Mixer.xml' path='doc/RemoveAllByName/summary'/>
         /// <param name="name">The name to match.</param>
         /// <param name="ignoreCase">Whether to ignore case.</param>
-        /// <remarks><inheritdoc cref="MixerExtensions.RemoveAllByName" path="remarks"/></remarks>
+        /// <include file='../XmlDocs/Mixer.xml' path='doc/RemoveAllByName/remarks'/>
         /// <returns>The player itself.</returns>
         public AudioPlayer RemoveNamedMixerInputs(string name, bool ignoreCase = true)
         {

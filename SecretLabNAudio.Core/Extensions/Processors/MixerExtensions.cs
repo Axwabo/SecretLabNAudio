@@ -146,13 +146,10 @@ public static class MixerExtensions
         public Mixer RemoveAllStreamProcessors()
             => mixer.RemoveAllBySourceType<StreamAudioProcessor>();
 
-        /// <summary><inheritdoc cref="Mixer.RemoveAllByName" path="summary"/></summary>
+        /// <include file='../../XmlDocs/Mixer.xml' path='doc/RemoveAllByName/summary'/>
         /// <param name="name">The name to match.</param>
         /// <param name="ignoreCase">Whether to ignore case.</param>
-        /// <remarks>
-        /// If <paramref name="ignoreCase"/> is <see langword="true"/>, <see cref="StringComparison.OrdinalIgnoreCase"/> is used;
-        /// otherwise, <see cref="StringComparison.Ordinal"/> is used.
-        /// </remarks>
+        /// <include file='../../XmlDocs/Mixer.xml' path='doc/RemoveAllByName/remarks'/>
         /// <returns>The mixer itself.</returns>
         public Mixer RemoveAllByName(string name, bool ignoreCase = true)
             => mixer.RemoveAllByName(name, ignoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal);

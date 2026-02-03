@@ -116,9 +116,7 @@ public sealed class Mixer : IAudioProcessor
         return this;
     }
 
-    /// <summary>
-    /// Removes all inputs whose <see cref="MixerInput.Name"/> equals <paramref name="name"/>.
-    /// </summary>
+    /// <include file='../XmlDocs/Mixer.xml' path='doc/RemoveAllByName/summary'/>
     /// <param name="name">The name to match.</param>
     /// <param name="comparison">The string comparison method to use.</param>
     /// <returns>The mixer itself.</returns>

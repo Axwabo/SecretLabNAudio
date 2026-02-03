@@ -11,30 +11,48 @@
             <param name="isOwned">Whether to dispose of the provider when the input is removed or when this mixer is disposed.</param>
         </Named>
         <exception cref="T:System.ArgumentException">
-            Thrown if the <paramref name="input" />'s sample rate or channels differ from the
-            <see cref="P:SecretLabNAudio.Core.Processors.Mixer.WaveFormat" /> of this instance.
+            Thrown if the<paramref name="input" />'s sample rate or channels differ from the
+            <see cref="P:SecretLabNAudio.Core.Processors.Mixer.WaveFormat" />
+            of this instance.
         </exception>
     </Add>
     <AddProcess>
         <exception cref="T:System.ArgumentException">
             Thrown if the processed input's sample rate or channels differ from the
-            <see cref="P:SecretLabNAudio.Core.Processors.Mixer.WaveFormat"/>
+            <see cref="P:SecretLabNAudio.Core.Processors.Mixer.WaveFormat" />
             of the mixer.
         </exception>
     </AddProcess>
     <AddClip>
         <exception cref="T:System.ArgumentException">
             Thrown if the mixer's
-            <see cref="P:SecretLabNAudio.Core.Processors.Mixer.WaveFormat"/>
+            <see cref="P:SecretLabNAudio.Core.Processors.Mixer.WaveFormat" />
             is not <see cref="P:SecretLabNAudio.Core.AudioPlayer.SupportedFormat">player-compatible</see>.
         </exception>
     </AddClip>
     <Player>
         <remarks>
             If the
-            <see cref="P:SecretLabNAudio.Core.AudioPlayer.SampleProvider"/>
+            <see cref="P:SecretLabNAudio.Core.AudioPlayer.SampleProvider" />
             is not a mixer, it will be replaced with one.
             The existing provider (if present) will be added as an anonymous mixer input.
         </remarks>
     </Player>
+    <RemoveAllByName>
+        <summary>Removes all inputs whose
+            <see cref="P:SecretLabNAudio.Core.Processors.MixerInput.Name" />
+            equals
+            <paramref name="name" />.
+        </summary>
+        <remarks>
+            If
+            <paramref name="ignoreCase" />
+            is
+            <see langword="true" />,
+            <see cref="F:System.StringComparison.OrdinalIgnoreCase" />
+            is used; otherwise,
+            <see cref="F:System.StringComparison.Ordinal" />
+            is used.
+        </remarks>
+    </RemoveAllByName>
 </doc>
