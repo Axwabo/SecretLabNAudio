@@ -45,8 +45,8 @@ public static class AudioQueueExtensions
         /// <param name="process">An optional <see cref="ModifyChain"/> specifying how to process the clip.</param>
         /// <returns>The queue itself.</returns>
         /// <include file='../../XmlDocs/Queue.xml' path='doc/EnqueueClip/exception'/>
-        /// <seealso cref="ShortClipCache.TryGet"/>
-        public AudioQueue EnqueueShortClip(string name, bool loop = false, ModifyChain? process = null)
+        /// <include file='../../XmlDocs/Clips.xml' path='doc/TryGet/seealso'/>
+        public AudioQueue EnqueueShortClip(ClipName name, bool loop = false, ModifyChain? process = null)
             => ShortClipCache.TryGet(name, out var provider)
                 ? queue.Enqueue(provider.WithLoop(loop).Process(process), false)
                 : queue;

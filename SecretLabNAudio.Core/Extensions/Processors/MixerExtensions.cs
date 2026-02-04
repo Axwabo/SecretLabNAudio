@@ -75,8 +75,8 @@ public static class MixerExtensions
         /// <param name="process">An optional <see cref="ModifyChain"/> specifying how to process the clip.</param>
         /// <returns>The mixer itself.</returns>
         /// <include file='../../XmlDocs/Mixer.xml' path='doc/AddClip/exception'/>
-        /// <seealso cref="ShortClipCache.TryGet"/>
-        public Mixer AddShortClipAnonymous(string name, bool loop = false, ModifyChain? process = null)
+        /// <include file='../../XmlDocs/Clips.xml' path='doc/TryGet/seealso'/>
+        public Mixer AddShortClipAnonymous(ClipName name, bool loop = false, ModifyChain? process = null)
             => ShortClipCache.TryGet(name, out var provider)
                 ? mixer.AddAnonymous(provider.WithLoop(loop).Process(process), false)
                 : mixer;
@@ -89,8 +89,8 @@ public static class MixerExtensions
         /// <param name="process">An optional <see cref="ModifyChain"/> specifying how to process the clip.</param>
         /// <returns>The mixer itself.</returns>
         /// <include file='../../XmlDocs/Mixer.xml' path='doc/AddClip/exception'/>
-        /// <seealso cref="ShortClipCache.TryGet"/>
-        public Mixer AddShortClip(string name, bool loop = false, ModifyChain? process = null)
+        /// <include file='../../XmlDocs/Clips.xml' path='doc/TryGet/seealso'/>
+        public Mixer AddShortClip(ClipName name, bool loop = false, ModifyChain? process = null)
             => ShortClipCache.TryGet(name, out var provider)
                 ? mixer.AddNamed(provider.WithLoop(loop).Process(process), provider.ClipName!, false)
                 : mixer;
@@ -104,8 +104,8 @@ public static class MixerExtensions
         /// <param name="process">An optional <see cref="ModifyChain"/> specifying how to process the clip.</param>
         /// <returns>The mixer itself.</returns>
         /// <include file='../../XmlDocs/Mixer.xml' path='doc/AddClip/exception'/>
-        /// <seealso cref="ShortClipCache.TryGet"/>
-        public Mixer AddShortClipNamed(string clipName, string inputName, bool loop = false, ModifyChain? process = null)
+        /// <include file='../../XmlDocs/Clips.xml' path='doc/TryGet/seealso'/>
+        public Mixer AddShortClipNamed(ClipName clipName, string inputName, bool loop = false, ModifyChain? process = null)
             => ShortClipCache.TryGet(clipName, out var provider)
                 ? mixer.AddNamed(provider.WithLoop(loop).Process(process), inputName, false)
                 : mixer;

@@ -163,7 +163,7 @@ public static class ShortClipCache
     /// <remarks>The position of the copied provider is set to 0.</remarks>
     /// <seealso cref="RawSourceSampleProvider.Copy"/>
     public static bool TryGet(string name, [NotNullWhen(true)] out RawSourceSampleProvider? provider, bool trimExtension = true)
-        => TryGet(new ClipName(name, trimExtension), out provider);
+        => TryGet((name, trimExtension), out provider);
 
     /// <summary>Attempts to retrieve a clip from the cache.</summary>
     /// <param name="name">The key to search for.</param>

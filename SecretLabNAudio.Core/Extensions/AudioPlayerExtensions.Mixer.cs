@@ -1,4 +1,5 @@
 using SecretLabNAudio.Core.Extensions.Processors;
+using SecretLabNAudio.Core.FileReading;
 
 namespace SecretLabNAudio.Core.Extensions;
 
@@ -156,7 +157,7 @@ public static partial class AudioPlayerExtensions
         /// <include file='../XmlDocs/Mixer.xml' path='doc/Player/remarks'/>
         /// <seealso cref="UseMixer(AudioPlayer,Action{Mixer},bool)"/>
         /// <seealso cref="MixerExtensions.AddShortClip"/>
-        public AudioPlayer MixShortClip(string name, bool loop = false, float volume = 1)
+        public AudioPlayer MixShortClip(ClipName name, bool loop = false, float volume = 1)
             => player.UseMixer(mixer => mixer.AddShortClip(name, loop, ModifyChain.AmplifyIfNot1(volume)));
 
         /// <summary>
@@ -183,7 +184,7 @@ public static partial class AudioPlayerExtensions
         /// <include file='../XmlDocs/Mixer.xml' path='doc/Player/remarks'/>
         /// <seealso cref="UseMixer(AudioPlayer,Action{Mixer},bool)"/>
         /// <seealso cref="MixerExtensions.AddShortClipAnonymous"/>
-        public AudioPlayer MixShortClipAnonymous(string name, bool loop = false, float volume = 1)
+        public AudioPlayer MixShortClipAnonymous(ClipName name, bool loop = false, float volume = 1)
             => player.UseMixer(mixer => mixer.AddShortClipAnonymous(name, loop, ModifyChain.AmplifyIfNot1(volume)));
 
     }

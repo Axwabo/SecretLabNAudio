@@ -137,25 +137,9 @@ public static partial class AudioPlayerExtensions
         /// <param name="loop">Whether to loop the clip.</param>
         /// <param name="volume">The volume of the clip.</param>
         /// <returns>The player itself.</returns>
-        /// <seealso cref="UseExactShortClip"/>
-        /// <seealso cref="ShortClipCache.TryGet"/>
-        public AudioPlayer UseShortClip(string name, bool loop = false, float volume = 1)
-            => player.UseShortClipHelper(name, true, loop, volume);
-
-        /// <summary>
-        /// Replaces the <see cref="AudioPlayer.SampleProvider"/> with a short clip (if a clip with the given name was registered).
-        /// </summary>
-        /// <param name="name">The name of the clip.</param>
-        /// <param name="loop">Whether to loop the clip.</param>
-        /// <param name="volume">The volume of the clip.</param>
-        /// <returns>The player itself.</returns>
-        /// <seealso cref="UseExactShortClip"/>
-        /// <seealso cref="ShortClipCache.TryGet"/>
-        public AudioPlayer UseExactShortClip(string name, bool loop = false, float volume = 1)
-            => player.UseShortClipHelper(name, false, loop, volume);
-
-        private AudioPlayer UseShortClipHelper(string name, bool trimExtension, bool loop, float volume)
-            => ShortClipCache.TryGet(name, out var provider, trimExtension)
+        /// <include file='../XmlDocs/Clips.xml' path='doc/TryGet/seealso'/>
+        public AudioPlayer UseShortClip(ClipName name, bool loop = false, float volume = 1)
+            => ShortClipCache.TryGet(name, out var provider)
                 ? player.WithUnmanagedProvider(provider.WithLoop(loop).Process(ModifyChain.AmplifyIfNot1(volume)))
                 : player;
 

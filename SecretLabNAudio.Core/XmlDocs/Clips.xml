@@ -35,4 +35,7 @@
             </remarks>
         </Time>
     </Add>
+    <TryGet>
+        <seealso cref="M:SecretLabNAudio.Core.FileReading.ShortClipCache.TryGet(SecretLabNAudio.Core.FileReading.ClipName,SecretLabNAudio.Core.Providers.RawSourceSampleProvider@)">ShortClipCache.TryGet</seealso>
+    </TryGet>
 </doc>
