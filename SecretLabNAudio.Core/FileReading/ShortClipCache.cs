@@ -185,15 +185,6 @@ public static class ShortClipCache
 
     /// <summary>Attempts to retrieve a clip from the cache.</summary>
     /// <param name="name">The key to search for.</param>
-    /// <param name="trimExtension">Whether to trim the file extension from the name.</param>
-    /// <returns>A copy of the original provider if it was found, <see langword="null"/> otherwise.</returns>
-    /// <remarks>The position of the returned provider is set to 0.</remarks>
-    /// <seealso cref="RawSourceSampleProvider.Copy"/>
-    public static RawSourceSampleProvider? GetSafe(string name, bool trimExtension = true)
-        => GetSafe(new ClipName(name, trimExtension));
-
-    /// <summary>Attempts to retrieve a clip from the cache.</summary>
-    /// <param name="name">The key to search for.</param>
     /// <returns>A copy of the original provider if it was found, <see langword="null"/> otherwise.</returns>
     /// <remarks>The position of the returned provider is set to 0.</remarks>
     /// <seealso cref="RawSourceSampleProvider.Copy"/>
@@ -201,15 +192,6 @@ public static class ShortClipCache
         => Clips.TryGetValue(name.ToString(), out var original)
             ? original.Copy(true)
             : null;
-
-    /// <summary>Retrieves a clip from the cache.</summary>
-    /// <param name="name">The key to search for.</param>
-    /// <param name="trimExtension">Whether to trim the file extension from the name.</param>
-    /// <returns>A copy of the original provider.</returns>
-    /// <remarks>The position of the returned provider is set to 0.</remarks>
-    /// <seealso cref="RawSourceSampleProvider.Copy"/>
-    /// <exception cref="KeyNotFoundException">Thrown if no clip was added with the given key.</exception>
-    public static RawSourceSampleProvider Get(string name, bool trimExtension = true) => Get(new ClipName(name, trimExtension));
 
     /// <summary>Retrieves a clip from the cache.</summary>
     /// <param name="name">The key to search for.</param>
