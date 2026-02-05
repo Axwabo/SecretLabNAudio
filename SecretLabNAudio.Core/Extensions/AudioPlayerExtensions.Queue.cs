@@ -1,4 +1,5 @@
 using SecretLabNAudio.Core.Extensions.Processors;
+using SecretLabNAudio.Core.FileReading;
 
 namespace SecretLabNAudio.Core.Extensions;
 
@@ -23,7 +24,7 @@ public static partial class AudioPlayerExtensions
         public AudioPlayer EnqueueFileSafe(string path, ModifyChain? process, bool loop = false)
             => player.UseQueue(queue => queue.TryEnqueueFile(path, loop, process.Prepend(ProcessorChainExtensions.ToPlayerCompatible)));
 
-        public AudioPlayer EnqueueShortClip(string name, bool loop = false, float volume = 1)
+        public AudioPlayer EnqueueShortClip(ClipName name, bool loop = false, float volume = 1)
             => player.UseQueue(queue => queue.EnqueueShortClip(name, loop, ModifyChain.AmplifyIfNot1(volume)));
 
     }
