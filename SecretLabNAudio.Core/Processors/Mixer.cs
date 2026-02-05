@@ -68,7 +68,7 @@ public sealed class Mixer : IAudioProcessor
     /// <include file='../XmlDocs/Mixer.xml' path='doc/Add/exception'/>
     public Mixer AddNamed(ISampleProvider input, string name, bool isOwned = true)
     {
-        ThrowIfIncompatible(input);
+        ThrowIfIncompatible(input, isOwned);
         _inputs.Add(new MixerInput(name, input, isOwned));
         return this;
     }
@@ -81,7 +81,7 @@ public sealed class Mixer : IAudioProcessor
     /// <include file='../XmlDocs/Mixer.xml' path='doc/Add/exception'/>
     public Mixer AddAnonymous(ISampleProvider input, bool isOwned = true)
     {
-        ThrowIfIncompatible(input);
+        ThrowIfIncompatible(input, isOwned);
         _inputs.Add(new MixerInput(null, input, isOwned));
         return this;
     }
@@ -157,10 +157,13 @@ public sealed class Mixer : IAudioProcessor
         _inputs.RemoveAt(index);
     }
 
-    private void ThrowIfIncompatible(ISampleProvider input)
+    private void ThrowIfIncompatible(ISampleProvider input, bool isOwned)
     {
-        if (!WaveFormat.Matches(input.WaveFormat))
-            throw new ArgumentException($"The input's WaveFormat does not match the format of the Mixer.", nameof(input));
+        if (WaveFormat.Matches(input.WaveFormat))
+            return;
+        if (isOwned)
+            (input as IDisposable)?.Dispose();
+        throw new ArgumentException("The input's WaveFormat does not match the format of the Mixer.", nameof(input));
     }
 
     /// <inheritdoc />

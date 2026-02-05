@@ -58,7 +58,12 @@ public sealed class AudioQueue : IAudioProcessor
     public AudioQueue Enqueue(ISampleProvider provider, bool isOwned)
     {
         if (!WaveFormat.Equals(provider.WaveFormat))
+        {
+            if (isOwned)
+                (provider as IDisposable)?.Dispose();
             throw new FormatException("The provider's wave format must match the queue's format.");
+        }
+
         _queue.Enqueue(new ProcessorLayer(provider, isOwned));
         return this;
     }

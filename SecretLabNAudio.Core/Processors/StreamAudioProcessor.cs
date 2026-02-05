@@ -8,6 +8,7 @@ public sealed class StreamAudioProcessor : IAudioProcessor, ISeekable, ILoopable
     private IDisposable? _disposable;
 
     /// <summary>The <see cref="WaveStream"/> that is encapsulated.</summary>
+    /// <exception cref="ObjectDisposedException">Thrown if the processor has already been disposed.</exception>
     public WaveStream Stream
     {
         get
@@ -18,6 +19,7 @@ public sealed class StreamAudioProcessor : IAudioProcessor, ISeekable, ILoopable
     }
 
     /// <inheritdoc />
+    /// <exception cref="ObjectDisposedException">Thrown if the processor has already been disposed.</exception>
     public TimeSpan CurrentTime
     {
         get => Stream.CurrentTime;
@@ -31,7 +33,7 @@ public sealed class StreamAudioProcessor : IAudioProcessor, ISeekable, ILoopable
     public bool Loop { get; set; }
 
     /// <summary>
-    /// Creates a new <see cref="StreamAudioProcessor"/>, and automaically converts the stream to an <see cref="ISampleProvider"/>.
+    /// Creates a new <see cref="StreamAudioProcessor"/>, and automatically converts the stream to an <see cref="ISampleProvider"/>.
     /// </summary>
     /// <param name="stream">The <see cref="WaveStream"/> to encapsulate.</param>
     /// <param name="isOwned">Whether to dispose of the <paramref name="stream"/> when this object is disposed.</param>
@@ -53,6 +55,7 @@ public sealed class StreamAudioProcessor : IAudioProcessor, ISeekable, ILoopable
     }
 
     /// <inheritdoc />
+    /// <exception cref="ObjectDisposedException">Thrown if the processor has already been disposed.</exception>
     public WaveFormat WaveFormat
     {
         get
@@ -63,6 +66,7 @@ public sealed class StreamAudioProcessor : IAudioProcessor, ISeekable, ILoopable
     }
 
     /// <inheritdoc />
+    /// <exception cref="ObjectDisposedException">Thrown if the processor has already been disposed.</exception>
     public int Read(float[] buffer, int offset, int count)
     {
         EnsureNotDisposed();
