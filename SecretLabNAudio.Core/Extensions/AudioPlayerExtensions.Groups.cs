@@ -54,6 +54,68 @@ public static partial class AudioPlayerExtensions
             return player;
         }
 
+        /// <summary>
+        /// Rents a <see cref="SpeakerToy"/> with an identical <see cref="SpeakerToy.ControllerId"/>, effectively cloning the output of this player elsewhere.
+        /// The new speaker's settings will match that of the <see cref="AudioPlayer"/>.
+        /// </summary>
+        /// <param name="position">The position to place the speaker at.</param>
+        /// <returns>The player itself.</returns>
+        /// <remarks>
+        /// The player's <see cref="SpeakerToyGroup"/> is used if possible.
+        /// If the player isn't grouped, a new group will be created.
+        /// </remarks>
+        /// <seealso cref="GetOrCreateGroup"/>
+        public AudioPlayer CloneOutput(Vector3 position)
+            => player.CloneOutput(SpeakerSettings.From(player), position);
+
+        /// <summary>
+        /// Rents a <see cref="SpeakerToy"/> with an identical <see cref="SpeakerToy.ControllerId"/>, effectively cloning the output of this player elsewhere.
+        /// </summary>
+        /// <param name="settings">The settings to apply to the speaker.</param>
+        /// <param name="position">The position to place the speaker at.</param>
+        /// <returns>The player itself.</returns>
+        /// <remarks>
+        /// The player's <see cref="SpeakerToyGroup"/> is used if possible.
+        /// If the player isn't grouped, a new group will be created.
+        /// </remarks>
+        /// <seealso cref="GetOrCreateGroup"/>
+        public AudioPlayer CloneOutput(SpeakerSettings settings, Vector3 position)
+        {
+            player.GetOrCreateGroup().AddFromPool(position, settings);
+            return player;
+        }
+
+        /// <summary>
+        /// Rents multiple <see cref="SpeakerToy"/>s with an identical <see cref="SpeakerToy.ControllerId"/>, effectively cloning the output of this player elsewhere.
+        /// The new speakers' settings will match that of the <see cref="AudioPlayer"/>.
+        /// </summary>
+        /// <param name="positions">The positions to place speakers at.</param>
+        /// <returns>The player itself.</returns>
+        /// <remarks>
+        /// The player's <see cref="SpeakerToyGroup"/> is used if possible.
+        /// If the player isn't grouped, a new group will be created.
+        /// </remarks>
+        /// <seealso cref="GetOrCreateGroup"/>
+        public AudioPlayer CloneOutput(params IEnumerable<Vector3> positions)
+            => player.CloneOutput(SpeakerSettings.From(player), positions);
+
+        /// <summary>
+        /// Rents multiple <see cref="SpeakerToy"/>s with an identical <see cref="SpeakerToy.ControllerId"/>, effectively cloning the output of this player elsewhere.
+        /// </summary>
+        /// <param name="settings">The settings to apply to the speakers.</param>
+        /// <param name="positions">The positions to place speakers at.</param>
+        /// <returns>The player itself.</returns>
+        /// <remarks>
+        /// The player's <see cref="SpeakerToyGroup"/> is used if possible.
+        /// If the player isn't grouped, a new group will be created.
+        /// </remarks>
+        /// <seealso cref="GetOrCreateGroup"/>
+        public AudioPlayer CloneOutput(SpeakerSettings settings, params IEnumerable<Vector3> positions)
+        {
+            player.GetOrCreateGroup().AddFromPool(settings, positions);
+            return player;
+        }
+
     }
 
 }
