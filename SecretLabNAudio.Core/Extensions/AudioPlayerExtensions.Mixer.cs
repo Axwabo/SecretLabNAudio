@@ -171,7 +171,7 @@ public static partial class AudioPlayerExtensions
         /// <include file='../XmlDocs/Mixer.xml' path='doc/Player/remarks'/>
         /// <seealso cref="UseMixer(AudioPlayer,Action{Mixer},bool)"/>
         /// <seealso cref="MixerExtensions.AddShortClipNamed"/>
-        public AudioPlayer MixShortClip(string clipName, string inputName, bool loop = false, float volume = 1)
+        public AudioPlayer MixShortClip(ClipName clipName, string inputName, bool loop = false, float volume = 1)
             => player.UseMixer(mixer => mixer.AddShortClipNamed(clipName, inputName, loop, ModifyChain.AmplifyIfNot1(volume)));
 
         /// <summary>
