@@ -14,7 +14,7 @@ public static partial class AudioPlayerExtensions
 
         public bool IsGrouped => player.TryGetGroup(out _);
 
-        public bool IsGroupMaster => player.Group?.Controller == player.Speaker;
+        public bool IsGroupController => player.Group?.Controller == player.Speaker;
 
         public bool IsGroupChild => player.Group?.IsChild(player.Speaker) ?? false;
 
