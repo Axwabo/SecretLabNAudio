@@ -33,9 +33,17 @@ public static class ShortClipCache
     /// <include file='../XmlDocs/Providers.xml' path='doc/Format/exception'/>
     /// <remarks>If an entry already exists, it will be overwritten.</remarks>
     public static void Add(string name, RawSourceSampleProvider provider, bool trimExtension = true)
+        => Add((name, trimExtension), provider);
+
+    /// <summary>Adds a raw sample provider to the cache.</summary>
+    /// <param name="name">The key to add by.</param>
+    /// <param name="provider">The clip to store.</param>
+    /// <include file='../XmlDocs/Providers.xml' path='doc/Format/exception'/>
+    /// <remarks>If an entry already exists, it will be overwritten.</remarks>
+    public static void Add(ClipName name, RawSourceSampleProvider provider)
     {
         AudioPlayer.ThrowIfIncompatible(provider);
-        Clips[name.RemoveExtension(trimExtension)] = provider;
+        Clips[name.ToString()] = provider;
     }
 
     /// <summary>Removes a sample from the cache by name.</summary>
@@ -44,7 +52,14 @@ public static class ShortClipCache
     /// <param name="trimExtension">Whether to trim the file extension from the name.</param>
     /// <returns>Whether a provider was removed.</returns>
     public static bool Remove(string name, [NotNullWhen(true)] out RawSourceSampleProvider? provider, bool trimExtension = true)
-        => Clips.Remove(name.RemoveExtension(trimExtension), out provider);
+        => Remove((name, trimExtension), out provider);
+
+    /// <summary>Removes a sample from the cache by name.</summary>
+    /// <param name="name">The key to remove by.</param>
+    /// <param name="provider">The resulting provider if there was a provider removed, null otherwise.</param>
+    /// <returns>Whether a provider was removed.</returns>
+    public static bool Remove(ClipName name, [NotNullWhen(true)] out RawSourceSampleProvider? provider)
+        => Clips.Remove(name.ToString(), out provider);
 
     /// <include file='../XmlDocs/Clips.xml' path='doc/Add/FromFile/summary'/>
     /// <param name="path">The path to the file.</param>
@@ -230,13 +245,6 @@ public static class ShortClipCache
             => trimExtension
                 ? Path.GetFileNameWithoutExtension(path)
                 : Path.GetFileName(path);
-
-        private string RemoveExtension(bool trimExtension)
-        {
-            if (trimExtension)
-                path = Path.ChangeExtension(path, null);
-            return path;
-        }
 
     }
 

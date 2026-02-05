@@ -1,7 +1,7 @@
 namespace SecretLabNAudio.Core.FileReading;
 
 /// <summary>
-/// Represents a short clip's name with an option to trim the file extension,
+/// Represents a short clip's name with an option to trim the file extension.
 /// </summary>
 /// <param name="Original">The original name.</param>
 /// <param name="TrimExtension">Whether to trim the file extension.</param>
