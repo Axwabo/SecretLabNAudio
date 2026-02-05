@@ -109,7 +109,7 @@ public static class SpeakerToyPool
     public static void Return(SpeakerToy speaker)
     {
         speaker.Stop();
-        if (speaker.IsDestroyed)
+        if (speaker.IsDestroyed || speaker.Base.destroyCancellationToken.IsCancellationRequested)
             return;
         var o = speaker.GameObject;
         o.SetActive(false);
