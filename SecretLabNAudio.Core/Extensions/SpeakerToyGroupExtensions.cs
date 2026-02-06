@@ -1,3 +1,4 @@
+using System.Linq;
 using SecretLabNAudio.Core.Groups;
 using SecretLabNAudio.Core.Pools;
 
@@ -12,6 +13,26 @@ public static class SpeakerToyGroupExtensions
     /// <param name="group">The group to add speakers to.</param>
     extension(SpeakerToyGroup group)
     {
+
+        /// <summary>
+        /// Creates a new <see cref="HashSet{T}"/> of all <see cref="SpeakerToyGroup"/>s.
+        /// </summary>
+        public static HashSet<SpeakerToyGroup> All
+        {
+            get
+            {
+                var set = new HashSet<SpeakerToyGroup>();
+                foreach (var grouped in GroupedSpeaker.Instances)
+                    set.Add(grouped.Group);
+                return set;
+            }
+        }
+
+        /// <summary>
+        /// Enumerates all speakers that are grouped.
+        /// </summary>
+        public static IEnumerable<(SpeakerToy Speaker, SpeakerToyGroup Group)> GroupedSpeakers
+            => GroupedSpeaker.Instances.Select(static e => (e.Speaker, e.Group));
 
         /// <summary>
         /// Rents one speaker from the <see cref="SpeakerToyPool"/>, and adds it to the group.
