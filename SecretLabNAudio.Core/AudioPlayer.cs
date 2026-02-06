@@ -14,6 +14,17 @@ public sealed partial class AudioPlayer : MonoBehaviour
 
     private static readonly byte[] EncoderBuffer = new byte[1024];
 
+    /// <summary>The <see cref="SpeakerToy"/> this player is attached to.</summary>
+    public SpeakerToy Speaker { get; private set; } = null!;
+
+    /// <summary>The controller ID of this player.</summary>
+    /// <seealso cref="SpeakerToy.ControllerId"/>
+    public byte Id
+    {
+        get => Speaker.ControllerId;
+        set => Speaker.ControllerId = value;
+    }
+
     /// <summary>The provider this player will read from. Set to null to skip updates.</summary>
     /// <exception cref="ArgumentException">
     /// Thrown when the given sample provider is not null and does not match the following criteria:
@@ -56,17 +67,6 @@ public sealed partial class AudioPlayer : MonoBehaviour
     /// <summary>Whether to dispose of the <see cref="SampleProvider"/> when the provider is changed or this component is pooled/destroyed.</summary>
     /// <remarks>This property is automatically set when the <see cref="SampleProvider"/> changes.</remarks>
     public bool OwnsProvider { get; set; }
-
-    /// <summary>The <see cref="SpeakerToy"/> this player is attached to.</summary>
-    public SpeakerToy Speaker { get; private set; } = null!;
-
-    /// <summary>The controller ID of this player.</summary>
-    /// <seealso cref="SpeakerToy.ControllerId"/>
-    public byte Id
-    {
-        get => Speaker.ControllerId;
-        set => Speaker.ControllerId = value;
-    }
 
     /// <summary>
     /// The <see cref="SendEngine"/> used to broadcast audio messages.
