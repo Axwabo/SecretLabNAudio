@@ -61,6 +61,12 @@
             <see cref="T:SecretLabNAudio.Core.Providers.RawSourceSampleProvider" />.
         </summary>
     </RemoveAllShortClips>
+    <RemoveAllStreamProcessors>
+        <summary>
+            Removes all inputs whose source is a
+            <see cref="T:SecretLabNAudio.Core.ProcessorsStreamAudioProcessor" />.
+        </summary>
+    </RemoveAllStreamProcessors>
     <Use>
         <summary>
             Sets the

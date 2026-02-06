@@ -139,8 +139,19 @@ public static partial class AudioPlayerExtensions
         /// <returns>The player itself.</returns>
         /// <include file='../XmlDocs/Clips.xml' path='doc/TryGet/seealso'/>
         public AudioPlayer UseShortClip(ClipName name, bool loop = false, float volume = 1)
+            => player.UseShortClip(name, ModifyChain.AmplifyIfNot1(volume), loop);
+
+        /// <summary>
+        /// Replaces the <see cref="AudioPlayer.SampleProvider"/> with a short clip (if a clip with the given name was registered).
+        /// </summary>
+        /// <param name="name">The name of the clip. The file extension is trimmed from the end.</param>
+        /// <param name="loop">Whether to loop the clip.</param>
+        /// <param name="process">An optional <see cref="ModifyChain"/> specifying how to process the clip.</param>
+        /// <returns>The player itself.</returns>
+        /// <include file='../XmlDocs/Clips.xml' path='doc/TryGet/seealso'/>
+        public AudioPlayer UseShortClip(ClipName name, ModifyChain? process, bool loop = false)
             => ShortClipCache.TryGet(name, out var provider)
-                ? player.WithUnmanagedProvider(provider.WithLoop(loop).Process(ModifyChain.AmplifyIfNot1(volume)))
+                ? player.WithUnmanagedProvider(provider.WithLoop(loop).Process(process))
                 : player;
 
     }
