@@ -15,7 +15,7 @@ namespace SecretLabNAudio.Core.FileReading;
 /// <seealso cref="IAudioReaderFactory"/>
 /// <seealso cref="AudioReaderFactoryManager"/>
 /// <seealso cref="TryCreateAudioReader"/>
-/// <seealso cref="AudioPlayerExtensions.UseShortClip"/>
+/// <seealso cref="AudioPlayerExtensions.UseShortClip(AudioPlayer,ClipName,bool,float)"/>
 /// <seealso cref="AudioPlayerExtensions.UseFile(AudioPlayer,string,bool,float)"/>
 public static class ShortClipCache
 {

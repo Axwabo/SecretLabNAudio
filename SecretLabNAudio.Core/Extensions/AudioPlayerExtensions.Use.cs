@@ -80,7 +80,8 @@ public static partial class AudioPlayerExtensions
                 : player;
 
         /// <summary>
-        /// If the single input is not an <see cref="AudioQueue"/>, replaces the <see cref="AudioPlayer.SampleProvider"/> with a new one.
+        /// If the <see cref="SingleInputAs">single input</see> input is not an <see cref="AudioQueue"/>,
+        /// replaces the <see cref="AudioPlayer.SampleProvider"/> with a new one.
         /// </summary>
         /// <returns>The player itself.</returns>
         /// <seealso cref="SingleInputAs"/>
@@ -94,7 +95,8 @@ public static partial class AudioPlayerExtensions
         }
 
         /// <summary>
-        /// If the single input is not an <see cref="AudioQueue"/>, replaces the <see cref="AudioPlayer.SampleProvider"/> with a new one.
+        /// If the <see cref="SingleInputAs">single input</see> input is not an <see cref="AudioQueue"/>,
+        /// replaces the <see cref="AudioPlayer.SampleProvider"/> with a new one.
         /// </summary>
         /// <param name="queue">A delegate to add items to the queue with.</param>
         /// <returns>The player itself.</returns>

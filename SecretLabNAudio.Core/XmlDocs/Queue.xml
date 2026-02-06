@@ -26,9 +26,11 @@
     <Player>
         <remarks>
             If the
+            <see cref="M:SecretLabNAudio.Core.Extensions.AudioPlayerExtensions.SingleInputAs``1(SecretLabNAudio.Core.AudioPlayer)">single input</see>
+            is not an
+            <see cref="T:SecretLabNAudio.Core.Processors.AudioQueue" />, the
             <see cref="P:SecretLabNAudio.Core.AudioPlayer.SampleProvider" />
-            is not a mixer, it will be replaced with one.
-            The existing provider (if present) will be added as an anonymous mixer input.
+            will be replaced with a new queue.
         </remarks>
     </Player>
 </doc>
