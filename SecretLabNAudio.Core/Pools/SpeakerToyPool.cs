@@ -120,4 +120,9 @@ public static class SpeakerToyPool
         NetworkServer.UnSpawn(o);
     }
 
+    /// <summary>Checks whether the given speaker is currently pooled.</summary>
+    /// <param name="speaker">The speaker to check.</param>
+    /// <returns>Whether the speaker is in the pool.</returns>
+    public static bool IsPooled(SpeakerToy speaker) => speaker.GameObject.TryGetComponent(out PooledSpeaker _);
+
 }
