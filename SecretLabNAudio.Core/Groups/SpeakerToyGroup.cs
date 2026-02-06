@@ -47,7 +47,7 @@ public sealed class SpeakerToyGroup
         if (Controller == speaker)
             return this;
         if (speaker.TryGetGroup(out var grouped) && grouped.Group != this)
-            throw new InvalidOperationException("Speaker is part of another group");
+            throw new InvalidOperationException("Speaker is part of another group.");
         speaker.ControllerId = Controller.ControllerId;
         if (_children.Add(speaker))
             speaker.GameObject.AddComponent<GroupedSpeaker>().Group = this;
@@ -67,7 +67,7 @@ public sealed class SpeakerToyGroup
         if (IsDestroyed)
             throw new ObjectDisposedException(nameof(SpeakerToyGroup));
         if (Controller == speaker)
-            throw new InvalidOperationException("Cannot remove the controller of a group");
+            throw new InvalidOperationException("Cannot remove the controller of a group. Call Destroy instead.");
         if (!_children.Remove(speaker))
             return this;
         if (pool)
