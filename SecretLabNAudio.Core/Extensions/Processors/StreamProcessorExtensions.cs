@@ -50,7 +50,7 @@ public static class StreamProcessorExtensions
         /// <see langword="null"/> if the file was not found, if no factory was found for the file type, or if the factory didn't return a <see cref="WaveStream"/>.
         /// </param>
         /// <returns>Whether a <see cref="StreamAudioProcessor"/> was successfully created.</returns>
-        /// <remarks><inheritdoc cref="CreateAudioProcessor.FromFile" path="remarks"/></remarks>
+        /// <remarks>The underlying file stream is automatically disposed when the processor is disposed.</remarks>
         public static bool TryCreateFromFile(string path, bool loop, [NotNullWhen(true)] out StreamAudioProcessor? processor)
         {
             if (!File.Exists(path) || !TryCreateAudioProcessor.FromFile(path, out var result))
