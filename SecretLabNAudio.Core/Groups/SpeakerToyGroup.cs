@@ -13,7 +13,8 @@ public sealed class SpeakerToyGroup
     private readonly HashSet<SpeakerToy> _children = [];
 
     /// <summary>The main speaker of this group.</summary>
-    public SpeakerToy Controller { get; }
+    /// <exception cref="ObjectDisposedException">Thrown if the group has already been destroyed.</exception>
+    public SpeakerToy Controller => !IsDestroyed ? field : throw new ObjectDisposedException(nameof(SpeakerToyGroup));
 
     /// <summary>The children of this group.</summary>
     public IReadOnlyCollection<SpeakerToy> Children => _children;
