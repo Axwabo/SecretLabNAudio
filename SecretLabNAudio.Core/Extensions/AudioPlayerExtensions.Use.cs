@@ -119,6 +119,7 @@ public static partial class AudioPlayerExtensions
             var mixer = new Mixer(AudioPlayer.SupportedFormat);
             if (player.SampleProvider is { } provider)
                 mixer.AddAnonymous(provider, player.OwnsProvider);
+            player.OwnsProvider = false;
             return player.Use(mixer);
         }
 
