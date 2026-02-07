@@ -43,7 +43,11 @@ public static class AudioPlayerPool
 
     /// <summary>Returns an <see cref="AudioPlayer"/> to the pool.</summary>
     /// <param name="player">The player to return.</param>
-    public static void Return(AudioPlayer player) => SpeakerToyPool.Return(player.Speaker);
+    public static void Return(AudioPlayer player)
+    {
+        if (player)
+            SpeakerToyPool.Return(player.Speaker);
+    }
 
     /// <summary>Checks whether the given player's speaker is currently pooled.</summary>
     /// <param name="player">The player to check the speaker of.</param>
