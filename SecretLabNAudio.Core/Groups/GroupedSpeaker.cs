@@ -17,13 +17,16 @@ internal sealed class GroupedSpeaker : MonoBehaviour
 
     private void OnDisable()
     {
+        Instances.Remove(this);
         if (!destroyCancellationToken.IsCancellationRequested)
             Destroy(this);
+        RemoveFromGroup();
     }
 
-    private void OnDestroy()
+    private void OnDestroy() => RemoveFromGroup();
+
+    private void RemoveFromGroup()
     {
-        Instances.Remove(this);
         if (Group.IsDestroyed)
             return;
         if (Speaker == Group.Controller)

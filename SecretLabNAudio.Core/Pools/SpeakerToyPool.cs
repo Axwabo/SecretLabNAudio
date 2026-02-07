@@ -48,6 +48,8 @@ public static class SpeakerToyPool
     {
         foreach (var existing in PooledSpeaker.Instances)
         {
+            if (existing.destroyCancellationToken.IsCancellationRequested)
+                continue;
             var o = existing.gameObject;
             o.SetActive(true);
             toy = existing.Speaker;
@@ -123,6 +125,6 @@ public static class SpeakerToyPool
     /// <summary>Checks whether the given speaker is currently pooled.</summary>
     /// <param name="speaker">The speaker to check.</param>
     /// <returns>Whether the speaker is in the pool.</returns>
-    public static bool IsPooled(SpeakerToy speaker) => !speaker.IsDestroyed && speaker.GameObject.TryGetComponent(out PooledSpeaker _);
+    public static bool IsPooled(SpeakerToy speaker) => !speaker.IsDestroyed && speaker.GameObject.TryGetComponent(out PooledSpeaker pooled) && !pooled.destroyCancellationToken.IsCancellationRequested;
 
 }

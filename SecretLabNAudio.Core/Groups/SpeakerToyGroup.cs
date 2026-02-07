@@ -12,14 +12,16 @@ public sealed class SpeakerToyGroup
 
     private readonly HashSet<SpeakerToy> _children = [];
 
+    private readonly SpeakerToy _controller;
+
+    internal SpeakerToyGroup(SpeakerToy controller) => _controller = controller;
+
     /// <summary>The main speaker of this group.</summary>
     /// <exception cref="ObjectDisposedException">Thrown if the group has already been destroyed.</exception>
-    public SpeakerToy Controller => !IsDestroyed ? field : throw new ObjectDisposedException(nameof(SpeakerToyGroup));
+    public SpeakerToy Controller => !IsDestroyed ? _controller : throw new ObjectDisposedException(nameof(SpeakerToyGroup));
 
     /// <summary>The children of this group.</summary>
     public IReadOnlyCollection<SpeakerToy> Children => _children;
-
-    internal SpeakerToyGroup(SpeakerToy controller) => Controller = controller;
 
     /// <summary>
     /// Whether this group has been destroyed (no longer exists).
@@ -84,9 +86,9 @@ public sealed class SpeakerToyGroup
             return;
         IsDestroyed = true;
         if (pool)
-            SpeakerToyPool.Return(Controller);
+            SpeakerToyPool.Return(_controller);
         else
-            Controller.DestroySafe();
+            _controller.DestroySafe();
         foreach (var toy in _children)
             if (pool)
                 SpeakerToyPool.Return(toy);

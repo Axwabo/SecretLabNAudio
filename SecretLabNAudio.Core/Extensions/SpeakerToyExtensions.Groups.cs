@@ -8,7 +8,13 @@ public static partial class SpeakerToyExtensions
     extension(SpeakerToy speaker)
     {
 
-        internal bool TryGetGroup([NotNullWhen(true)] out GroupedSpeaker? grouped) => speaker.Base.TryGetComponent(out grouped);
+        internal bool TryGetGroup([NotNullWhen(true)] out GroupedSpeaker? grouped)
+        {
+            if (!speaker.IsDestroyed)
+                return speaker.Base.TryGetComponent(out grouped);
+            grouped = null;
+            return false;
+        }
 
         /// <summary>
         /// Gets the current <see cref="SpeakerToyGroup"/> this speaker is part of, either as the controller, or as a child.
