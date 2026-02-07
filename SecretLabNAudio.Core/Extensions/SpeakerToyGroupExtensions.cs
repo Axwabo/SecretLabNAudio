@@ -29,7 +29,7 @@ public static class SpeakerToyGroupExtensions
         }
 
         /// <summary>
-        /// A grouping of grouped speakers based on their groups.
+        /// A grouping based on groups of grouped speakers.
         /// </summary>
         public static IEnumerable<IGrouping<SpeakerToy, SpeakerToyGroup>> SpeakersPerGroup
             => GroupedSpeaker.Instances.GroupBy(static e => e.Speaker, static e => e.Group);
