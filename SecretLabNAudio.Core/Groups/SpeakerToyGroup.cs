@@ -58,11 +58,10 @@ public sealed class SpeakerToyGroup
     /// Removes a speaker from the group.
     /// </summary>
     /// <param name="speaker">The speaker to remove.</param>
-    /// <param name="pool">Whether to return the speaker to the pool instead of destroying it.</param>
     /// <returns>The group itself.</returns>
     /// <exception cref="ObjectDisposedException">Thrown if the group has already been destroyed.</exception>
     /// <exception cref="InvalidOperationException">Thrown if the speaker is the <see cref="Controller"/> of the group.</exception>
-    public SpeakerToyGroup Remove(SpeakerToy speaker, bool pool = true)
+    public SpeakerToyGroup Remove(SpeakerToy speaker)
     {
         if (IsDestroyed)
             throw new ObjectDisposedException(nameof(SpeakerToyGroup));
@@ -70,10 +69,8 @@ public sealed class SpeakerToyGroup
             throw new InvalidOperationException("Cannot remove the controller of a group. Call Destroy instead.");
         if (!_children.Remove(speaker))
             return this;
-        if (pool)
-            SpeakerToyPool.Return(speaker);
-        else
-            speaker.DestroySafe();
+        if (speaker.TryGetGroup(out var group))
+            Object.Destroy(group);
         return this;
     }
 

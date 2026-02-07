@@ -24,6 +24,8 @@ internal sealed class GroupedSpeaker : MonoBehaviour
     private void OnDestroy()
     {
         Instances.Remove(this);
+        if (Group.IsDestroyed)
+            return;
         if (Speaker == Group.Controller)
             Group.Destroy();
         else
