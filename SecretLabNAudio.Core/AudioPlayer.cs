@@ -109,7 +109,11 @@ public sealed partial class AudioPlayer : MonoBehaviour
 
     private readonly OpusEncoder _encoder = new(OpusApplicationType.Audio);
 
-    private void Awake() => Speaker = this.GetSpeaker("AudioPlayer must be attached to a SpeakerToy.");
+    private void Awake()
+    {
+        Speaker = this.GetSpeaker("AudioPlayer must be attached to a SpeakerToy.");
+        _ = Speaker.Base.destroyCancellationToken;
+    }
 
     private void Update()
     {
