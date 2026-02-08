@@ -24,9 +24,9 @@ public readonly record struct ClipName(string Original, bool TrimExtension = tru
         => new(tuple.Original, tuple.TrimExtension);
 
     /// <summary>
-    /// Converts this 
+    /// Converts this name to its final form.
     /// </summary>
-    /// <returns></returns>
+    /// <returns>The extension removed if <see cref="TrimExtension"/> is true, <see cref="Original"/> otherwise.</returns>
     public override string ToString() => TrimExtension
         ? Path.ChangeExtension(Original, null)
         : Original;
