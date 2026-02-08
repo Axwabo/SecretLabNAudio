@@ -13,10 +13,13 @@ public sealed class StreamAudioProcessor : IAudioProcessor, ISeekable, ILoopable
     {
         get
         {
-            EnsureNotDisposed();
+            ThrowIfDisposed();
             return field;
         }
     }
+
+    /// <summary>The path to the file if this processor was created from one.</summary>
+    public string? FilePath { get; init; }
 
     /// <inheritdoc />
     /// <exception cref="ObjectDisposedException">Thrown if the processor has already been disposed.</exception>
@@ -60,7 +63,7 @@ public sealed class StreamAudioProcessor : IAudioProcessor, ISeekable, ILoopable
     {
         get
         {
-            EnsureNotDisposed();
+            ThrowIfDisposed();
             return _provider!.WaveFormat;
         }
     }
@@ -69,7 +72,7 @@ public sealed class StreamAudioProcessor : IAudioProcessor, ISeekable, ILoopable
     /// <exception cref="ObjectDisposedException">Thrown if the processor has already been disposed.</exception>
     public int Read(float[] buffer, int offset, int count)
     {
-        EnsureNotDisposed();
+        ThrowIfDisposed();
         if (!Loop)
             return _provider!.Read(buffer, offset, count);
         var total = 0;
@@ -85,7 +88,7 @@ public sealed class StreamAudioProcessor : IAudioProcessor, ISeekable, ILoopable
         return total;
     }
 
-    private void EnsureNotDisposed()
+    private void ThrowIfDisposed()
     {
         if (_provider == null)
             throw new ObjectDisposedException(nameof(StreamAudioProcessor));

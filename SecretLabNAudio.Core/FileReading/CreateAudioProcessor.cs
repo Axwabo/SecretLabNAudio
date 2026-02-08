@@ -5,10 +5,10 @@ namespace SecretLabNAudio.Core.FileReading;
 public static class CreateAudioProcessor
 {
 
-    private static StreamAudioProcessor Convert(this AudioReaderFactoryResult result, string type) => result switch
+    private static StreamAudioProcessor Convert(this AudioReaderFactoryResult result, string type, string? path = null) => result switch
     {
-        ({ } stream, { } provider) => new StreamAudioProcessor(stream, provider),
-        ({ } stream, null) => new StreamAudioProcessor(stream),
+        ({ } stream, { } provider) => new StreamAudioProcessor(stream, provider) {FilePath = path},
+        ({ } stream, null) => new StreamAudioProcessor(stream) {FilePath = path},
         _ => throw new NotSupportedException($"Factory for {type} did not return a WaveStream")
     };
 
@@ -22,7 +22,7 @@ public static class CreateAudioProcessor
     public static StreamAudioProcessor FromFile(string path)
     {
         var type = Path.GetExtension(path);
-        return AudioReaderFactoryManager.GetFactory(type).FromPath(path).Convert(type);
+        return AudioReaderFactoryManager.GetFactory(type).FromPath(path).Convert(type, path);
     }
 
     /// <summary>
