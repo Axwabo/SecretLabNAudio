@@ -32,7 +32,7 @@ public static class CreateAudioProcessor
     /// <param name="fileType">The type of the audio file.</param>
     /// <param name="isOwned">Whether to dispose of <paramref name="baseStream"/> when the processor is disposed.</param>
     /// <returns>An audio processor that reads from the stream.</returns>
-    /// <include file='../XmlDocs/Files.xml' path='doc/exception'/>
+    /// <include file='../XmlDocs/Files.xml' path='doc/exception[@name="NotSupported"]'/>
     public static StreamAudioProcessor FromStream(Stream baseStream, string fileType, bool isOwned = true)
         => AudioReaderFactoryManager.GetFactory(fileType).FromStream(baseStream, isOwned).Convert(fileType);
 
