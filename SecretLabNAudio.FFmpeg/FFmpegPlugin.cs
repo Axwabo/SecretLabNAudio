@@ -2,7 +2,7 @@ using LabApi.Loader.Features.Plugins;
 
 namespace SecretLabNAudio.FFmpeg;
 
-public class FFmpegPlugin : Plugin
+public sealed class FFmpegPlugin : Plugin<FFmpegConfig>
 {
 
     public override string Name => "SecretLabNAudio.FFmpeg";
@@ -13,6 +13,8 @@ public class FFmpegPlugin : Plugin
 
     public override void Enable()
     {
+        if (Config != null)
+            FFmpegSL.Path = Config.Path;
     }
 
     public override void Disable()
