@@ -21,7 +21,7 @@ public sealed class SynchronousFFmpegAudioProcessor : IAudioProcessor
     {
         var floatSpan = buffer.AsSpan(offset, count);
         var byteSpan = MemoryMarshal.Cast<float, byte>(floatSpan);
-        return sizeof(float) * _ffmpeg.Stdout.BaseStream.Read(byteSpan);
+        return _ffmpeg.Stdout.BaseStream.Read(byteSpan) / sizeof(float);
     }
 
     public WaveFormat WaveFormat => AudioPlayer.SupportedFormat;
