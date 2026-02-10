@@ -11,7 +11,7 @@ public static class AudioPlayerExtensions
 
         public AudioPlayer UseFFmpegSync(string input)
         {
-            return player.Use(FFmpegAudioProcessor.Create(input));
+            return player.Use(SynchronousFFmpegAudioProcessor.Create(input));
         }
 
     }

@@ -14,6 +14,8 @@ public sealed class FFmpegSL : IDisposable
         var process = Process.Start(new ProcessStartInfo(Path)
         {
             Arguments = arguments,
+            CreateNoWindow = true,
+            UseShellExecute = false,
             RedirectStandardOutput = true,
             RedirectStandardError = true
         });
