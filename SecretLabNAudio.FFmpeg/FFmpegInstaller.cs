@@ -1,6 +1,6 @@
 using System.Diagnostics;
-using System.Net.Http;
 using System.Threading.Tasks;
+using UnityEngine.Networking;
 using Logger = LabApi.Features.Console.Logger;
 
 namespace SecretLabNAudio.FFmpeg;
@@ -76,10 +76,9 @@ public sealed partial class FFmpegInstaller
 
     private static async Task Download(string url, string filename)
     {
-        using var client = new HttpClient();
-        await using var stream = await client.GetStreamAsync(url);
-        await using var file = File.Create(filename);
-        await stream.CopyToAsync(file);
+        using var request = UnityWebRequest.Get(url);
+        request.downloadHandler = new DownloadHandlerFile(filename);
+        await request.SendWebRequest();
     }
 
 }
