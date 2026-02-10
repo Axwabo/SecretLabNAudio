@@ -20,8 +20,7 @@ public sealed partial class FFmpegInstaller
         get
         {
             using var process = FFmpegSL.StartRaw("-version");
-            var isInstalled = process?.Stdout.ReadLine()?.StartsWith("ffmpeg version ") ?? false;
-            return isInstalled;
+            return process?.Stdout.ReadLine()?.StartsWith("ffmpeg version ") ?? false;
         }
     }
 
@@ -34,7 +33,15 @@ public sealed partial class FFmpegInstaller
         else if (PlatformInfo.singleton.IsWindows)
             await Task.CompletedTask; // TODO
         else
+        {
             Logger.Error("OS not supported");
+            return;
+        }
+
+        var path = Path.Combine(Folder, "ffmpeg");
+        FFmpegSL.Path = path;
+        FFmpegPlugin.Instance?.Config?.Path = path;
+        FFmpegPlugin.Instance?.SaveConfig();
     }
 
     private static async Awaitable InstallLinux()
