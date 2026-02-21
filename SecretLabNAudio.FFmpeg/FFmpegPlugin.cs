@@ -20,7 +20,7 @@ internal sealed class FFmpegPlugin : Plugin<FFmpegConfig>
         Instance = this;
         if (Config != null)
             FFmpegSL.Path = Config.Path;
-        if (FFmpegInstaller.TryFindExisting(out var destination) && FFmpegSL.Path != destination && !FFmpegInstaller.IsInstalled)
+        if ((!Config?.DoNotOverrideOnEnable ?? true) && FFmpegInstaller.TryFindExisting(out var destination) && FFmpegSL.Path != destination && !FFmpegInstaller.IsInstalled)
         {
             Logger.Info("Found FFmpeg on disk, overriding configuration");
             FFmpegInstaller.OverrideConfig(destination);
