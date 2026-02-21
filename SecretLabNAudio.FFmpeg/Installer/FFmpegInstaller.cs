@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine.Networking;
@@ -64,7 +65,7 @@ public static partial class FFmpegInstaller
         if (PlatformInfo.singleton.IsLinux)
             return await InstallLinux();
         if (PlatformInfo.singleton.IsWindows)
-            return null; // TODO
+            return await InstallWindows();
         Logger.Error("Unsupported operating system");
         return null;
     }
@@ -76,16 +77,18 @@ public static partial class FFmpegInstaller
         request.downloadHandler = new DownloadHandlerFile(Path.GetFullPath(filename));
         _ = LogProgress(request, cts.Token);
         await request.SendWebRequest();
+        cts.Cancel();
     }
 
     private static async Awaitable LogProgress(UnityWebRequest request, CancellationToken cancellationToken)
     {
-        var progress = 0f;
+        await Awaitable.MainThreadAsync();
+        var progress = -1f;
         while (request.result == UnityWebRequest.Result.InProgress)
         {
             var currentProgress = request.downloadProgress;
             if (!Mathf.Approximately(currentProgress, progress))
-                Logger.Debug($"Download progress: {currentProgress:P}");
+                Logger.Debug($"{currentProgress:P}");
             progress = currentProgress;
             await Awaitable.NextFrameAsync(cancellationToken);
         }
@@ -93,7 +96,7 @@ public static partial class FFmpegInstaller
 
     internal static bool TryCopyExisting(out string destination)
     {
-        var filename = PlatformInfo.singleton.IsWindows ? "ffmpeg.exe" : "ffmpeg";
+        var filename = PlatformInfo.singleton.IsWindows ? WindowsExecutable : LinuxExecutable;
         var source = Path.Combine(AppContext.BaseDirectory, "ffmpeg", filename);
         destination = Path.Combine(Folder, filename);
         if (!File.Exists(source) || File.Exists(destination))
@@ -102,6 +105,25 @@ public static partial class FFmpegInstaller
         File.Copy(source, destination);
         Logger.Info(Success);
         return true;
+    }
+
+    private static async Task<(bool Success, string? Error)> Execute(string shell, string arguments)
+    {
+        using var process = Process.Start(new ProcessStartInfo(shell)
+        {
+            Arguments = arguments,
+            RedirectStandardError = true,
+            UseShellExecute = false,
+            CreateNoWindow = true,
+            WorkingDirectory = Folder
+        });
+        if (process == null)
+            return (false, null);
+        process.WaitForExit();
+        if (process.ExitCode == 0)
+            return (true, null);
+        var error = await process.StandardError.ReadToEndAsync();
+        return (false, error);
     }
 
 }

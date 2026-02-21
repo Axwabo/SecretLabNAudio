@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using System.Diagnostics;
 
 namespace SecretLabNAudio.FFmpeg;
@@ -11,15 +12,22 @@ public sealed class FFmpegSL : IDisposable
 
     public static FFmpegSL? StartRaw(string arguments)
     {
-        var process = Process.Start(new ProcessStartInfo(Path)
+        try
         {
-            Arguments = arguments,
-            CreateNoWindow = true,
-            UseShellExecute = false,
-            RedirectStandardOutput = true,
-            RedirectStandardError = true
-        });
-        return process == null ? null : new FFmpegSL(process);
+            var process = Process.Start(new ProcessStartInfo(Path)
+            {
+                Arguments = arguments,
+                CreateNoWindow = true,
+                UseShellExecute = false,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true
+            });
+            return process == null ? null : new FFmpegSL(process);
+        }
+        catch (Win32Exception)
+        {
+            return null;
+        }
     }
 
     /*
