@@ -99,6 +99,13 @@ public static partial class FFmpegInstaller
     internal static bool TryFindExisting(out string path)
     {
         var filename = PlatformInfo.singleton.IsWindows ? WindowsExecutable : LinuxExecutable;
+        var primary = Path.Combine(Folder, filename);
+        if (File.Exists(primary))
+        {
+            path = primary;
+            return true;
+        }
+
         path = Path.Combine(AppContext.BaseDirectory, "ffmpeg", filename);
         return File.Exists(path);
     }
