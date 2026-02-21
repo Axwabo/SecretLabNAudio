@@ -1,5 +1,6 @@
 using LabApi.Loader.Features.Plugins;
 using SecretLabNAudio.FFmpeg.Installer;
+using Logger = LabApi.Features.Console.Logger;
 
 namespace SecretLabNAudio.FFmpeg;
 
@@ -16,11 +17,13 @@ internal sealed class FFmpegPlugin : Plugin<FFmpegConfig>
 
     public override void Enable()
     {
+        Instance = this;
         if (Config != null)
             FFmpegSL.Path = Config.Path;
-        if (FFmpegInstaller.TryCopyExisting(out var destination))
-            FFmpegInstaller.OverrideConfig(destination);
-        Instance = this;
+        if (!FFmpegInstaller.TryFindExisting(out var destination) || FFmpegSL.Path == destination || FFmpegInstaller.IsInstalled)
+            return;
+        Logger.Info("Found FFmpeg on disk, overriding configuration");
+        FFmpegInstaller.OverrideConfig(destination);
     }
 
     public override void Disable()

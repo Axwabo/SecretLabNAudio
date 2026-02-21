@@ -33,7 +33,9 @@ public static partial class FFmpegInstaller
         string? path;
         try
         {
-            if (forceRefresh || !TryCopyExisting(out path))
+            if (!forceRefresh && TryFindExisting(out path))
+                Logger.Debug("Found FFmpeg on disk");
+            else
                 path = await InstallOSSpecific();
         }
         catch (Exception e)
@@ -94,17 +96,11 @@ public static partial class FFmpegInstaller
         }
     }
 
-    internal static bool TryCopyExisting(out string destination)
+    internal static bool TryFindExisting(out string path)
     {
         var filename = PlatformInfo.singleton.IsWindows ? WindowsExecutable : LinuxExecutable;
-        var source = Path.Combine(AppContext.BaseDirectory, "ffmpeg", filename);
-        destination = Path.Combine(Folder, filename);
-        if (!File.Exists(source) || File.Exists(destination))
-            return false;
-        Logger.Info("Copying existing FFmpeg installation...");
-        File.Copy(source, destination);
-        Logger.Info(Success);
-        return true;
+        path = Path.Combine(AppContext.BaseDirectory, "ffmpeg", filename);
+        return File.Exists(path);
     }
 
     private static async Task<(bool Success, string? Error)> Execute(string shell, string arguments)
