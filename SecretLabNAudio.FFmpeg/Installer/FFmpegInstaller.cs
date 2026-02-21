@@ -1,3 +1,4 @@
+using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine.Networking;
 using Logger = LabApi.Features.Console.Logger;
@@ -22,9 +23,11 @@ public static partial class FFmpegInstaller
 
     public static async Awaitable<bool> Install()
     {
+        if (IsInstallationInProgress)
+            return false;
+        IsInstallationInProgress = true;
         Directory.CreateDirectory(Folder);
         await Awaitable.BackgroundThreadAsync();
-        IsInstallationInProgress = true;
         string? path;
         try
         {
@@ -42,11 +45,16 @@ public static partial class FFmpegInstaller
 
         if (path == null)
             return false;
-        var fullPath = Path.GetFullPath(Path.Combine(Folder, path));
+        OverrideConfig(path);
+        return true;
+    }
+
+    internal static void OverrideConfig(string path)
+    {
+        var fullPath = Path.GetFullPath(path);
         FFmpegSL.Path = fullPath;
         FFmpegPlugin.Instance?.Config?.Path = fullPath;
         FFmpegPlugin.Instance?.SaveConfig();
-        return true;
     }
 
     private static async Awaitable<string?> InstallOSSpecific()
@@ -62,8 +70,23 @@ public static partial class FFmpegInstaller
     private static async Task Download(string url, string filename)
     {
         using var request = UnityWebRequest.Get(url);
+        using var cts = new CancellationTokenSource();
         request.downloadHandler = new DownloadHandlerFile(Path.GetFullPath(filename));
+        _ = LogProgress(request, cts.Token);
         await request.SendWebRequest();
+    }
+
+    private static async Awaitable LogProgress(UnityWebRequest request, CancellationToken cancellationToken)
+    {
+        var progress = 0f;
+        while (request.result == UnityWebRequest.Result.InProgress)
+        {
+            var currentProgress = request.downloadProgress;
+            if (!Mathf.Approximately(currentProgress, progress))
+                Logger.Debug($"Download progress: {currentProgress:P}");
+            progress = currentProgress;
+            await Awaitable.NextFrameAsync(cancellationToken);
+        }
     }
 
 }
