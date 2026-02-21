@@ -1,7 +1,7 @@
 namespace SecretLabNAudio.FFmpeg;
 
 [Serializable]
-public sealed class FFmpegConfig
+internal sealed class FFmpegConfig
 {
 
     public string Path { get; set; } = "ffmpeg";

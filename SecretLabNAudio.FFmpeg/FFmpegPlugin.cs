@@ -2,10 +2,10 @@ using LabApi.Loader.Features.Plugins;
 
 namespace SecretLabNAudio.FFmpeg;
 
-public sealed class FFmpegPlugin : Plugin<FFmpegConfig>
+internal sealed class FFmpegPlugin : Plugin<FFmpegConfig>
 {
 
-    internal static FFmpegPlugin? Instance { get; private set; }
+    public static FFmpegPlugin? Instance { get; private set; }
 
     public override string Name => "SecretLabNAudio.FFmpeg";
     public override string Description => "FFmpeg support for SecretLabNAudio";
