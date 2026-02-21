@@ -33,14 +33,7 @@ public sealed class AsyncBufferedFFmpegAudioProcessor : IAudioProcessor
 
         void ReadLoop()
         {
-            (_processor, var errorCode) = FFmpegSL.StartRaw($"-i \"{path}\" -ar 48000 -ac 1 -f f32le -"); // TODO
-            if (errorCode != 0)
-            {
-                Logger.Error($"Failed to start FFmpeg: {errorCode}");
-                _anyRead = true;
-                return;
-            }
-
+            _processor = FFmpegSL.StartRaw($"-i \"{path}\" -ar 48000 -ac 1 -f f32le -"); // TODO
             while (true)
             {
                 if (_buffer.Count > _buffer.MaxLength * .75)

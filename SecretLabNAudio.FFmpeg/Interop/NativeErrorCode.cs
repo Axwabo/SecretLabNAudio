@@ -3,7 +3,10 @@ namespace SecretLabNAudio.FFmpeg.Interop;
 public enum NativeErrorCode
 {
 
-    ProcessStartFailed=-1,
-    None = 0
+    ProcessStartNull = -1,
+    None = 0,
+    FileNotFound = 2,
+    PathNotFound = 3,
+    AccessDenied = 5
 
 }
