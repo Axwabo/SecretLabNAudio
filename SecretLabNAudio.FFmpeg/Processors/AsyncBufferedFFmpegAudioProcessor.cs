@@ -5,8 +5,9 @@ using NAudio.Utils;
 using SecretLabNAudio.Core;
 using SecretLabNAudio.Core.Extensions;
 using SecretLabNAudio.Core.Processors;
+using SecretLabNAudio.FFmpeg.Interop;
 
-namespace SecretLabNAudio.FFmpeg;
+namespace SecretLabNAudio.FFmpeg.Processors;
 
 public sealed class AsyncBufferedFFmpegAudioProcessor : IAudioProcessor
 {
@@ -32,7 +33,14 @@ public sealed class AsyncBufferedFFmpegAudioProcessor : IAudioProcessor
 
         void ReadLoop()
         {
-            _processor = FFmpegSL.StartRaw($"-i \"{path}\" -ar 48000 -ac 1 -f f32le -")!; // TODO
+            (_processor, var errorCode) = FFmpegSL.StartRaw($"-i \"{path}\" -ar 48000 -ac 1 -f f32le -"); // TODO
+            if (errorCode != 0)
+            {
+                Logger.Error($"Failed to start FFmpeg: {errorCode}");
+                _anyRead = true;
+                return;
+            }
+
             while (true)
             {
                 if (_buffer.Count > _buffer.MaxLength * .75)
@@ -42,7 +50,7 @@ public sealed class AsyncBufferedFFmpegAudioProcessor : IAudioProcessor
                 }
 
                 _readBuffer = BufferHelpers.Ensure(_readBuffer, 1920);
-                var read = _processor.Stdout.BaseStream.Read(_readBuffer, 0, _readBuffer.Length);
+                var read = _processor!.Stdout.BaseStream.Read(_readBuffer, 0, _readBuffer.Length);
                 if (endless && read <= 0)
                     break;
                 _buffer.Write(_readBuffer, 0, read);

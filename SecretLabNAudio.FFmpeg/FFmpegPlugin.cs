@@ -1,6 +1,6 @@
 using LabApi.Loader.Features.Plugins;
 using SecretLabNAudio.FFmpeg.Installer;
-using Logger = LabApi.Features.Console.Logger;
+using SecretLabNAudio.FFmpeg.Interop;
 
 namespace SecretLabNAudio.FFmpeg;
 

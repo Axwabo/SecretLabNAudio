@@ -1,8 +1,8 @@
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
+using SecretLabNAudio.FFmpeg.Interop;
 using UnityEngine.Networking;
-using Logger = LabApi.Features.Console.Logger;
 
 namespace SecretLabNAudio.FFmpeg.Installer;
 
@@ -18,7 +18,7 @@ public static partial class FFmpegInstaller
     {
         get
         {
-            using var process = FFmpegSL.StartRaw("-version");
+            using var process = FFmpegSL.StartRaw("-version").Process;
             return process?.Stdout.ReadLine()?.StartsWith("ffmpeg version ") ?? false;
         }
     }

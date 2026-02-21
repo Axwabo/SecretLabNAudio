@@ -1,7 +1,7 @@
 using System.ComponentModel;
 using System.Diagnostics;
 
-namespace SecretLabNAudio.FFmpeg;
+namespace SecretLabNAudio.FFmpeg.Interop;
 
 public sealed class FFmpegSL : IDisposable
 {
@@ -10,7 +10,9 @@ public sealed class FFmpegSL : IDisposable
 
     private readonly Process _process;
 
-    public static FFmpegSL? StartRaw(string arguments)
+    private bool _disposed;
+
+    public static StartResult StartRaw(string arguments, bool redirectStandardInput = false)
     {
         try
         {
@@ -20,13 +22,14 @@ public sealed class FFmpegSL : IDisposable
                 CreateNoWindow = true,
                 UseShellExecute = false,
                 RedirectStandardOutput = true,
-                RedirectStandardError = true
+                RedirectStandardError = true,
+                RedirectStandardInput = redirectStandardInput
             });
-            return process == null ? null : new FFmpegSL(process);
+            return process == null ? (null, NativeErrorCode.ProcessStartFailed) : (new FFmpegSL(process), NativeErrorCode.None);
         }
-        catch (Win32Exception)
+        catch (Win32Exception win32)
         {
-            return null;
+            return (null, (NativeErrorCode) win32.NativeErrorCode);
         }
     }
 
@@ -39,11 +42,17 @@ TODO
 
     private FFmpegSL(Process process) => _process = process;
 
+    public StreamWriter Stdin => _process.StandardInput;
+
     public StreamReader Stdout => _process.StandardOutput;
 
     public void Dispose()
     {
-        _process.CloseMainWindow();
+        if (_disposed)
+            return;
+        _disposed = true;
+        if (!_process.HasExited)
+            _process.CloseMainWindow();
         _process.Dispose();
     }
 

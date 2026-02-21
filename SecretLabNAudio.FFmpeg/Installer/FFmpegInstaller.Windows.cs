@@ -1,4 +1,3 @@
-using Logger = LabApi.Features.Console.Logger;
 
 namespace SecretLabNAudio.FFmpeg.Installer;
 

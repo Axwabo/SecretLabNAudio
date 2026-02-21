@@ -1,8 +1,9 @@
 using System.Runtime.InteropServices;
 using SecretLabNAudio.Core;
 using SecretLabNAudio.Core.Processors;
+using SecretLabNAudio.FFmpeg.Interop;
 
-namespace SecretLabNAudio.FFmpeg;
+namespace SecretLabNAudio.FFmpeg.Processors;
 
 public sealed class SynchronousFFmpegAudioProcessor : IAudioProcessor
 {
@@ -11,8 +12,8 @@ public sealed class SynchronousFFmpegAudioProcessor : IAudioProcessor
 
     public static SynchronousFFmpegAudioProcessor Create(string path)
     {
-        var process = FFmpegSL.StartRaw($"-i \"{path}\" -ar 48000 -ac 1 -f f32le -");
-        return process == null ? throw new InvalidOperationException("watafak bro") : new SynchronousFFmpegAudioProcessor(process);
+        var (process, code) = FFmpegSL.StartRaw($"-i \"{path}\" -ar 48000 -ac 1 -f f32le -");
+        return process == null ? throw new InvalidOperationException($"watafak bro {code}") : new SynchronousFFmpegAudioProcessor(process);
     }
 
     private SynchronousFFmpegAudioProcessor(FFmpegSL ffmpeg) => _ffmpeg = ffmpeg;
