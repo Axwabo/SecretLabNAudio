@@ -105,7 +105,7 @@ public sealed partial class AudioPlayer : MonoBehaviour
     public event Action? NoSamplesRead;
 
     /// <summary>
-    /// Invoked <see cref="HasEnded"/> becomes true if it was previously false.
+    /// Invoked when <see cref="HasEnded"/> becomes true if it was previously false.
     /// The provider is considered ended if it returns fewer samples than requested (or 0).
     /// </summary>
     /// <remarks>This event is called after <see cref="NoSamplesRead"/></remarks>
