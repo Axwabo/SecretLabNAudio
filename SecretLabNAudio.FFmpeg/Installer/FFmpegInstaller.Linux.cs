@@ -27,7 +27,7 @@ public static partial class FFmpegInstaller
             return null;
         }
 
-        Logger.Info("FFmpeg installed successfully");
+        Logger.Info(Success);
         return Path.Combine(Folder, "ffmpeg");
     }
 

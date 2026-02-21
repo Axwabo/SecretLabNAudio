@@ -8,6 +8,7 @@ namespace SecretLabNAudio.FFmpeg.Installer;
 public static partial class FFmpegInstaller
 {
 
+    private const string Success = "FFmpeg installed successfully";
     private const string Folder = "SLNA-ffmpeg";
 
     public static bool IsInstallationInProgress { get; private set; }
@@ -21,7 +22,7 @@ public static partial class FFmpegInstaller
         }
     }
 
-    public static async Awaitable<bool> Install()
+    public static async Awaitable<bool> Install(bool forceRefresh = false)
     {
         if (IsInstallationInProgress)
             return false;
@@ -31,7 +32,8 @@ public static partial class FFmpegInstaller
         string? path;
         try
         {
-            path = await InstallOSSpecific();
+            if (forceRefresh || !TryCopyExisting(out path))
+                path = await InstallOSSpecific();
         }
         catch (Exception e)
         {
@@ -87,6 +89,19 @@ public static partial class FFmpegInstaller
             progress = currentProgress;
             await Awaitable.NextFrameAsync(cancellationToken);
         }
+    }
+
+    internal static bool TryCopyExisting(out string destination)
+    {
+        var filename = PlatformInfo.singleton.IsWindows ? "ffmpeg.exe" : "ffmpeg";
+        var source = Path.Combine(AppContext.BaseDirectory, "ffmpeg", filename);
+        destination = Path.Combine(Folder, filename);
+        if (!File.Exists(source) || File.Exists(destination))
+            return false;
+        Logger.Info("Copying existing FFmpeg installation...");
+        File.Copy(source, destination);
+        Logger.Info(Success);
+        return true;
     }
 
 }

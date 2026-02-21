@@ -1,4 +1,5 @@
 using LabApi.Loader.Features.Plugins;
+using SecretLabNAudio.FFmpeg.Installer;
 
 namespace SecretLabNAudio.FFmpeg;
 
@@ -17,6 +18,8 @@ internal sealed class FFmpegPlugin : Plugin<FFmpegConfig>
     {
         if (Config != null)
             FFmpegSL.Path = Config.Path;
+        if (FFmpegInstaller.TryCopyExisting(out var destination))
+            FFmpegInstaller.OverrideConfig(destination);
         Instance = this;
     }
 

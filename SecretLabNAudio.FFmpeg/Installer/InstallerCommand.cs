@@ -20,14 +20,14 @@ internal sealed class InstallerCommand : ICommand, IUsageProvider
         }
 
         // java moment
-        if ((arguments.Count == 0 || !"force".Equals(arguments.At(0), StringComparison.OrdinalIgnoreCase))
-            && FFmpegInstaller.IsInstalled)
+        var force = arguments.Count != 0 && "force".Equals(arguments.At(0), StringComparison.OrdinalIgnoreCase);
+        if (!force && FFmpegInstaller.IsInstalled)
         {
             response = "FFmpeg is already installed.";
             return false;
         }
 
-        _ = FFmpegInstaller.Install();
+        _ = FFmpegInstaller.Install(force);
         response = "Installation started.";
         return true;
     }
