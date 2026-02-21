@@ -94,13 +94,22 @@ public sealed partial class AudioPlayer : MonoBehaviour
     /// If true, the <see cref="SampleProvider"/> will be read from continuously.
     /// If false, the <see cref="SampleProvider"/> will be set to null upon reaching its end.
     /// </summary>
+    /// <seealso cref="Ended"/>
     public bool AlwaysRead { get; set; } = true;
 
     /// <summary>Invoked every frame when no samples were read from the <see cref="SampleProvider"/>.</summary>
     /// <remarks>The provider is not set to null by default.</remarks>
     /// <seealso cref="AlwaysRead"/>
     /// <seealso cref="HasEnded"/>
+    /// <seealso cref="Ended"/>
     public event Action? NoSamplesRead;
+
+    /// <summary>
+    /// Invoked <see cref="HasEnded"/> becomes true if it was previously false.
+    /// The provider is considered ended if it returns fewer samples than requested (or 0).
+    /// </summary>
+    /// <remarks>This event is called after <see cref="NoSamplesRead"/></remarks>
+    public event Action? Ended;
 
     /// <summary>Invoked when this player is disabled or destroyed.</summary>
     public event Action? Destroyed;
@@ -126,16 +135,9 @@ public sealed partial class AudioPlayer : MonoBehaviour
 
     private void OnDisable()
     {
-        try
-        {
-            Destroyed?.Invoke();
-        }
-        catch (Exception e)
-        {
-            Debug.LogError(e);
-        }
-
+        Destroyed.InvokeSafely();
         NoSamplesRead = null;
+        Ended = null;
         Destroyed = null;
         HasEnded = IsPaused = false;
         SampleProvider = null;
@@ -162,19 +164,21 @@ public sealed partial class AudioPlayer : MonoBehaviour
 
         if (read == 0)
         {
-            End();
+            End(true);
             return;
         }
 
-        HasEnded = false;
         if (read < SamplesPerPacket)
         {
-            HasEnded = true;
             Array.Clear(ReadBuffer, read, SamplesPerPacket - read);
-            _remainingTime = PacketDuration;
+            End(false);
+        }
+        else
+        {
+            HasEnded = false;
+            _remainingTime -= PacketDuration;
         }
 
-        _remainingTime -= PacketDuration;
         OutputMonitor?.OnRead(ReadBuffer.AsSpan()[..read]);
         if (SendEngine == null)
             return;
@@ -185,12 +189,18 @@ public sealed partial class AudioPlayer : MonoBehaviour
         SendEngine.Broadcast(new AudioMessage(Id, EncoderBuffer, encoded));
     }
 
-    private void End()
+    private void End(bool zero)
     {
+        var hasEndedBefore = HasEnded;
         HasEnded = true;
         ClearBuffer();
-        OutputMonitor?.OnEmpty();
-        NoSamplesRead?.Invoke();
+        if (zero)
+        {
+            OutputMonitor?.OnEmpty();
+            NoSamplesRead.InvokeSafely();
+        }
+
+        if (!hasEndedBefore) Ended.InvokeSafely();
         if (!AlwaysRead)
             SampleProvider = null;
     }

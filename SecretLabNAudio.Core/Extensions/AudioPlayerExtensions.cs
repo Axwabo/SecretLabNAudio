@@ -169,7 +169,7 @@ public static partial class AudioPlayerExtensions
         /// <returns>The player itself.</returns>
         public AudioPlayer DestroyOnEnd()
         {
-            player.NoSamplesRead += player.Destroy;
+            player.Ended += player.Destroy;
             return player;
         }
 
@@ -179,7 +179,7 @@ public static partial class AudioPlayerExtensions
         /// <returns>The player itself.</returns>
         public AudioPlayer PoolOnEnd()
         {
-            player.NoSamplesRead += () => AudioPlayerPool.Return(player);
+            player.Ended += () => AudioPlayerPool.Return(player);
             return player;
         }
 

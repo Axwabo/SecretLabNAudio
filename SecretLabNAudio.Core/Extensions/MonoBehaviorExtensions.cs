@@ -8,4 +8,16 @@ internal static class MonoBehaviorExtensions
             ? SpeakerToy.Get(toy)
             : throw new MissingComponentException(exceptionMessage);
 
+    public static void InvokeSafely(this Action? @event)
+    {
+        try
+        {
+            @event?.Invoke();
+        }
+        catch (Exception e)
+        {
+            Debug.LogError(e);
+        }
+    }
+
 }
