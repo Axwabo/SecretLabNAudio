@@ -21,7 +21,7 @@ internal sealed class InstallCommand : ICommand, IUsageProvider
 
         // java moment
         var force = arguments.Count != 0 && "force".Equals(arguments.At(0), StringComparison.OrdinalIgnoreCase);
-        if (!force && FFmpegInstaller.IsInstalled)
+        if (!force && FFmpegInstaller.IsInstalled())
         {
             response = "FFmpeg is already installed.";
             return false;

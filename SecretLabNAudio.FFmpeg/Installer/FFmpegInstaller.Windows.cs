@@ -5,14 +5,14 @@ public static partial class FFmpegInstaller
 
     private const string WindowsUrl = "https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip";
     private const string WindowsArchive = "ffmpeg.zip";
+    private const string WindowsExecutable = "ffmpeg.exe";
 
+    // tweaker ahh script, thanks winslop
     private const string ExtractWindowsTemplate = "[Reflection.Assembly]::LoadWithPartialName('System.IO.Compression.ZipFile');"
                                                   + "$zip = [IO.Compression.ZipFile]::OpenRead('{0}');"
-                                                  + "$zip.Entries | ? Name -like ffmpeg.exe"
+                                                  + $"$zip.Entries | ? Name -like {WindowsExecutable}"
                                                   + "| % {{ [IO.Compression.ZipFileExtensions]::ExtractToFile($_, '{1}', $true) }};"
                                                   + "$zip.Dispose()";
-
-    private const string WindowsExecutable = "ffmpeg.exe";
 
     private static async Awaitable<string?> InstallWindows()
     {

@@ -6,24 +6,32 @@ using UnityEngine.Networking;
 
 namespace SecretLabNAudio.FFmpeg.Installer;
 
+/// <summary>Helper class to install FFmpeg.</summary>
 public static partial class FFmpegInstaller
 {
 
+    /// <summary>The directory where downloaded files are placed.</summary>
+    public const string Folder = "SLNA-ffmpeg";
     private const string Success = "FFmpeg installed successfully";
-    private const string Folder = "SLNA-ffmpeg";
 
+    /// <summary>Whether an installation process is already pending.</summary>
     public static bool IsInstallationInProgress { get; private set; }
 
-    public static bool IsInstalled
+    /// <summary>Checks whether FFmpeg is installed by querying the version and reading from its standard output.</summary>
+    /// <remarks>This method may take some time to execute.</remarks>
+    public static bool IsInstalled()
     {
-        get
-        {
-            using var process = FFmpegSL.StartRaw("-version");
-            process?.WaitForExit();
-            return process?.Stdout.ReadLine()?.StartsWith("ffmpeg version ") ?? false;
-        }
+        using var process = FFmpegSL.StartRaw("-version");
+        process?.WaitForExit();
+        return process?.Stdout.ReadLine()?.StartsWith("ffmpeg version ") ?? false;
     }
 
+    /// <summary>
+    /// Attempts to find FFmpeg on disk, and if not found, asynchronously downloads and installs it.
+    /// </summary>
+    /// <param name="forceRefresh">Whether to download and install FFmpeg even if it can be found in the <see cref="Folder"/> or the <c>ffmpeg</c> directory.</param>
+    /// <returns>An <see cref="Awaitable"/> indicating installation success.</returns>
+    /// <remarks>The configuration is overwritten if the installation succeeds.</remarks>
     public static async Awaitable<bool> Install(bool forceRefresh = false)
     {
         if (IsInstallationInProgress)
@@ -51,11 +59,11 @@ public static partial class FFmpegInstaller
 
         if (path == null)
             return false;
-        OverrideConfig(path);
+        OverwriteConfig(path);
         return true;
     }
 
-    internal static void OverrideConfig(string path)
+    internal static void OverwriteConfig(string path)
     {
         var fullPath = Path.GetFullPath(path);
         FFmpegSL.Path = fullPath;
