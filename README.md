@@ -62,15 +62,21 @@ This library has a number of open-source dependencies. See [Attributions](ATTRIB
 
 To support reading from some file formats, install the modules you need.
 
+FFmpeg supports effectively all formats at the cost of running as a separate process.
+The FFmpeg module's APIs must be invoked separately.
+
 | Usage        | Plugin                             | Dependencies                                  |
 |--------------|------------------------------------|-----------------------------------------------|
 | **required** | (none)                             | `SecretLabNAudio.Core` `NAudio.Core`          |
 | mp3          | `SecretLabNAudio.NLayer`           | `NLayer` `NLayer.NAudioSupport`               |
 | ogg          | `SecretLabNAudio.NVorbis`          | `NVorbis` `NAudio.Vorbis` `System.ValueTuple` |
 | most formats | `SecretLabNAudio.MediaFoundation`* | `NAudio.Wasapi`*                              |
+| FFmpeg       | `SecretLabNAudio.FFmpeg`**         | (none)                                        |
 
 > [!NOTE]
 > *MediaFoundation is only available on Windows.
+> 
+> **FFmpeg itself is not shipped with SecretLabNAudio. Use the `installFFmpeg` command to install it.
 
 ## Development
 
