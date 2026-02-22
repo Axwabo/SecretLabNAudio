@@ -19,6 +19,7 @@ public static partial class FFmpegInstaller
         get
         {
             using var process = FFmpegSL.StartRaw("-version");
+            process?.WaitForExit();
             return process?.Stdout.ReadLine()?.StartsWith("ffmpeg version ") ?? false;
         }
     }

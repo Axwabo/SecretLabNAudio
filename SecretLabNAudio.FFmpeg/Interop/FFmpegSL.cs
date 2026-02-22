@@ -9,25 +9,24 @@ public sealed partial class FFmpegSL : IDisposable
 
     private bool _disposed;
 
-    /*
-    public static FFmpegSL StartRaw(string inputs, string filters, string format)
-    {
-TODO
-    }
-    */
-
     private FFmpegSL(Process process) => _process = process;
 
     public StreamWriter Stdin => _process.StandardInput;
 
     public StreamReader Stdout => _process.StandardOutput;
 
+    public StreamReader Stderr => _process.StandardError;
+
+    public bool HasExited => _process.HasExited;
+
+    public void WaitForExit() => _process.WaitForExit();
+
     public void Dispose()
     {
         if (_disposed)
             return;
         _disposed = true;
-        if (!_process.HasExited)
+        if (!HasExited)
             _process.CloseMainWindow(); // still getting "Cannot process request because the process has exited"?????
         _process.Dispose();
     }
