@@ -19,7 +19,7 @@ public sealed partial class FFmpegSL : IDisposable
 
     public bool HasExited => _process.HasExited;
 
-    public void WaitForExit(int timeoutMilliseconds = -1) => _process.WaitForExit(timeoutMilliseconds);
+    public void WaitForExit() => _process.WaitForExit();
 
     public void Dispose()
     {
