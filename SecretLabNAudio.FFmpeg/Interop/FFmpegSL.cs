@@ -27,13 +27,7 @@ public sealed partial class FFmpegSL : IDisposable
             return;
         _disposed = true;
         if (!HasExited)
-        {
-            if (_process.MainWindowHandle != IntPtr.Zero)
-                _process.CloseMainWindow(); // still getting "Cannot process request because the process has exited"?????
-            else
-                _process.Kill();
-        }
-
+            _process.CloseMainWindow(); // still getting "Cannot process request because the process has exited"?????
         _process.Dispose();
     }
 
