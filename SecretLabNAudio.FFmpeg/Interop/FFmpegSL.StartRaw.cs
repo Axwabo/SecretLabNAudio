@@ -27,9 +27,8 @@ public sealed partial class FFmpegSL
     {
         try
         {
-            var process = Process.Start(new ProcessStartInfo(Path)
+            var process = Process.Start(new ProcessStartInfo(Path, arguments)
             {
-                Arguments = arguments,
                 CreateNoWindow = true,
                 UseShellExecute = false,
                 RedirectStandardOutput = true,
