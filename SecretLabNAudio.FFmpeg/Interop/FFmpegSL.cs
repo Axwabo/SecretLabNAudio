@@ -28,7 +28,7 @@ TODO
             return;
         _disposed = true;
         if (!_process.HasExited)
-            _process.CloseMainWindow();
+            _process.CloseMainWindow(); // still getting "Cannot process request because the process has exited"?????
         _process.Dispose();
     }
 

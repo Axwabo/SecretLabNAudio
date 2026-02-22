@@ -3,7 +3,7 @@ using CommandSystem;
 namespace SecretLabNAudio.FFmpeg.Installer;
 
 [CommandHandler(typeof(GameConsoleCommandHandler))]
-internal sealed class InstallerCommand : ICommand, IUsageProvider
+internal sealed class InstallCommand : ICommand, IUsageProvider
 {
 
     public string Command => "installFFmpeg";

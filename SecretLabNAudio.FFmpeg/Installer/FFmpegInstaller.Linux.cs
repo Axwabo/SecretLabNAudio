@@ -1,3 +1,4 @@
+using SecretLabNAudio.FFmpeg.Interop;
 
 namespace SecretLabNAudio.FFmpeg.Installer;
 
@@ -15,7 +16,7 @@ public static partial class FFmpegInstaller
         Logger.Info("Downloading FFmpeg from BtbN builds...");
         await Download(LinuxUrl, Path.Combine(Folder, LinuxArchive));
         Logger.Info("Extracting FFmpeg...");
-        var (decompressed, tarError) = await Execute(Bash, $"-c \"{LinuxDecompress}\"");
+        var (decompressed, tarError) = Execute(Bash, $"-c \"{LinuxDecompress}\"");
         if (!decompressed)
         {
             Logger.Error($"Failed to extract FFmpeg:\n{tarError ?? "could not start \"tar\" process via bash"}");
@@ -24,6 +25,22 @@ public static partial class FFmpegInstaller
 
         Logger.Info(Success);
         return Path.Combine(Folder, LinuxExecutable);
+    }
+
+    internal static (bool Success, string Response) MakeExecutable()
+    {
+        if (!PlatformInfo.singleton.IsLinux)
+            return (false, "This command is only available on Linux.");
+        if (!File.Exists(FFmpegSL.Path))
+            return (false, "The configured FFmpeg installation does not exist or is not a file that can be made executable.");
+        var (changed, chmodError) = Execute(
+            Bash,
+            $"-c \"chmod +x '{Path.GetFileName(FFmpegSL.Path)}'\"",
+            Path.GetFullPath(Path.GetDirectoryName(FFmpegSL.Path) ?? FFmpegSL.Path)
+        );
+        return changed
+            ? (true, "Successfully made FFmpeg executable.")
+            : (false, chmodError ?? "Could not start \"chmod\" process via bash");
     }
 
 }

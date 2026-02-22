@@ -1,4 +1,3 @@
-
 namespace SecretLabNAudio.FFmpeg.Installer;
 
 public static partial class FFmpegInstaller
@@ -23,7 +22,7 @@ public static partial class FFmpegInstaller
         await Download(WindowsUrl, archivePath);
         Logger.Info("Extracting FFmpeg...");
         var command = string.Format(ExtractWindowsTemplate, Path.GetFullPath(archivePath), Path.GetFullPath(exePath));
-        var (decompressed, psError) = await Execute("powershell", command);
+        var (decompressed, psError) = Execute("powershell", command);
         if (!decompressed)
         {
             Logger.Info($"Failed to extract FFmpeg:\n{psError ?? "could not start PowerShell for extraction"}");

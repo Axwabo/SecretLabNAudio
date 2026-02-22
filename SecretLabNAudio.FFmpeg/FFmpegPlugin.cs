@@ -7,6 +7,11 @@ namespace SecretLabNAudio.FFmpeg;
 internal sealed class FFmpegPlugin : Plugin<FFmpegConfig>
 {
 
+    private const string Install = "Use the \"installFFmpeg\" command to install FFmpeg.";
+    private const string UnknownError = $"The configured FFmpeg installation doesn't exist or isn't an FFmpeg executable! {Install}";
+    private const string NotFound = $"The configured FFmpeg installation cannot be found! {Install}";
+    private const string AccessDenied = "The configured FFmpeg installation cannot be launched because access is denied. Use the \"chmodFFmpeg\" command to make it executable.";
+
     public static FFmpegPlugin? Instance { get; private set; }
 
     public override string Name => "SecretLabNAudio.FFmpeg";
@@ -27,7 +32,12 @@ internal sealed class FFmpegPlugin : Plugin<FFmpegConfig>
         }
 
         if (!FFmpegInstaller.IsInstalled)
-            Logger.Error("The configured FFmpeg installation doesn't exist or isn't an FFmpeg executable! Use the \"installFFmpeg\" command to install FFmpeg.");
+            Logger.Error(FFmpegSL.LastCaughtStartError switch
+            {
+                NativeErrorCode.FileNotFound or NativeErrorCode.PathNotFound => NotFound,
+                NativeErrorCode.AccessDenied => AccessDenied,
+                _ => UnknownError
+            });
     }
 
     public override void Disable()

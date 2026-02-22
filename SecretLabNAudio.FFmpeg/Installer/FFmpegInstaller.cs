@@ -110,7 +110,7 @@ public static partial class FFmpegInstaller
         return File.Exists(path);
     }
 
-    private static async Task<(bool Success, string? Error)> Execute(string shell, string arguments)
+    private static (bool Success, string? Error) Execute(string shell, string arguments, string workingDirectory = Folder)
     {
         using var process = Process.Start(new ProcessStartInfo(shell)
         {
@@ -118,15 +118,14 @@ public static partial class FFmpegInstaller
             RedirectStandardError = true,
             UseShellExecute = false,
             CreateNoWindow = true,
-            WorkingDirectory = Folder
+            WorkingDirectory = workingDirectory
         });
         if (process == null)
             return (false, null);
         process.WaitForExit();
-        if (process.ExitCode == 0)
-            return (true, null);
-        var error = await process.StandardError.ReadToEndAsync();
-        return (false, error);
+        return process.ExitCode == 0
+            ? (true, null)
+            : (false, process.StandardError.ReadToEnd());
     }
 
 }
