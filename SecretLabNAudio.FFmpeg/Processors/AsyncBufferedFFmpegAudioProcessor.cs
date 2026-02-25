@@ -33,7 +33,7 @@ public sealed class AsyncBufferedFFmpegAudioProcessor : IAudioProcessor
 
         void ReadLoop()
         {
-            _processor = FFmpegSL.StartRaw(FFmpegArgumentsBuilder.PlayerCompatible.WithInput(path)); // TODO
+            _processor = FFmpegSL.StartRaw(FFmpegArgumentsBuilder.PlayerCompatibleToStdout(path)); // TODO
             while (true)
             {
                 if (_buffer.Count > _buffer.MaxLength * .75)

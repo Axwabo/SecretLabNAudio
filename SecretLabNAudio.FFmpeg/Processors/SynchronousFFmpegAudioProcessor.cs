@@ -10,13 +10,21 @@ public sealed class SynchronousFFmpegAudioProcessor : IAudioProcessor
 
     private readonly FFmpegSL _ffmpeg;
 
-    public static SynchronousFFmpegAudioProcessor Create(string path)
-    {
-        var process = FFmpegSL.StartRaw(FFmpegArgumentsBuilder.PlayerCompatible.WithInput(path));
-        return new SynchronousFFmpegAudioProcessor(process ?? throw FFmpegStartException.Last);
-    }
+    public static SynchronousFFmpegAudioProcessor CreatePlayerCompatible(string path) => new(
+        FFmpegSL.StartRaw(FFmpegArgumentsBuilder.PlayerCompatibleToStdout(path)) ?? throw FFmpegStartException.Last,
+        AudioPlayer.SupportedFormat
+    );
 
-    private SynchronousFFmpegAudioProcessor(FFmpegSL ffmpeg) => _ffmpeg = ffmpeg;
+    public static SynchronousFFmpegAudioProcessor Create(string path, int sampleRate, int channels) => new(
+        FFmpegSL.StartRaw(FFmpegArgumentsBuilder.ToStdout(path, sampleRate, channels)) ?? throw FFmpegStartException.Last,
+        WaveFormat.CreateIeeeFloatWaveFormat(sampleRate, channels)
+    );
+
+    private SynchronousFFmpegAudioProcessor(FFmpegSL ffmpeg, WaveFormat format)
+    {
+        _ffmpeg = ffmpeg;
+        WaveFormat = format;
+    }
 
     public int Read(float[] buffer, int offset, int count)
     {
@@ -25,7 +33,7 @@ public sealed class SynchronousFFmpegAudioProcessor : IAudioProcessor
         return _ffmpeg.Stdout.BaseStream.Read(byteSpan) / sizeof(float);
     }
 
-    public WaveFormat WaveFormat => AudioPlayer.SupportedFormat;
+    public WaveFormat WaveFormat { get; }
 
     public void Dispose() => _ffmpeg.Dispose();
 
