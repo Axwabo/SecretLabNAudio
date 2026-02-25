@@ -14,19 +14,21 @@ public readonly partial record struct FFmpegArguments
 
     private const string InputMissing = "Input must be specified";
     private const string InputHasQuotation = "Input must not include quotation marks";
+    private const string OutputHasQuotation = "Output must not include quotation marks";
+    private const string OutputMissing = "Output must be specified";
     private const string StdoutFormat = $"{VerbosityError}-i \"{{0}}\" -ar {{1}} -ac {{2}} -f {Float32Format} {StandardPipe}";
 
     public static FFmpegArguments PlayerCompatibleTemplate { get; } = new()
     {
         SampleRate = AudioPlayer.SampleRate,
         Channels = AudioPlayer.Channels,
-        Format = Float32Format,
+        MuxerFormat = Float32Format,
         Output = StandardPipe
     };
 
     public static string ToStdout(string input, int sampleRate, int channels) => string.Format(
         StdoutFormat,
-        input.ThrowIfInvalidProcessArgument(nameof(input), InputMissing, InputHasQuotation),
+        input.ValidateProcessArgument(nameof(input), InputMissing, InputHasQuotation),
         sampleRate,
         channels
     );

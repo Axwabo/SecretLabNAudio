@@ -19,7 +19,7 @@ internal static class StringExtensions
     extension(string? s)
     {
 
-        public void ThrowIfInvalidProcessArgument(string emptyMessage, string quotationMessage)
+        public void ValidateProcessArgument(string emptyMessage, string quotationMessage)
         {
             if (string.IsNullOrWhiteSpace(s))
                 throw new InvalidOperationException(emptyMessage);
@@ -27,7 +27,7 @@ internal static class StringExtensions
                 throw new InvalidOperationException(quotationMessage);
         }
 
-        public string ThrowIfInvalidProcessArgument(string paramName, string emptyMessage, string quotationMessage)
+        public string ValidateProcessArgument(string paramName, string emptyMessage, string quotationMessage)
             => string.IsNullOrWhiteSpace(s)
                 ? throw new ArgumentException(emptyMessage, paramName)
                 : s!.Contains('"')

@@ -1,4 +1,5 @@
 using SecretLabNAudio.Core;
+using SecretLabNAudio.FFmpeg.Extensions;
 
 namespace SecretLabNAudio.FFmpeg;
 
@@ -11,18 +12,22 @@ public readonly partial record struct FFmpegArguments
         Channels = AudioPlayer.Channels
     };
 
-    public FFmpegArguments ForFloatStreaming() => this with
+    public FFmpegArguments ForFloatPiping() => this with
     {
         ShowLogs = false,
-        Format = Float32Format,
+        MuxerFormat = Float32Format,
         Output = StandardPipe
     };
 
-    public FFmpegArguments ForPlayerCompatibleFloatStreaming() => new(false, InputOptions, Input, AudioPlayer.SampleRate, AudioPlayer.Channels, OutputOptions, Float32Format, StandardPipe);
+    public FFmpegArguments ForPlayerCompatibleFloatPiping() => new(false, InputOptions, Input, AudioPlayer.SampleRate, AudioPlayer.Channels, OutputOptions, Float32Format, StandardPipe);
 
-    public FFmpegArguments FromStandardInput() => this with {Input = StandardPipe};
+    public FFmpegArguments ReadFromStandardInput() => this with {Input = StandardPipe};
 
-    public FFmpegArguments ToStandardOutput() => this with {Output = StandardPipe};
+    public FFmpegArguments PipeToStandardOutput() => this with {Output = StandardPipe};
+
+    public FFmpegArguments WithInput(string input) => this with {Input = input.ValidateProcessArgument(nameof(input), InputMissing, InputHasQuotation)};
+
+    public FFmpegArguments WithOutput(string output) => this with {Output = output.ValidateProcessArgument(nameof(output), OutputMissing, OutputHasQuotation)};
 
     public FFmpegArguments WithSampleRate(int sampleRate) => this with {SampleRate = sampleRate};
 
@@ -33,5 +38,13 @@ public readonly partial record struct FFmpegArguments
     public FFmpegArguments WithVolumeDecibels(double relativeDecibels) => this with {OutputOptions = $"-af volume={relativeDecibels}dB"};
 
     public FFmpegArguments WithComplexFilter(string filter) => this with {OutputOptions = $"-filter_complex \"{filter}\""};
+
+    public FFmpegArguments EnableVerboseLogging() => this with {ShowLogs = true};
+
+    public FFmpegArguments WithInputOptions(string? inputOptions) => this with {InputOptions = inputOptions};
+
+    public FFmpegArguments WithOutputOptions(string? outputOptions) => this with {OutputOptions = outputOptions};
+
+    public FFmpegArguments WithMuxerFormat(string? muxerFormat) => this with {MuxerFormat = muxerFormat};
 
 }

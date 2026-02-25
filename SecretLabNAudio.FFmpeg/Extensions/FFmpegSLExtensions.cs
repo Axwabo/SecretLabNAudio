@@ -8,7 +8,7 @@ namespace SecretLabNAudio.FFmpeg.Extensions;
 public static class FFmpegSLExtensions
 {
 
-    extension(FFmpegSL)
+    extension(FFmpegSL ffmpeg)
     {
 
         public static FFmpegSL? PlayerCompatibleToStdout(string input)
@@ -19,6 +19,17 @@ public static class FFmpegSLExtensions
 
         public static FFmpegSL? ToStdout(string input, int sampleRate, int channels)
             => FFmpegSL.StartRaw(FFmpegArguments.ToStdout(input, sampleRate, channels), true);
+
+        public bool TryTerminateGracefully(int timeoutMilliseconds = 1000)
+        {
+            if (ffmpeg.Stdin == null)
+                return ffmpeg.HasExited;
+            if (ffmpeg.HasExited)
+                return true;
+            ffmpeg.Stdin.Write('q');
+            ffmpeg.Stdin.Flush();
+            return ffmpeg.WaitForExit(timeoutMilliseconds);
+        }
 
     }
 

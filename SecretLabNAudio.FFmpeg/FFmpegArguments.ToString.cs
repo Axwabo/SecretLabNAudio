@@ -7,7 +7,6 @@ namespace SecretLabNAudio.FFmpeg;
 public readonly partial record struct FFmpegArguments
 {
 
-
     public bool IsStandardInput => Input.AsSpan().Trim() is StandardPipe or "pipe:" or "pipe:0";
 
     public bool IsStandardOutput => Output.AsSpan().Trim() is StandardPipe or "pipe:" or "pipe:1";
@@ -28,8 +27,8 @@ public readonly partial record struct FFmpegArguments
 
     public void PrintTo(StringBuilder builder)
     {
-        Input.ThrowIfInvalidProcessArgument(InputMissing, InputHasQuotation);
-        Output.ThrowIfInvalidProcessArgument("Output must be specified", "Output must not include quotation marks");
+        Input.ValidateProcessArgument(InputMissing, InputHasQuotation);
+        Output.ValidateProcessArgument(OutputMissing, OutputHasQuotation);
         if (!ShowLogs)
             builder.Append(VerbosityError);
         builder.AppendWithTrailingWhitespace(InputOptions);
@@ -42,8 +41,8 @@ public readonly partial record struct FFmpegArguments
         if (Channels != 0)
             builder.Append("-ac ").Append(Channels).Append(' ');
         builder.AppendWithTrailingWhitespace(OutputOptions);
-        if (!string.IsNullOrWhiteSpace(Format))
-            builder.Append("-f ").AppendWithTrailingWhitespace(Format);
+        if (!string.IsNullOrWhiteSpace(MuxerFormat))
+            builder.Append("-f ").AppendWithTrailingWhitespace(MuxerFormat);
         if (IsStandardOutput)
             builder.Append(Output);
         else

@@ -25,7 +25,7 @@ public sealed class SynchronousFFmpegAudioProcessor : IAudioProcessor
     {
         if (arguments.SampleRate <= 0 || arguments.Channels is not (1 or 2))
             throw new ArgumentException("Invalid wave format");
-        var ffmpeg = FFmpegSL.StartRaw(arguments.ForFloatStreaming()) ?? throw FFmpegStartException.Last;
+        var ffmpeg = FFmpegSL.StartRaw(arguments.ForFloatPiping()) ?? throw FFmpegStartException.Last;
         return new SynchronousFFmpegAudioProcessor(ffmpeg, WaveFormat.CreateIeeeFloatWaveFormat(arguments.SampleRate, arguments.Channels));
     }
 
