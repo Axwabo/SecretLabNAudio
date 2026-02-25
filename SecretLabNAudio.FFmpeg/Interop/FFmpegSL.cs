@@ -45,7 +45,17 @@ public sealed partial class FFmpegSL : IDisposable
             return;
         _disposed = true;
         if (!HasExited)
-            _process.Kill();
+            try
+            {
+                _process.Kill();
+            }
+            catch
+            {
+                // InvalidOperation: process has already exited
+                // Win32Exception: Success
+                // like this is just stupid
+            }
+
         _process.Dispose();
     }
 
