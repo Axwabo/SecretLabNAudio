@@ -12,8 +12,8 @@ public sealed class SynchronousFFmpegAudioProcessor : IAudioProcessor
 
     public static SynchronousFFmpegAudioProcessor Create(string path)
     {
-        var process = FFmpegSL.StartRaw($"-i \"{path}\" -ar 48000 -ac 1 -f f32le -");
-        return process == null ? throw new InvalidOperationException($"watafak bro {FFmpegSL.LastCaughtStartError}") : new SynchronousFFmpegAudioProcessor(process);
+        var process = FFmpegSL.StartRaw(FFmpegArgumentsBuilder.PlayerCompatible.WithInput(path));
+        return new SynchronousFFmpegAudioProcessor(process ?? throw FFmpegStartException.Last);
     }
 
     private SynchronousFFmpegAudioProcessor(FFmpegSL ffmpeg) => _ffmpeg = ffmpeg;
