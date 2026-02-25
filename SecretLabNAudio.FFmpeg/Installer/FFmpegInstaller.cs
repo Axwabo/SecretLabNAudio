@@ -1,6 +1,5 @@
 using System.Diagnostics;
 using System.Threading;
-using System.Threading.Tasks;
 using SecretLabNAudio.FFmpeg.Interop;
 using UnityEngine.Networking;
 
@@ -12,6 +11,7 @@ public static partial class FFmpegInstaller
 
     /// <summary>The directory where downloaded files are placed.</summary>
     public const string Folder = "SLNA-ffmpeg";
+
     private const string Success = "FFmpeg installed successfully";
 
     /// <summary>Whether an installation process is already pending.</summary>
@@ -47,6 +47,11 @@ public static partial class FFmpegInstaller
             else
                 path = await InstallOSSpecific();
         }
+        catch (UnityHttpException e)
+        {
+            Logger.Error($"FFmpeg installation failed due to a network error:\n{e.Message}");
+            throw;
+        }
         catch (Exception e)
         {
             Logger.Error($"FFmpeg installation failed:\n{e}");
@@ -81,7 +86,7 @@ public static partial class FFmpegInstaller
         return null;
     }
 
-    private static async Task Download(string url, string filename)
+    private static async Awaitable Download(string url, string filename)
     {
         using var request = UnityWebRequest.Get(url);
         using var cts = new CancellationTokenSource();
@@ -89,6 +94,8 @@ public static partial class FFmpegInstaller
         _ = LogProgress(request, cts.Token);
         await request.SendWebRequest();
         cts.Cancel();
+        if (request.error is { } error)
+            throw new UnityHttpException(error);
     }
 
     private static async Awaitable LogProgress(UnityWebRequest request, CancellationToken cancellationToken)
