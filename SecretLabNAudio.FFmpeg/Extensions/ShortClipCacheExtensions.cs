@@ -17,7 +17,7 @@ public static class ShortClipCacheExtensions
 
         public static RawSourceSampleProvider? AddWithFFmpeg(string input, TimeSpan? maxDuration = null)
         {
-            using var process = FFmpegSL.StartRaw(FFmpegArgumentsBuilder.PlayerCompatibleToStdout(input));
+            using var process = FFmpegSL.PlayerCompatibleToStdout(input);
             if (process == null)
                 return null;
             _memoryStream ??= new MemoryStream();

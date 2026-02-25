@@ -25,9 +25,10 @@ public sealed partial class FFmpegSL
     /// <remarks>Only <see cref="Win32Exception"/> exceptions are handled.</remarks>
     public static FFmpegSL? StartRaw(string arguments, bool redirectStandardInput = false)
     {
+        Process? process = null;
         try
         {
-            var process = Process.Start(new ProcessStartInfo(Path, arguments)
+            process = Process.Start(new ProcessStartInfo(Path, arguments)
             {
                 CreateNoWindow = true,
                 UseShellExecute = false,
@@ -55,6 +56,7 @@ public sealed partial class FFmpegSL
                 _ => $"Native error code {win32.NativeErrorCode}"
             }}");
             Debug.Log(win32);
+            process?.Dispose();
             return null;
         }
     }

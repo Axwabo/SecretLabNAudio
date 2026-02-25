@@ -5,6 +5,7 @@ using NAudio.Utils;
 using SecretLabNAudio.Core;
 using SecretLabNAudio.Core.Extensions;
 using SecretLabNAudio.Core.Processors;
+using SecretLabNAudio.FFmpeg.Extensions;
 using SecretLabNAudio.FFmpeg.Interop;
 
 namespace SecretLabNAudio.FFmpeg.Processors;
@@ -33,7 +34,7 @@ public sealed class AsyncBufferedFFmpegAudioProcessor : IAudioProcessor
 
         void ReadLoop()
         {
-            _processor = FFmpegSL.StartRaw(FFmpegArgumentsBuilder.PlayerCompatibleToStdout(path)); // TODO
+            _processor = FFmpegSL.PlayerCompatibleToStdout(path); // TODO
             while (true)
             {
                 if (_buffer.Count > _buffer.MaxLength * .75)
@@ -62,10 +63,10 @@ public sealed class AsyncBufferedFFmpegAudioProcessor : IAudioProcessor
         var bytes = count * sizeof(float);
         _readBuffer = BufferHelpers.Ensure(_readBuffer, bytes);
         var read = _buffer.Read(_readBuffer, 0, bytes);
-        var floatsRead = read / sizeof(float);
-        var floatSpan = MemoryMarshal.Cast<float, byte>(buffer.AsSpan(offset, floatsRead));
-        _readBuffer[..read].CopyTo(floatSpan);
-        return floatsRead;
+        var readSpan = _readBuffer.AsSpan(0, read);
+        var floatSpan = MemoryMarshal.Cast<byte, float>(readSpan);
+        floatSpan.CopyTo(buffer.AsSpan(offset, count));
+        return floatSpan.Length;
     }
 
     public WaveFormat WaveFormat => AudioPlayer.SupportedFormat;

@@ -1,6 +1,7 @@
 using System.Runtime.InteropServices;
 using SecretLabNAudio.Core;
 using SecretLabNAudio.Core.Processors;
+using SecretLabNAudio.FFmpeg.Extensions;
 using SecretLabNAudio.FFmpeg.Interop;
 
 namespace SecretLabNAudio.FFmpeg.Processors;
@@ -11,12 +12,12 @@ public sealed class SynchronousFFmpegAudioProcessor : IAudioProcessor
     private readonly FFmpegSL _ffmpeg;
 
     public static SynchronousFFmpegAudioProcessor CreatePlayerCompatible(string path) => new(
-        FFmpegSL.StartRaw(FFmpegArgumentsBuilder.PlayerCompatibleToStdout(path)) ?? throw FFmpegStartException.Last,
+        FFmpegSL.PlayerCompatibleToStdout(path) ?? throw FFmpegStartException.Last,
         AudioPlayer.SupportedFormat
     );
 
     public static SynchronousFFmpegAudioProcessor Create(string path, int sampleRate, int channels) => new(
-        FFmpegSL.StartRaw(FFmpegArgumentsBuilder.ToStdout(path, sampleRate, channels)) ?? throw FFmpegStartException.Last,
+        FFmpegSL.ToStdout(path, sampleRate, channels) ?? throw FFmpegStartException.Last,
         WaveFormat.CreateIeeeFloatWaveFormat(sampleRate, channels)
     );
 
