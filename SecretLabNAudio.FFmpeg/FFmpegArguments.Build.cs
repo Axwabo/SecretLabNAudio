@@ -47,4 +47,8 @@ public readonly partial record struct FFmpegArguments
 
     public FFmpegArguments WithMuxerFormat(string? muxerFormat) => this with {MuxerFormat = muxerFormat};
 
+    public FFmpegArguments WithInfiniteLoop() => this with {InputOptions = "-stream_loop -1"};
+
+    public FFmpegArguments WithLoopCount(int count) => this with {InputOptions = $"-stream_loop {count}"};
+
 }
