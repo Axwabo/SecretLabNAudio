@@ -7,6 +7,7 @@ namespace SecretLabNAudio.FFmpeg.Extensions;
 
 public static class FFmpegSLExtensions
 {
+
     extension(FFmpegSL)
     {
 
@@ -17,7 +18,7 @@ public static class FFmpegSLExtensions
             => ToStdout(input, waveFormat.SampleRate, waveFormat.Channels);
 
         public static FFmpegSL? ToStdout(string input, int sampleRate, int channels)
-            => FFmpegSL.StartRaw($"-v error -i \"{input}\" -ar {sampleRate} -ac {channels} -f f32le -", true);
+            => FFmpegSL.StartRaw(FFmpegArguments.ToStdout(input, sampleRate, channels), true);
 
     }
 

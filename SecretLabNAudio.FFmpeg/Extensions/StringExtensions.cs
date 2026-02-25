@@ -27,6 +27,13 @@ internal static class StringExtensions
                 throw new InvalidOperationException(quotationMessage);
         }
 
+        public string ThrowIfInvalidProcessArgument(string paramName, string emptyMessage, string quotationMessage)
+            => string.IsNullOrWhiteSpace(s)
+                ? throw new ArgumentException(emptyMessage, paramName)
+                : s!.Contains('"')
+                    ? throw new ArgumentException(quotationMessage, paramName)
+                    : s;
+
     }
 
 }

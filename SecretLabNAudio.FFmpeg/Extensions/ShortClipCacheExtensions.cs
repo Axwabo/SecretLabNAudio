@@ -12,9 +12,8 @@ public static class ShortClipCacheExtensions
     [ThreadStatic]
     private static MemoryStream? _memoryStream;
 
-    public static RawSourceSampleProvider? ReadWithFFmpeg(string input, TimeSpan? maxDuration)
+    private static RawSourceSampleProvider? ReadFromFFmpeg(FFmpegSL? process, TimeSpan? maxDuration)
     {
-        using var process = FFmpegSL.PlayerCompatibleToStdout(input);
         if (process == null)
             return null;
         _memoryStream ??= new MemoryStream();
@@ -31,6 +30,18 @@ public static class ShortClipCacheExtensions
             return new RawSourceSampleProvider(floatSpan.ToArray(), AudioPlayer.SupportedFormat);
         Debug.Log(error);
         return null;
+    }
+
+    public static RawSourceSampleProvider? ReadWithFFmpeg(string input, TimeSpan? maxDuration)
+    {
+        using var process = FFmpegSL.PlayerCompatibleToStdout(input);
+        return ReadFromFFmpeg(process, maxDuration);
+    }
+
+    public static RawSourceSampleProvider? ReadWithFFmpeg(FFmpegArguments arguments, TimeSpan? maxDuration)
+    {
+        using var process = FFmpegSL.StartRaw(arguments.ForPlayerCompatibleFloatStreaming());
+        return ReadFromFFmpeg(process, maxDuration);
     }
 
     extension(ShortClipCache)
