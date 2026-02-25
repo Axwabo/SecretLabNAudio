@@ -61,4 +61,14 @@ public sealed partial class FFmpegSL
         }
     }
 
+    /// <summary>
+    /// Starts FFmpeg with the specified arguments.
+    /// </summary>
+    /// <param name="arguments">The arguments to pass to FFmpeg.</param>
+    /// <param name="redirectStandardInput">Whether to redirect the standard input. The standard input will also be redirected if <see cref="FFmpegArguments.Input"/> is <see cref=""/></param>
+    /// <returns>A new <see cref="FFmpegSL"/> wrapper if the process was launched. Null if startup fails due to a <see cref="Win32Exception"/>.</returns>
+    /// <remarks>Only <see cref="Win32Exception"/> exceptions are handled.</remarks>
+    public static FFmpegSL? StartRaw(FFmpegArguments arguments, bool redirectStandardInput = false)
+        => StartRaw(arguments.ToString(), redirectStandardInput || arguments.IsStandardInput);
+
 }

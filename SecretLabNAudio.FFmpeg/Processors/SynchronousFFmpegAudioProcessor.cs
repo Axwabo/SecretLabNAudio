@@ -21,6 +21,19 @@ public sealed class SynchronousFFmpegAudioProcessor : IAudioProcessor
         WaveFormat.CreateIeeeFloatWaveFormat(sampleRate, channels)
     );
 
+    public static SynchronousFFmpegAudioProcessor Create(FFmpegArguments arguments)
+    {
+        if (arguments.SampleRate <= 0 || arguments.Channels is not (1 or 2))
+            throw new ArgumentException("Invalid wave format");
+        var ffmpeg = FFmpegSL.StartRaw(arguments with
+        {
+            ShowLogs = false,
+            Output = FFmpegArguments.StandardPipe,
+            Format = FFmpegArguments.Float32
+        }) ?? throw FFmpegStartException.Last;
+        return new SynchronousFFmpegAudioProcessor(ffmpeg, WaveFormat.CreateIeeeFloatWaveFormat(arguments.SampleRate, arguments.Channels));
+    }
+
     private SynchronousFFmpegAudioProcessor(FFmpegSL ffmpeg, WaveFormat format)
     {
         _ffmpeg = ffmpeg;
