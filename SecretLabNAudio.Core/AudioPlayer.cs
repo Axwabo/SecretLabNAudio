@@ -179,7 +179,7 @@ public sealed partial class AudioPlayer : MonoBehaviour
             _remainingTime -= PacketDuration;
         }
 
-        OutputMonitor?.OnRead(ReadBuffer.AsSpan()[..read]);
+        OutputMonitor?.OnRead(ReadBuffer.AsSpan(0, read));
         if (SendEngine == null)
             return;
         if (MasterAmplification is not 1f)
