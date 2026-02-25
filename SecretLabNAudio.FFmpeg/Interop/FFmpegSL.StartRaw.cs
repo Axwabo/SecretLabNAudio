@@ -38,7 +38,7 @@ public sealed partial class FFmpegSL
             });
             if (process == null)
             {
-                Debug.Log("Failed to start FFmpeg: Process.Start returned null");
+                Debug.LogError("Failed to start FFmpeg: Process.Start returned null");
                 LastCaughtStartError = NativeErrorCode.ProcessStartNull;
                 return null;
             }
@@ -49,13 +49,13 @@ public sealed partial class FFmpegSL
         catch (Win32Exception win32)
         {
             LastCaughtStartError = (NativeErrorCode) win32.NativeErrorCode;
-            Debug.Log($"Failed to start FFmpeg: {LastCaughtStartError switch
+            Debug.LogError($"Failed to start FFmpeg: {LastCaughtStartError switch
             {
                 NativeErrorCode.FileNotFound or NativeErrorCode.PathNotFound => "FFmpeg not found. Check your configuration, or use the \"installFFmpeg\" command to install FFmpeg.",
                 NativeErrorCode.AccessDenied => "Access is denied. Use the \"chmodFFmpeg\" command to make it executable.",
                 _ => $"Native error code {win32.NativeErrorCode}"
             }}");
-            Debug.Log(win32);
+            Debug.LogError(win32);
             process?.Dispose();
             return null;
         }
@@ -65,7 +65,7 @@ public sealed partial class FFmpegSL
     /// Starts FFmpeg with the specified arguments.
     /// </summary>
     /// <param name="arguments">The arguments to pass to FFmpeg.</param>
-    /// <param name="redirectStandardInput">Whether to redirect the standard input. The standard input will also be redirected if <see cref="FFmpegArguments.Input"/> is <see cref=""/></param>
+    /// <param name="redirectStandardInput">Whether to redirect the standard input. The standard input will also be redirected if <see cref="FFmpegArguments.IsStandardInput"/> is true.</param>
     /// <returns>A new <see cref="FFmpegSL"/> wrapper if the process was launched. Null if startup fails due to a <see cref="Win32Exception"/>.</returns>
     /// <remarks>Only <see cref="Win32Exception"/> exceptions are handled.</remarks>
     public static FFmpegSL? StartRaw(FFmpegArguments arguments, bool redirectStandardInput = false)

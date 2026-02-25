@@ -44,6 +44,10 @@ public sealed class SynchronousFFmpegAudioProcessor : IAudioProcessor
 
     public WaveFormat WaveFormat { get; }
 
+    public bool HasExited => _ffmpeg.HasExited;
+    
+    public string? FinalErrorMessage => _ffmpeg.FinalErrorMessage;
+
     public void Dispose() => _ffmpeg.Dispose();
 
 }

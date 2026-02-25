@@ -33,6 +33,8 @@ public sealed partial class FFmpegSL : IDisposable
     /// <inheritdoc cref="Process.HasExited"/>
     public bool HasExited => _process.HasExited;
 
+    public string? FinalErrorMessage => field ?? (_disposed || !HasExited ? null : field = Stderr.ReadToEnd());
+
     /// <inheritdoc cref="Process.WaitForExit(int)"/>
     public bool WaitForExit(int milliseconds = -1) => _process.WaitForExit(milliseconds);
 
