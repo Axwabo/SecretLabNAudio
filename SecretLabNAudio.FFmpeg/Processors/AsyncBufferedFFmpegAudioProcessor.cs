@@ -4,6 +4,10 @@ public sealed partial class AsyncBufferedFFmpegAudioProcessor : AsyncFFmpegProce
 {
 
     private AsyncBufferedFFmpegAudioProcessor(string input, double capacity, WaveFormat format) : base(capacity, format)
-        => TryStartFFmpeg(input, out _);
+        => Run(() =>
+        {
+            if (TryStartFFmpeg(input, out var ffmpeg))
+                BufferLoop(ffmpeg);
+        });
 
 }

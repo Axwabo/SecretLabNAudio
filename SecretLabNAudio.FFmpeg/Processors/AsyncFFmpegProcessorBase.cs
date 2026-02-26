@@ -78,21 +78,14 @@ public abstract class AsyncFFmpegProcessorBase : IAudioProcessor
     private protected bool TryStartFFmpeg(string input, [NotNullWhen(true)] out FFmpegSL? ffmpeg)
     {
         ffmpeg = Process = FFmpegSL.StartRaw(FFmpegArguments.ToStdout(input, WaveFormat.SampleRate, WaveFormat.Channels), true);
-        if (ffmpeg == null)
-        {
-            StartupError = FFmpegSL.LastCaughtStartError;
-            return false;
-        }
-
-        Run(BufferLoop);
-        return true;
+        if (ffmpeg != null)
+            return true;
+        StartupError = FFmpegSL.LastCaughtStartError;
+        return false;
     }
 
-    private void BufferLoop()
+    private protected void BufferLoop(FFmpegSL ffmpeg)
     {
-        var ffmpeg = Process;
-        if (ffmpeg == null)
-            return;
         BufferingState = AsyncBufferingState.PreFillingBuffer;
         while (!Token.IsCancellationRequested)
         {

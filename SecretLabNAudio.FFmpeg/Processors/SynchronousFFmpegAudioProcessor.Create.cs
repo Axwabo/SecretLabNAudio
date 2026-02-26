@@ -5,16 +5,18 @@ namespace SecretLabNAudio.FFmpeg.Processors;
 public sealed partial class SynchronousFFmpegAudioProcessor
 {
 
-    // TODO: nullable
-    public static SynchronousFFmpegAudioProcessor CreatePlayerCompatible(string path) => new(
-        FFmpegSL.PlayerCompatibleToStdout(path) ?? throw FFmpegStartupException.Last,
-        AudioPlayer.SupportedFormat
-    );
+    public static SynchronousFFmpegAudioProcessor? CreatePlayerCompatible(string path)
+        => FFmpegSL.PlayerCompatibleToStdout(path) is { } ffmpeg
+            ? new SynchronousFFmpegAudioProcessor(ffmpeg, AudioPlayer.SupportedFormat)
+            : null;
 
-    public static SynchronousFFmpegAudioProcessor CreatePlayerCompatible(FFmpegArguments arguments) => new(
-        FFmpegSL.StartRaw(arguments.ForPlayerCompatibleFloatPiping()) ?? throw FFmpegStartupException.Last,
-        AudioPlayer.SupportedFormat
-    );
+    public static SynchronousFFmpegAudioProcessor? CreatePlayerCompatible(FFmpegArguments arguments)
+        => FFmpegSL.StartRaw(arguments.ForPlayerCompatibleFloatPiping()) is { } ffmpeg
+            ? new SynchronousFFmpegAudioProcessor(ffmpeg, AudioPlayer.SupportedFormat)
+            : null;
+
+    public static SynchronousFFmpegAudioProcessor CreatePlayerCompatibleOrThrow(string path)
+        => CreatePlayerCompatible(path) ?? throw FFmpegStartupException.Last;
 
     public static SynchronousFFmpegAudioProcessor Create(string path, int sampleRate, int channels)
         => sampleRate <= 0
