@@ -19,7 +19,7 @@ public sealed partial class AsyncBufferedFFmpegAudioProcessor : IAudioProcessor
 
     private bool _disposed;
 
-    private FFmpegSL? _process;
+    private FFmpegSL? _processor;
 
     private readonly CircularBuffer _buffer;
 
@@ -35,20 +35,17 @@ public sealed partial class AsyncBufferedFFmpegAudioProcessor : IAudioProcessor
 
     public WaveFormat WaveFormat { get; }
 
-    public string? FinalErrorMessage => _process?.FinalErrorMessage;
-
     private AsyncBufferedFFmpegAudioProcessor(string input, double capacity, WaveFormat format)
     {
         _buffer = new CircularBuffer(format.SampleCount(capacity * sizeof(float)));
         WaveFormat = format;
-        BufferingState = AsyncBufferingState.StartingFFmpeg;
-        Run(async token =>
+        Run(token =>
         {
-            var ffmpeg = _process = FFmpegSL.ToStdout(input, WaveFormat);
+            var ffmpeg = _processor = FFmpegSL.ToStdout(input, WaveFormat);
             if (ffmpeg == null)
                 StartupError = FFmpegSL.LastCaughtStartError;
             else
-                await BufferLoop(ffmpeg, token);
+                BufferLoop(ffmpeg, token);
         });
     }
 
@@ -64,7 +61,7 @@ public sealed partial class AsyncBufferedFFmpegAudioProcessor : IAudioProcessor
         {
             await Awaitable.BackgroundThreadAsync();
             var stream = await resolver();
-            var ffmpeg = _process = FFmpegSL.ToStdout(FFmpegArguments.StandardPipe, WaveFormat);
+            var ffmpeg = _processor = FFmpegSL.ToStdout(FFmpegArguments.StandardPipe, WaveFormat);
             if (ffmpeg == null)
             {
                 StartupError = FFmpegSL.LastCaughtStartError;
@@ -77,20 +74,17 @@ public sealed partial class AsyncBufferedFFmpegAudioProcessor : IAudioProcessor
         }
     }
 
-    private void Run(Func<CancellationToken, Task> action, IDisposable? disposable = null) => Task.Factory.StartNew(async () =>
+    private void Run(Action<CancellationToken> action, IDisposable? disposable = null) => Task.Factory.StartNew(() =>
     {
         var token = _cts!.Token;
         try
         {
-            await action(token);
-        }
-        catch (OperationCanceledException)
-        {
-            BufferingState = AsyncBufferingState.Ended;
+            action(token);
         }
         catch (Exception e)
         {
-            AsyncException = e;
+            if (!token.IsCancellationRequested)
+                AsyncException = e;
         }
         finally
         {
@@ -98,25 +92,24 @@ public sealed partial class AsyncBufferedFFmpegAudioProcessor : IAudioProcessor
         }
     }, CancellationToken.None, Options, TaskScheduler.Default);
 
-    private async Task BufferLoop(FFmpegSL ffmpeg, CancellationToken token)
+    private void BufferLoop(FFmpegSL ffmpeg, CancellationToken token)
     {
         BufferingState = AsyncBufferingState.PreFillingBuffer;
         while (!token.IsCancellationRequested)
         {
-            if (_buffer.Count > _buffer.MaxLength * 0.9)
+            if (_buffer.Count > _buffer.MaxLength * 0.75)
             {
                 if (BufferingState == AsyncBufferingState.PreFillingBuffer)
                     BufferingState = AsyncBufferingState.Reading;
-                await Task.Delay(100, token);
+                Thread.Sleep(100);
                 continue;
             }
 
-            // this is so cooked (thread static)
-            var buffer = _readBuffer = BufferHelpers.Ensure(_readBuffer, BufferSize);
-            var read = await ffmpeg.Stdout.BaseStream.ReadAsync(_readBuffer, 0, _readBuffer.Length, token);
+            _readBuffer = BufferHelpers.Ensure(_readBuffer, BufferSize);
+            var read = ffmpeg.Stdout.BaseStream.Read(_readBuffer, 0, _readBuffer.Length);
             if (read == 0)
                 break;
-            _buffer.Write(buffer, 0, read);
+            _buffer.Write(_readBuffer, 0, read);
         }
 
         BufferingState = AsyncBufferingState.Ended;
@@ -144,9 +137,8 @@ public sealed partial class AsyncBufferedFFmpegAudioProcessor : IAudioProcessor
         _cts?.Cancel();
         _cts?.Dispose();
         _cts = null;
-        if (!_disposed && !_isStdin && _process is {HasExited: false})
-            _process.TryTerminateGracefully(0);
-        BufferingState = AsyncBufferingState.Ended;
+        if (!_disposed && !_isStdin && _processor is {HasExited: false})
+            _processor.TryTerminateGracefully(0);
     }
 
     public void ClearBuffer(bool refill)
@@ -162,8 +154,8 @@ public sealed partial class AsyncBufferedFFmpegAudioProcessor : IAudioProcessor
             return;
         _disposed = true;
         StopBuffering();
-        _process?.Dispose();
-        _process = null;
+        _processor?.Dispose();
+        _processor = null;
     }
 
 }
