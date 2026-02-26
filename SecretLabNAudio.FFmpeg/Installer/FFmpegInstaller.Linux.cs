@@ -1,5 +1,3 @@
-using SecretLabNAudio.FFmpeg.Interop;
-
 namespace SecretLabNAudio.FFmpeg.Installer;
 
 public static partial class FFmpegInstaller

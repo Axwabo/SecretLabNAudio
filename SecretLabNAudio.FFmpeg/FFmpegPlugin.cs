@@ -1,6 +1,5 @@
 using LabApi.Loader.Features.Plugins;
 using SecretLabNAudio.FFmpeg.Installer;
-using SecretLabNAudio.FFmpeg.Interop;
 
 namespace SecretLabNAudio.FFmpeg;
 

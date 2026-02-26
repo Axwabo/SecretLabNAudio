@@ -1,4 +1,3 @@
-using SecretLabNAudio.Core;
 using SecretLabNAudio.Core.Extensions;
 using SecretLabNAudio.FFmpeg.Processors;
 

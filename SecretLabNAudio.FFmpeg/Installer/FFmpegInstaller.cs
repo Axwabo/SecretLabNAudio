@@ -1,6 +1,3 @@
-using System.Diagnostics;
-using System.Threading;
-using SecretLabNAudio.FFmpeg.Interop;
 using UnityEngine.Networking;
 
 namespace SecretLabNAudio.FFmpeg.Installer;

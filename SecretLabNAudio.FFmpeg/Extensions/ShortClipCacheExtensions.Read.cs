@@ -1,7 +1,5 @@
 using System.Runtime.InteropServices;
-using SecretLabNAudio.Core;
 using SecretLabNAudio.Core.Providers;
-using SecretLabNAudio.FFmpeg.Interop;
 
 namespace SecretLabNAudio.FFmpeg.Extensions;
 

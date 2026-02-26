@@ -1,4 +1,3 @@
-using SecretLabNAudio.Core;
 using SecretLabNAudio.FFmpeg.Extensions;
 
 namespace SecretLabNAudio.FFmpeg;
