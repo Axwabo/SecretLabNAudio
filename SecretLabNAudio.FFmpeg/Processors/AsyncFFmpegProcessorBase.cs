@@ -1,0 +1,156 @@
+using System.Runtime.InteropServices;
+using System.Threading.Tasks;
+using NAudio.Utils;
+using SecretLabNAudio.Core.Extensions;
+using SecretLabNAudio.Core.Processors;
+
+namespace SecretLabNAudio.FFmpeg.Processors;
+
+public abstract class AsyncFFmpegProcessorBase : IAudioProcessor
+{
+
+    private const TaskCreationOptions Options = TaskCreationOptions.DenyChildAttach | TaskCreationOptions.LongRunning;
+
+    private const int BufferSize = AudioPlayer.SamplesPerPacket * sizeof(float);
+
+    [ThreadStatic]
+    private static byte[]? _readBuffer;
+
+    private readonly CircularBuffer _buffer;
+
+    private protected readonly CancellationToken Token;
+
+    private CancellationTokenSource? _cts;
+
+    private protected FFmpegSL? Process { get; private set; }
+
+    public AsyncBufferingState BufferingState { get; private set; }
+
+    public NativeErrorCode StartupError { get; protected set; }
+
+    public Exception? AsyncException { get; protected set; }
+
+    public bool Disposed { get; private set; }
+
+    public WaveFormat WaveFormat { get; }
+
+    public string? FinalErrorMessage => Process?.FinalErrorMessage;
+
+    public int BufferCapacitySamples => _buffer.MaxLength;
+
+    public int SleepThresholdSamples
+    {
+        get;
+        set => field = value < 0
+            ? throw new ArgumentOutOfRangeException(nameof(value), "Sleep threshold samples must not be negative")
+            : value > BufferCapacitySamples
+                ? throw new ArgumentOutOfRangeException(nameof(value), "Sleep threshold samples must not be greater than the buffer's capacity")
+                : value;
+    }
+
+    public double SleepThresholdSeconds
+    {
+        get => WaveFormat.Seconds(SleepThresholdSamples);
+        set => SleepThresholdSamples = WaveFormat.SampleCount(value);
+    }
+
+    private protected AsyncFFmpegProcessorBase(double capacity, WaveFormat format)
+    {
+        WaveFormat = format;
+        _buffer = new CircularBuffer(format.SampleCount(capacity) * sizeof(float));
+        _cts = new CancellationTokenSource();
+        Token = _cts.Token;
+        SleepThresholdSeconds = capacity * 0.75;
+    }
+
+    private protected void Run(Action action) => Task.Factory.StartNew(() =>
+    {
+        try
+        {
+            action();
+        }
+        catch (Exception e) when (!Token.IsCancellationRequested)
+        {
+            AsyncException = e;
+        }
+    }, CancellationToken.None, Options, TaskScheduler.Default);
+
+    private protected bool TryStartFFmpeg(string input, [NotNullWhen(true)] out FFmpegSL? ffmpeg)
+    {
+        ffmpeg = Process = FFmpegSL.StartRaw(FFmpegArguments.ToStdout(input, WaveFormat.SampleRate, WaveFormat.Channels), true);
+        if (ffmpeg == null)
+        {
+            StartupError = FFmpegSL.LastCaughtStartError;
+            return false;
+        }
+
+        Run(BufferLoop);
+        return true;
+    }
+
+    private void BufferLoop()
+    {
+        var ffmpeg = Process;
+        if (ffmpeg == null)
+            return;
+        BufferingState = AsyncBufferingState.PreFillingBuffer;
+        while (!Token.IsCancellationRequested)
+        {
+            if (_buffer.Count > SleepThresholdSamples)
+            {
+                BufferingState = AsyncBufferingState.Reading;
+                Thread.Sleep(100);
+                continue;
+            }
+
+            _readBuffer = BufferHelpers.Ensure(_readBuffer, BufferSize);
+            var read = ffmpeg.Stdout.BaseStream.Read(_readBuffer, 0, _readBuffer.Length);
+            if (read == 0)
+                break;
+            _buffer.Write(_readBuffer, 0, read);
+        }
+
+        BufferingState = AsyncBufferingState.Ended;
+    }
+
+    public int Read(float[] buffer, int offset, int count)
+    {
+        if (StartupError == NativeErrorCode.None && AsyncException == null && BufferingState is not (AsyncBufferingState.Reading or AsyncBufferingState.Ended))
+        {
+            buffer.AsSpan(offset, count).Clear();
+            return count;
+        }
+
+        var bytes = count * sizeof(float);
+        _readBuffer = BufferHelpers.Ensure(_readBuffer, bytes);
+        var read = _buffer.Read(_readBuffer, 0, bytes);
+        var readSpan = _readBuffer.AsSpan(0, read);
+        var floatSpan = MemoryMarshal.Cast<byte, float>(readSpan);
+        floatSpan.CopyTo(buffer.AsSpan(offset, count));
+        return floatSpan.Length;
+    }
+
+    public virtual void StopBuffering()
+    {
+        _cts?.Cancel();
+        _cts?.Dispose();
+        _cts = null;
+    }
+
+    public void ClearBuffer(bool waitForRefill)
+    {
+        if (BufferingState == AsyncBufferingState.Reading && waitForRefill)
+            BufferingState = AsyncBufferingState.PreFillingBuffer;
+        _buffer.Reset();
+    }
+
+    public void Dispose()
+    {
+        if (Disposed)
+            return;
+        Disposed = true;
+        StopBuffering();
+        Process?.Dispose();
+    }
+
+}
