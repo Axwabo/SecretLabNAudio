@@ -56,7 +56,7 @@ public abstract class AsyncFFmpegProcessorBase : IAudioProcessor
         set => SleepThresholdSamples = WaveFormat.SampleCount(value);
     }
 
-    public bool PadIfFallingBehind { get; set; }
+    public bool AutoRefill { get; set; }
 
     private protected AsyncFFmpegProcessorBase(double capacity, WaveFormat format)
     {
@@ -125,9 +125,10 @@ public abstract class AsyncFFmpegProcessorBase : IAudioProcessor
         var readSpan = _readBuffer.AsSpan(0, read);
         var floatSpan = MemoryMarshal.Cast<byte, float>(readSpan);
         floatSpan.CopyTo(destination);
-        if (read >= count || !PadIfFallingBehind || BufferingState != AsyncBufferingState.Reading || AsyncException != null)
+        if (read >= count || !AutoRefill || BufferingState != AsyncBufferingState.Reading || AsyncException != null)
             return floatSpan.Length;
         destination[floatSpan.Length..].Clear();
+        BufferingState = AsyncBufferingState.PreFillingBuffer;
         return count;
     }
 
