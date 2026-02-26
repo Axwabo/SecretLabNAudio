@@ -26,7 +26,7 @@ public sealed partial class StreamBasedFFmpegProcessor : AsyncFFmpegProcessorBas
             BufferingState = AsyncBufferingState.StartingFFmpeg;
             if (!TryStartFFmpeg(arguments, out var ffmpeg))
                 return;
-            Run(() => BufferLoop(ffmpeg));
+            Offload(() => BufferLoop(ffmpeg));
             await stream.CopyToAsync(ffmpeg.Stdin!.BaseStream, Token);
         }
         catch (Exception e) when (!Token.IsCancellationRequested)
