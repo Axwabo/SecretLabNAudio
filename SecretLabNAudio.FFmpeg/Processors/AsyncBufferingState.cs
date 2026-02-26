@@ -3,7 +3,7 @@ namespace SecretLabNAudio.FFmpeg.Processors;
 public enum AsyncBufferingState
 {
 
-    WaitingForStreamResolver,
+    ResolvingStream,
     StartingFFmpeg,
     PreFillingBuffer,
     Reading,
