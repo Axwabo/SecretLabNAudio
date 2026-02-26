@@ -1,5 +1,3 @@
-
-
 // ReSharper disable InvokeAsExtensionMember
 
 namespace SecretLabNAudio.FFmpeg.Extensions;
@@ -27,7 +25,7 @@ public static class FFmpegSLExtensions
                 return true;
             ffmpeg.Stdin.Write('q');
             ffmpeg.Stdin.Flush();
-            return ffmpeg.WaitForExit(timeoutMilliseconds);
+            return timeoutMilliseconds == 0 ? ffmpeg.HasExited : ffmpeg.WaitForExit(timeoutMilliseconds);
         }
 
         /// <summary>
