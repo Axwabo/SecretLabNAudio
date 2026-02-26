@@ -89,6 +89,7 @@ public abstract class AsyncFFmpegProcessorBase : IAudioProcessor
     private protected void BufferLoop(FFmpegSL ffmpeg)
     {
         BufferingState = AsyncBufferingState.PreFillingBuffer;
+        var buffer = _readBuffer = BufferHelpers.Ensure(_readBuffer, BufferSize);
         while (!Token.IsCancellationRequested)
         {
             if (_buffer.Count > SleepThresholdSamples)
@@ -98,11 +99,10 @@ public abstract class AsyncFFmpegProcessorBase : IAudioProcessor
                 continue;
             }
 
-            _readBuffer = BufferHelpers.Ensure(_readBuffer, BufferSize);
-            var read = ffmpeg.Stdout.BaseStream.Read(_readBuffer, 0, _readBuffer.Length);
+            var read = ffmpeg.Stdout.BaseStream.Read(buffer, 0, buffer.Length);
             if (read == 0)
                 break;
-            _buffer.Write(_readBuffer, 0, read);
+            _buffer.Write(buffer, 0, read);
         }
 
         BufferingState = AsyncBufferingState.Ended;
