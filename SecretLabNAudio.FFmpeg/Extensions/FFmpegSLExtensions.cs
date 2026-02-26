@@ -31,6 +31,16 @@ public static class FFmpegSLExtensions
             return ffmpeg.WaitForExit(timeoutMilliseconds);
         }
 
+        /// <summary>
+        /// Throws an exception if the FFmpeg process has exited with a non-zero exit code, and has an error message.
+        /// </summary>
+        /// <exception cref="FFmpegRuntimeException">The exception if validation failed.</exception>
+        public void ThrowIfExitedWithError()
+        {
+            if (ffmpeg is {HasExited: true, ExitCode: not 0} && !string.IsNullOrWhiteSpace(ffmpeg.FinalErrorMessage))
+                throw new FFmpegRuntimeException(ffmpeg.FinalErrorMessage!);
+        }
+
     }
 
 }

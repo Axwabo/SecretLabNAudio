@@ -30,12 +30,42 @@ public sealed partial class FFmpegSL : IDisposable
     /// <summary>The standard error of the process.</summary>
     public StreamReader Stderr => _process.StandardError;
 
-    /// <inheritdoc cref="Process.HasExited"/>
+    /// <summary>
+    /// Gets a value indicating whether the associated process has been terminated.
+    /// The value may be false if asynchronous pipe handlers (e.g. <see cref="Stdout"/>) have not yet completed processing.
+    /// </summary>
+    /// <exception cref="InvalidOperationException">There is no process associated with the object.</exception>
+    /// <exception cref="System.ComponentModel.Win32Exception">The exit code for the process could not be retrieved.</exception>
+    /// <seealso cref="WaitForExit"/>
+    /// <seealso cref="ExitCode"/>
     public bool HasExited => _process.HasExited;
 
+    /// <summary>
+    /// Gets the value that the associated process specified when it terminated.
+    /// </summary>
+    /// <exception cref="InvalidOperationException">The process has not yet exited or the process handle is not valid.</exception>
+    public int ExitCode => _process.ExitCode;
+
+    /// <summary>
+    /// Returns the cached output of <see cref="Stderr"/>.
+    /// If the cached value is null, reads the <see cref="Stderr"/> to the end if the process has exited, and caches the result.
+    /// If the value isn't cached, and the process has not yet exited or has been disposed, returns null.
+    /// </summary>
+    /// <remarks>
+    /// The returned value (if not null) ends with a newline.
+    /// Call <see cref="string.IsNullOrWhiteSpace"/> to check whether there's an error message.
+    /// </remarks>
     public string? FinalErrorMessage => field ?? (_disposed || !HasExited ? null : field = Stderr.ReadToEnd());
 
-    /// <inheritdoc cref="Process.WaitForExit(int)"/>
+    /// <summary>Instructs the process to wait the specified number of milliseconds for the associated process to exit.</summary>
+    /// <param name="milliseconds">
+    /// The amount of time, in milliseconds, to wait for the associated process to exit.
+    /// A value of 0 specifies an immediate return, and a value of -1 specifies an infinite wait.
+    /// </param>
+    /// <returns>true if the associated process has exited; otherwise, false.</returns>
+    /// <exception cref="System.ComponentModel.Win32Exception">The wait setting could not be accessed.</exception>
+    /// <exception cref="SystemException">There is no process associated with this Process object.</exception>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="milliseconds"/> is a negative number other than -1, which represents an infinite time-out.</exception>
     public bool WaitForExit(int milliseconds = -1) => _process.WaitForExit(milliseconds);
 
     /// <summary>
