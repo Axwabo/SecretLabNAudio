@@ -1,20 +1,42 @@
 namespace SecretLabNAudio.FFmpeg.Processors;
 
-public sealed partial class AsyncBufferedFFmpegAudioProcessor : AsyncFFmpegProcessorBase
+public sealed class AsyncBufferedFFmpegAudioProcessor : AsyncFFmpegProcessorBase
 {
 
-    private AsyncBufferedFFmpegAudioProcessor(string input, double capacity, WaveFormat format) : base(capacity, format)
-        => Run(() =>
-        {
-            if (TryStartFFmpeg(FFmpegArguments.ToStdoutString(input, WaveFormat.SampleRate, WaveFormat.Channels), out var ffmpeg))
-                BufferLoop(ffmpeg);
-        });
+    public static AsyncBufferedFFmpegAudioProcessor CreatePlayerCompatible(string input, double capacity = DefaultCapacity)
+        => new(input, capacity, AudioPlayer.SupportedFormat);
 
-    private AsyncBufferedFFmpegAudioProcessor(FFmpegArguments arguments, double capacity) : base(capacity, arguments)
-        => Run(() =>
+    public static AsyncBufferedFFmpegAudioProcessor CreatePlayerCompatible(FFmpegArguments arguments, double capacity = DefaultCapacity)
+        => new(capacity, arguments.ForPlayerCompatibleFloatPiping());
+
+    public AsyncBufferedFFmpegAudioProcessor(string input, int sampleRate, int channels, double capacity = DefaultCapacity)
+        : this(input, capacity, WaveFormat.CreateIeeeFloatWaveFormat(sampleRate, channels))
+    {
+    }
+
+    public AsyncBufferedFFmpegAudioProcessor(FFmpegArguments arguments, double capacity = DefaultCapacity)
+        : this(capacity, arguments.ForFloatPiping())
+    {
+    }
+
+    private AsyncBufferedFFmpegAudioProcessor(string input, double capacity, WaveFormat format) : base(capacity, format)
+    {
+        var arguments = FFmpegArguments.ToStdoutString(input, format.SampleRate, format.Channels);
+        Run(() =>
         {
             if (TryStartFFmpeg(arguments, out var ffmpeg))
                 BufferLoop(ffmpeg);
         });
+    }
+
+    private AsyncBufferedFFmpegAudioProcessor(double capacity, FFmpegArguments transformedArguments) : base(capacity, transformedArguments)
+    {
+        var arguments = transformedArguments.ToString();
+        Run(() =>
+        {
+            if (TryStartFFmpeg(arguments, out var ffmpeg))
+                BufferLoop(ffmpeg);
+        });
+    }
 
 }

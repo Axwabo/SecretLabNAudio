@@ -8,17 +8,22 @@ using StreamResolver = Func<CancellationToken, Task<Stream>>;
 public sealed partial class StreamBasedFFmpegProcessor : AsyncFFmpegProcessorBase
 {
 
-    private StreamBasedFFmpegProcessor(StreamResolver resolver, bool isOwned, double capacity, FFmpegArguments arguments)
-        : base(capacity, arguments)
-        => _ = StartAsync(resolver, isOwned, arguments);
-
-    private async Awaitable StartAsync(StreamResolver resolver, bool isOwned, FFmpegArguments arguments)
+    private StreamBasedFFmpegProcessor(StreamResolver resolver, bool isOwned, double capacity, FFmpegArguments transformedArguments)
+        : base(capacity, transformedArguments)
     {
+        var arguments = transformedArguments.ToString();
+        _ = StartAsync(resolver, isOwned, arguments);
+    }
+
+    private async Awaitable StartAsync(StreamResolver resolver, bool isOwned, string arguments)
+    {
+        BufferingState = AsyncBufferingState.ResolvingStream;
         await Awaitable.BackgroundThreadAsync();
         Stream? stream = null;
         try
         {
             stream = await resolver(Token);
+            BufferingState = AsyncBufferingState.StartingFFmpeg;
             if (!TryStartFFmpeg(arguments, out var ffmpeg))
                 return;
             Run(() => BufferLoop(ffmpeg));

@@ -13,6 +13,8 @@ public abstract class AsyncFFmpegProcessorBase : IAudioProcessor
 
     private const int BufferSize = AudioPlayer.SamplesPerPacket * sizeof(float);
 
+    public const double DefaultCapacity = 10;
+
     [ThreadStatic]
     private static byte[]? _readBuffer;
 
@@ -24,7 +26,7 @@ public abstract class AsyncFFmpegProcessorBase : IAudioProcessor
 
     private protected FFmpegSL? Process { get; private set; }
 
-    public AsyncBufferingState BufferingState { get; private set; }
+    public AsyncBufferingState BufferingState { get; protected set; }
 
     public NativeErrorCode StartupError { get; protected set; }
 
@@ -75,13 +77,7 @@ public abstract class AsyncFFmpegProcessorBase : IAudioProcessor
         }
     }, CancellationToken.None, Options, TaskScheduler.Default);
 
-    private protected bool TryStartFFmpeg(string input, [NotNullWhen(true)] out FFmpegSL? ffmpeg) 
-        => TryStartFFmpegInternal(FFmpegArguments.ToStdoutString(input, WaveFormat.SampleRate, WaveFormat.Channels), out ffmpeg);
-
-    private protected bool TryStartFFmpeg(FFmpegArguments arguments, [NotNullWhen(true)] out FFmpegSL? ffmpeg) 
-        => TryStartFFmpegInternal(arguments.ForFloatPiping().ToString(), out ffmpeg);
-
-    private bool TryStartFFmpegInternal(string arguments, [NotNullWhen(true)] out FFmpegSL? ffmpeg)
+    private protected bool TryStartFFmpeg(string arguments, [NotNullWhen(true)] out FFmpegSL? ffmpeg)
     {
         ffmpeg = Process = FFmpegSL.StartRaw(arguments, true);
         if (ffmpeg != null)
