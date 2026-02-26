@@ -75,9 +75,15 @@ public abstract class AsyncFFmpegProcessorBase : IAudioProcessor
         }
     }, CancellationToken.None, Options, TaskScheduler.Default);
 
-    private protected bool TryStartFFmpeg(string input, [NotNullWhen(true)] out FFmpegSL? ffmpeg)
+    private protected bool TryStartFFmpeg(string input, [NotNullWhen(true)] out FFmpegSL? ffmpeg) 
+        => TryStartFFmpegInternal(FFmpegArguments.ToStdoutString(input, WaveFormat.SampleRate, WaveFormat.Channels), out ffmpeg);
+
+    private protected bool TryStartFFmpeg(FFmpegArguments arguments, [NotNullWhen(true)] out FFmpegSL? ffmpeg) 
+        => TryStartFFmpegInternal(arguments.ForFloatPiping().ToString(), out ffmpeg);
+
+    private bool TryStartFFmpegInternal(string arguments, [NotNullWhen(true)] out FFmpegSL? ffmpeg)
     {
-        ffmpeg = Process = FFmpegSL.StartRaw(FFmpegArguments.ToStdout(input, WaveFormat.SampleRate, WaveFormat.Channels), true);
+        ffmpeg = Process = FFmpegSL.StartRaw(arguments, true);
         if (ffmpeg != null)
             return true;
         StartupError = FFmpegSL.LastCaughtStartError;

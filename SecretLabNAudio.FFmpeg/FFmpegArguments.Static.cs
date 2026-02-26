@@ -17,7 +17,7 @@ public readonly partial record struct FFmpegArguments
     private const string OutputMissing = "Output must be specified";
     private const string StdoutFormat = $"{VerbosityError}-i \"{{0}}\" -ar {{1}} -ac {{2}} -f {Float32Format} {StandardPipe}";
 
-    public static FFmpegArguments PlayerCompatibleTemplate { get; } = new()
+    public static FFmpegArguments PlayerCompatibleStdout { get; } = new()
     {
         SampleRate = AudioPlayer.SampleRate,
         Channels = AudioPlayer.Channels,
@@ -25,11 +25,19 @@ public readonly partial record struct FFmpegArguments
         Output = StandardPipe
     };
 
-    public static string ToStdout(string input, int sampleRate, int channels) => string.Format(
+    public static string ToStdoutString(string input, int sampleRate, int channels) => string.Format(
         StdoutFormat,
         input.ValidateProcessArgument(nameof(input), InputMissing, InputHasQuotation),
         sampleRate,
         channels
     );
+
+    public static FFmpegArguments StdinToStdout(int sampleRate, int channels)
+        => new(false, null, StandardPipe, sampleRate, channels, null, Float32Format, StandardPipe);
+
+    public static implicit operator WaveFormat(FFmpegArguments arguments)
+        => arguments is {SampleRate: AudioPlayer.SampleRate, Channels: AudioPlayer.Channels}
+            ? AudioPlayer.SupportedFormat
+            : WaveFormat.CreateIeeeFloatWaveFormat(arguments.SampleRate, arguments.Channels);
 
 }
