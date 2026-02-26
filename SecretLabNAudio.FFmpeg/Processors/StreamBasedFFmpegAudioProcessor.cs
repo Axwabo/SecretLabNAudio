@@ -5,10 +5,10 @@ namespace SecretLabNAudio.FFmpeg.Processors;
 
 using StreamResolver = Func<CancellationToken, Task<Stream>>;
 
-public sealed partial class StreamBasedFFmpegProcessor : AsyncFFmpegProcessorBase
+public sealed partial class StreamBasedFFmpegAudioProcessor : AsyncFFmpegProcessorBase
 {
 
-    private StreamBasedFFmpegProcessor(StreamResolver resolver, bool isOwned, double capacity, FFmpegArguments transformedArguments)
+    private StreamBasedFFmpegAudioProcessor(StreamResolver resolver, bool isOwned, double capacity, FFmpegArguments transformedArguments)
         : base(capacity, transformedArguments)
     {
         var arguments = transformedArguments.ToString();
