@@ -56,6 +56,8 @@ public abstract class AsyncFFmpegProcessorBase : IAudioProcessor
         set => SleepThresholdSamples = WaveFormat.SampleCount(value);
     }
 
+    public bool PadIfFallingBehind { get; set; }
+
     private protected AsyncFFmpegProcessorBase(double capacity, WaveFormat format)
     {
         WaveFormat = format;
@@ -102,7 +104,7 @@ public abstract class AsyncFFmpegProcessorBase : IAudioProcessor
             var read = ffmpeg.Stdout.BaseStream.Read(buffer, 0, buffer.Length);
             if (read == 0)
                 break;
-            _buffer.Write(buffer, 0, read);
+            _buffer.Write(buffer, 0, read - read % sizeof(float));
         }
 
         BufferingState = AsyncBufferingState.Ended;
@@ -110,9 +112,10 @@ public abstract class AsyncFFmpegProcessorBase : IAudioProcessor
 
     public int Read(float[] buffer, int offset, int count)
     {
+        var destination = buffer.AsSpan(offset, count);
         if (StartupError == NativeErrorCode.None && AsyncException == null && BufferingState is not (AsyncBufferingState.Reading or AsyncBufferingState.Ended))
         {
-            buffer.AsSpan(offset, count).Clear();
+            destination.Clear();
             return count;
         }
 
@@ -121,8 +124,11 @@ public abstract class AsyncFFmpegProcessorBase : IAudioProcessor
         var read = _buffer.Read(_readBuffer, 0, bytes);
         var readSpan = _readBuffer.AsSpan(0, read);
         var floatSpan = MemoryMarshal.Cast<byte, float>(readSpan);
-        floatSpan.CopyTo(buffer.AsSpan(offset, count));
-        return floatSpan.Length;
+        floatSpan.CopyTo(destination);
+        if (read >= count || !PadIfFallingBehind || BufferingState != AsyncBufferingState.Reading || AsyncException != null)
+            return floatSpan.Length;
+        destination[floatSpan.Length..].Clear();
+        return count;
     }
 
     public virtual void StopBuffering()
