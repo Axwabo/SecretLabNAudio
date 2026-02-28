@@ -28,36 +28,63 @@ public abstract class AsyncFFmpegProcessorBase : IAudioProcessor, IFFmpegWrapper
 
     private protected FFmpegSL? Process { get; private set; }
 
+    /// <summary>
+    /// The state of the buffering thread.
+    /// </summary>
     public AsyncBufferingState BufferingState { get; protected set; }
 
+    /// <summary>
+    /// The error (if any) that was encountered during the startup of FFmpeg.
+    /// </summary>
     public NativeErrorCode StartupError { get; private set; }
 
+    /// <summary>
+    /// The exception (if any) that occurred during async buffering.
+    /// </summary>
     public Exception? AsyncException { get; protected set; }
 
-    public bool Disposed { get; private set; }
+    /// <inheritdoc/>
+    public bool IsDisposed { get; private set; }
 
+    /// <summary>
+    /// The capacity of the buffer in samples.
+    /// </summary>
     public int BufferCapacitySamples => _buffer.MaxLength;
 
+    /// <summary>
+    /// If the buffer contains more than this many samples, the buffering loop will wait for 100ms before checking again.
+    /// </summary>
     public int SleepThresholdSamples
     {
         get;
         set => field = Mathf.Clamp(value, 0, BufferCapacitySamples);
     }
 
+    /// <summary>
+    /// If the buffer contains more samples than the equivalent of this value based on the <see cref="WaveFormat"/>, the buffering loop will wait for 100ms before checking again.
+    /// </summary>
     public double SleepThresholdSeconds
     {
         get => WaveFormat.Seconds(SleepThresholdSamples);
         set => SleepThresholdSamples = WaveFormat.SampleCount(value);
     }
 
+    /// <summary>
+    /// If true, the buffering thread will always try to write to the buffer. If not enough data is available, <see cref="Read"/> will pad the data with zeroes.
+    /// </summary>
+    /// <seealso cref="StopBuffering"/>
     public bool Endless { get; set; }
 
+    /// <inheritdoc/>
     public WaveFormat WaveFormat { get; }
 
-    public bool HasExited => Process.HasExited;
+    /// <inheritdoc/>
+    public bool HasExited => Process?.HasExited ?? false;
 
-    public int ExitCode => Process.ExitCode;
+    /// <inheritdoc/>
+    public int ExitCode => Process?.ExitCode ?? throw new InvalidOperationException("The process has not started yet.");
 
+    /// <inheritdoc/>
     public string? FinalErrorMessage => Process?.FinalErrorMessage;
 
     private protected AsyncFFmpegProcessorBase(double capacity, WaveFormat format)
@@ -112,6 +139,7 @@ public abstract class AsyncFFmpegProcessorBase : IAudioProcessor, IFFmpegWrapper
         BufferingState = AsyncBufferingState.Ended;
     }
 
+    /// <inheritdoc/>
     public int Read(float[] buffer, int offset, int count)
     {
         var destination = buffer.AsSpan(offset, count);
@@ -134,13 +162,26 @@ public abstract class AsyncFFmpegProcessorBase : IAudioProcessor, IFFmpegWrapper
         return count;
     }
 
+    /// <summary>
+    /// Stops the buffering thread. The remaining data in the buffer will still be readable.
+    /// </summary>
+    /// <seealso cref="ClearBuffer"/>
     public virtual void StopBuffering()
     {
+        BufferingState = AsyncBufferingState.Ended;
         _cts?.Cancel();
         _cts?.Dispose();
         _cts = null;
     }
 
+    /// <summary>
+    /// Resets the buffer to 0 samples. The buffering thread is not guaranteed to stop.
+    /// </summary>
+    /// <param name="waitForRefill">
+    /// If true, sets the state to <see cref="AsyncBufferingState.PreFillingBuffer"/>,
+    /// padding this provider with silence until the buffer has at least <see cref="SleepThresholdSamples"/>.
+    /// </param>
+    /// <seealso cref="StopBuffering"/>
     public void ClearBuffer(bool waitForRefill)
     {
         if (BufferingState == AsyncBufferingState.Reading && waitForRefill)
@@ -148,11 +189,12 @@ public abstract class AsyncFFmpegProcessorBase : IAudioProcessor, IFFmpegWrapper
         _buffer.Reset();
     }
 
+    /// <inheritdoc cref="FFmpegSL.Dispose"/>
     public void Dispose()
     {
-        if (Disposed)
+        if (IsDisposed)
             return;
-        Disposed = true;
+        IsDisposed = true;
         StopBuffering();
         Process?.Dispose();
     }

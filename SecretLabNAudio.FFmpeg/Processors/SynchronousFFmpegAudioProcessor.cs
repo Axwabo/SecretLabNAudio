@@ -29,6 +29,8 @@ public sealed partial class SynchronousFFmpegAudioProcessor : IAudioProcessor, I
 
     public string? FinalErrorMessage => _ffmpeg.FinalErrorMessage;
 
+    public bool IsDisposed => _ffmpeg.IsDisposed;
+
     public void Dispose() => _ffmpeg.Dispose();
 
 }

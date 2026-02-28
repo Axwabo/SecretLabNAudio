@@ -1,7 +1,7 @@
 namespace SecretLabNAudio.FFmpeg.Interop;
 
 /// <summary>
-/// 
+/// A base interface for objects wrapping an FFmpeg process.
 /// </summary>
 public interface IFFmpegWrapper
 {
@@ -31,5 +31,10 @@ public interface IFFmpegWrapper
     /// Call <see cref="string.IsNullOrWhiteSpace"/> to check whether there's an error message.
     /// </remarks>
     string? FinalErrorMessage { get; }
+
+    /// <summary>
+    /// Whether the underlying process instance has been disposed.
+    /// </summary>
+    bool IsDisposed { get; }
 
 }

@@ -10,7 +10,8 @@ public sealed partial class FFmpegSL : IDisposable, IFFmpegWrapper
     private readonly Process _process;
     private readonly bool _redirectStandardInput;
 
-    private bool _disposed;
+    /// <inheritdoc/>
+    public bool IsDisposed { get; private set; }
 
     private FFmpegSL(Process process, bool redirectStandardInput)
     {
@@ -36,7 +37,7 @@ public sealed partial class FFmpegSL : IDisposable, IFFmpegWrapper
     public int ExitCode => _process.ExitCode;
 
     /// <inheritdoc/>
-    public string? FinalErrorMessage => field ?? (_disposed || !HasExited ? null : field = Stderr.ReadToEnd());
+    public string? FinalErrorMessage => field ?? (IsDisposed || !HasExited ? null : field = Stderr.ReadToEnd());
 
     /// <summary>Instructs the process to wait the specified number of milliseconds for the associated process to exit.</summary>
     /// <param name="milliseconds">
@@ -55,9 +56,9 @@ public sealed partial class FFmpegSL : IDisposable, IFFmpegWrapper
     /// </summary>
     public void Dispose()
     {
-        if (_disposed)
+        if (IsDisposed)
             return;
-        _disposed = true;
+        IsDisposed = true;
         if (!HasExited)
             try
             {

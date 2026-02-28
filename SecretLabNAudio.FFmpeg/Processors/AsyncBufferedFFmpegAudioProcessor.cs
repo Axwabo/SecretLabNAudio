@@ -38,10 +38,11 @@ public sealed class AsyncBufferedFFmpegAudioProcessor : AsyncFFmpegProcessorBase
     }
 
     /// <inheritdoc />
+    /// <remarks>A graceful termination signal is sent to FFmpeg. This method does not wait for FFmpeg to exit.</remarks>
     public override void StopBuffering()
     {
         base.StopBuffering();
-        if (!Disposed && Process is {HasExited: false})
+        if (!IsDisposed && Process is {HasExited: false})
             Process.TryTerminateGracefully(0);
     }
 
