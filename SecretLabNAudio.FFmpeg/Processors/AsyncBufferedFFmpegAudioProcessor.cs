@@ -11,15 +11,11 @@ public sealed class AsyncBufferedFFmpegAudioProcessor : AsyncFFmpegProcessorBase
     public static AsyncBufferedFFmpegAudioProcessor CreatePlayerCompatible(FFmpegArguments arguments, double capacity = DefaultCapacity)
         => new(capacity, arguments.ForPlayerCompatibleFloatPiping());
 
-    public AsyncBufferedFFmpegAudioProcessor(string input, int sampleRate, int channels, double capacity = DefaultCapacity)
-        : this(input, capacity, WaveFormat.CreateIeeeFloatWaveFormat(sampleRate, channels))
-    {
-    }
+    public static AsyncBufferedFFmpegAudioProcessor Create(string input, int sampleRate, int channels, double capacity = DefaultCapacity)
+        => new(input, capacity, WaveFormat.CreateIeeeFloatWaveFormat(sampleRate, channels));
 
-    public AsyncBufferedFFmpegAudioProcessor(FFmpegArguments arguments, double capacity = DefaultCapacity)
-        : this(capacity, arguments.ForFloatPiping())
-    {
-    }
+    public static AsyncBufferedFFmpegAudioProcessor Create(FFmpegArguments arguments, double capacity = DefaultCapacity)
+        => new(capacity, arguments.ForFloatPiping());
 
     private AsyncBufferedFFmpegAudioProcessor(string input, double capacity, WaveFormat format) : base(capacity, format)
     {

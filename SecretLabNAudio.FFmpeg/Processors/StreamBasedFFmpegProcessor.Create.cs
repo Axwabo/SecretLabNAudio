@@ -21,24 +21,16 @@ public sealed partial class StreamBasedFFmpegAudioProcessor
     public static StreamBasedFFmpegAudioProcessor CreatePlayerCompatible(Task<Stream> resolver, FFmpegArguments arguments, double capacity = DefaultCapacity, bool isOwned = true)
         => CreatePlayerCompatible(_ => resolver, arguments, capacity, isOwned);
 
-    public StreamBasedFFmpegAudioProcessor(StreamResolver resolver, int sampleRate, int channels, double capacity = DefaultCapacity, bool isOwned = true)
-        : this(resolver, isOwned, capacity, FFmpegArguments.StdinToStdout(sampleRate, channels))
-    {
-    }
+    public static StreamBasedFFmpegAudioProcessor Create(StreamResolver resolver, int sampleRate, int channels, double capacity = DefaultCapacity, bool isOwned = true)
+        => new(resolver, isOwned, capacity, FFmpegArguments.StdinToStdout(sampleRate, channels));
 
-    public StreamBasedFFmpegAudioProcessor(Task<Stream> resolver, int sampleRate, int channels, double capacity = DefaultCapacity, bool isOwned = true)
-        : this(_ => resolver, sampleRate, channels, capacity, isOwned)
-    {
-    }
+    public static StreamBasedFFmpegAudioProcessor Create(Task<Stream> resolver, int sampleRate, int channels, double capacity = DefaultCapacity, bool isOwned = true)
+        => Create(_ => resolver, sampleRate, channels, capacity, isOwned);
 
-    public StreamBasedFFmpegAudioProcessor(StreamResolver resolver, FFmpegArguments arguments, double capacity = DefaultCapacity, bool isOwned = true)
-        : this(resolver, isOwned, capacity, arguments.ReadFromStandardInput().ForFloatPiping())
-    {
-    }
+    public static StreamBasedFFmpegAudioProcessor Create(StreamResolver resolver, FFmpegArguments arguments, double capacity = DefaultCapacity, bool isOwned = true)
+        => new(resolver, isOwned, capacity, arguments.ReadFromStandardInput().ForFloatPiping());
 
-    public StreamBasedFFmpegAudioProcessor(Task<Stream> resolver, FFmpegArguments arguments, double capacity = DefaultCapacity, bool isOwned = true)
-        : this(_ => resolver, arguments, capacity, isOwned)
-    {
-    }
+    public static StreamBasedFFmpegAudioProcessor Create(Task<Stream> resolver, FFmpegArguments arguments, double capacity = DefaultCapacity, bool isOwned = true)
+        => Create(_ => resolver, arguments, capacity, isOwned);
 
 }

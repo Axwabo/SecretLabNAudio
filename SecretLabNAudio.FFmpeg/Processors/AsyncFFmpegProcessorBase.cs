@@ -13,6 +13,8 @@ public abstract class AsyncFFmpegProcessorBase : IAudioProcessor
 
     private const int BufferSize = AudioPlayer.SamplesPerPacket * sizeof(float);
 
+    public const int MinCapacitySamples = BufferSize;
+
     public const double DefaultCapacity = 10;
 
     [ThreadStatic]
@@ -28,7 +30,7 @@ public abstract class AsyncFFmpegProcessorBase : IAudioProcessor
 
     public AsyncBufferingState BufferingState { get; protected set; }
 
-    public NativeErrorCode StartupError { get; protected set; }
+    public NativeErrorCode StartupError { get; private set; }
 
     public Exception? AsyncException { get; protected set; }
 
@@ -43,11 +45,7 @@ public abstract class AsyncFFmpegProcessorBase : IAudioProcessor
     public int SleepThresholdSamples
     {
         get;
-        set => field = value < 0
-            ? throw new ArgumentOutOfRangeException(nameof(value), "Sleep threshold samples must not be negative")
-            : value > BufferCapacitySamples
-                ? throw new ArgumentOutOfRangeException(nameof(value), "Sleep threshold samples must not be greater than the buffer's capacity")
-                : value;
+        set => field = Mathf.Clamp(value, 0, BufferCapacitySamples);
     }
 
     public double SleepThresholdSeconds
@@ -61,7 +59,7 @@ public abstract class AsyncFFmpegProcessorBase : IAudioProcessor
     private protected AsyncFFmpegProcessorBase(double capacity, WaveFormat format)
     {
         WaveFormat = format;
-        _buffer = new CircularBuffer(format.SampleCount(capacity) * sizeof(float));
+        _buffer = new CircularBuffer(Mathf.Max(MinCapacitySamples, format.SampleCount(capacity) * sizeof(float)));
         _cts = new CancellationTokenSource();
         Token = _cts.Token;
         SleepThresholdSeconds = capacity * 0.75;
