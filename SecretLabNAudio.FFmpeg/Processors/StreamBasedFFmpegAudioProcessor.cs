@@ -1,5 +1,4 @@
 using System.Threading.Tasks;
-using SecretLabNAudio.FFmpeg.Extensions;
 
 namespace SecretLabNAudio.FFmpeg.Processors;
 
@@ -38,14 +37,6 @@ public sealed partial class StreamBasedFFmpegAudioProcessor : AsyncFFmpegProcess
             if (isOwned && stream != null)
                 await stream.DisposeAsync();
         }
-    }
-
-    /// <inheritdoc />
-    public override void StopBuffering()
-    {
-        base.StopBuffering();
-        if (!Disposed && Process is {HasExited: false})
-            Process.TryTerminateGracefully(0);
     }
 
 }

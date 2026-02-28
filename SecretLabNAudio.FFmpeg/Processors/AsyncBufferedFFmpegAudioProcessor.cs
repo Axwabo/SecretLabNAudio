@@ -1,3 +1,5 @@
+using SecretLabNAudio.FFmpeg.Extensions;
+
 namespace SecretLabNAudio.FFmpeg.Processors;
 
 public sealed class AsyncBufferedFFmpegAudioProcessor : AsyncFFmpegProcessorBase
@@ -37,6 +39,14 @@ public sealed class AsyncBufferedFFmpegAudioProcessor : AsyncFFmpegProcessorBase
             if (TryStartFFmpeg(arguments, out var ffmpeg))
                 BufferLoop(ffmpeg);
         });
+    }
+
+    /// <inheritdoc />
+    public override void StopBuffering()
+    {
+        base.StopBuffering();
+        if (!Disposed && Process is {HasExited: false})
+            Process.TryTerminateGracefully(0);
     }
 
 }
