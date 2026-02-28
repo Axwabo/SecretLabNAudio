@@ -35,6 +35,7 @@ public abstract class AsyncFFmpegProcessorBase : IAudioProcessor, IFFmpegWrapper
     public Exception? AsyncException { get; protected set; }
 
     public bool Disposed { get; private set; }
+
     public int BufferCapacitySamples => _buffer.MaxLength;
 
     public int SleepThresholdSamples
@@ -58,7 +59,6 @@ public abstract class AsyncFFmpegProcessorBase : IAudioProcessor, IFFmpegWrapper
     public int ExitCode => Process.ExitCode;
 
     public string? FinalErrorMessage => Process?.FinalErrorMessage;
-
 
     private protected AsyncFFmpegProcessorBase(double capacity, WaveFormat format)
     {
