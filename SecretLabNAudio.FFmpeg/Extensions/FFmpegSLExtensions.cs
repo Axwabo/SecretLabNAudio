@@ -28,6 +28,11 @@ public static class FFmpegSLExtensions
             return timeoutMilliseconds == 0 ? ffmpeg.HasExited : ffmpeg.WaitForExit(timeoutMilliseconds);
         }
 
+    }
+
+    extension(IFFmpegWrapper ffmpeg)
+    {
+
         /// <summary>
         /// Throws an exception if the FFmpeg process has exited with a non-zero exit code, and has an error message.
         /// </summary>

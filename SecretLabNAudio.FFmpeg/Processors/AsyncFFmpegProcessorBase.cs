@@ -6,7 +6,7 @@ using SecretLabNAudio.Core.Processors;
 
 namespace SecretLabNAudio.FFmpeg.Processors;
 
-public abstract class AsyncFFmpegProcessorBase : IAudioProcessor
+public abstract class AsyncFFmpegProcessorBase : IAudioProcessor, IFFmpegWrapper
 {
 
     private const TaskCreationOptions Options = TaskCreationOptions.DenyChildAttach | TaskCreationOptions.LongRunning;
@@ -35,11 +35,6 @@ public abstract class AsyncFFmpegProcessorBase : IAudioProcessor
     public Exception? AsyncException { get; protected set; }
 
     public bool Disposed { get; private set; }
-
-    public WaveFormat WaveFormat { get; }
-
-    public string? FinalErrorMessage => Process?.FinalErrorMessage;
-
     public int BufferCapacitySamples => _buffer.MaxLength;
 
     public int SleepThresholdSamples
@@ -55,6 +50,15 @@ public abstract class AsyncFFmpegProcessorBase : IAudioProcessor
     }
 
     public bool Endless { get; set; }
+
+    public WaveFormat WaveFormat { get; }
+
+    public bool HasExited => Process.HasExited;
+
+    public int ExitCode => Process.ExitCode;
+
+    public string? FinalErrorMessage => Process?.FinalErrorMessage;
+
 
     private protected AsyncFFmpegProcessorBase(double capacity, WaveFormat format)
     {

@@ -3,7 +3,7 @@ using SecretLabNAudio.Core.Processors;
 
 namespace SecretLabNAudio.FFmpeg.Processors;
 
-public sealed partial class SynchronousFFmpegAudioProcessor : IAudioProcessor
+public sealed partial class SynchronousFFmpegAudioProcessor : IAudioProcessor, IFFmpegWrapper
 {
 
     private readonly FFmpegSL _ffmpeg;
@@ -24,6 +24,8 @@ public sealed partial class SynchronousFFmpegAudioProcessor : IAudioProcessor
     public WaveFormat WaveFormat { get; }
 
     public bool HasExited => _ffmpeg.HasExited;
+
+    public int ExitCode => _ffmpeg.ExitCode;
 
     public string? FinalErrorMessage => _ffmpeg.FinalErrorMessage;
 
