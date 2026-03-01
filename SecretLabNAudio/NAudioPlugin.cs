@@ -1,5 +1,6 @@
 ﻿using LabApi.Loader.Features.Plugins;
 using LabApi.Loader.Features.Plugins.Enums;
+using SecretLabNAudio.FFmpeg;
 using SecretLabNAudio.NLayer;
 using SecretLabNAudio.NVorbis;
 
@@ -10,7 +11,7 @@ public sealed class NAudioPlugin : Plugin
 
     public override string Name => "SecretLabNAudio";
 
-    public override string Description => "SecretLabNAudio.Core, SecretLabNAudio.NVorbis and SecretLabNAudio.NLayer";
+    public override string Description => "SecretLabNAudio.Core, SecretLabNAudio.FFmpeg, SecretLabNAudio.NVorbis and SecretLabNAudio.NLayer";
 
     public override string Author => "Axwabo";
 
@@ -24,6 +25,7 @@ public sealed class NAudioPlugin : Plugin
     {
         NVorbisPlugin.RegisterFactory();
         NLayerPlugin.RegisterFactory();
+        EmbeddedPluginEnabler.EnablePlugin();
     }
 
     public override void Disable()
