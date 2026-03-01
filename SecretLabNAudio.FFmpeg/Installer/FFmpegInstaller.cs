@@ -18,7 +18,7 @@ public static partial class FFmpegInstaller
     /// <remarks>This method may take some time to execute.</remarks>
     public static bool IsInstalled()
     {
-        using var process = FFmpegSL.StartRaw("-version");
+        using var process = FFmpegSL.Start("-version");
         process?.WaitForExit();
         return process?.Stdout.ReadLine()?.StartsWith("ffmpeg version ") ?? false;
     }

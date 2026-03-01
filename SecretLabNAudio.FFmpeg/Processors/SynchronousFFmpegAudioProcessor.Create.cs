@@ -11,7 +11,7 @@ public sealed partial class SynchronousFFmpegAudioProcessor
             : null;
 
     public static SynchronousFFmpegAudioProcessor? CreatePlayerCompatible(FFmpegArguments arguments)
-        => FFmpegSL.StartRaw(arguments.ForPlayerCompatibleFloatPiping()) is { } ffmpeg
+        => FFmpegSL.Start(arguments.ForPlayerCompatibleFloatPiping()) is { } ffmpeg
             ? new SynchronousFFmpegAudioProcessor(ffmpeg, AudioPlayer.SupportedFormat)
             : null;
 
@@ -21,7 +21,7 @@ public sealed partial class SynchronousFFmpegAudioProcessor
             : null;
 
     public static SynchronousFFmpegAudioProcessor? Create(FFmpegArguments arguments)
-        => FFmpegSL.StartRaw(arguments.ForFloatPiping()) is { } ffmpeg
+        => FFmpegSL.Start(arguments.ForFloatPiping()) is { } ffmpeg
             ? new SynchronousFFmpegAudioProcessor(ffmpeg, WaveFormat.CreateIeeeFloatWaveFormat(arguments.SampleRate, arguments.Channels))
             : null;
 

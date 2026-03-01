@@ -5,8 +5,10 @@ namespace SecretLabNAudio.FFmpeg;
 public readonly partial record struct FFmpegArguments
 {
 
+    /// <summary>The standard pipe input/output.</summary>
     public const string StandardPipe = "-";
 
+    /// <summary>32-bit float little endian format.</summary>
     public const string Float32Format = "f32le";
 
     private const string VerbosityError = "-v error ";
@@ -17,6 +19,10 @@ public readonly partial record struct FFmpegArguments
     private const string OutputMissing = "Output must be specified";
     private const string StdoutFormat = $"{VerbosityError}-i \"{{0}}\" -ar {{1}} -ac {{2}} -f {Float32Format} {StandardPipe}";
 
+    /// <summary>
+    /// A template for player-compatible reading from the standard output.
+    /// </summary>
+    /// <remarks>This does not include an input.</remarks>
     public static FFmpegArguments PlayerCompatibleStdout { get; } = new()
     {
         SampleRate = AudioPlayer.SampleRate,
@@ -25,6 +31,14 @@ public readonly partial record struct FFmpegArguments
         Output = StandardPipe
     };
 
+    /// <summary>
+    /// Builds a string to pass to FFmpeg that outputs 32-bit floats to the standard output.
+    /// </summary>
+    /// <param name="input">The input source (e.g. file path, URL).</param>
+    /// <param name="sampleRate">The sample rate to output.</param>
+    /// <param name="channels">The number of channels to output.</param>
+    /// <returns>An arguments string to pass to FFmpeg.</returns>
+    /// <exception cref="ArgumentException">Thrown if <paramref name="input"/> is null or whitespace, or if it contains a quotation mark.</exception>
     public static string ToStdoutString(string input, int sampleRate, int channels) => string.Format(
         StdoutFormat,
         input.ValidateProcessArgument(nameof(input), InputMissing, InputHasQuotation),
@@ -32,9 +46,20 @@ public readonly partial record struct FFmpegArguments
         channels
     );
 
+    /// <summary>
+    /// Creates a new <see cref="FFmpegArguments"/> struct that reads from the standard input and outputs 32-bit floats to the standard output.
+    /// </summary>
+    /// <param name="sampleRate">The sample rate to output.</param>
+    /// <param name="channels">The number of channels to output.</param>
+    /// <returns>A new <see cref="FFmpegArguments"/> struct.</returns>
     public static FFmpegArguments StdinToStdout(int sampleRate, int channels)
         => new(false, null, StandardPipe, sampleRate, channels, null, Float32Format, StandardPipe);
 
+    /// <summary>
+    /// Creates an IEEEFloat <see cref="WaveFormat"/> based on the arguments' <see cref="SampleRate"/> and <see cref="Channels"/>.
+    /// </summary>
+    /// <param name="arguments">The arguments to convert.</param>
+    /// <returns><see cref="AudioPlayer.SupportedFormat"/> if the arguments are player-compatible, otherwise, a new <see cref="WaveFormat"/>.</returns>
     public static implicit operator WaveFormat(FFmpegArguments arguments)
         => arguments is {SampleRate: AudioPlayer.SampleRate, Channels: AudioPlayer.Channels}
             ? AudioPlayer.SupportedFormat

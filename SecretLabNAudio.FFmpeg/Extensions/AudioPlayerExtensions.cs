@@ -9,10 +9,7 @@ public static class AudioPlayerExtensions
     extension(AudioPlayer player)
     {
 
-        public AudioPlayer UseFFmpegSync(string input)
-        {
-            return player.Use(SynchronousFFmpegAudioProcessor.CreatePlayerCompatible(input));
-        }
+        public AudioPlayer UseFFmpeg(string input) => player.Use(AsyncBufferedFFmpegAudioProcessor.CreatePlayerCompatible(input));
 
     }
 

@@ -22,7 +22,7 @@ public sealed partial class FFmpegSL
     /// <param name="redirectStandardInput">Whether to redirect the standard input.</param>
     /// <returns>A new <see cref="FFmpegSL"/> wrapper if the process was launched. Null if startup fails due to a <see cref="Win32Exception"/>.</returns>
     /// <remarks>Only <see cref="Win32Exception"/> exceptions are handled.</remarks>
-    public static FFmpegSL? StartRaw(string arguments, bool redirectStandardInput = false)
+    public static FFmpegSL? Start(string arguments, bool redirectStandardInput = false)
     {
         Process? process = null;
         try
@@ -67,7 +67,7 @@ public sealed partial class FFmpegSL
     /// <param name="redirectStandardInput">Whether to redirect the standard input. The standard input will also be redirected if <see cref="FFmpegArguments.IsStandardInput"/> is true.</param>
     /// <returns>A new <see cref="FFmpegSL"/> wrapper if the process was launched. Null if startup fails due to a <see cref="Win32Exception"/>.</returns>
     /// <remarks>Only <see cref="Win32Exception"/> exceptions are handled.</remarks>
-    public static FFmpegSL? StartRaw(FFmpegArguments arguments, bool redirectStandardInput = false)
-        => StartRaw(arguments.ToString(), redirectStandardInput || arguments.IsStandardInput);
+    public static FFmpegSL? Start(FFmpegArguments arguments, bool redirectStandardInput = false)
+        => Start(arguments.ToString(), redirectStandardInput || arguments.IsStandardInput);
 
 }

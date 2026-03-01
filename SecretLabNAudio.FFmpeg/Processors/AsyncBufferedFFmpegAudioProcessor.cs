@@ -19,6 +19,7 @@ public sealed class AsyncBufferedFFmpegAudioProcessor : AsyncFFmpegProcessorBase
 
     private AsyncBufferedFFmpegAudioProcessor(string input, double capacity, WaveFormat format) : base(capacity, format)
     {
+        BufferingState = AsyncBufferingState.StartingFFmpeg;
         var arguments = FFmpegArguments.ToStdoutString(input, format.SampleRate, format.Channels);
         Offload(() =>
         {
@@ -29,6 +30,7 @@ public sealed class AsyncBufferedFFmpegAudioProcessor : AsyncFFmpegProcessorBase
 
     private AsyncBufferedFFmpegAudioProcessor(double capacity, FFmpegArguments transformedArguments) : base(capacity, transformedArguments)
     {
+        BufferingState = AsyncBufferingState.StartingFFmpeg;
         var arguments = transformedArguments.ToString();
         Offload(() =>
         {

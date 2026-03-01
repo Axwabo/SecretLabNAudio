@@ -33,7 +33,7 @@ public static partial class ShortClipCacheExtensions
 
     public static RawSourceSampleProvider? ReadWithFFmpeg(FFmpegArguments arguments, TimeSpan? maxDuration = null)
     {
-        using var process = FFmpegSL.StartRaw(arguments.ForPlayerCompatibleFloatPiping());
+        using var process = FFmpegSL.Start(arguments.ForPlayerCompatibleFloatPiping());
         return Read(process, maxDuration);
     }
 

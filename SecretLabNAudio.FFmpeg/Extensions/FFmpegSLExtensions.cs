@@ -15,7 +15,7 @@ public static class FFmpegSLExtensions
             => ToStdout(input, waveFormat.SampleRate, waveFormat.Channels);
 
         public static FFmpegSL? ToStdout(string input, int sampleRate, int channels)
-            => FFmpegSL.StartRaw(FFmpegArguments.ToStdoutString(input, sampleRate, channels), true);
+            => FFmpegSL.Start(FFmpegArguments.ToStdoutString(input, sampleRate, channels), true);
 
         public bool TryTerminateGracefully(int timeoutMilliseconds = 1000)
         {

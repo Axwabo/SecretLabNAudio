@@ -6,6 +6,12 @@ using SecretLabNAudio.Core.Processors;
 
 namespace SecretLabNAudio.FFmpeg.Processors;
 
+/// <summary>
+/// A base FFmpeg audio processor that buffers the standard output asynchronously.
+/// This class cannot be inherited from user code.
+/// </summary>
+/// <seealso cref="AsyncBufferedFFmpegAudioProcessor"/>
+/// <seealso cref="StreamBasedFFmpegAudioProcessor"/>
 public abstract class AsyncFFmpegProcessorBase : IAudioProcessor, IFFmpegWrapper
 {
 
@@ -110,7 +116,7 @@ public abstract class AsyncFFmpegProcessorBase : IAudioProcessor, IFFmpegWrapper
 
     private protected bool TryStartFFmpeg(string arguments, [NotNullWhen(true)] out FFmpegSL? ffmpeg)
     {
-        ffmpeg = Process = FFmpegSL.StartRaw(arguments, true);
+        ffmpeg = Process = FFmpegSL.Start(arguments, true);
         if (ffmpeg != null)
             return true;
         StartupError = FFmpegSL.LastCaughtStartError;
@@ -140,6 +146,7 @@ public abstract class AsyncFFmpegProcessorBase : IAudioProcessor, IFFmpegWrapper
     }
 
     /// <inheritdoc/>
+    /// <remarks>The target <paramref name="buffer"/> is filled with zeroes until reading has begun (unless if an error was encountered).</remarks>
     public int Read(float[] buffer, int offset, int count)
     {
         var destination = buffer.AsSpan(offset, count);
