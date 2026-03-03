@@ -6,7 +6,7 @@ namespace SecretLabNAudio.FFmpeg;
 internal static class EmbeddedPluginEnabler
 {
 
-    private static bool IsAlreadyEnabled => PluginLoader.EnabledPlugins.Any(static e => e.GetType().FullName == typeof(FFmpegPlugin).FullName);
+    private static bool IsAlreadyEnabled => PluginLoader.Plugins.Any(static e => e.Key.GetType().FullName == typeof(FFmpegPlugin).FullName);
 
     public static void EnablePlugin()
     {

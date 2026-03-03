@@ -22,7 +22,7 @@ internal sealed class FFmpegPlugin : Plugin<FFmpegConfig>
     public override void Enable()
     {
         Instance = this;
-        if (Config != null)
+        if (Config != null && !string.IsNullOrWhiteSpace(Config.Path))
             FFmpegSL.Path = Config.Path;
         if ((!Config?.DoNotOverrideOnEnable ?? true) && FFmpegInstaller.TryFindExisting(out var destination) && FFmpegSL.Path != destination && !FFmpegInstaller.IsInstalled())
         {
