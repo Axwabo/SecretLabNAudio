@@ -9,9 +9,21 @@ public static partial class ShortClipCacheExtensions
     extension(ShortClipCache)
     {
 
-        public static RawSourceSampleProvider? AddWithFFmpeg(string input, TimeSpan? maxDuration = null) => ReadWithFFmpeg(input, maxDuration);
+        public static RawSourceSampleProvider? AddWithFFmpeg(string input, TimeSpan? maxDuration = null)
+        {
+            if (ReadWithFFmpeg(input, maxDuration) is not { } provider)
+                return null;
+            ShortClipCache.Add((input, false), provider);
+            return provider;
+        }
 
-        public static RawSourceSampleProvider? AddWithFFmpeg(FFmpegArguments arguments, TimeSpan? maxDuration = null) => ReadWithFFmpeg(arguments, maxDuration);
+        public static RawSourceSampleProvider? AddWithFFmpeg(FFmpegArguments arguments, ClipName clipName, TimeSpan? maxDuration = null)
+        {
+            if (ReadWithFFmpeg(arguments, maxDuration) is not { } provider)
+                return null;
+            ShortClipCache.Add(clipName, provider);
+            return provider;
+        }
 
     }
 
