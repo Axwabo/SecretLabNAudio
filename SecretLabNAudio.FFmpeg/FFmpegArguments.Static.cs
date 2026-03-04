@@ -5,6 +5,11 @@ namespace SecretLabNAudio.FFmpeg;
 public readonly partial record struct FFmpegArguments
 {
 
+    /// <summary>
+    /// The timestamp format FFmpeg accepts that can be passed to <see cref="TimeSpan.ToString(string)">TimeSpan.ToString</see>.
+    /// </summary>
+    public const string TimestampFormat = @"hh\:mm\:ss\.fff";
+
     /// <summary>The standard pipe input/output.</summary>
     public const string StandardPipe = "-";
 
@@ -64,5 +69,12 @@ public readonly partial record struct FFmpegArguments
         => arguments is {SampleRate: AudioPlayer.SampleRate, Channels: AudioPlayer.Channels}
             ? AudioPlayer.SupportedFormat
             : WaveFormat.CreateIeeeFloatWaveFormat(arguments.SampleRate, arguments.Channels);
+
+    /// <summary>
+    /// Formats the specified <see cref="TimeSpan"/> to be acceptable by FFmpeg.
+    /// </summary>
+    /// <param name="timeSpan">The value to format.</param>
+    /// <returns>A string representing the value.</returns>
+    public static string Format(TimeSpan timeSpan) => timeSpan.ToString(TimestampFormat);
 
 }
