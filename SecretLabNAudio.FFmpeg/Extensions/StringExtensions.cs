@@ -34,6 +34,14 @@ internal static class StringExtensions
                     ? throw new ArgumentException(quotationMessage, paramName)
                     : s;
 
+        [return: NotNullIfNotNull(nameof(s))]
+        public string? ValidateNoQuotation(string paramName, string message)
+        {
+            if (s != null && s.Contains('"'))
+                throw new ArgumentException(message, paramName);
+            return s;
+        }
+
     }
 
 }

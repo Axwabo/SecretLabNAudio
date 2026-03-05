@@ -19,8 +19,14 @@ public abstract class AsyncFFmpegProcessorBase : IAudioProcessor, IFFmpegWrapper
 
     private const int BufferSize = AudioPlayer.SamplesPerPacket * sizeof(float);
 
+    /// <summary>
+    /// The minimum capacity of the underlying buffer, measured in samples.
+    /// </summary>
     public const int MinCapacitySamples = BufferSize;
 
+    /// <summary>
+    /// The default capacity of the underlying buffer in seconds.
+    /// </summary>
     public const double DefaultCapacity = 10;
 
     [ThreadStatic]

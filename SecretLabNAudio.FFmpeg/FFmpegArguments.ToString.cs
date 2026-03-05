@@ -24,7 +24,7 @@ public readonly partial record struct FFmpegArguments
     /// <item><description>contains a quotation mark (<c>&quot;</c>)</description></item>
     /// </list>
     /// </exception>
-    public override string ToString()
+    public string ToArgumentsString()
     {
         var sb = StringBuilderPool.Shared.Rent();
         try

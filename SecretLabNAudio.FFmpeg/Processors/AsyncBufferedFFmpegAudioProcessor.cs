@@ -2,18 +2,51 @@ using SecretLabNAudio.FFmpeg.Extensions;
 
 namespace SecretLabNAudio.FFmpeg.Processors;
 
+/// <summary>
+/// A simple, asynchronously buffered FFmpeg-based audio processor.
+/// </summary>
 public sealed class AsyncBufferedFFmpegAudioProcessor : AsyncFFmpegProcessorBase
 {
 
+    /// <summary>
+    /// Creates a <see cref="AudioPlayer.SupportedFormat">player-compatible</see> <see cref="AsyncBufferedFFmpegAudioProcessor"/> with the given input.
+    /// </summary>
+    /// <param name="input">The input source (e.g. file path, URL).</param>
+    /// <param name="capacity">The capacity of the buffer in seconds.</param>
+    /// <returns>A new <see cref="AsyncBufferedFFmpegAudioProcessor"/>.</returns>
+    /// <exception cref="ArgumentException">Thrown if <paramref name="input"/> is null or whitespace, or if it contains a quotation mark.</exception>
     public static AsyncBufferedFFmpegAudioProcessor CreatePlayerCompatible(string input, double capacity = DefaultCapacity)
         => new(input, capacity, AudioPlayer.SupportedFormat);
 
+    /// <summary>
+    /// Creates a <see cref="AudioPlayer.SupportedFormat">player-compatible</see> <see cref="AsyncBufferedFFmpegAudioProcessor"/> with the given arguments.
+    /// </summary>
+    /// <param name="arguments">The arguments to pass to FFmpeg.</param>
+    /// <param name="capacity">The capacity of the buffer in seconds.</param>
+    /// <returns>A new <see cref="AsyncBufferedFFmpegAudioProcessor"/>.</returns>
+    /// <exception cref="InvalidOperationException">Thrown if <see cref="FFmpegArguments.Input">arguments.Input</see> is not a valid input source.</exception>
     public static AsyncBufferedFFmpegAudioProcessor CreatePlayerCompatible(FFmpegArguments arguments, double capacity = DefaultCapacity)
         => new(capacity, arguments.ForPlayerCompatibleFloatPiping());
 
+    /// <summary>
+    /// Creates an <see cref="AsyncBufferedFFmpegAudioProcessor"/> with the given input, sample rate and channel count.
+    /// </summary>
+    /// <param name="input">The input source (e.g. file path, URL).</param>
+    /// <param name="sampleRate">The sample rate to output.</param>
+    /// <param name="channels">The number of channels to output.</param>
+    /// <param name="capacity">The capacity of the buffer in seconds.</param>
+    /// <returns>A new <see cref="AsyncBufferedFFmpegAudioProcessor"/>.</returns>
+    /// <exception cref="ArgumentException">Thrown if <paramref name="input"/> is null or whitespace, or if it contains a quotation mark.</exception>
     public static AsyncBufferedFFmpegAudioProcessor Create(string input, int sampleRate, int channels, double capacity = DefaultCapacity)
         => new(input, capacity, WaveFormat.CreateIeeeFloatWaveFormat(sampleRate, channels));
 
+    /// <summary>
+    /// Creates an <see cref="AsyncBufferedFFmpegAudioProcessor"/> with the given arguments. The format will be based on the <paramref name="arguments"/>.
+    /// </summary>
+    /// <param name="arguments">The arguments to pass to FFmpeg.</param>
+    /// <param name="capacity">The capacity of the buffer in seconds.</param>
+    /// <returns>A new <see cref="AsyncBufferedFFmpegAudioProcessor"/>.</returns>
+    /// <exception cref="InvalidOperationException">Thrown if <see cref="FFmpegArguments.Input">arguments.Input</see> is not a valid input source.</exception>
     public static AsyncBufferedFFmpegAudioProcessor Create(FFmpegArguments arguments, double capacity = DefaultCapacity)
         => new(capacity, arguments.ForFloatPiping());
 
@@ -31,7 +64,7 @@ public sealed class AsyncBufferedFFmpegAudioProcessor : AsyncFFmpegProcessorBase
     private AsyncBufferedFFmpegAudioProcessor(double capacity, FFmpegArguments transformedArguments) : base(capacity, transformedArguments)
     {
         BufferingState = AsyncBufferingState.StartingFFmpeg;
-        var arguments = transformedArguments.ToString();
+        var arguments = transformedArguments.ToArgumentsString();
         Offload(() =>
         {
             if (TryStartFFmpeg(arguments, out var ffmpeg))

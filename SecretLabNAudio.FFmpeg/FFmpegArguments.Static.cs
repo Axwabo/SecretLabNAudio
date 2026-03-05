@@ -20,8 +20,9 @@ public readonly partial record struct FFmpegArguments
 
     private const string InputMissing = "Input must be specified";
     private const string InputHasQuotation = "Input must not include quotation marks";
-    private const string OutputHasQuotation = "Output must not include quotation marks";
     private const string OutputMissing = "Output must be specified";
+    private const string OutputHasQuotation = "Output must not include quotation marks";
+    private const string FilterGraphHasQuotation = "Filtergraph must not contain quotation marks";
     private const string StdoutFormat = $"{VerbosityError}-i \"{{0}}\" -ar {{1}} -ac {{2}} -f {Float32Format} {StandardPipe}";
 
     /// <summary>

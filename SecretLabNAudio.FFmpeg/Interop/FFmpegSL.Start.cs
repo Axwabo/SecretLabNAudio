@@ -52,7 +52,7 @@ public sealed partial class FFmpegSL
             {
                 NativeErrorCode.FileNotFound or NativeErrorCode.PathNotFound => "FFmpeg not found. Check your configuration, or use the \"installFFmpeg\" command to install FFmpeg.",
                 NativeErrorCode.AccessDenied => "Access is denied. Use the \"chmodFFmpeg\" command to make it executable.",
-                _ => $"Native error code {win32.NativeErrorCode}"
+                _ => $"Native error code 0x{win32.NativeErrorCode:X8}"
             }}");
             Debug.LogError(win32);
             process?.Dispose();
@@ -68,6 +68,6 @@ public sealed partial class FFmpegSL
     /// <returns>A new <see cref="FFmpegSL"/> wrapper if the process was launched. Null if startup fails due to a <see cref="Win32Exception"/>.</returns>
     /// <remarks>Only <see cref="Win32Exception"/> exceptions are handled.</remarks>
     public static FFmpegSL? Start(FFmpegArguments arguments, bool redirectStandardInput = false)
-        => Start(arguments.ToString(), redirectStandardInput || arguments.IsStandardInput);
+        => Start(arguments.ToArgumentsString(), redirectStandardInput || arguments.IsStandardInput);
 
 }

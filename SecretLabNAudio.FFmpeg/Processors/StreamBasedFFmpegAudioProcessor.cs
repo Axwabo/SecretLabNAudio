@@ -10,7 +10,7 @@ public sealed partial class StreamBasedFFmpegAudioProcessor : AsyncFFmpegProcess
     private StreamBasedFFmpegAudioProcessor(StreamResolver resolver, bool isOwned, double capacity, FFmpegArguments transformedArguments)
         : base(capacity, transformedArguments)
     {
-        var arguments = transformedArguments.ToString();
+        var arguments = transformedArguments.ToArgumentsString();
         _ = StartAsync(resolver, isOwned, arguments);
     }
 
