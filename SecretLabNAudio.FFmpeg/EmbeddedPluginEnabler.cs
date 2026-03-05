@@ -14,6 +14,7 @@ internal static class EmbeddedPluginEnabler
             return;
         var plugin = new FFmpegPlugin();
         var assembly = plugin.GetType().Assembly;
+        PluginLoader.Plugins[plugin] = assembly;
         PluginLoader.Dependencies.Remove(assembly);
         PluginLoader.EnablePlugin(plugin);
     }
