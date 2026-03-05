@@ -53,24 +53,20 @@ public sealed class AsyncBufferedFFmpegAudioProcessor : AsyncFFmpegProcessorBase
     private AsyncBufferedFFmpegAudioProcessor(string input, double capacity, WaveFormat format) : base(capacity, format)
     {
         BufferingState = AsyncBufferingState.StartingFFmpeg;
-        var arguments = FFmpegArguments.ToStdoutString(input, format.SampleRate, format.Channels);
-        Offload(() =>
-        {
-            if (TryStartFFmpeg(arguments, out var ffmpeg))
-                BufferLoop(ffmpeg);
-        });
+        Start(FFmpegArguments.ToStdoutString(input, format.SampleRate, format.Channels));
     }
 
     private AsyncBufferedFFmpegAudioProcessor(double capacity, FFmpegArguments transformedArguments) : base(capacity, transformedArguments)
     {
         BufferingState = AsyncBufferingState.StartingFFmpeg;
-        var arguments = transformedArguments.ToArgumentsString();
-        Offload(() =>
-        {
-            if (TryStartFFmpeg(arguments, out var ffmpeg))
-                BufferLoop(ffmpeg);
-        });
+        Start(transformedArguments.ToArgumentsString());
     }
+
+    private void Start(string arguments) => Offload(() =>
+    {
+        if (TryStartFFmpeg(arguments, out var ffmpeg))
+            BufferLoop(ffmpeg);
+    });
 
     /// <inheritdoc />
     /// <remarks>A graceful termination signal is sent to FFmpeg. This method does not wait for FFmpeg to exit.</remarks>
