@@ -19,6 +19,7 @@ public sealed partial class StreamBasedFFmpegAudioProcessor : AsyncFFmpegProcess
         BufferingState = AsyncBufferingState.ResolvingStream;
         await Awaitable.BackgroundThreadAsync();
         Stream? stream = null;
+        Stream? standardInput = null;
         try
         {
             stream = await resolver(Token);
@@ -26,7 +27,7 @@ public sealed partial class StreamBasedFFmpegAudioProcessor : AsyncFFmpegProcess
             if (!TryStartFFmpeg(arguments, out var ffmpeg))
                 return;
             Offload(() => BufferLoop(ffmpeg));
-            await stream.CopyToAsync(ffmpeg.Stdin!.BaseStream, Token);
+            await stream.CopyToAsync(standardInput = ffmpeg.Stdin!.BaseStream, Token);
         }
         catch (Exception e) when (!Token.IsCancellationRequested)
         {
@@ -34,6 +35,7 @@ public sealed partial class StreamBasedFFmpegAudioProcessor : AsyncFFmpegProcess
         }
         finally
         {
+            standardInput?.Close();
             if (isOwned && stream != null)
                 await stream.DisposeAsync();
         }
