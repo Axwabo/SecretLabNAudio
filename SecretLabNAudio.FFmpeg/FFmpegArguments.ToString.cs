@@ -17,13 +17,7 @@ public readonly partial record struct FFmpegArguments
     /// Converts this instance to a string that can be used as <see cref="ProcessStartInfo.Arguments"/>.
     /// </summary>
     /// <returns>The instance as a process arguments string.</returns>
-    /// <exception cref="InvalidOperationException">
-    /// Thrown if either <see cref="Input"/> or <see cref="Output"/> matches any of the following:
-    /// <list type="bullet">
-    /// <item><description><see cref="string.IsNullOrWhiteSpace">null or whitespace</see></description></item>
-    /// <item><description>contains a quotation mark (<c>&quot;</c>)</description></item>
-    /// </list>
-    /// </exception>
+    /// <include file='XmlDocs/Args.xml' path='doc/InOut/exception'/>
     public string ToArgumentsString()
     {
         var sb = StringBuilderPool.Shared.Rent();
@@ -42,14 +36,7 @@ public readonly partial record struct FFmpegArguments
     /// Prints the arguments to a <see cref="StringBuilder"/>.
     /// </summary>
     /// <param name="builder">The builder to append to.</param>
-    /// <exception cref="InvalidOperationException">
-    /// Thrown if either <see cref="Input"/> or <see cref="Output"/> matches any of the following:
-    /// <list type="bullet">
-    /// <item><description><see cref="string.IsNullOrWhiteSpace">null or whitespace</see></description></item>
-    /// <item><description>contains a quotation mark (<c>&quot;</c>)</description></item>
-    /// </list>
-    /// </exception>
-    // TODO: xml docs file
+    /// <include file='XmlDocs/Args.xml' path='doc/InOut/exception'/>
     public void PrintTo(StringBuilder builder)
     {
         Input.ValidateProcessArgument(InputMissing, InputHasQuotation);

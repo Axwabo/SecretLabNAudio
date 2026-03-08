@@ -54,7 +54,7 @@ public readonly partial record struct FFmpegArguments
     /// </summary>
     /// <param name="input">The input source (e.g. file path, URL).</param>
     /// <returns>A copy of this instance with the new input. Other properties are preserved.</returns>
-    // TODO: exception
+    /// <include file='XmlDocs/Args.xml' path='doc/InArg/exception'/>
     public FFmpegArguments WithInput(string input) => this with {Input = input.ValidateProcessArgument(nameof(input), InputMissing, InputHasQuotation)};
 
     /// <summary>
@@ -62,7 +62,13 @@ public readonly partial record struct FFmpegArguments
     /// </summary>
     /// <param name="output">The destination to write to (e.g. file path, pipe).</param>
     /// <returns>A copy of this instance with the new output. Other properties are preserved.</returns>
-    // TODO: exception
+    /// <exception cref="ArgumentException">
+    /// Thrown if the output matches any of the following:
+    /// <list type="bullet">
+    /// <item><description><see cref="string.IsNullOrWhiteSpace">null or whitespace</see></description></item>
+    /// <item><description>contains a quotation mark (<c>&quot;</c>)</description></item>
+    /// </list>
+    /// </exception>
     public FFmpegArguments WithOutput(string output) => this with {Output = output.ValidateProcessArgument(nameof(output), OutputMissing, OutputHasQuotation)};
 
     /// <summary>

@@ -46,6 +46,7 @@ public static partial class ShortClipCacheExtensions
         /// <include file='../XmlDocs/Clips.xml' path='doc/returns'/>
         /// <include file='../XmlDocs/Clips.xml' path='doc/remarks'/>
         /// <include file='../XmlDocs/Clips.xml' path='doc/seealso'/>
+        /// <include file='../XmlDocs/Args.xml' path='doc/In/exception'/>
         public static RawSourceSampleProvider? AddWithFFmpeg(FFmpegArguments arguments, ClipName clipName, TimeSpan? maxDuration = null)
         {
             if (ReadWithFFmpeg(arguments, maxDuration) is not { } provider)
