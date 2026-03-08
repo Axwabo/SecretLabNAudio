@@ -53,12 +53,17 @@ public static class FFmpegSLExtensions
     {
 
         /// <summary>
+        /// Whether the process exited with a non-zero exit code, and has an error message.
+        /// </summary>
+        public bool HasExitedWithError => ffmpeg is {HasExited: true, ExitCode: not 0} && !string.IsNullOrWhiteSpace(ffmpeg.FinalErrorMessage);
+
+        /// <summary>
         /// Throws an exception if the FFmpeg process has exited with a non-zero exit code, and has an error message.
         /// </summary>
         /// <exception cref="FFmpegRuntimeException">The exception if validation failed.</exception>
         public void ThrowIfExitedWithError()
         {
-            if (ffmpeg is {HasExited: true, ExitCode: not 0} && !string.IsNullOrWhiteSpace(ffmpeg.FinalErrorMessage))
+            if (ffmpeg.HasExitedWithError)
                 throw new FFmpegRuntimeException(ffmpeg.FinalErrorMessage!);
         }
 
