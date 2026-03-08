@@ -123,6 +123,12 @@ public abstract class AsyncFFmpegProcessorBase : IAudioProcessor, IFFmpegWrapper
     private protected bool TryStartFFmpeg(string arguments, [NotNullWhen(true)] out FFmpegSL? ffmpeg)
     {
         ffmpeg = Process = FFmpegSL.Start(arguments, true);
+        if (IsDisposed)
+        {
+            ffmpeg?.Dispose();
+            return false;
+        }
+
         if (ffmpeg != null)
             return true;
         StartupError = FFmpegSL.LastCaughtStartError;

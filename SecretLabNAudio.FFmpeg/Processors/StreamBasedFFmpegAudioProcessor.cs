@@ -35,9 +35,9 @@ public sealed partial class StreamBasedFFmpegAudioProcessor : AsyncFFmpegProcess
         }
         finally
         {
-            standardInput?.Close();
             if (isOwned && stream != null)
                 await stream.DisposeAsync();
+            standardInput?.Close();
         }
     }
 
