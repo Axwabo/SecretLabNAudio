@@ -41,7 +41,7 @@ License: MIT
 # FFmpeg
 
 > [!NOTE]
-> While SecretLabNAudio doesn't ship, nor link its libraries with FFmpeg,
+> While SecretLabNAudio does not ship, nor does it link its libraries with FFmpeg,
 > it starts FFmpeg processes to provide utilities.
 > SecretLabNAudio contains an installer to download FFmpeg.
 
