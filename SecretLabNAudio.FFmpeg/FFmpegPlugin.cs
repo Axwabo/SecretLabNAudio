@@ -1,4 +1,5 @@
 using LabApi.Loader.Features.Plugins;
+using LabApi.Loader.Features.Plugins.Enums;
 using SecretLabNAudio.FFmpeg.Installer;
 
 namespace SecretLabNAudio.FFmpeg;
@@ -14,10 +15,16 @@ internal sealed class FFmpegPlugin : Plugin<FFmpegConfig>
     public static FFmpegPlugin? Instance { get; private set; }
 
     public override string Name => "SecretLabNAudio.FFmpeg";
+
     public override string Description => "FFmpeg support for SecretLabNAudio";
+
     public override string Author => "Axwabo";
+
     public override Version Version => GetType().Assembly.GetName().Version;
+
     public override Version RequiredApiVersion { get; } = new(1, 0, 0);
+
+    public override LoadPriority Priority => LoadPriority.Highest;
 
     public override void Enable()
     {

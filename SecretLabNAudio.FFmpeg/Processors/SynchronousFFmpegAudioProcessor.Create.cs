@@ -22,7 +22,7 @@ public sealed partial class SynchronousFFmpegAudioProcessor
 
     public static SynchronousFFmpegAudioProcessor? Create(FFmpegArguments arguments)
         => FFmpegSL.Start(arguments.ForFloatPiping()) is { } ffmpeg
-            ? new SynchronousFFmpegAudioProcessor(ffmpeg, WaveFormat.CreateIeeeFloatWaveFormat(arguments.SampleRate, arguments.Channels))
+            ? new SynchronousFFmpegAudioProcessor(ffmpeg, arguments)
             : null;
 
 }

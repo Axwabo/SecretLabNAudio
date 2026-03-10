@@ -58,6 +58,11 @@ public sealed partial class FFmpegSL
             process?.Dispose();
             return null;
         }
+        catch
+        {
+            process?.Dispose();
+            throw;
+        }
     }
 
     /// <summary>
