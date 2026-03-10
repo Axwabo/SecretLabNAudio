@@ -1,4 +1,5 @@
 // ReSharper disable InvokeAsExtensionMember
+// ReSharper disable InvokeAsExtensionMemberFromSameClass
 
 namespace SecretLabNAudio.FFmpeg.Extensions;
 
