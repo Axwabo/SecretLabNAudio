@@ -24,6 +24,7 @@ This library has a number of open-source dependencies. See [Attributions](ATTRIB
 - SpeakerToy pooling
 - Automatic reader resolution by file type
 - Cache for short audio clips
+- FFmpeg-based audio processing for (almost) all formats, even over the network
 - Windows-only Media Foundation support for a wider range of formats, and decoding over the network
 
 > [!TIP]
@@ -75,8 +76,9 @@ The FFmpeg module's APIs must be invoked separately.
 
 > [!NOTE]
 > *MediaFoundation is only available on Windows.
-> 
-> **FFmpeg itself is not shipped with SecretLabNAudio. Use the `installFFmpeg` command to install it.
+>
+> **FFmpeg itself is not shipped with SecretLabNAudio.
+> See the [wiki](https://github.com/Axwabo/SecretLabNAudio/wiki/FFmpeg-Installation) on how to install it.
 
 ## Development
 
