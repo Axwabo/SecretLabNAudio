@@ -15,6 +15,7 @@ public sealed class AsyncBufferedFFmpegAudioProcessor : AsyncFFmpegProcessorBase
     /// <param name="capacity">The capacity of the buffer in seconds.</param>
     /// <returns>A new <see cref="AsyncBufferedFFmpegAudioProcessor"/>.</returns>
     /// <exception cref="ArgumentException">Thrown if <paramref name="input"/> is null or whitespace, or if it contains a quotation mark.</exception>
+    /// <include file='../XmlDocs/Buffered.xml' path='doc/Capacity/remarks'/>
     public static AsyncBufferedFFmpegAudioProcessor CreatePlayerCompatible(string input, double capacity = DefaultCapacity)
         => new(input, capacity, AudioPlayer.SupportedFormat);
 
@@ -25,6 +26,7 @@ public sealed class AsyncBufferedFFmpegAudioProcessor : AsyncFFmpegProcessorBase
     /// <param name="capacity">The capacity of the buffer in seconds.</param>
     /// <returns>A new <see cref="AsyncBufferedFFmpegAudioProcessor"/>.</returns>
     /// <exception cref="InvalidOperationException">Thrown if <see cref="FFmpegArguments.Input">arguments.Input</see> is not a valid input source.</exception>
+    /// <include file='../XmlDocs/Buffered.xml' path='doc/Capacity/remarks'/>
     public static AsyncBufferedFFmpegAudioProcessor CreatePlayerCompatible(FFmpegArguments arguments, double capacity = DefaultCapacity)
         => new(capacity, arguments.ForPlayerCompatibleFloatPiping());
 
@@ -37,6 +39,7 @@ public sealed class AsyncBufferedFFmpegAudioProcessor : AsyncFFmpegProcessorBase
     /// <param name="capacity">The capacity of the buffer in seconds.</param>
     /// <returns>A new <see cref="AsyncBufferedFFmpegAudioProcessor"/>.</returns>
     /// <exception cref="ArgumentException">Thrown if <paramref name="input"/> is null or whitespace, or if it contains a quotation mark.</exception>
+    /// <include file='../XmlDocs/Buffered.xml' path='doc/Capacity/remarks'/>
     public static AsyncBufferedFFmpegAudioProcessor Create(string input, int sampleRate, int channels, double capacity = DefaultCapacity)
         => new(input, capacity, WaveFormat.CreateIeeeFloatWaveFormat(sampleRate, channels));
 
@@ -47,6 +50,7 @@ public sealed class AsyncBufferedFFmpegAudioProcessor : AsyncFFmpegProcessorBase
     /// <param name="capacity">The capacity of the buffer in seconds.</param>
     /// <returns>A new <see cref="AsyncBufferedFFmpegAudioProcessor"/>.</returns>
     /// <exception cref="InvalidOperationException">Thrown if <see cref="FFmpegArguments.Input">arguments.Input</see> is not a valid input source.</exception>
+    /// <include file='../XmlDocs/Buffered.xml' path='doc/Capacity/remarks'/>
     public static AsyncBufferedFFmpegAudioProcessor Create(FFmpegArguments arguments, double capacity = DefaultCapacity)
         => new(capacity, arguments.ForFloatPiping());
 

@@ -20,6 +20,7 @@ public sealed partial class StreamBasedFFmpegAudioProcessor
     /// <param name="capacity">The capacity of the buffer in seconds.</param>
     /// <param name="isOwned">Whether to dispose of the resolved stream after copying fails, finishes or gets canceled.</param>
     /// <returns>A new <see cref="StreamBasedFFmpegAudioProcessor"/>.</returns>
+    /// <include file='../XmlDocs/Buffered.xml' path='doc/Capacity/remarks'/>
     public static StreamBasedFFmpegAudioProcessor CreatePlayerCompatible(StreamResolver resolver, double capacity = DefaultCapacity, bool isOwned = true)
         => new(resolver, isOwned, capacity, PlayerCompatibleArguments);
 
@@ -30,6 +31,7 @@ public sealed partial class StreamBasedFFmpegAudioProcessor
     /// <param name="capacity">The capacity of the buffer in seconds.</param>
     /// <param name="isOwned">Whether to dispose of the resolved stream after copying fails, finishes or gets canceled.</param>
     /// <returns>A new <see cref="StreamBasedFFmpegAudioProcessor"/>.</returns>
+    /// <include file='../XmlDocs/Buffered.xml' path='doc/Capacity/remarks'/>
     public static StreamBasedFFmpegAudioProcessor CreatePlayerCompatible(Task<Stream> resolver, double capacity = DefaultCapacity, bool isOwned = true)
         => CreatePlayerCompatible(_ => resolver, capacity, isOwned);
 
@@ -40,6 +42,7 @@ public sealed partial class StreamBasedFFmpegAudioProcessor
     /// <param name="capacity">The capacity of the buffer in seconds.</param>
     /// <param name="isOwned">Whether to dispose of the resolved stream after copying fails, finishes or gets canceled.</param>
     /// <returns>A new <see cref="StreamBasedFFmpegAudioProcessor"/>.</returns>
+    /// <include file='../XmlDocs/Buffered.xml' path='doc/Capacity/remarks'/>
     public static StreamBasedFFmpegAudioProcessor CreatePlayerCompatible(Stream stream, double capacity = DefaultCapacity, bool isOwned = true)
         => CreatePlayerCompatible(Task.FromResult(stream), capacity, isOwned);
 
@@ -51,7 +54,10 @@ public sealed partial class StreamBasedFFmpegAudioProcessor
     /// <param name="capacity">The capacity of the buffer in seconds.</param>
     /// <param name="isOwned">Whether to dispose of the resolved stream after copying fails, finishes or gets canceled.</param>
     /// <returns>A new <see cref="StreamBasedFFmpegAudioProcessor"/>.</returns>
-    /// <remarks>Only the <see cref="FFmpegArguments.InputOptions"/> and <see cref="FFmpegArguments.OutputOptions"/> are retained.</remarks>
+    /// <remarks>
+    /// Only the <see cref="FFmpegArguments.InputOptions"/> and <see cref="FFmpegArguments.OutputOptions"/> are retained.
+    /// By default, the <see cref="AsyncFFmpegProcessorBase.SleepThresholdSeconds" /> will be set to 75% of the <paramref name="capacity" />.
+    /// </remarks>
     public static StreamBasedFFmpegAudioProcessor CreatePlayerCompatible(StreamResolver resolver, FFmpegArguments arguments, double capacity = DefaultCapacity, bool isOwned = true)
         => new(resolver, isOwned, capacity, PlayerCompatibleArguments with {InputOptions = arguments.InputOptions, OutputOptions = arguments.OutputOptions});
 
@@ -63,7 +69,10 @@ public sealed partial class StreamBasedFFmpegAudioProcessor
     /// <param name="capacity">The capacity of the buffer in seconds.</param>
     /// <param name="isOwned">Whether to dispose of the resolved stream after copying fails, finishes or gets canceled.</param>
     /// <returns>A new <see cref="StreamBasedFFmpegAudioProcessor"/>.</returns>
-    /// <remarks>Only the <see cref="FFmpegArguments.InputOptions"/> and <see cref="FFmpegArguments.OutputOptions"/> are retained.</remarks>
+    /// <remarks>
+    /// Only the <see cref="FFmpegArguments.InputOptions"/> and <see cref="FFmpegArguments.OutputOptions"/> are retained.
+    /// By default, the <see cref="AsyncFFmpegProcessorBase.SleepThresholdSeconds" /> will be set to 75% of the <paramref name="capacity" />.
+    /// </remarks>
     public static StreamBasedFFmpegAudioProcessor CreatePlayerCompatible(Task<Stream> resolver, FFmpegArguments arguments, double capacity = DefaultCapacity, bool isOwned = true)
         => CreatePlayerCompatible(_ => resolver, arguments, capacity, isOwned);
 
@@ -75,7 +84,10 @@ public sealed partial class StreamBasedFFmpegAudioProcessor
     /// <param name="capacity">The capacity of the buffer in seconds.</param>
     /// <param name="isOwned">Whether to dispose of the resolved stream after copying fails, finishes or gets canceled.</param>
     /// <returns>A new <see cref="StreamBasedFFmpegAudioProcessor"/>.</returns>
-    /// <remarks>Only the <see cref="FFmpegArguments.InputOptions"/> and <see cref="FFmpegArguments.OutputOptions"/> are retained.</remarks>
+    /// <remarks>
+    /// Only the <see cref="FFmpegArguments.InputOptions"/> and <see cref="FFmpegArguments.OutputOptions"/> are retained.
+    /// By default, the <see cref="AsyncFFmpegProcessorBase.SleepThresholdSeconds" /> will be set to 75% of the <paramref name="capacity" />.
+    /// </remarks>
     public static StreamBasedFFmpegAudioProcessor CreatePlayerCompatible(Stream stream, FFmpegArguments arguments, double capacity = DefaultCapacity, bool isOwned = true)
         => CreatePlayerCompatible(Task.FromResult(stream), arguments, capacity, isOwned);
 
@@ -88,6 +100,7 @@ public sealed partial class StreamBasedFFmpegAudioProcessor
     /// <param name="capacity">The capacity of the buffer in seconds.</param>
     /// <param name="isOwned">Whether to dispose of the resolved stream after copying fails, finishes or gets canceled.</param>
     /// <returns>A new <see cref="StreamBasedFFmpegAudioProcessor"/>.</returns>
+    /// <include file='../XmlDocs/Buffered.xml' path='doc/Capacity/remarks'/>
     public static StreamBasedFFmpegAudioProcessor Create(StreamResolver resolver, int sampleRate, int channels, double capacity = DefaultCapacity, bool isOwned = true)
         => new(resolver, isOwned, capacity, FFmpegArguments.StdinToStdout(sampleRate, channels));
 
@@ -100,6 +113,7 @@ public sealed partial class StreamBasedFFmpegAudioProcessor
     /// <param name="capacity">The capacity of the buffer in seconds.</param>
     /// <param name="isOwned">Whether to dispose of the resolved stream after copying fails, finishes or gets canceled.</param>
     /// <returns>A new <see cref="StreamBasedFFmpegAudioProcessor"/>.</returns>
+    /// <include file='../XmlDocs/Buffered.xml' path='doc/Capacity/remarks'/>
     public static StreamBasedFFmpegAudioProcessor Create(Task<Stream> resolver, int sampleRate, int channels, double capacity = DefaultCapacity, bool isOwned = true)
         => Create(_ => resolver, sampleRate, channels, capacity, isOwned);
 
@@ -112,6 +126,7 @@ public sealed partial class StreamBasedFFmpegAudioProcessor
     /// <param name="capacity">The capacity of the buffer in seconds.</param>
     /// <param name="isOwned">Whether to dispose of the resolved stream after copying fails, finishes or gets canceled.</param>
     /// <returns>A new <see cref="StreamBasedFFmpegAudioProcessor"/>.</returns>
+    /// <include file='../XmlDocs/Buffered.xml' path='doc/Capacity/remarks'/>
     public static StreamBasedFFmpegAudioProcessor Create(Stream stream, int sampleRate, int channels, double capacity = DefaultCapacity, bool isOwned = true)
         => Create(Task.FromResult(stream), sampleRate, channels, capacity, isOwned);
 
@@ -123,6 +138,7 @@ public sealed partial class StreamBasedFFmpegAudioProcessor
     /// <param name="capacity">The capacity of the buffer in seconds.</param>
     /// <param name="isOwned">Whether to dispose of the resolved stream after copying fails, finishes or gets canceled.</param>
     /// <returns>A new <see cref="StreamBasedFFmpegAudioProcessor"/>.</returns>
+    /// <include file='../XmlDocs/Buffered.xml' path='doc/Capacity/remarks'/>
     public static StreamBasedFFmpegAudioProcessor Create(StreamResolver resolver, FFmpegArguments arguments, double capacity = DefaultCapacity, bool isOwned = true)
         => new(resolver, isOwned, capacity, arguments.ReadFromStandardInput().ForFloatPiping());
 
@@ -134,6 +150,7 @@ public sealed partial class StreamBasedFFmpegAudioProcessor
     /// <param name="capacity">The capacity of the buffer in seconds.</param>
     /// <param name="isOwned">Whether to dispose of the resolved stream after copying fails, finishes or gets canceled.</param>
     /// <returns>A new <see cref="StreamBasedFFmpegAudioProcessor"/>.</returns>
+    /// <include file='../XmlDocs/Buffered.xml' path='doc/Capacity/remarks'/>
     public static StreamBasedFFmpegAudioProcessor Create(Task<Stream> resolver, FFmpegArguments arguments, double capacity = DefaultCapacity, bool isOwned = true)
         => Create(_ => resolver, arguments, capacity, isOwned);
 
@@ -145,6 +162,7 @@ public sealed partial class StreamBasedFFmpegAudioProcessor
     /// <param name="capacity">The capacity of the buffer in seconds.</param>
     /// <param name="isOwned">Whether to dispose of the resolved stream after copying fails, finishes or gets canceled.</param>
     /// <returns>A new <see cref="StreamBasedFFmpegAudioProcessor"/>.</returns>
+    /// <include file='../XmlDocs/Buffered.xml' path='doc/Capacity/remarks'/>
     public static StreamBasedFFmpegAudioProcessor Create(Stream stream, FFmpegArguments arguments, double capacity = DefaultCapacity, bool isOwned = true)
         => Create(Task.FromResult(stream), arguments, capacity, isOwned);
 
