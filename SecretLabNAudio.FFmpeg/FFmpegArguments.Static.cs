@@ -43,7 +43,7 @@ public readonly partial record struct FFmpegArguments
     /// <param name="sampleRate">The sample rate to output.</param>
     /// <param name="channels">The number of channels to output.</param>
     /// <returns>An arguments string to pass to FFmpeg.</returns>
-    /// <exception cref="ArgumentException">Thrown if <paramref name="input"/> is null or whitespace, or if it contains a quotation mark.</exception>
+    /// <include file='XmlDocs/Args.xml' path='doc/InArg/exception'/>
     public static string ToStdoutString(string input, int sampleRate, int channels) => string.Format(
         StdoutFormat,
         input.ValidateProcessArgument(nameof(input), InputMissing, InputHasQuotation),

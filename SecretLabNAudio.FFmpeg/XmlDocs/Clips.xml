@@ -16,5 +16,5 @@
         Audio is automatically converted to <see cref="M:SecretLabNAudio.Core.Extensions.WaveStreamExtensions.ReadPlayerCompatibleSamples">player-compatible samples</see>.
     </remarks>
     <seealso cref="M:SecretLabNAudio.Core.Extensions.AudioPlayerExtensions.UseFile(SecretLabNAudio.Core.AudioPlayer,System.String,System.Boolean,System.Single)" />
-    <seealso cref="M:SecretLabNAudio.FFmpeg.Extensions.AudioPlayerExtensions.UseFFmpeg(SecretLabNAudio.Core.AudioPlayer,System.String)" />
+    <seealso cref="M:SecretLabNAudio.FFmpeg.Extensions.AudioPlayerExtensions.UseFFmpeg(SecretLabNAudio.Core.AudioPlayer,System.String,System.Double)" />
 </doc>

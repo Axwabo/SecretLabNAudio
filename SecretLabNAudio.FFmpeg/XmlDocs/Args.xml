@@ -18,7 +18,9 @@
     </InArg>
     <In>
         <exception cref="T:System.InvalidOperationException">
-            Thrown if the input matches any of the following:
+            Thrown if the
+            <see cref="P:SecretLabNAudio.FFmpeg.FFmpegArguments.Input" />
+            matches any of the following:
             <list type="bullet">
                 <item>
                     <description>
