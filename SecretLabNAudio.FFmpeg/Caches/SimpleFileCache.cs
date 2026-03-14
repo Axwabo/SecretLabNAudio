@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using LabApi.Loader.Features.Paths;
 using SecretLabNAudio.FFmpeg.Extensions;
 
@@ -9,7 +10,8 @@ public sealed class SimpleFileCache
     private static readonly FFmpegArguments Template = new()
     {
         SampleRate = AudioPlayer.SampleRate,
-        Channels = AudioPlayer.Channels
+        Channels = AudioPlayer.Channels,
+        OutputOptions = "-y"
     };
 
     public static SimpleFileCache Shared { get; } = new(PathManager.Configs.CreateSubdirectory("global").CreateSubdirectory("SecretLabNAudio.FFmpeg").CreateSubdirectory("Cache"));
@@ -37,17 +39,13 @@ public sealed class SimpleFileCache
         var output = Output(key, optimizeFor);
         if (!File.Exists(fullSource))
             return (output, new FileNotFoundError(fullSource));
-        // await Awaitable.BackgroundThreadAsync();
+        await Awaitable.BackgroundThreadAsync();
         using var ffmpeg = FFmpegSL.Start(Template with {Input = fullSource, Output = output});
         if (ffmpeg == null)
             return (output, new FFmpegStartupError(FFmpegSL.LastCaughtStartError));
-        // this is so cooked
-        // await Awaitable.MainThreadAsync();
-        // while (!ffmpeg.HasExited)
-        // await Awaitable.NextFrameAsync();
-        // await Awaitable.BackgroundThreadAsync();
-        ffmpeg.WaitForExit(10000);
-        // ffmpeg.WaitForExit();
+        while (!ffmpeg.HasExited)
+            await Task.Delay(100);
+        ffmpeg.WaitForExit();
         if (ffmpeg.HasExitedWithError)
             return (output, new FFmpegRuntimeError(ffmpeg.FinalErrorMessage!));
         await File.WriteAllTextAsync(Path.ChangeExtension(output, "path"), fullSource);
