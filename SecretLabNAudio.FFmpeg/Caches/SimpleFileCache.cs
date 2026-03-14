@@ -44,7 +44,7 @@ public sealed class SimpleFileCache : AudioCacheBase<string, int>
             return (output, new FFmpegRuntimeError(ffmpeg.FinalErrorMessage!));
         try
         {
-            await File.WriteAllTextAsync(Path.ChangeExtension(output, "path"), fullSource, cancellationToken).ConfigureAwait(false);
+            await File.WriteAllTextAsync($"{output}.path", fullSource, cancellationToken).ConfigureAwait(false);
         }
         catch (OperationCanceledException)
         {
