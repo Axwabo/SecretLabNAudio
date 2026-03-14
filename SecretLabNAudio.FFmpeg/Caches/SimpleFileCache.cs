@@ -14,7 +14,7 @@ public sealed class SimpleFileCache
         OutputOptions = "-y"
     };
 
-    public static SimpleFileCache Shared { get; } = new(PathManager.Configs.CreateSubdirectory("global").CreateSubdirectory("SecretLabNAudio.FFmpeg").CreateSubdirectory("Cache"));
+    public static SimpleFileCache Shared { get; } = new(PathManager.Plugins.CreateSubdirectory("global").CreateSubdirectory("SecretLabNAudio.FFmpeg").CreateSubdirectory("Cache"));
 
     public string Folder { get; }
 
