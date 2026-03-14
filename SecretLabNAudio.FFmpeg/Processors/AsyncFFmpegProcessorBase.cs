@@ -64,7 +64,7 @@ public abstract class AsyncFFmpegProcessorBase : IAudioProcessor, IFFmpegWrapper
     public int BufferCapacitySamples => _buffer.MaxLength;
 
     /// <summary>
-    /// If the buffer contains more than this many samples, the buffering loop will wait for 100ms before checking again.
+    /// If the buffer contains at least this many samples, the buffering loop will wait for 100ms before checking again.
     /// </summary>
     public int SleepThresholdSamples
     {
@@ -73,7 +73,8 @@ public abstract class AsyncFFmpegProcessorBase : IAudioProcessor, IFFmpegWrapper
     }
 
     /// <summary>
-    /// If the buffer contains more samples than the equivalent of this value based on the <see cref="WaveFormat"/>, the buffering loop will wait for 100ms before checking again.
+    /// If the buffer contains at least as many samples as the equivalent of this value based on the <see cref="WaveFormat"/>,
+    /// the buffering loop will wait for 100ms before checking again.
     /// </summary>
     public double SleepThresholdSeconds
     {
@@ -141,7 +142,7 @@ public abstract class AsyncFFmpegProcessorBase : IAudioProcessor, IFFmpegWrapper
         var buffer = _readBuffer = BufferHelpers.Ensure(_readBuffer, BufferSize);
         while (!Token.IsCancellationRequested)
         {
-            if (_buffer.Count > SleepThresholdSamples)
+            if (_buffer.Count >= SleepThresholdSamples)
             {
                 BufferingState = AsyncBufferingState.Reading;
                 Thread.Sleep(100);
