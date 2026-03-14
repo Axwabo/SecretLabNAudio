@@ -1,6 +1,8 @@
 // ReSharper disable InvokeAsExtensionMember
 // ReSharper disable InvokeAsExtensionMemberFromSameClass
 
+using System.Threading.Tasks;
+
 namespace SecretLabNAudio.FFmpeg.Extensions;
 
 /// <summary>
@@ -46,6 +48,25 @@ public static class FFmpegSLExtensions
             ffmpeg.Stdin.Write('q');
             ffmpeg.Stdin.Flush();
             return timeoutMilliseconds == 0 ? ffmpeg.HasExited : ffmpeg.WaitForExit(timeoutMilliseconds);
+        }
+
+        /// <summary>
+        /// Asynchronously waits for the process to exit.
+        /// </summary>
+        /// <param name="cancellationToken">A cancellation token to observe while waiting for the task to complete.</param>
+        /// <returns>Whether the process has exited before the operation was canceled.</returns>
+        public async Task<bool> WaitForExitAsync(CancellationToken cancellationToken)
+        {
+            try
+            {
+                while (!ffmpeg.HasExited)
+                    await Task.Delay(10, cancellationToken).ConfigureAwait(false);
+                return ffmpeg.WaitForExit();
+            }
+            catch (OperationCanceledException)
+            {
+                return false;
+            }
         }
 
     }

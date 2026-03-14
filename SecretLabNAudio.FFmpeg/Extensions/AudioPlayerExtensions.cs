@@ -1,4 +1,6 @@
 using SecretLabNAudio.Core.Extensions;
+using SecretLabNAudio.Core.Extensions.Processors;
+using SecretLabNAudio.FFmpeg.Caches;
 using SecretLabNAudio.FFmpeg.Processors;
 
 namespace SecretLabNAudio.FFmpeg.Extensions;
@@ -34,6 +36,18 @@ public static class AudioPlayerExtensions
         /// <include file='../XmlDocs/Buffered.xml' path='doc/Capacity/remarks'/>
         public AudioPlayer UseFFmpeg(FFmpegArguments arguments, double capacity = AsyncFFmpegProcessorBase.DefaultCapacity)
             => player.Use(AsyncBufferedFFmpegAudioProcessor.CreatePlayerCompatible(arguments, capacity));
+
+        public AudioPlayer UseCachedFile(string path, bool loop = false, float volume = 1)
+            => player.UseFile(SimpleFileCache.Shared.GetPathOrFallback(path), loop, volume);
+
+        public AudioPlayer UseCachedFile(string path, ModifyChain? modifyChain, bool loop = false)
+            => player.UseFile(SimpleFileCache.Shared.GetPathOrFallback(path), modifyChain, loop);
+
+        public AudioPlayer UseCachedFileSafe(string path, bool loop = false, float volume = 1)
+            => player.UseFileSafe(SimpleFileCache.Shared.GetPathOrFallback(path), loop, volume);
+
+        public AudioPlayer UseCachedFileSafe(string path, ModifyChain? modifyChain, bool loop = false)
+            => player.UseFileSafe(SimpleFileCache.Shared.GetPathOrFallback(path), modifyChain, loop);
 
     }
 

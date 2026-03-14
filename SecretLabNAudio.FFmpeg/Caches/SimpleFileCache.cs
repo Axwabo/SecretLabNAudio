@@ -1,10 +1,9 @@
-using System.Threading.Tasks;
 using LabApi.Loader.Features.Paths;
 using SecretLabNAudio.FFmpeg.Extensions;
 
 namespace SecretLabNAudio.FFmpeg.Caches;
 
-public sealed class SimpleFileCache
+public sealed class SimpleFileCache : AudioCacheBase<string, int>
 {
 
     private static readonly FFmpegArguments Template = new()
@@ -16,26 +15,22 @@ public sealed class SimpleFileCache
 
     public static SimpleFileCache Shared { get; } = new(PathManager.Plugins.CreateSubdirectory("global").CreateSubdirectory("SecretLabNAudio.FFmpeg").CreateSubdirectory("Cache"));
 
-    public string Folder { get; }
-
-    public SimpleFileCache(string folder)
-    {
-        Folder = folder;
-        Directory.CreateDirectory(folder);
-    }
-
-    public SimpleFileCache(DirectoryInfo directoryInfo) : this(directoryInfo.FullName)
+    public SimpleFileCache(string folder) : base(folder)
     {
     }
 
-    private string Output(int key, OptimizeFor optimizeFor) => Path.Combine(Folder, $"{key}.{optimizeFor.Extension}");
+    public SimpleFileCache(DirectoryInfo directoryInfo) : base(directoryInfo)
+    {
+    }
 
-    public async Awaitable<(string OutputPath, SaveCacheError? Error)> CacheAsync(string source, OptimizeFor optimizeFor)
+    protected override int GetKey(string fullSource) => fullSource.GetStableHashCode();
+
+    public async Awaitable<(string OutputPath, SaveCacheError? Error)> CacheAsync(string source, OptimizeFor optimizeFor, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(source) || source.Contains('"'))
             return ("", new InvalidInputError(source));
         var fullSource = Path.GetFullPath(source);
-        var key = fullSource.GetStableHashCode();
+        var key = GetKey(fullSource);
         var output = Output(key, optimizeFor);
         if (!File.Exists(fullSource))
             return (output, new FileNotFoundError(fullSource));
@@ -43,32 +38,30 @@ public sealed class SimpleFileCache
         using var ffmpeg = FFmpegSL.Start(Template with {Input = fullSource, Output = output});
         if (ffmpeg == null)
             return (output, new FFmpegStartupError(FFmpegSL.LastCaughtStartError));
-        while (!ffmpeg.HasExited)
-            await Task.Delay(100);
-        ffmpeg.WaitForExit();
+        if (!await ffmpeg.WaitForExitAsync(cancellationToken).ConfigureAwait(false))
+            return (output, CanceledError.Instance);
         if (ffmpeg.HasExitedWithError)
             return (output, new FFmpegRuntimeError(ffmpeg.FinalErrorMessage!));
-        await File.WriteAllTextAsync(Path.ChangeExtension(output, "path"), fullSource);
+        try
+        {
+            await File.WriteAllTextAsync(Path.ChangeExtension(output, "path"), fullSource, cancellationToken).ConfigureAwait(false);
+        }
+        catch (OperationCanceledException)
+        {
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"Failed to write metadata for the file cached from {fullSource}");
+            Debug.LogException(e);
+        }
+
         return (output, null);
     }
 
-    public bool TryGetPath(string source, [NotNullWhen(true)] out string? cachedPath)
+    public override bool TryGetPath(string source, [NotNullWhen(true)] out string? cachedPath)
     {
-        var key = Path.GetFullPath(source).GetStableHashCode();
-        var speed = Output(key, OptimizeFor.ReadingSpeed);
-        if (File.Exists(speed))
-        {
-            cachedPath = speed;
-            return true;
-        }
-
-        var size = Output(key, OptimizeFor.FileSize);
-        if (File.Exists(size))
-        {
-            cachedPath = size;
-            return true;
-        }
-
+        if (File.Exists(source))
+            return base.TryGetPath(Path.GetFullPath(source), out cachedPath);
         cachedPath = null;
         return false;
     }
