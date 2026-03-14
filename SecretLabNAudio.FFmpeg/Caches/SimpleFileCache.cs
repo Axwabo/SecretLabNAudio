@@ -39,7 +39,7 @@ public sealed class SimpleFileCache : AudioCacheBase<string, int>
         if (ffmpeg == null)
             return (output, new FFmpegStartupError(FFmpegSL.LastCaughtStartError));
         if (!await ffmpeg.WaitForExitAsync(cancellationToken).ConfigureAwait(false))
-            return (output, CanceledError.Instance);
+            return (output, SaveCacheError.Canceled);
         if (ffmpeg.HasExitedWithError)
             return (output, new FFmpegRuntimeError(ffmpeg.FinalErrorMessage!));
         try
@@ -58,7 +58,7 @@ public sealed class SimpleFileCache : AudioCacheBase<string, int>
         return (output, null);
     }
 
-    public override bool TryGetPath(string source, [NotNullWhen(true)] out string? cachedPath)
+    public new bool TryGetPath(string source, [NotNullWhen(true)] out string? cachedPath)
     {
         if (File.Exists(source))
             return base.TryGetPath(Path.GetFullPath(source), out cachedPath);

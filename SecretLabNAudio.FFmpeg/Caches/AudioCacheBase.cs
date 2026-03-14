@@ -21,7 +21,7 @@ public abstract class AudioCacheBase<TSource, TKey>
 
     protected string Output(TKey key, OptimizeFor optimizeFor) => Path.Combine(Folder, $"{key}.{optimizeFor.Extension}");
 
-    public virtual bool TryGetPath(TSource source, [NotNullWhen(true)] out string? cachedPath)
+    protected bool TryGetPath(TSource source, [NotNullWhen(true)] out string? cachedPath)
     {
         var key = GetKey(source);
         var speed = Output(key, OptimizeFor.ReadingSpeed);
