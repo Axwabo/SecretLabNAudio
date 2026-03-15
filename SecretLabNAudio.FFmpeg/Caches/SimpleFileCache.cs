@@ -3,6 +3,9 @@ using SecretLabNAudio.FFmpeg.Extensions;
 
 namespace SecretLabNAudio.FFmpeg.Caches;
 
+/// <summary>
+/// A simple cache to help generate optimized media from audio files.
+/// </summary>
 public sealed class SimpleFileCache : AudioCacheBase<string, int>
 {
 
@@ -13,6 +16,9 @@ public sealed class SimpleFileCache : AudioCacheBase<string, int>
         OutputOptions = "-y"
     };
 
+    /// <summary>
+    /// A shared <see cref="SimpleFileCache"/> instance.
+    /// </summary>
     public static SimpleFileCache Shared { get; } = new(PathManager.Plugins.CreateSubdirectory("global").CreateSubdirectory("SecretLabNAudio.FFmpeg").CreateSubdirectory("Cache"));
 
     public SimpleFileCache(string folder) : base(folder)
