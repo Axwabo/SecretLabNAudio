@@ -21,17 +21,19 @@ public sealed class SimpleFileCache : AudioCacheBase<string, int>
     /// </summary>
     public static SimpleFileCache Shared { get; } = new(PathManager.Plugins.CreateSubdirectory("global").CreateSubdirectory("SecretLabNAudio.FFmpeg").CreateSubdirectory("Cache"));
 
+    /// <inheritdoc/>
     public SimpleFileCache(string folder) : base(folder)
     {
     }
 
+    /// <inheritdoc/>
     public SimpleFileCache(DirectoryInfo directoryInfo) : base(directoryInfo)
     {
     }
 
     protected override int GetKey(string fullSource) => fullSource.GetStableHashCode();
 
-    public async Awaitable<(string OutputPath, SaveCacheError? Error)> CacheAsync(string source, OptimizeFor optimizeFor, CancellationToken cancellationToken = default)
+    public override async Awaitable<SaveCacheResult> CacheAsync(string source, OptimizeFor optimizeFor, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(source) || source.Contains('"'))
             return ("", new InvalidInputError(source));
@@ -43,7 +45,7 @@ public sealed class SimpleFileCache : AudioCacheBase<string, int>
         await Awaitable.BackgroundThreadAsync();
         using var ffmpeg = FFmpegSL.Start(Template with {Input = fullSource, Output = output});
         if (ffmpeg == null)
-            return (output, new FFmpegStartupError(FFmpegSL.LastCaughtStartError));
+            return (output, FFmpegSL.LastCaughtStartError);
         if (!await ffmpeg.WaitForExitAsync(cancellationToken).ConfigureAwait(false))
             return (output, SaveCacheError.Canceled);
         if (ffmpeg.HasExitedWithError)
@@ -64,7 +66,7 @@ public sealed class SimpleFileCache : AudioCacheBase<string, int>
         return (output, null);
     }
 
-    public new bool TryGetPath(string source, [NotNullWhen(true)] out string? cachedPath)
+    public override bool TryGetPath(string source, [NotNullWhen(true)] out string? cachedPath)
     {
         if (File.Exists(source))
             return base.TryGetPath(Path.GetFullPath(source), out cachedPath);
