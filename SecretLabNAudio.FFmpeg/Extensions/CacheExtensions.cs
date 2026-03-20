@@ -62,21 +62,37 @@ public static class CacheExtensions
         /// </summary>
         /// <param name="path">The path to the file to cache.</param>
         /// <param name="optimizeFor">What to optimize for.</param>
+        /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
         /// <returns>
         /// An <see cref="Awaitable"/> representing the asynchronous operation.
         /// If a cached file exists and has been written to prior to the modification of the original file, the awaitable will have completed.
         /// </returns>
         /// <remarks><see cref="File.GetLastWriteTimeUtc"/> is used for comparison.</remarks>
-        public async Awaitable<SaveCacheResult> CacheIfUpdatedAsync(string path, OptimizeFor optimizeFor)
+        public async Awaitable<SaveCacheResult> CacheIfUpdatedAsync(string path, OptimizeFor optimizeFor, CancellationToken cancellationToken = default)
             => cache.TryGetPath(path, out var cachedPath) && File.GetLastWriteTimeUtc(cachedPath) >= File.GetLastWriteTimeUtc(path)
                 ? (cachedPath, null)
-                : await cache.CacheAsync(path, optimizeFor);
+                : await cache.CacheAsync(path, optimizeFor, cancellationToken);
 
-        public Awaitable<SaveCacheResult[]> CacheAllAsync(string directory, OptimizeFor optimizeFor, CancellationToken cancellationToken = default)
-            => cache.CacheAllAsync(Directory.EnumerateFiles(directory), optimizeFor, cancellationToken);
+        // TODO: lotta yapping
+        public Awaitable<SaveCacheResult[]> CacheAllAsync(
+            string directory,
+            OptimizeFor optimizeFor,
+            SearchOption searchOption = SearchOption.TopDirectoryOnly,
+            string searchPattern = "*",
+            CancellationToken cancellationToken = default
+        ) => cache.CacheAllAsync(Directory.EnumerateFiles(directory, searchPattern, searchOption), optimizeFor, cancellationToken);
 
-        public async Awaitable<SaveCacheResult[]> CacheAllIfUpdatedAsync(string directory, OptimizeFor optimizeFor)
-            => await Task.WhenAll(Directory.EnumerateFiles(directory).Select(e => cache.CacheIfUpdatedAsync(e, optimizeFor).AsTask()));
+        // TODO: even more yapping
+        public async Awaitable<SaveCacheResult[]> CacheAllIfUpdatedAsync(
+            string directory,
+            OptimizeFor optimizeFor,
+            SearchOption searchOption = SearchOption.TopDirectoryOnly,
+            string searchPattern = "*",
+            CancellationToken cancellationToken = default
+        ) => await Task.WhenAll(
+            Directory.EnumerateFiles(directory, searchPattern, searchOption)
+                .Select(e => cache.CacheIfUpdatedAsync(e, optimizeFor, cancellationToken).AsTask())
+        );
 
     }
 

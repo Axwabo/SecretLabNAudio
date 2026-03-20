@@ -62,7 +62,7 @@ public abstract class AudioCacheBase<TSource, TKey>
     /// </summary>
     /// <param name="source">The object to find the value by.</param>
     /// <param name="cachedPath">The fully qualified path if a cached file was found, null otherwise.</param>
-    /// <returns>Whether a cached path was found.</returns>
+    /// <returns>Whether a cached file was found.</returns>
     public virtual bool TryGetPath(TSource source, [NotNullWhen(true)] out string? cachedPath)
     {
         var key = GetKey(source);
