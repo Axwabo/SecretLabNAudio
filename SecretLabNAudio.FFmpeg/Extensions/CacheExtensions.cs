@@ -57,6 +57,16 @@ public static class CacheExtensions
         public string GetPathOrFallback(string path)
             => cache.TryGetPath(path, out var cachedPath) ? cachedPath : path;
 
+        /// <summary>
+        /// Caches the file if it was cached prior to the last write to the original.
+        /// </summary>
+        /// <param name="path">The path to the file to cache.</param>
+        /// <param name="optimizeFor">What to optimize for.</param>
+        /// <returns>
+        /// An <see cref="Awaitable"/> representing the asynchronous operation.
+        /// If a cached file exists and has been written to prior to the modification of the original file, the awaitable will have completed.
+        /// </returns>
+        /// <remarks><see cref="File.GetLastWriteTimeUtc"/> is used for comparison.</remarks>
         public async Awaitable<SaveCacheResult> CacheIfUpdatedAsync(string path, OptimizeFor optimizeFor)
             => cache.TryGetPath(path, out var cachedPath) && File.GetLastWriteTimeUtc(cachedPath) >= File.GetLastWriteTimeUtc(path)
                 ? (cachedPath, null)

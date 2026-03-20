@@ -31,8 +31,20 @@ public sealed class SimpleFileCache : AudioCacheBase<string, int>
     {
     }
 
+    /// <summary>
+    /// Gets the key from the fully qualified path.
+    /// </summary>
+    /// <param name="fullSource">The absolute path to the file.</param>
+    /// <returns>The key associated with the path.</returns>
     protected override int GetKey(string fullSource) => fullSource.GetStableHashCode();
 
+    /// <summary>
+    /// Asynchronously starts and waits for FFmpeg to cache the file.
+    /// </summary>
+    /// <param name="source">The path to the file to cache.</param>
+    /// <param name="optimizeFor">What to optimize for.</param>
+    /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
+    /// <returns>An <see cref="Awaitable"/> representing the asynchronous operation.</returns>
     public override async Awaitable<SaveCacheResult> CacheAsync(string source, OptimizeFor optimizeFor, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(source) || source.Contains('"'))
@@ -66,6 +78,12 @@ public sealed class SimpleFileCache : AudioCacheBase<string, int>
         return (output, null);
     }
 
+    /// <summary>
+    /// Attempts to get the cached path of a file.
+    /// </summary>
+    /// <param name="source">The file path to find the cached path by.</param>
+    /// <param name="cachedPath">The fully qualified path if a cached file was found, null otherwise.</param>
+    /// <returns>Whether a cached path was found.</returns>
     public override bool TryGetPath(string source, [NotNullWhen(true)] out string? cachedPath)
     {
         if (File.Exists(source))

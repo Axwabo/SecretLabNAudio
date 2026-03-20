@@ -49,7 +49,7 @@ public abstract class AudioCacheBase<TSource, TKey>
     protected string Output(TKey key, OptimizeFor optimizeFor) => Path.Combine(Folder, $"{key}.{optimizeFor.Extension}");
 
     /// <summary>
-    /// Asynchronously starts FFmpeg to perform caching.
+    /// Asynchronously starts and waits for FFmpeg to perform caching.
     /// </summary>
     /// <param name="source">The object to save by.</param>
     /// <param name="optimizeFor">What to optimize for.</param>
