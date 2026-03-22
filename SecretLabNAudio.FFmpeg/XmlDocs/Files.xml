@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc>
+    <exception name="NotFound" cref="T:System.IO.FileNotFoundException">Thrown if no cached file was found, and the original file does not exist.</exception>
+    <exception name="NotSupported" cref="T:System.NotSupportedException">
+        Thrown if there was no registered factory for the file type, or if the factory didn't return a
+        <see cref="T:NAudio.Wave.WaveStream" />.
+    </exception>
+</doc>
