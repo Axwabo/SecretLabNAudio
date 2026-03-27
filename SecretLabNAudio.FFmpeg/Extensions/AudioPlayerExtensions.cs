@@ -46,7 +46,7 @@ public static class AudioPlayerExtensions
         /// <returns>The player itself.</returns>
         /// <remarks>The stream will be converted to be player-compatible.</remarks>
         /// <seealso cref="Core.Extensions.AudioPlayerExtensions.UseFile(AudioPlayer,string,bool,float)"/>
-        /// <include file='../XmlDocs/Files.xml' path='doc/NotFound'/>
+        /// <include file='../XmlDocs/Files.xml' path='doc/exception'/>
         public AudioPlayer UseCachedFile(string path, bool loop = false, float volume = 1)
             => player.UseFile(SimpleFileCache.Shared.GetPathOrFallback(path), loop, volume);
 
@@ -58,16 +58,36 @@ public static class AudioPlayerExtensions
         /// <param name="loop">Whether to loop the file.</param>
         /// <returns>The player itself.</returns>
         /// <remarks>The stream will be converted to be player-compatible.</remarks>
-        /// <seealso cref="Core.Extensions.AudioPlayerExtensions.UseFile(AudioPlayer,string,bool,float)"/>
-        /// <include file='../XmlDocs/Files.xml' path='doc/NotFound'/>
+        /// <seealso cref="Core.Extensions.AudioPlayerExtensions.UseFile(AudioPlayer,string,ModifyChain,bool)"/>
+        /// <include file='../XmlDocs/Files.xml' path='doc/exception'/>
         public AudioPlayer UseCachedFile(string path, ModifyChain? modify, bool loop = false)
             => player.UseFile(SimpleFileCache.Shared.GetPathOrFallback(path), modify, loop);
 
+        /// <summary>
+        /// Safely uses the <see cref="SimpleFileCache.Shared">simple file cache</see> to play an optimized file,
+        /// or falls back to playing the original file if it exists and is supported.
+        /// </summary>
+        /// <param name="path">The path to the original file.</param>
+        /// <param name="loop">Whether to loop the file.</param>
+        /// <param name="volume">The volume of the input.</param>
+        /// <returns>The player itself.</returns>
+        /// <remarks>The stream will be converted to be player-compatible.</remarks>
+        /// <seealso cref="Core.Extensions.AudioPlayerExtensions.UseFileSafe(AudioPlayer,string,bool,float)"/>
         public AudioPlayer UseCachedFileSafe(string path, bool loop = false, float volume = 1)
             => player.UseFileSafe(SimpleFileCache.Shared.GetPathOrFallback(path), loop, volume);
 
-        public AudioPlayer UseCachedFileSafe(string path, ModifyChain? modifyChain, bool loop = false)
-            => player.UseFileSafe(SimpleFileCache.Shared.GetPathOrFallback(path), modifyChain, loop);
+        /// <summary>
+        /// Safely uses the <see cref="SimpleFileCache.Shared">simple file cache</see> to play an optimized file,
+        /// or falls back to playing the original file if it exists and is supported.
+        /// </summary>
+        /// <param name="path">The path to the original file.</param>
+        /// <param name="modify">A delegate to process the provider. If null, a <see cref="Core.Processors.ProcessorChain"/> will only be created if format conversion is required.</param>
+        /// <param name="loop">Whether to loop the file.</param>
+        /// <returns>The player itself.</returns>
+        /// <remarks>The stream will be converted to be player-compatible.</remarks>
+        /// <seealso cref="Core.Extensions.AudioPlayerExtensions.UseFileSafe(AudioPlayer,string,bool,float)"/>
+        public AudioPlayer UseCachedFileSafe(string path, ModifyChain? modify, bool loop = false)
+            => player.UseFileSafe(SimpleFileCache.Shared.GetPathOrFallback(path), modify, loop);
 
     }
 

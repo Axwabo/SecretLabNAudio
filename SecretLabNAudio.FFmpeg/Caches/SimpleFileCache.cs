@@ -13,7 +13,7 @@ public sealed class SimpleFileCache : AudioCacheBase<string, int>
     {
         SampleRate = AudioPlayer.SampleRate,
         Channels = AudioPlayer.Channels,
-        OutputOptions = "-y"
+        OutputOptions = "-y -vn"
     };
 
     /// <summary>

@@ -58,7 +58,7 @@ public static class CacheExtensions
             => cache.TryGetPath(path, out var cachedPath) ? cachedPath : path;
 
         /// <summary>
-        /// Caches the file if it was cached prior to the last write to the original.
+        /// Caches the file if it wasn't cached after the last write to the original.
         /// </summary>
         /// <param name="path">The path to the file to cache.</param>
         /// <param name="optimizeFor">What to optimize for.</param>
@@ -73,7 +73,22 @@ public static class CacheExtensions
                 ? (cachedPath, null)
                 : await cache.CacheAsync(path, optimizeFor, cancellationToken);
 
-        // TODO: lotta yapping
+        /// <summary>
+        /// Caches all files in the specified directory.
+        /// </summary>
+        /// <param name="directory">The directory to search in.</param>
+        /// <param name="optimizeFor">What to optimize for.</param>
+        /// <param name="searchOption">Whether to search only in the directory itself, or enter subdirectories as well.</param>
+        /// <param name="searchPattern">
+        /// The search string to match against the names of files.
+        /// This parameter can contain a combination of valid literal path and wildcard (* and ?) characters, but it doesn't support regular expressions.
+        /// </param>
+        /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
+        /// <returns>An <see cref="Awaitable"/> representing the asynchronous operation, containing the result for each file.</returns>
+        /// <remarks>
+        /// Canceling the token will not throw an <see cref="OperationCanceledException"/>.
+        /// Instead, it will return a <see cref="CanceledError"/> for each operation that hasn't yet completed.
+        /// </remarks>
         public Awaitable<SaveCacheResult[]> CacheAllAsync(
             string directory,
             OptimizeFor optimizeFor,
@@ -82,7 +97,24 @@ public static class CacheExtensions
             CancellationToken cancellationToken = default
         ) => cache.CacheAllAsync(Directory.EnumerateFiles(directory, searchPattern, searchOption), optimizeFor, cancellationToken);
 
-        // TODO: even more yapping
+        /// <summary>
+        /// Caches all files in the specified directory.
+        /// Each file will only be cached if it wasn't cached after the last write to the original.
+        /// </summary>
+        /// <param name="directory">The directory to search in.</param>
+        /// <param name="optimizeFor">What to optimize for.</param>
+        /// <param name="searchOption">Whether to search only in the directory itself, or enter subdirectories as well.</param>
+        /// <param name="searchPattern">
+        /// The search string to match against the names of files.
+        /// This parameter can contain a combination of valid literal path and wildcard (* and ?) characters, but it doesn't support regular expressions.
+        /// </param>
+        /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
+        /// <returns>An <see cref="Awaitable"/> representing the asynchronous operation, containing the result for each file.</returns>
+        /// <remarks>
+        /// <see cref="File.GetLastWriteTimeUtc"/> is used for comparison.<br/>
+        /// Canceling the token will not throw an <see cref="OperationCanceledException"/>.
+        /// Instead, it will return a <see cref="CanceledError"/> for each operation that hasn't yet completed.
+        /// </remarks>
         public async Awaitable<SaveCacheResult[]> CacheAllIfUpdatedAsync(
             string directory,
             OptimizeFor optimizeFor,
