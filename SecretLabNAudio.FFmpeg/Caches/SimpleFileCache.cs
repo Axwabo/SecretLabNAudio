@@ -36,7 +36,7 @@ public sealed class SimpleFileCache : AudioCacheBase<string, int>
     /// </summary>
     /// <param name="fullSource">The absolute path to the file.</param>
     /// <returns>The key associated with the path.</returns>
-    protected override int GetKey(string fullSource) => fullSource.GetStableHashCode();
+    public override int GetKey(string fullSource) => fullSource.GetStableHashCode();
 
     /// <summary>
     /// Asynchronously starts and waits for FFmpeg to cache the file.
@@ -51,7 +51,7 @@ public sealed class SimpleFileCache : AudioCacheBase<string, int>
             return ("", new InvalidInputError(source));
         var fullSource = Path.GetFullPath(source);
         var key = GetKey(fullSource);
-        var output = Output(key, optimizeFor);
+        var output = GetOutput(key, optimizeFor);
         if (!File.Exists(fullSource))
             return (output, new FileNotFoundError(fullSource));
         await Awaitable.BackgroundThreadAsync();

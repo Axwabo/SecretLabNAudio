@@ -38,7 +38,7 @@ public abstract class AudioCacheBase<TSource, TKey>
     /// </summary>
     /// <param name="source">The source to convert.</param>
     /// <returns>The key associated with the source.</returns>
-    protected abstract TKey GetKey(TSource source);
+    public abstract TKey GetKey(TSource source);
 
     /// <summary>
     /// Gets fully qualified output path given a key and an optimization target.
@@ -46,7 +46,7 @@ public abstract class AudioCacheBase<TSource, TKey>
     /// <param name="key">The key to save by.</param>
     /// <param name="optimizeFor">What to optimize for.</param>
     /// <returns>A fully qualified path to the cached file.</returns>
-    protected string Output(TKey key, OptimizeFor optimizeFor) => Path.Combine(Folder, $"{key}.{optimizeFor.Extension}");
+    public string GetOutput(TKey key, OptimizeFor optimizeFor) => Path.Combine(Folder, $"{key}.{optimizeFor.Extension}");
 
     /// <summary>
     /// Asynchronously starts and waits for FFmpeg to perform caching.
@@ -66,14 +66,14 @@ public abstract class AudioCacheBase<TSource, TKey>
     public virtual bool TryGetPath(TSource source, [NotNullWhen(true)] out string? cachedPath)
     {
         var key = GetKey(source);
-        var speed = Output(key, OptimizeFor.ReadingSpeed);
+        var speed = GetOutput(key, OptimizeFor.ReadingSpeed);
         if (File.Exists(speed))
         {
             cachedPath = speed;
             return true;
         }
 
-        var size = Output(key, OptimizeFor.FileSize);
+        var size = GetOutput(key, OptimizeFor.FileSize);
         if (File.Exists(size))
         {
             cachedPath = size;
