@@ -115,7 +115,7 @@ public static class CacheExtensions
         /// Canceling the token will not throw an <see cref="OperationCanceledException"/>.
         /// Instead, it will return a <see cref="CanceledError"/> for each operation that hasn't yet completed.
         /// </remarks>
-        public async Awaitable<SaveCacheResult[]> CacheAllIfUpdatedAsync(
+        public async Awaitable<SaveCacheResult[]> CacheAllUpdatedAsync(
             string directory,
             OptimizeFor optimizeFor,
             SearchOption searchOption = SearchOption.TopDirectoryOnly,
