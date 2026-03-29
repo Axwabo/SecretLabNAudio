@@ -9,7 +9,10 @@ namespace SecretLabNAudio.FFmpeg.Caches;
 public sealed class SimpleFileCache : AudioCacheBase<string, int>
 {
 
-    private static readonly FFmpegArguments Template = new()
+    /// <summary>
+    /// The template arguments (sample rate, channels, output options) used for caching.
+    /// </summary>
+    public static readonly FFmpegArguments ArgumentsTemplate = new()
     {
         SampleRate = AudioPlayer.SampleRate,
         Channels = AudioPlayer.Channels,
@@ -55,7 +58,7 @@ public sealed class SimpleFileCache : AudioCacheBase<string, int>
         if (!File.Exists(fullSource))
             return (output, new FileNotFoundError(fullSource));
         await Awaitable.BackgroundThreadAsync();
-        using var ffmpeg = FFmpegSL.Start(Template with {Input = fullSource, Output = output});
+        using var ffmpeg = FFmpegSL.Start(ArgumentsTemplate with {Input = fullSource, Output = output});
         if (ffmpeg == null)
             return (output, FFmpegSL.LastCaughtStartError);
         if (!await ffmpeg.WaitForExitAsync(cancellationToken).ConfigureAwait(false))
