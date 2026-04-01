@@ -65,6 +65,27 @@ public sealed class SimpleFileCache : AudioCacheBase<string, int>
             return (output, SaveCacheError.Canceled);
         if (ffmpeg.HasExitedWithError)
             return (output, new FFmpegRuntimeError(ffmpeg.FinalErrorMessage!));
+        await WriteMetadataAsync(fullSource, output, cancellationToken);
+        return (output, null);
+    }
+
+    /// <summary>
+    /// Attempts to get the cached path of a file.
+    /// </summary>
+    /// <param name="source">The file path to find the cached path by.</param>
+    /// <param name="cachedPath">The fully qualified path if a cached file was found, null otherwise.</param>
+    /// <returns>Whether a cached path was found.</returns>
+    /// <remarks><see cref="OptimizeFor.ReadingSpeed"/> is checked first, then <see cref="OptimizeFor.FileSize"/>.</remarks>
+    public override bool TryGetPath(string source, [NotNullWhen(true)] out string? cachedPath)
+    {
+        if (File.Exists(source))
+            return base.TryGetPath(Path.GetFullPath(source), out cachedPath);
+        cachedPath = null;
+        return false;
+    }
+
+    private static async Awaitable WriteMetadataAsync(string fullSource, string output, CancellationToken cancellationToken)
+    {
         try
         {
             await File.WriteAllTextAsync($"{output}.path", fullSource, cancellationToken).ConfigureAwait(false);
@@ -77,22 +98,6 @@ public sealed class SimpleFileCache : AudioCacheBase<string, int>
             Debug.LogError($"Failed to write metadata for the file cached from {fullSource}");
             Debug.LogException(e);
         }
-
-        return (output, null);
-    }
-
-    /// <summary>
-    /// Attempts to get the cached path of a file.
-    /// </summary>
-    /// <param name="source">The file path to find the cached path by.</param>
-    /// <param name="cachedPath">The fully qualified path if a cached file was found, null otherwise.</param>
-    /// <returns>Whether a cached path was found.</returns>
-    public override bool TryGetPath(string source, [NotNullWhen(true)] out string? cachedPath)
-    {
-        if (File.Exists(source))
-            return base.TryGetPath(Path.GetFullPath(source), out cachedPath);
-        cachedPath = null;
-        return false;
     }
 
 }
