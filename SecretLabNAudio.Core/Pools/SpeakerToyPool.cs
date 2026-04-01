@@ -9,7 +9,7 @@ public static class SpeakerToyPool
 
     private static readonly bool[] Occupied = new bool[byte.MaxValue + 1];
 
-    /// <summary>Attempts to get first controller ID not used by any active speakers.</summary>
+    /// <summary>Attempts to get first controller ID not used by any enabled speakers.</summary>
     /// <param name="result">The first free controller ID. 0 if no ID was found.</param>
     /// <returns>Whether there was an available ID.</returns>
     /// <remarks>
@@ -33,7 +33,7 @@ public static class SpeakerToyPool
         return false;
     }
 
-    /// <summary>Gets the first controller ID not used by any active speakers.</summary>
+    /// <summary>Gets the first controller ID not used by any enabled speakers.</summary>
     /// <exception cref="OverflowException">Thrown when no IDs are available.</exception>
     public static byte NextAvailableId => TryGetNextAvailableId(out var id) ? id : throw new OverflowException("No available IDs found");
 
