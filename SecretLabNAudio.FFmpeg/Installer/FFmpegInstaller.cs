@@ -85,6 +85,7 @@ public static partial class FFmpegInstaller
 
     private static async Awaitable Download(string url, string filename)
     {
+        await Awaitable.MainThreadAsync();
         using var request = UnityWebRequest.Get(url);
         using var cts = new CancellationTokenSource();
         request.downloadHandler = new DownloadHandlerFile(Path.GetFullPath(filename));
@@ -97,7 +98,6 @@ public static partial class FFmpegInstaller
 
     private static async Awaitable LogProgress(UnityWebRequest request, CancellationToken cancellationToken)
     {
-        await Awaitable.MainThreadAsync();
         var progress = -1f;
         while (request.result == UnityWebRequest.Result.InProgress)
         {
