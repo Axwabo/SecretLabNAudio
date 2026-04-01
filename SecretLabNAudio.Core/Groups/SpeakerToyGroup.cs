@@ -77,6 +77,15 @@ public sealed class SpeakerToyGroup
     }
 
     /// <summary>
+    /// Marks the group as destroyed while keeping each speaker as is. 
+    /// </summary>
+    public void Ungroup()
+    {
+        IsDestroyed = true;
+        _children.Clear();
+    }
+
+    /// <summary>
     /// Marks the group as destroyed. Destroys all speakers, or returns all speakers to the pool.
     /// </summary>
     /// <seealso cref="SpeakerToyPool"/>
