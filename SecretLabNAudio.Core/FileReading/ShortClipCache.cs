@@ -42,7 +42,7 @@ public static class ShortClipCache
     /// <remarks>If an entry already exists, it will be overwritten.</remarks>
     public static void Add(ClipName name, RawSourceSampleProvider provider)
     {
-        AudioPlayer.ThrowIfIncompatible(provider);
+        AudioConstants.ThrowIfIncompatible(provider);
         Clips[name.ToString()] = provider;
     }
 
