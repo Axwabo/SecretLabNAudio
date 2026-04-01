@@ -81,6 +81,18 @@ public static class SpeakerToyGroupExtensions
             return group;
         }
 
+        /// <summary>
+        /// Adds a <see cref="SpeakerPersonalization"/> instance to all speakers.
+        /// </summary>
+        /// <returns>An <see cref="IEnumerable{T}"/> of <see cref="SpeakerPersonalization"/>s.</returns>
+        /// <seealso cref="PersonalizationExtensions.AddPersonalization(SpeakerToy)"/>
+        public IEnumerable<SpeakerPersonalization> AddPersonalizationToAll()
+        {
+            yield return group.Controller.AddPersonalization();
+            foreach (var child in group.Children)
+                yield return child.AddPersonalization();
+        }
+
     }
 
 }
