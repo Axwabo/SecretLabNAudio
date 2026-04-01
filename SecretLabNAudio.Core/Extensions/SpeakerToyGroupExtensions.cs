@@ -46,8 +46,11 @@ public static class SpeakerToyGroupExtensions
         /// <param name="position">The position of the speaker.</param>
         /// <param name="settings">The settings to apply. If null, the <see cref="SpeakerToyGroup.Controller"/>'s settings will be used.</param>
         /// <returns>The group itself.</returns>
+        /// <exception cref="ObjectDisposedException">Thrown if the group has already been destroyed.</exception>
         public SpeakerToyGroup AddFromPool(Vector3 position, SpeakerSettings? settings = null)
         {
+            if (group.IsDestroyed)
+                throw new ObjectDisposedException(nameof(SpeakerToyGroup));
             var toy = SpeakerToyPool.Rent(null, position, false);
             group.Add(toy);
             toy.ApplySettings(settings ?? SpeakerSettings.From(group.Controller));
@@ -61,6 +64,7 @@ public static class SpeakerToyGroupExtensions
         /// </summary>
         /// <param name="positions">The positions of the speakers.</param>
         /// <returns>The group itself.</returns>
+        /// <exception cref="ObjectDisposedException">Thrown if the group has already been destroyed.</exception>
         public SpeakerToyGroup AddFromPool(params IEnumerable<Vector3> positions)
         {
             foreach (var position in positions)
@@ -74,6 +78,7 @@ public static class SpeakerToyGroupExtensions
         /// <param name="settings">The settings to apply to the speakers.</param>
         /// <param name="positions">The positions of the speakers.</param>
         /// <returns>The group itself.</returns>
+        /// <exception cref="ObjectDisposedException">Thrown if the group has already been destroyed.</exception>
         public SpeakerToyGroup AddFromPool(SpeakerSettings settings, params IEnumerable<Vector3> positions)
         {
             foreach (var position in positions)
@@ -85,6 +90,7 @@ public static class SpeakerToyGroupExtensions
         /// Adds a <see cref="SpeakerPersonalization"/> instance to all speakers.
         /// </summary>
         /// <returns>An <see cref="IEnumerable{T}"/> of <see cref="SpeakerPersonalization"/>s.</returns>
+        /// <exception cref="ObjectDisposedException">Thrown if the group has already been destroyed.</exception>
         /// <seealso cref="PersonalizationExtensions.AddPersonalization(SpeakerToy)"/>
         public IEnumerable<SpeakerPersonalization> AddPersonalizationToAll()
         {
