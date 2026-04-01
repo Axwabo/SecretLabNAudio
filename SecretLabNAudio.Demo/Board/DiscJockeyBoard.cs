@@ -47,9 +47,9 @@ public sealed class DiscJockeyBoard : MonoBehaviour
         var transform = board.Transform;
 
         Instance._player = AudioPlayerPool.Rent(StageSettings, stage.Transform)
-            .WithFilteredSendEngine(p => !p.IsAlive || p.IsOutside())
+            .WithFilteredSendEngine(p => !p.IsAlive || p.IsOutside)
             .WithOutputMonitor(visualizer);
-        Outside.PlaceSpeakers(Instance._player.Id);
+        Outside.PlaceSpeakers(Instance._player);
 
         Instance._music = Slider.Create(transform, Vector3.right * 0.4f, SliderRotation, "🎵", "Music");
         Instance._speed = Slider.Create(transform, Vector3.right * 0.5f, SliderRotation, "⏩", "Speed", 0);
