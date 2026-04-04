@@ -17,7 +17,7 @@ public static partial class FFmpegInstaller
         var (decompressed, tarError) = Execute(Env, $"bash -c \"{LinuxDecompress}\"");
         if (!decompressed)
         {
-            Logger.Error($"Failed to extract FFmpeg:\n{tarError ?? "could not start \"tar\" process via bash"}");
+            Logger.Error($"Failed to extract FFmpeg:\n{tarError ?? "could not start \"tar\" process via bash and env"}");
             return null;
         }
 
@@ -38,7 +38,7 @@ public static partial class FFmpegInstaller
         );
         return changed
             ? (true, "Successfully made FFmpeg executable.")
-            : (false, chmodError ?? "Could not start \"chmod\" process via bash");
+            : (false, chmodError ?? "Could not start \"chmod\" process via env");
     }
 
 }
