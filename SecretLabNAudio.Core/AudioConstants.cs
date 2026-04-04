@@ -3,7 +3,7 @@ using VoiceChat;
 namespace SecretLabNAudio.Core;
 
 /// <summary>
-/// Constants and helpers 
+/// Constants and helpers for voice chat audio.
 /// </summary>
 public static class AudioConstants
 {

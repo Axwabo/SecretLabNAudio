@@ -24,7 +24,7 @@ public sealed class NAudioPlugin : Plugin
     {
         NVorbisPlugin.RegisterFactory();
         NLayerPlugin.RegisterFactory();
-        FFmpeg.EmbeddedPluginEnabler.EnablePlugin();
+        EmbeddedPluginEnabler.EnableFFmpeg();
     }
 
     public override void Disable()
