@@ -59,7 +59,7 @@ public static class SpeakerToyGroupExtensions
         }
 
         /// <summary>
-        /// Rents multiple speaker from the <see cref="SpeakerToyPool"/>, and adds them to the group.
+        /// Rents multiple speakers from the <see cref="SpeakerToyPool"/>, and adds them to the group.
         /// The speakers' settings will match that of the <see cref="SpeakerToyGroup.Controller"/>.
         /// </summary>
         /// <param name="positions">The positions of the speakers.</param>
@@ -73,7 +73,7 @@ public static class SpeakerToyGroupExtensions
         }
 
         /// <summary>
-        /// Rents multiple speaker from the <see cref="SpeakerToyPool"/>, and adds them to the group.
+        /// Rents multiple speakers from the <see cref="SpeakerToyPool"/>, and adds them to the group.
         /// </summary>
         /// <param name="settings">The settings to apply to the speakers.</param>
         /// <param name="positions">The positions of the speakers.</param>
@@ -87,7 +87,7 @@ public static class SpeakerToyGroupExtensions
         }
 
         /// <summary>
-        /// Adds a <see cref="SpeakerPersonalization"/> instance to all speakers.
+        /// Adds a <see cref="SpeakerPersonalization"/> instance to each speaker.
         /// </summary>
         /// <returns>An <see cref="IEnumerable{T}"/> of <see cref="SpeakerPersonalization"/>s.</returns>
         /// <exception cref="ObjectDisposedException">Thrown if the group has already been destroyed.</exception>

@@ -31,7 +31,7 @@ public static class Outside
             .Where(static e => e is Scp079Speaker {Room.Name: RoomName.Outside})
             .Select(static e => e.Position);
         PersonalizationInstances.Clear();
-        PersonalizationInstances.AddRange(controller.CreateGroup()
+        PersonalizationInstances.AddRange(controller.GetOrCreateGroup()
             .AddFromPool(Settings, positions)
             .AddPersonalizationToAll());
     }
