@@ -6,7 +6,7 @@ public static partial class FFmpegInstaller
     private const string LinuxUrl = "https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-linux64-lgpl.tar.xz";
     private const string LinuxArchive = "ffmpeg.tar.xz";
     private const string LinuxDecompress = $"tar -xf {LinuxArchive} --strip=2 --overwrite --wildcards */bin/*";
-    private const string Env = "/usr/bin/bash";
+    private const string Env = "/usr/bin/env";
     private const string LinuxExecutable = "ffmpeg";
 
     private static async Awaitable<string?> InstallLinux()
