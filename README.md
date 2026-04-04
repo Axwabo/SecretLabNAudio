@@ -37,9 +37,8 @@ This library has a number of open-source dependencies. See [Attributions](ATTRIB
 
 1. Download the `SecretLabNAudio.zip` file from the [releases page](https://github.com/Axwabo/SecretLabNAudio/releases)
 2. Extract `bin/SecretLabNAudio.dll` from the archive into the **global plugins** directory
-
-- Linux: `~/.config/SCP Secret Laboratory/LabAPI/plugins/global/`
-- Windows: `%appdata%/SCP Secret Laboratory/LabAPI/plugins/global/`
+   - Linux: `~/.config/SCP Secret Laboratory/LabAPI/plugins/global/`
+   - Windows: `%appdata%/SCP Secret Laboratory/LabAPI/plugins/global/`
 3. Restart the server
 
 > [!IMPORTANT]
@@ -51,14 +50,13 @@ This library has a number of open-source dependencies. See [Attributions](ATTRIB
 1. Download the `SecretLabNAudio.Core.dll` file from the [releases page](https://github.com/Axwabo/SecretLabNAudio/releases)
 2. Download the `SecretLabNAudio.zip` file from the releases page
 3. Extract the necessary DLLs from the `bin/` directory
-
-- See the [table below](#modules) for what you need
-- Place dependencies into the **dependencies** directory
-    - Linux: `~/.config/SCP Secret Laboratory/LabAPI/dependencies/<port>/`
-    - Windows: `%appdata%/SCP Secret Laboratory/LabAPI/dependencies/<port>/`
-- Place plugins into the **plugins** directory
-    - Linux: `~/.config/SCP Secret Laboratory/LabAPI/plugins/<port>/`
-    - Windows: `%appdata%/SCP Secret Laboratory/LabAPI/plugins/<port>/`
+   - See the [table below](#modules) for what you need
+   - Place dependencies into the **dependencies** directory
+       - Linux: `~/.config/SCP Secret Laboratory/LabAPI/dependencies/<port>/`
+       - Windows: `%appdata%/SCP Secret Laboratory/LabAPI/dependencies/<port>/`
+   - Place plugins into the **plugins** directory
+       - Linux: `~/.config/SCP Secret Laboratory/LabAPI/plugins/<port>/`
+       - Windows: `%appdata%/SCP Secret Laboratory/LabAPI/plugins/<port>/`
 4. Restart the server
 
 ### Modules
