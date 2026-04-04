@@ -10,7 +10,7 @@ public sealed class NAudioPlugin : Plugin
 
     public override string Name => "SecretLabNAudio";
 
-    public override string Description => "SecretLabNAudio.Core, SecretLabNAudio.NVorbis and SecretLabNAudio.NLayer";
+    public override string Description => "SecretLabNAudio.Core, SecretLabNAudio.FFmpeg, SecretLabNAudio.NVorbis and SecretLabNAudio.NLayer";
 
     public override string Author => "Axwabo";
 
@@ -24,6 +24,7 @@ public sealed class NAudioPlugin : Plugin
     {
         NVorbisPlugin.RegisterFactory();
         NLayerPlugin.RegisterFactory();
+        FFmpeg.EmbeddedPluginEnabler.EnablePlugin();
     }
 
     public override void Disable()

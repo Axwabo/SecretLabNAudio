@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc>
+    <Capacity>
+        <remarks>
+            By default,
+            <see cref="P:SecretLabNAudio.FFmpeg.Processors.AsyncFFmpegProcessorBase.SleepThresholdSeconds" />
+            will be set to 75% of the
+            <paramref name="capacity" />.
+        </remarks>
+    </Capacity>
+</doc>

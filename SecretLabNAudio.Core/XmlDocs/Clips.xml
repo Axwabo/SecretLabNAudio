@@ -10,7 +10,7 @@
                 A
                 <see cref="T:SecretLabNAudio.Core.Providers.RawSourceSampleProvider" />
                 if the clip was added to the cache.
-                If the file doesn't exist, no <see cref="T:SecretLabNAudio.Core.FileReading.IAudioReaderFactory">factory</see> was registered for the type, or no
+                Null if the file doesn't exist, no <see cref="T:SecretLabNAudio.Core.FileReading.IAudioReaderFactory">factory</see> was registered for the type, or no
                 <see cref="T:NAudio.Wave.WaveStream" />
                 was returned.
             </returns>

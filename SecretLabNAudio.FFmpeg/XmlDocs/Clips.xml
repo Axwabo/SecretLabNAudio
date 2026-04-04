@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc>
+    <summary>
+        Attempts to add the samples from the given file read with FFmpeg to the cache.
+        <b>Do not use this for storing lengthy audio, stream the files instead.</b>
+    </summary>
+    <returns>
+        A
+        <see cref="T:SecretLabNAudio.Core.Providers.RawSourceSampleProvider" />
+        if the clip was added to the cache.
+        Null if the file doesn't exist, if it couldn't be read, or if the duration exceeds
+        <paramref name="maxDuration" />.
+    </returns>
+    <remarks>
+        If an entry already exists, it will be overwritten.
+        Audio is automatically converted to <see cref="M:SecretLabNAudio.Core.Extensions.WaveStreamExtensions.ReadPlayerCompatibleSamples">player-compatible samples</see>.
+    </remarks>
+    <seealso cref="M:SecretLabNAudio.Core.Extensions.AudioPlayerExtensions.UseFile(SecretLabNAudio.Core.AudioPlayer,System.String,System.Boolean,System.Single)" />
+    <seealso cref="M:SecretLabNAudio.FFmpeg.Extensions.AudioPlayerExtensions.UseFFmpeg(SecretLabNAudio.Core.AudioPlayer,System.String,System.Double)" />
+</doc>

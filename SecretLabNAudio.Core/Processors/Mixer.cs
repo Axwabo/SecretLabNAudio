@@ -170,8 +170,8 @@ public sealed class Mixer : IAudioProcessor
     public int Read(float[] buffer, int offset, int count)
     {
         _readBuffer = BufferHelpers.Ensure(_readBuffer, count);
-        var readSpan = _readBuffer.AsSpan()[..count];
-        var targetSpan = buffer.AsSpan()[offset..(offset + count)];
+        var readSpan = _readBuffer.AsSpan(0, count);
+        var targetSpan = buffer.AsSpan(offset, count);
         targetSpan.Clear();
         var total = 0;
         for (var i = _inputs.Count - 1; i >= 0; i--)

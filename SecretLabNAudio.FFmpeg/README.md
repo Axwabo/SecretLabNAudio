@@ -1,0 +1,19 @@
+# SecretLabNAudio.FFmpeg
+
+This module extends [SecretLabNAudio](https://github.com/Axwabo/SecretLabNAudio) to provide FFmpeg-based utilities.
+
+FFmpeg is not shipped with this module. The module includes a command to install FFmpeg.
+
+> [!NOTE]
+> SecretLabNAudio is not sponsored nor endorsed by NAudio.
+> SecretLabNAudio.FFmpeg is not sponsored nor endorsed by FFmpeg.
+
+> [!TIP]
+> For more information, visit the [wiki](https://github.com/Axwabo/SecretLabNAudio/wiki/FFmpeg-Intro)
+
+# Noteworthy Classes
+
+- AsyncBufferedFFmpegAudioProcessor
+- StreamBasedFFmpegAudioProcessor
+- FFmpegArguments
+- FFmpegSL
