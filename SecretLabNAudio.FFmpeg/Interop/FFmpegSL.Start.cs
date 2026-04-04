@@ -19,10 +19,9 @@ public sealed partial class FFmpegSL
     /// Starts FFmpeg with the specified arguments.
     /// </summary>
     /// <param name="arguments">The arguments to pass to FFmpeg.</param>
-    /// <param name="redirectStandardInput">Whether to redirect the standard input.</param>
     /// <returns>A new <see cref="FFmpegSL"/> wrapper if the process was launched. Null if startup fails due to a <see cref="Win32Exception"/>.</returns>
     /// <remarks>Only <see cref="Win32Exception"/> exceptions are handled.</remarks>
-    public static FFmpegSL? Start(string arguments, bool redirectStandardInput = false)
+    public static FFmpegSL? Start(string arguments)
     {
         Process? process = null;
         try
@@ -33,7 +32,7 @@ public sealed partial class FFmpegSL
                 UseShellExecute = false,
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
-                RedirectStandardInput = redirectStandardInput
+                RedirectStandardInput = true
             });
             if (process == null)
             {
@@ -43,7 +42,7 @@ public sealed partial class FFmpegSL
             }
 
             LastCaughtStartError = NativeErrorCode.None;
-            return new FFmpegSL(process, redirectStandardInput);
+            return new FFmpegSL(process);
         }
         catch (Win32Exception win32)
         {
@@ -69,11 +68,10 @@ public sealed partial class FFmpegSL
     /// Starts FFmpeg with the specified arguments.
     /// </summary>
     /// <param name="arguments">The arguments to pass to FFmpeg.</param>
-    /// <param name="redirectStandardInput">Whether to redirect the standard input. The standard input will also be redirected if <see cref="FFmpegArguments.IsStandardInput"/> is true.</param>
     /// <returns>A new <see cref="FFmpegSL"/> wrapper if the process was launched. Null if startup fails due to a <see cref="Win32Exception"/>.</returns>
     /// <remarks>Only <see cref="Win32Exception"/> exceptions are handled.</remarks>
     /// <include file='../XmlDocs/Args.xml' path='doc/InOut/exception'/>
-    public static FFmpegSL? Start(FFmpegArguments arguments, bool redirectStandardInput = false)
-        => Start(arguments.ToArgumentsString(), redirectStandardInput || arguments.IsStandardInput);
+    public static FFmpegSL? Start(FFmpegArguments arguments)
+        => Start(arguments.ToArgumentsString());
 
 }

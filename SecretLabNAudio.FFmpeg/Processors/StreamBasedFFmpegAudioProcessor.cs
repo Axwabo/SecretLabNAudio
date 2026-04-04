@@ -27,7 +27,7 @@ public sealed partial class StreamBasedFFmpegAudioProcessor : AsyncFFmpegProcess
             if (!TryStartFFmpeg(arguments, out var ffmpeg))
                 return;
             Offload(() => BufferLoop(ffmpeg));
-            await stream.CopyToAsync(standardInput = ffmpeg.Stdin!.BaseStream, Token);
+            await stream.CopyToAsync(standardInput = ffmpeg.Stdin.BaseStream, Token);
         }
         catch (Exception e) when (!Token.IsCancellationRequested)
         {

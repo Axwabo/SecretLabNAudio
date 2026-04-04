@@ -32,7 +32,7 @@ public static class FFmpegSLExtensions
         /// <returns>An <see cref="FFmpegSL"/> wrapper if the process was started, null otherwise.</returns>
         /// <include file='../XmlDocs/Args.xml' path='doc/InArg/exception'/>
         public static FFmpegSL? ToStdout(string input, int sampleRate, int channels)
-            => FFmpegSL.Start(FFmpegArguments.ToStdoutString(input, sampleRate, channels), true);
+            => FFmpegSL.Start(FFmpegArguments.ToStdoutString(input, sampleRate, channels));
 
         /// <summary>
         /// Attempts to send a termination signal to FFmpeg.
@@ -41,8 +41,6 @@ public static class FFmpegSLExtensions
         /// <returns>True if the process has exited, false otherwise.</returns>
         public bool TryTerminateGracefully(int timeoutMilliseconds = 1000)
         {
-            if (ffmpeg.Stdin == null)
-                return ffmpeg.HasExited;
             if (ffmpeg.HasExited)
                 return true;
             ffmpeg.Stdin.Write('q');

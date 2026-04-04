@@ -8,19 +8,14 @@ public sealed partial class FFmpegSL : IDisposable, IFFmpegWrapper
 {
 
     private readonly Process _process;
-    private readonly bool _redirectStandardInput;
 
     /// <inheritdoc/>
     public bool IsDisposed { get; private set; }
 
-    private FFmpegSL(Process process, bool redirectStandardInput)
-    {
-        _process = process;
-        _redirectStandardInput = redirectStandardInput;
-    }
+    private FFmpegSL(Process process) => _process = process;
 
-    /// <summary>The standard input of the process. Null if the standard input has not been redirected.</summary>
-    public StreamWriter? Stdin => _redirectStandardInput ? _process.StandardInput : null;
+    /// <summary>The standard input of the process.</summary>
+    public StreamWriter Stdin => _process.StandardInput;
 
     /// <summary>The standard output of the process.</summary>
     /// <remarks>FFmpeg logs most messages in <see cref="Stderr"/>.</remarks>
