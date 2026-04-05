@@ -50,3 +50,14 @@ A complete, cross-platform solution to record, convert and stream audio and vide
 https://ffmpeg.org/
 
 License: LGPL-2.1
+
+# .NET
+
+> [!NOTE]
+> SecretLabNAudio redristributes the `System.ValueTuple` library.
+
+.NET is a cross-platform runtime for cloud, mobile, desktop, and IoT apps.
+
+https://github.com/dotnet/runtime
+
+License: MIT
