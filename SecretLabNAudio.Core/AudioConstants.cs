@@ -18,7 +18,7 @@ public static class AudioConstants
     public const int PacketsPerSecond = SampleRate * Channels / VoiceChatSettings.PacketSizePerChannel;
 
     /// <summary>The amount of samples in a packet.</summary>
-    public const int SamplesPerPacket = SampleRate / VoiceChatSettings.PacketSizePerChannel;
+    public const int SamplesPerPacket = Channels * VoiceChatSettings.PacketSizePerChannel;
 
     /// <summary>The duration of a packet in seconds.</summary>
     public const float PacketDuration = 1f / PacketsPerSecond;
