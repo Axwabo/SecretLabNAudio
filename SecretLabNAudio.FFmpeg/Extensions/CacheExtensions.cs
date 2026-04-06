@@ -34,6 +34,25 @@ public static class CacheExtensions
     {
 
         /// <summary>
+        /// Checks whether there is a cached file for the given source.
+        /// </summary>
+        /// <param name="source">The source to check.</param>
+        /// <returns>Whether the source has been cached.</returns>
+        public bool IsCached(TSource source) => cache.TryGetPath(source, out _);
+
+        /// <summary>
+        /// Caches the source if it hasn't been cached already.
+        /// </summary>
+        /// <param name="source">The object to save by.</param>
+        /// <param name="optimizeFor">What to optimize for.</param>
+        /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
+        /// <returns>An <see cref="Awaitable"/> representing the asynchronous operation. If a cached file exists, the awaitable will have completed.</returns>
+        public async Awaitable<SaveCacheResult> CacheIfNotCachedAsync(TSource source, OptimizeFor optimizeFor, CancellationToken cancellationToken = default)
+            => cache.TryGetPath(source, out var path)
+                ? (path, null)
+                : await cache.CacheAsync(source, optimizeFor, cancellationToken);
+
+        /// <summary>
         /// Caches all given sources in parallel.
         /// </summary>
         /// <param name="sources">The sources to cache.</param>
@@ -42,6 +61,16 @@ public static class CacheExtensions
         /// <returns>An <see cref="Awaitable"/> representing the asynchronous operation, containing the results in the order of <paramref name="sources"/>.</returns>
         public async Awaitable<SaveCacheResult[]> CacheAllAsync(IEnumerable<TSource> sources, OptimizeFor optimizeFor, CancellationToken cancellationToken = default)
             => await Task.WhenAll(sources.Select(e => cache.CacheAsync(e, optimizeFor, cancellationToken).AsTask()));
+
+        /// <summary>
+        /// Caches the given sources in parallel, skipping already cached ones.
+        /// </summary>
+        /// <param name="sources">The sources to cache.</param>
+        /// <param name="optimizeFor">What to optimize for.</param>
+        /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
+        /// <returns>An <see cref="Awaitable"/> representing the asynchronous operation, containing the results in the order of <paramref name="sources"/>.</returns>
+        public async Awaitable<SaveCacheResult[]> CacheAllNotCachedAsync(IEnumerable<TSource> sources, OptimizeFor optimizeFor, CancellationToken cancellationToken = default)
+            => await Task.WhenAll(sources.Select(e => cache.CacheIfNotCachedAsync(e, optimizeFor, cancellationToken).AsTask()));
 
     }
 
