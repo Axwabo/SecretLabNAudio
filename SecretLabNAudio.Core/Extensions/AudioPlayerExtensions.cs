@@ -185,18 +185,6 @@ public static partial class AudioPlayerExtensions
             return player;
         }
 
-        /// <summary>
-        /// Disposes of the given resource when the <see cref="AudioPlayer"/> is destroyed or disabled.
-        /// </summary>
-        /// <param name="disposable">The resource to dispose of.</param>
-        /// <returns>The player itself.</returns>
-        [Obsolete("Prefer using audio processors instead.", true)]
-        public AudioPlayer DisposeOnDestroy(IDisposable disposable)
-        {
-            player.Destroyed += disposable.Dispose;
-            return player;
-        }
-
     }
 
 }

@@ -3,6 +3,6 @@
     <exception name="NotFound" cref="T:System.IO.FileNotFoundException">Thrown if the file does not exist.</exception>
     <exception name="NotSupported" cref="T:System.NotSupportedException">
         Thrown if there was no registered factory for the file type, or if the factory didn't return a
-        <see cref="T:NAudio.Wave.WaveStream"/>.
+        <see cref="T:NAudio.Wave.WaveStream" />.
     </exception>
 </doc>

@@ -129,7 +129,7 @@ public static class ProcessorChainExtensions
         public ProcessorChain Volume(float volume = 1)
         {
             if (chain.Master is not VolumeSampleProvider volumeSampleProvider)
-                return chain.Layer(provider => NonProcessorExtensions.Volume(provider, volume));
+                return chain.Layer(provider => provider.Volume(volume));
             volumeSampleProvider.Volume = volume;
             return chain;
         }

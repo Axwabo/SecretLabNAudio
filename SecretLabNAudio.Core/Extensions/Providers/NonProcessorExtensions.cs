@@ -17,7 +17,7 @@ public static class NonProcessorExtensions
         /// Converts the wave provider to an <see cref="AudioConstants"/>-compatible <see cref="ISampleProvider"/>.
         /// </summary>
         /// <returns>An <see cref="ISampleProvider"/> that is compatible with the <see cref="AudioConstants"/>.</returns>
-        /// <seealso cref="SampleProviderExtensions.ToPlayerCompatible"/>
+        /// <seealso cref="ToPlayerCompatible(ISampleProvider)"/>
         public ISampleProvider ToPlayerCompatible() => provider.ToSampleProvider().ToPlayerCompatible();
 
     }

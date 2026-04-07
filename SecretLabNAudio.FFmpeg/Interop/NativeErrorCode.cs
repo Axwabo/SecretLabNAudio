@@ -26,7 +26,7 @@ public enum NativeErrorCode
     /// The system cannot find the path specified. (ERROR_PATH_NOT_FOUND)
     /// </summary>
     PathNotFound = 3,
-    
+
     /// <summary>
     /// Access is denied. (ERROR_ACCESS_DENIED)
     /// </summary>

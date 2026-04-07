@@ -10,13 +10,6 @@ public static class WaveStreamExtensions
 
     private const int BufferLength = 4800;
 
-    /// <summary>Wraps the stream in a <see cref="LoopingWaveProvider"/>.</summary>
-    /// <param name="stream">The <see cref="WaveStream"/> to wrap.</param>
-    /// <returns>The <see cref="LoopingWaveProvider"/> wrapping the stream.</returns>
-    [Obsolete($"Create a {nameof(StreamAudioProcessor)} and set {nameof(StreamAudioProcessor.Loop)} to true instead.", true)]
-    // ReSharper disable once MoveToExtensionBlock
-    public static LoopingWaveProvider Loop(this WaveStream stream) => new(stream);
-
     /// <param name="stream">The <see cref="WaveStream"/> to read samples from.</param>
     extension(WaveStream stream)
     {
@@ -26,7 +19,7 @@ public static class WaveStreamExtensions
         /// </summary>
         /// <param name="seekToBeginning">Whether to rewind the stream to the start before reading samples.</param>
         /// <returns>A <see cref="RawSourceSampleProvider"/> containing the read samples.</returns>
-        /// <seealso cref="WaveProviderExtensions.ToPlayerCompatible"/>
+        /// <seealso cref="NonProcessorExtensions.ToPlayerCompatible(IWaveProvider)"/>
         public RawSourceSampleProvider ReadPlayerCompatibleSamples(bool seekToBeginning = true)
             => stream.ReadSamples(NonProcessorExtensions.ToPlayerCompatible, seekToBeginning);
 

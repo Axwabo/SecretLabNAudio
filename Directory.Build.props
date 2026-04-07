@@ -13,7 +13,7 @@
         <Authors>Axwabo</Authors>
         <Company>Axwabo</Company>
 
-        <PackageVersion>2.0.0-rc.1</PackageVersion>
+        <PackageVersion>$(Version)</PackageVersion>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageLicenseExpression>LGPL-3.0-only</PackageLicenseExpression>
 

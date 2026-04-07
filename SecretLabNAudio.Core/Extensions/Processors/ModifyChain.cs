@@ -41,7 +41,7 @@ public static class ModifyChainExtensions
         /// <param name="volume">The volume to set.</param>
         /// <returns><see cref="Amplify"/>, then the current modification.</returns>
         /// <seealso cref="ProcessorChainExtensions.Volume"/>
-        public ModifyChain PreAmplify(float volume) => Amplify(volume).Then(current);
+        public ModifyChain PreAmplify(float volume) => ModifyChain.Amplify(volume).Then(current);
 
     }
 
@@ -64,7 +64,7 @@ public static class ModifyChainExtensions
         /// <returns><see langword="null"/> if <paramref name="volume"/> is approximately 1, a new delegate otherwise.</returns>
         /// <seealso cref="ProcessorChainExtensions.Volume"/>
         /// <seealso cref="Amplify"/>
-        public static ModifyChain? AmplifyIfNot1(float volume) => Mathf.Approximately(1, volume) ? null : Amplify(volume);
+        public static ModifyChain? AmplifyIfNot1(float volume) => Mathf.Approximately(1, volume) ? null : ModifyChain.Amplify(volume);
 
     }
 

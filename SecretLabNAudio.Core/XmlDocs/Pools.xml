@@ -3,9 +3,18 @@
     <Player>
         <param name="id">The controller ID to assign to the player.</param>
         <param name="settings">The settings to apply to the player.</param>
-        <param name="parent">The <see cref="T:UnityEngine.Transform"/> to parent the player to. <see langword="null"/> if it should not be parented.</param>
+        <param name="parent">
+            The
+            <see cref="T:UnityEngine.Transform" />
+            to parent the player to.
+            <see langword="null" />
+            if it should not be parented.
+        </param>
         <param name="position">The position of the speaker in local space (world space if no parent is specified).</param>
-        <param name="spawn">Whether to invoke <see cref="M:Mirror.NetworkServer.Spawn(UnityEngine.GameObject,Mirror.NetworkConnection)"/>.</param>
+        <param name="spawn">
+            Whether to invoke
+            <see cref="M:Mirror.NetworkServer.Spawn(UnityEngine.GameObject,Mirror.NetworkConnection)" />.
+        </param>
         <exception cref="T:System.OverflowException">Thrown when no IDs are available.</exception>
     </Player>
     <Speaker>

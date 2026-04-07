@@ -35,11 +35,6 @@ public static class RawSampleProviderExtensions
         public RawSourceSampleProvider Seek(double seconds)
             => provider.Seek(provider.WaveFormat.SampleCount(seconds));
 
-        /// <summary>Loops the given <see cref="RawSourceSampleProvider"/>.</summary>
-        /// <returns>A new <see cref="LoopingRawSampleProvider"/> that wraps the given provider.</returns>
-        [Obsolete($"Use {nameof(WithLoop)} instead.", true)]
-        public LoopingRawSampleProvider Loop() => new(provider);
-
         /// <summary>
         /// Sets the <see cref="RawSourceSampleProvider.Loop"/> property.
         /// </summary>
