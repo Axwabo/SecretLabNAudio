@@ -54,10 +54,10 @@ public sealed class ProcessorChain : IAudioProcessor
         Layers = _layers.AsReadOnly();
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public WaveFormat WaveFormat => Master.WaveFormat;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public int Read(float[] buffer, int offset, int count) => Master.Read(buffer, offset, count);
 
     /// <summary>
@@ -103,7 +103,7 @@ public sealed class ProcessorChain : IAudioProcessor
         return this;
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public void Dispose() => _layers.DisposeAllAndClear();
 
     private void EnsureNotDisposed()

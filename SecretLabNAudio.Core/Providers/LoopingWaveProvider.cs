@@ -29,14 +29,14 @@ public sealed class LoopingWaveProvider : IWaveProvider, IDisposable, ISeekable
     /// <inheritdoc/>
     public void Dispose() => Stream.Dispose();
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public TimeSpan CurrentTime
     {
         get => Stream.CurrentTime;
         set => Stream.CurrentTime = value;
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public TimeSpan TotalTime => Stream.CurrentTime;
 
 }

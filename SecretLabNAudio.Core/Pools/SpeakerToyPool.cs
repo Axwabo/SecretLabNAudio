@@ -43,7 +43,7 @@ public static class SpeakerToyPool
     /// <param name="position">The position of the toy in local space (world space if no parent is specified).</param>
     /// <param name="spawn">Whether to invoke <see cref="NetworkServer.Spawn(GameObject,NetworkConnection)"/>.</param>
     /// <returns>Whether a <see cref="SpeakerToy"/> was found in the pool.</returns>
-    /// <include file='../XmlDocs/Pools.xml' path='doc/Speaker/TryGet/remarks'/>
+    /// <include file="../XmlDocs/Pools.xml" path="doc/Speaker/TryGet/remarks"/>
     public static bool TryGetFromPool([NotNullWhen(true)] out SpeakerToy? toy, Transform? parent = null, Vector3 position = default, bool spawn = true)
     {
         foreach (var existing in PooledSpeaker.Instances)
@@ -65,15 +65,15 @@ public static class SpeakerToyPool
         return false;
     }
 
-    /// <include file='../XmlDocs/Pools.xml' path='doc/Speaker/Rent/summary'/>
-    /// <include file='../XmlDocs/Pools.xml' path="doc/Speaker/TryGet/remarks"/>
+    /// <include file="../XmlDocs/Pools.xml" path="doc/Speaker/Rent/summary"/>
+    /// <include file="../XmlDocs/Pools.xml" path="doc/Speaker/TryGet/remarks"/>
     /// <returns>A new or reused <see cref="SpeakerToy"/>.</returns>
     public static SpeakerToy Rent(Transform? parent = null, Vector3 position = default, bool spawn = true)
         => TryGetFromPool(out var existing, parent, position, spawn)
             ? existing
             : SpeakerToy.Create(position, parent, spawn);
 
-    /// <include file='../XmlDocs/Pools.xml' path='doc/Speaker/Rent/summary'/>
+    /// <include file="../XmlDocs/Pools.xml" path="doc/Speaker/Rent/summary"/>
     /// <param name="id">The controller ID to assign to the toy.</param>
     /// <param name="parent">The <see cref="Transform"/> to parent the toy to. <see langword="null"/> if it should not be parented.</param>
     /// <param name="position">The position of the toy in local space (world space if no parent is specified).</param>
@@ -89,7 +89,7 @@ public static class SpeakerToyPool
         return toy;
     }
 
-    /// <include file='../XmlDocs/Pools.xml' path='doc/Speaker/Rent/summary'/>
+    /// <include file="../XmlDocs/Pools.xml" path="doc/Speaker/Rent/summary"/>
     /// <param name="id">The controller ID to assign to the toy.</param>
     /// <param name="settings">Settings to apply to the toy.</param>
     /// <param name="parent">The <see cref="Transform"/> to parent the toy to. <see langword="null"/> if it should not be parented.</param>

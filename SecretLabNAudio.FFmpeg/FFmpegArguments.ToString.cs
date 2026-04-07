@@ -17,7 +17,7 @@ public readonly partial record struct FFmpegArguments
     /// Converts this instance to a string that can be used as <see cref="ProcessStartInfo.Arguments"/>.
     /// </summary>
     /// <returns>The instance as a process arguments string.</returns>
-    /// <include file='XmlDocs/Args.xml' path='doc/InOut/exception'/>
+    /// <include file="XmlDocs/Args.xml" path="doc/InOut/exception"/>
     public string ToArgumentsString()
     {
         var sb = StringBuilderPool.Shared.Rent();
@@ -36,7 +36,7 @@ public readonly partial record struct FFmpegArguments
     /// Prints the arguments to a <see cref="StringBuilder"/>.
     /// </summary>
     /// <param name="builder">The builder to append to.</param>
-    /// <include file='XmlDocs/Args.xml' path='doc/InOut/exception'/>
+    /// <include file="XmlDocs/Args.xml" path="doc/InOut/exception"/>
     public void PrintTo(StringBuilder builder)
     {
         Input.ValidateProcessArgument(InputMissing, InputHasQuotation);

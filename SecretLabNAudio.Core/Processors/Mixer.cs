@@ -38,7 +38,7 @@ public sealed class Mixer : IAudioProcessor
     /// <summary>
     /// Creates a mixer with a single anonymous input.
     /// </summary>
-    /// <include file='../XmlDocs/Mixer.xml' path='doc/Add/Anonymous/param'/>
+    /// <include file="../XmlDocs/Mixer.xml" path="doc/Add/Anonymous/param"/>
     /// <remarks>The <see cref="WaveFormat"/> will be set to the <paramref name="input"/>'s format.</remarks>
     public Mixer(ISampleProvider input, bool isOwned = true) : this(input.WaveFormat)
         => AddAnonymous(input, isOwned);
@@ -46,15 +46,15 @@ public sealed class Mixer : IAudioProcessor
     /// <summary>
     /// Creates a mixer with a single named input.
     /// </summary>
-    /// <include file='../XmlDocs/Mixer.xml' path='doc/Add/Named/param'/>
+    /// <include file="../XmlDocs/Mixer.xml" path="doc/Add/Named/param"/>
     /// <remarks>The <see cref="WaveFormat"/> will be set to the <paramref name="input"/>'s format.</remarks>
     public Mixer(ISampleProvider input, string name, bool isOwned = true) : this(input.WaveFormat)
         => AddNamed(input, name, isOwned);
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public WaveFormat WaveFormat { get; }
 
-    /// <include file='../XmlDocs/Providers.xml' path='doc/ReadFully/summary'/>
+    /// <include file="../XmlDocs/Providers.xml" path="doc/ReadFully/summary"/>
     public bool ReadFully { get; set; }
 
     /// <summary>Invoked after an input provided fewer samples than requested.</summary>
@@ -63,9 +63,9 @@ public sealed class Mixer : IAudioProcessor
     /// <summary>
     /// Adds a named input to the mixer.
     /// </summary>
-    /// <include file='../XmlDocs/Mixer.xml' path='doc/Add/Named/param'/>
+    /// <include file="../XmlDocs/Mixer.xml" path="doc/Add/Named/param"/>
     /// <returns>The mixer itself.</returns>
-    /// <include file='../XmlDocs/Mixer.xml' path='doc/Add/exception'/>
+    /// <include file="../XmlDocs/Mixer.xml" path="doc/Add/exception"/>
     public Mixer AddNamed(ISampleProvider input, string name, bool isOwned = true)
     {
         ThrowIfIncompatible(input, isOwned);
@@ -76,9 +76,9 @@ public sealed class Mixer : IAudioProcessor
     /// <summary>
     /// Adds an anonymous input to the provider (with a <see langword="null"/> <see cref="MixerInput.Name"/>).
     /// </summary>
-    /// <include file='../XmlDocs/Mixer.xml' path='doc/Add/Anonymous/param'/>
+    /// <include file="../XmlDocs/Mixer.xml" path="doc/Add/Anonymous/param"/>
     /// <returns>The mixer itself.</returns>
-    /// <include file='../XmlDocs/Mixer.xml' path='doc/Add/exception'/>
+    /// <include file="../XmlDocs/Mixer.xml" path="doc/Add/exception"/>
     public Mixer AddAnonymous(ISampleProvider input, bool isOwned = true)
     {
         ThrowIfIncompatible(input, isOwned);
@@ -116,7 +116,7 @@ public sealed class Mixer : IAudioProcessor
         return this;
     }
 
-    /// <include file='../XmlDocs/Mixer.xml' path='doc/RemoveAllByName/summary'/>
+    /// <include file="../XmlDocs/Mixer.xml" path="doc/RemoveAllByName/summary"/>
     /// <param name="name">The name to match.</param>
     /// <param name="comparison">The string comparison method to use.</param>
     /// <returns>The mixer itself.</returns>
@@ -166,7 +166,7 @@ public sealed class Mixer : IAudioProcessor
         throw new ArgumentException("The input's WaveFormat does not match the format of the Mixer.", nameof(input));
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public int Read(float[] buffer, int offset, int count)
     {
         _readBuffer = BufferHelpers.Ensure(_readBuffer, count);
@@ -193,7 +193,7 @@ public sealed class Mixer : IAudioProcessor
         return ReadFully ? count : total;
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public void Dispose() => RemoveAll();
 
 }

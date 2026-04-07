@@ -17,7 +17,7 @@ public sealed class RawSourceSampleProvider : ISampleProvider, ISeekable, ILoopa
     /// <summary>The current position of the provider.</summary>
     public int Position { get; set; }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public bool Loop { get; set; }
 
     /// <inheritdoc/>

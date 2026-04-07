@@ -19,7 +19,7 @@ public static class FFmpegSLExtensions
         /// </summary>
         /// <param name="input">The input source (e.g. file path, URL).</param>
         /// <returns>An <see cref="FFmpegSL"/> wrapper if the process was started, null otherwise.</returns>
-        /// <include file='../XmlDocs/Args.xml' path='doc/InArg/exception'/>
+        /// <include file="../XmlDocs/Args.xml" path="doc/InArg/exception"/>
         public static FFmpegSL? PlayerCompatibleToStdout(string input)
             => ToStdout(input, AudioConstants.SampleRate, AudioConstants.Channels);
 
@@ -30,7 +30,7 @@ public static class FFmpegSLExtensions
         /// <param name="sampleRate">The sample rate to output.</param>
         /// <param name="channels">The number of channels to output.</param>
         /// <returns>An <see cref="FFmpegSL"/> wrapper if the process was started, null otherwise.</returns>
-        /// <include file='../XmlDocs/Args.xml' path='doc/InArg/exception'/>
+        /// <include file="../XmlDocs/Args.xml" path="doc/InArg/exception"/>
         public static FFmpegSL? ToStdout(string input, int sampleRate, int channels)
             => FFmpegSL.Start(FFmpegArguments.ToStdoutString(input, sampleRate, channels));
 

@@ -15,7 +15,7 @@ public static class AudioPlayerPool
     /// <summary>
     /// Rents an <see cref="AudioPlayer"/> from the pool, or creates a new one if no <see cref="SpeakerToy"/> is pooled.
     /// </summary>
-    /// <include file='../XmlDocs/Pools.xml' path='doc/Player/param'/>
+    /// <include file="../XmlDocs/Pools.xml" path="doc/Player/param"/>
     /// <returns>A new or reused <see cref="AudioPlayer"/>.</returns>
     public static AudioPlayer Rent(byte id, SpeakerSettings settings, Transform? parent = null, Vector3 position = default, bool spawn = true)
     {
@@ -32,12 +32,12 @@ public static class AudioPlayerPool
     /// <summary>
     /// Rents an <see cref="AudioPlayer"/> with the next available ID from the pool, or creates a new one if no <see cref="SpeakerToy"/> is pooled.
     /// </summary>
-    /// <include file='../XmlDocs/Pools.xml' path='doc/Player/param[@name="settings"]'/>
-    /// <include file='../XmlDocs/Pools.xml' path='doc/Player/param[@name="parent"]'/>
-    /// <include file='../XmlDocs/Pools.xml' path='doc/Player/param[@name="position"]'/>
-    /// <include file='../XmlDocs/Pools.xml' path='doc/Player/param[@name="spawn"]'/>
+    /// <include file="../XmlDocs/Pools.xml" path="doc/Player/param[@name='settings']"/>
+    /// <include file="../XmlDocs/Pools.xml" path="doc/Player/param[@name='parent']"/>
+    /// <include file="../XmlDocs/Pools.xml" path="doc/Player/param[@name='position']"/>
+    /// <include file="../XmlDocs/Pools.xml" path="doc/Player/param[@name='spawn']"/>
     /// <returns>A new or reused <see cref="AudioPlayer"/>.</returns>
-    /// <include file='../XmlDocs/Pools.xml' path='doc/Player/exception'/>
+    /// <include file="../XmlDocs/Pools.xml" path="doc/Player/exception"/>
     /// <seealso cref="NextAvailableId"/>
     public static AudioPlayer Rent(SpeakerSettings settings, Transform? parent = null, Vector3 position = default, bool spawn = true)
         => Rent(NextAvailableId, settings, parent, position, spawn);
@@ -46,10 +46,10 @@ public static class AudioPlayerPool
     /// Rents an <see cref="AudioPlayer"/> with the next available ID from the pool, or creates a new one if no <see cref="SpeakerToy"/> is pooled.
     /// Applies <see cref="SpeakerSettings.Default"/>.
     /// </summary>
-    /// <include file='../XmlDocs/Pools.xml' path='doc/Player/param[@name="id"]'/>
-    /// <include file='../XmlDocs/Pools.xml' path='doc/Player/param[@name="position"]'/>
-    /// <include file='../XmlDocs/Pools.xml' path='doc/Player/param[@name="parent"]'/>
-    /// <include file='../XmlDocs/Pools.xml' path='doc/Player/param[@name="spawn"]'/>
+    /// <include file="../XmlDocs/Pools.xml" path="doc/Player/param[@name='id']"/>
+    /// <include file="../XmlDocs/Pools.xml" path="doc/Player/param[@name='position']"/>
+    /// <include file="../XmlDocs/Pools.xml" path="doc/Player/param[@name='parent']"/>
+    /// <include file="../XmlDocs/Pools.xml" path="doc/Player/param[@name='spawn']"/>
     /// <returns>A new or reused <see cref="AudioPlayer"/>.</returns>
     /// <seealso cref="NextAvailableId"/>
     public static AudioPlayer RentDefault(byte id, Vector3 position = default, Transform? parent = null, bool spawn = true)
@@ -59,11 +59,11 @@ public static class AudioPlayerPool
     /// Rents an <see cref="AudioPlayer"/> with the next available ID from the pool, or creates a new one if no <see cref="SpeakerToy"/> is pooled.
     /// Applies <see cref="SpeakerSettings.Default"/>.
     /// </summary>
-    /// <include file='../XmlDocs/Pools.xml' path='doc/Player/param[@name="position"]'/>
-    /// <include file='../XmlDocs/Pools.xml' path='doc/Player/param[@name="parent"]'/>
-    /// <include file='../XmlDocs/Pools.xml' path='doc/Player/param[@name="spawn"]'/>
+    /// <include file="../XmlDocs/Pools.xml" path="doc/Player/param[@name='position']"/>
+    /// <include file="../XmlDocs/Pools.xml" path="doc/Player/param[@name='parent']"/>
+    /// <include file="../XmlDocs/Pools.xml" path="doc/Player/param[@name='spawn']"/>
     /// <returns>A new or reused <see cref="AudioPlayer"/>.</returns>
-    /// <include file='../XmlDocs/Pools.xml' path='doc/Player/exception'/>
+    /// <include file="../XmlDocs/Pools.xml" path="doc/Player/exception"/>
     /// <seealso cref="NextAvailableId"/>
     public static AudioPlayer RentDefault(Vector3 position = default, Transform? parent = null, bool spawn = true)
         => Rent(NextAvailableId, SpeakerSettings.Default, parent, position, spawn);
@@ -72,10 +72,10 @@ public static class AudioPlayerPool
     /// Rents an <see cref="AudioPlayer"/> with the next available ID from the pool, or creates a new one if no <see cref="SpeakerToy"/> is pooled.
     /// Applies <see cref="SpeakerSettings.GloballyAudible"/>.
     /// </summary>
-    /// <include file='../XmlDocs/Pools.xml' path='doc/Player/param[@name="id"]'/>
-    /// <include file='../XmlDocs/Pools.xml' path='doc/Player/param[@name="position"]'/>
-    /// <include file='../XmlDocs/Pools.xml' path='doc/Player/param[@name="parent"]'/>
-    /// <include file='../XmlDocs/Pools.xml' path='doc/Player/param[@name="spawn"]'/>
+    /// <include file="../XmlDocs/Pools.xml" path="doc/Player/param[@name='id']"/>
+    /// <include file="../XmlDocs/Pools.xml" path="doc/Player/param[@name='position']"/>
+    /// <include file="../XmlDocs/Pools.xml" path="doc/Player/param[@name='parent']"/>
+    /// <include file="../XmlDocs/Pools.xml" path="doc/Player/param[@name='spawn']"/>
     /// <returns>A new or reused <see cref="AudioPlayer"/>.</returns>
     /// <seealso cref="NextAvailableId"/>
     public static AudioPlayer RentGloballyAudible(byte id, Vector3 position = default, Transform? parent = null, bool spawn = true)
@@ -85,11 +85,11 @@ public static class AudioPlayerPool
     /// Rents an <see cref="AudioPlayer"/> with the next available ID from the pool, or creates a new one if no <see cref="SpeakerToy"/> is pooled.
     /// Applies <see cref="SpeakerSettings.GloballyAudible"/>.
     /// </summary>
-    /// <include file='../XmlDocs/Pools.xml' path='doc/Player/param[@name="position"]'/>
-    /// <include file='../XmlDocs/Pools.xml' path='doc/Player/param[@name="parent"]'/>
-    /// <include file='../XmlDocs/Pools.xml' path='doc/Player/param[@name="spawn"]'/>
+    /// <include file="../XmlDocs/Pools.xml" path="doc/Player/param[@name='position']"/>
+    /// <include file="../XmlDocs/Pools.xml" path="doc/Player/param[@name='parent']"/>
+    /// <include file="../XmlDocs/Pools.xml" path="doc/Player/param[@name='spawn']"/>
     /// <returns>A new or reused <see cref="AudioPlayer"/>.</returns>
-    /// <include file='../XmlDocs/Pools.xml' path='doc/Player/exception'/>
+    /// <include file="../XmlDocs/Pools.xml" path="doc/Player/exception"/>
     /// <seealso cref="NextAvailableId"/>
     public static AudioPlayer RentGloballyAudible(Vector3 position = default, Transform? parent = null, bool spawn = true)
         => Rent(NextAvailableId, SpeakerSettings.GloballyAudible, parent, position, spawn);

@@ -21,7 +21,7 @@ public sealed class StreamAudioProcessor : IAudioProcessor, ISeekable, ILoopable
     /// <summary>The path to the file if this processor was created from one.</summary>
     public string? FilePath { get; init; }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     /// <exception cref="ObjectDisposedException">Thrown if the processor has already been disposed.</exception>
     public TimeSpan CurrentTime
     {
@@ -29,10 +29,10 @@ public sealed class StreamAudioProcessor : IAudioProcessor, ISeekable, ILoopable
         set => Stream.CurrentTime = value;
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public TimeSpan TotalTime => Stream.TotalTime;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public bool Loop { get; set; }
 
     /// <summary>
@@ -57,7 +57,7 @@ public sealed class StreamAudioProcessor : IAudioProcessor, ISeekable, ILoopable
         Stream = stream;
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     /// <exception cref="ObjectDisposedException">Thrown if the processor has already been disposed.</exception>
     public WaveFormat WaveFormat
     {
@@ -68,7 +68,7 @@ public sealed class StreamAudioProcessor : IAudioProcessor, ISeekable, ILoopable
         }
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     /// <exception cref="ObjectDisposedException">Thrown if the processor has already been disposed.</exception>
     public int Read(float[] buffer, int offset, int count)
     {
@@ -94,7 +94,7 @@ public sealed class StreamAudioProcessor : IAudioProcessor, ISeekable, ILoopable
             throw new ObjectDisposedException(nameof(StreamAudioProcessor));
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public void Dispose()
     {
         _disposable?.Dispose();

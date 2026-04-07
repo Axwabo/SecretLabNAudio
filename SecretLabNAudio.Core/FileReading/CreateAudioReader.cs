@@ -34,7 +34,7 @@ public static class CreateAudioReader
     /// </summary>
     /// <param name="path">The file path to read the audio from.</param>
     /// <returns>A <see cref="WaveStream"/> corresponding to the file.</returns>
-    /// <include file='../XmlDocs/Files.xml' path='doc/exception'/>
+    /// <include file="../XmlDocs/Files.xml" path="doc/exception"/>
     /// <remarks>This method doesn't check if the file exists. Call <see cref="File.Exists">File.Exists</see> beforehand.</remarks>
     public static WaveStream Stream(string path)
     {
@@ -49,7 +49,7 @@ public static class CreateAudioReader
     /// <param name="fileType">The file type of the audio in the stream, e.g. "wav", "aiff".</param>
     /// <param name="closeOnDispose">Whether to close the stream when disposing the <see cref="WaveStream"/>.</param>
     /// <returns>A <see cref="WaveStream"/> corresponding to the stream.</returns>
-    /// <include file='../XmlDocs/Files.xml' path='doc/exception'/>
+    /// <include file="../XmlDocs/Files.xml" path="doc/exception"/>
     /// <remarks>The period is automatically trimmed from the start of the <paramref name="fileType"/>.</remarks>
     public static WaveStream Stream(Stream source, string fileType, bool closeOnDispose = true)
         => Result(source, fileType, closeOnDispose).GetStream(fileType);

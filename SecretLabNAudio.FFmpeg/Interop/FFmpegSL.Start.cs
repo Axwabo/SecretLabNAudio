@@ -70,7 +70,7 @@ public sealed partial class FFmpegSL
     /// <param name="arguments">The arguments to pass to FFmpeg.</param>
     /// <returns>A new <see cref="FFmpegSL"/> wrapper if the process was launched. Null if startup fails due to a <see cref="Win32Exception"/>.</returns>
     /// <remarks>Only <see cref="Win32Exception"/> exceptions are handled.</remarks>
-    /// <include file='../XmlDocs/Args.xml' path='doc/InOut/exception'/>
+    /// <include file="../XmlDocs/Args.xml" path="doc/InOut/exception"/>
     public static FFmpegSL? Start(FFmpegArguments arguments)
         => Start(arguments.ToArgumentsString());
 

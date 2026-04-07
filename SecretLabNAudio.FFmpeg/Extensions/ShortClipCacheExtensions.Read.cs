@@ -39,7 +39,7 @@ public static partial class ShortClipCacheExtensions
     /// A player-compatible <see cref="RawSourceSampleProvider" /> if the file was successfully read.
     /// Null if the file doesn't exist, if it couldn't be read, or if the duration exceeds <paramref name="maxDuration"/>.
     /// </returns>
-    /// <include file='../XmlDocs/Args.xml' path='doc/InArg/exception'/>
+    /// <include file="../XmlDocs/Args.xml" path="doc/InArg/exception"/>
     public static RawSourceSampleProvider? ReadWithFFmpeg(string input, TimeSpan? maxDuration = null)
     {
         using var process = FFmpegSL.PlayerCompatibleToStdout(input);
@@ -55,7 +55,7 @@ public static partial class ShortClipCacheExtensions
     /// A player-compatible <see cref="RawSourceSampleProvider" /> if the file was successfully read.
     /// Null if the file doesn't exist, if it couldn't be read, or if the duration exceeds <paramref name="maxDuration"/>.
     /// </returns>
-    /// <include file='../XmlDocs/Args.xml' path='doc/In/exception'/>
+    /// <include file="../XmlDocs/Args.xml" path="doc/In/exception"/>
     public static RawSourceSampleProvider? ReadWithFFmpeg(FFmpegArguments arguments, TimeSpan? maxDuration = null)
     {
         using var process = FFmpegSL.Start(arguments.ForPlayerCompatibleFloatPiping());

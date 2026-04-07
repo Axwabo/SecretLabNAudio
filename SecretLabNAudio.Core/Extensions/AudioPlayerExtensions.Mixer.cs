@@ -16,7 +16,7 @@ public static partial class AudioPlayerExtensions
         /// <param name="input">The provider to add.</param>
         /// <param name="isOwned">Whether to dispose of the input when the mixer is disposed or if the input is removed.</param>
         /// <returns>The player itself.</returns>
-        /// <include file='../XmlDocs/Mixer.xml' path='doc/Player/remarks'/>
+        /// <include file="../XmlDocs/Mixer.xml" path="doc/Player/remarks"/>
         /// <seealso cref="UseMixer(AudioPlayer,Action{Mixer},bool)"/>
         public AudioPlayer Mix(ISampleProvider input, bool isOwned = true)
             => player.UseMixer(mixer => mixer.AddAnonymous(input, isOwned));
@@ -28,7 +28,7 @@ public static partial class AudioPlayerExtensions
         /// <param name="inputName">The name of the mixer input.</param>
         /// <param name="isOwned">Whether to dispose of the input when the mixer is disposed or if the input is removed.</param>
         /// <returns>The player itself.</returns>
-        /// <include file='../XmlDocs/Mixer.xml' path='doc/Player/remarks'/>
+        /// <include file="../XmlDocs/Mixer.xml" path="doc/Player/remarks"/>
         /// <seealso cref="UseMixer(AudioPlayer,Action{Mixer},bool)"/>
         /// <seealso cref="MixerExtensions.AddFileNamed"/>
         public AudioPlayer Mix(ISampleProvider input, string inputName, bool isOwned = true)
@@ -41,8 +41,8 @@ public static partial class AudioPlayerExtensions
         /// <param name="loop">Whether to loop the file.</param>
         /// <param name="volume">The volume of the input.</param>
         /// <returns>The player itself.</returns>
-        /// <include file='../XmlDocs/Mixer.xml' path='doc/Player/remarks'/>
-        /// <include file='../XmlDocs/Files.xml' path='doc/exception'/>
+        /// <include file="../XmlDocs/Mixer.xml" path="doc/Player/remarks"/>
+        /// <include file="../XmlDocs/Files.xml" path="doc/exception"/>
         /// <seealso cref="UseMixer(AudioPlayer,Action{Mixer},bool)"/>
         /// <seealso cref="MixerExtensions.AddFileAnonymous"/>
         public AudioPlayer MixFile(string path, bool loop = false, float volume = 1)
@@ -56,8 +56,8 @@ public static partial class AudioPlayerExtensions
         /// <param name="loop">Whether to loop the file.</param>
         /// <param name="volume">The volume of the input.</param>
         /// <returns>The player itself.</returns>
-        /// <include file='../XmlDocs/Mixer.xml' path='doc/Player/remarks'/>
-        /// <include file='../XmlDocs/Files.xml' path='doc/exception'/>
+        /// <include file="../XmlDocs/Mixer.xml" path="doc/Player/remarks"/>
+        /// <include file="../XmlDocs/Files.xml" path="doc/exception"/>
         /// <seealso cref="UseMixer(AudioPlayer,Action{Mixer},bool)"/>
         /// <seealso cref="MixerExtensions.AddFileNamed"/>
         public AudioPlayer MixFile(string path, string inputName, bool loop = false, float volume = 1)
@@ -70,8 +70,8 @@ public static partial class AudioPlayerExtensions
         /// <param name="process">An optional <see cref="ModifyChain"/> specifying how to process the stream.</param>
         /// <param name="loop">Whether to loop the file.</param>
         /// <returns>The player itself.</returns>
-        /// <include file='../XmlDocs/Mixer.xml' path='doc/Player/remarks'/>
-        /// <include file='../XmlDocs/Files.xml' path='doc/exception'/>
+        /// <include file="../XmlDocs/Mixer.xml" path="doc/Player/remarks"/>
+        /// <include file="../XmlDocs/Files.xml" path="doc/exception"/>
         /// <seealso cref="UseMixer(AudioPlayer,Action{Mixer},bool)"/>
         /// <seealso cref="MixerExtensions.AddFileAnonymous"/>
         public AudioPlayer MixFile(string path, ModifyChain? process, bool loop = false)
@@ -85,8 +85,8 @@ public static partial class AudioPlayerExtensions
         /// <param name="process">An optional <see cref="ModifyChain"/> specifying how to process the stream.</param>
         /// <param name="loop">Whether to loop the file.</param>
         /// <returns>The player itself.</returns>
-        /// <include file='../XmlDocs/Mixer.xml' path='doc/Player/remarks'/>
-        /// <include file='../XmlDocs/Files.xml' path='doc/exception'/>
+        /// <include file="../XmlDocs/Mixer.xml" path="doc/Player/remarks"/>
+        /// <include file="../XmlDocs/Files.xml" path="doc/exception"/>
         /// <seealso cref="UseMixer(AudioPlayer,Action{Mixer},bool)"/>
         /// <seealso cref="MixerExtensions.AddFileNamed"/>
         public AudioPlayer MixFile(string path, string inputName, ModifyChain? process, bool loop = false)
@@ -99,7 +99,7 @@ public static partial class AudioPlayerExtensions
         /// <param name="loop">Whether to loop the file.</param>
         /// <param name="volume">The volume of the input.</param>
         /// <returns>The player itself.</returns>
-        /// <include file='../XmlDocs/Mixer.xml' path='doc/Player/remarks'/>
+        /// <include file="../XmlDocs/Mixer.xml" path="doc/Player/remarks"/>
         /// <seealso cref="UseMixer(AudioPlayer,Action{Mixer},bool)"/>
         /// <seealso cref="MixerExtensions.TryAddFileAnonymous"/>
         public AudioPlayer MixFileSafe(string path, bool loop = false, float volume = 1)
@@ -113,7 +113,7 @@ public static partial class AudioPlayerExtensions
         /// <param name="loop">Whether to loop the file.</param>
         /// <param name="volume">The volume of the input.</param>
         /// <returns>The player itself.</returns>
-        /// <include file='../XmlDocs/Mixer.xml' path='doc/Player/remarks'/>
+        /// <include file="../XmlDocs/Mixer.xml" path="doc/Player/remarks"/>
         /// <seealso cref="UseMixer(AudioPlayer,Action{Mixer},bool)"/>
         /// <seealso cref="MixerExtensions.TryAddFileNamed"/>
         public AudioPlayer MixFileSafe(string path, string inputName, bool loop = false, float volume = 1)
@@ -126,7 +126,7 @@ public static partial class AudioPlayerExtensions
         /// <param name="process">An optional <see cref="ModifyChain"/> specifying how to process the stream.</param>
         /// <param name="loop">Whether to loop the file.</param>
         /// <returns>The player itself.</returns>
-        /// <include file='../XmlDocs/Mixer.xml' path='doc/Player/remarks'/>
+        /// <include file="../XmlDocs/Mixer.xml" path="doc/Player/remarks"/>
         /// <seealso cref="UseMixer(AudioPlayer,Action{Mixer},bool)"/>
         /// <seealso cref="MixerExtensions.TryAddFileAnonymous"/>
         public AudioPlayer MixFileSafe(string path, ModifyChain? process, bool loop = false)
@@ -140,7 +140,7 @@ public static partial class AudioPlayerExtensions
         /// <param name="process">An optional <see cref="ModifyChain"/> specifying how to process the stream.</param>
         /// <param name="loop">Whether to loop the file.</param>
         /// <returns>The player itself.</returns>
-        /// <include file='../XmlDocs/Mixer.xml' path='doc/Player/remarks'/>
+        /// <include file="../XmlDocs/Mixer.xml" path="doc/Player/remarks"/>
         /// <seealso cref="UseMixer(AudioPlayer,Action{Mixer},bool)"/>
         /// <seealso cref="MixerExtensions.TryAddFileNamed"/>
         public AudioPlayer MixFileSafe(string path, string inputName, ModifyChain? process, bool loop = false)
@@ -154,7 +154,7 @@ public static partial class AudioPlayerExtensions
         /// <param name="loop">Whether to loop the clip.</param>
         /// <param name="volume">The volume of the input.</param>
         /// <returns>The player itself.</returns>
-        /// <include file='../XmlDocs/Mixer.xml' path='doc/Player/remarks'/>
+        /// <include file="../XmlDocs/Mixer.xml" path="doc/Player/remarks"/>
         /// <seealso cref="UseMixer(AudioPlayer,Action{Mixer},bool)"/>
         /// <seealso cref="MixerExtensions.AddShortClip"/>
         public AudioPlayer MixShortClip(ClipName name, bool loop = false, float volume = 1)
@@ -168,7 +168,7 @@ public static partial class AudioPlayerExtensions
         /// <param name="process">An optional <see cref="ModifyChain"/> specifying how to process the clip.</param>
         /// <param name="loop">Whether to loop the clip.</param>
         /// <returns>The player itself.</returns>
-        /// <include file='../XmlDocs/Mixer.xml' path='doc/Player/remarks'/>
+        /// <include file="../XmlDocs/Mixer.xml" path="doc/Player/remarks"/>
         /// <seealso cref="UseMixer(AudioPlayer,Action{Mixer},bool)"/>
         /// <seealso cref="MixerExtensions.AddShortClip"/>
         public AudioPlayer MixShortClip(ClipName name, ModifyChain? process, bool loop = false)
@@ -182,7 +182,7 @@ public static partial class AudioPlayerExtensions
         /// <param name="loop">Whether to loop the clip.</param>
         /// <param name="volume">The volume of the input.</param>
         /// <returns>The player itself.</returns>
-        /// <include file='../XmlDocs/Mixer.xml' path='doc/Player/remarks'/>
+        /// <include file="../XmlDocs/Mixer.xml" path="doc/Player/remarks"/>
         /// <seealso cref="UseMixer(AudioPlayer,Action{Mixer},bool)"/>
         /// <seealso cref="MixerExtensions.AddShortClipNamed"/>
         public AudioPlayer MixShortClip(ClipName clipName, string inputName, bool loop = false, float volume = 1)
@@ -196,7 +196,7 @@ public static partial class AudioPlayerExtensions
         /// <param name="process">An optional <see cref="ModifyChain"/> specifying how to process the clip.</param>
         /// <param name="loop">Whether to loop the clip.</param>
         /// <returns>The player itself.</returns>
-        /// <include file='../XmlDocs/Mixer.xml' path='doc/Player/remarks'/>
+        /// <include file="../XmlDocs/Mixer.xml" path="doc/Player/remarks"/>
         /// <seealso cref="UseMixer(AudioPlayer,Action{Mixer},bool)"/>
         /// <seealso cref="MixerExtensions.AddShortClipNamed"/>
         public AudioPlayer MixShortClip(ClipName clipName, string inputName, ModifyChain? process, bool loop = false)
@@ -209,7 +209,7 @@ public static partial class AudioPlayerExtensions
         /// <param name="loop">Whether to loop the input.</param>
         /// <param name="volume">The volume of the input.</param>
         /// <returns>The player itself.</returns>
-        /// <include file='../XmlDocs/Mixer.xml' path='doc/Player/remarks'/>
+        /// <include file="../XmlDocs/Mixer.xml" path="doc/Player/remarks"/>
         /// <seealso cref="UseMixer(AudioPlayer,Action{Mixer},bool)"/>
         /// <seealso cref="MixerExtensions.AddShortClipAnonymous"/>
         public AudioPlayer MixShortClipAnonymous(ClipName name, bool loop = false, float volume = 1)
@@ -222,7 +222,7 @@ public static partial class AudioPlayerExtensions
         /// <param name="loop">Whether to loop the input.</param>
         /// <param name="process">An optional <see cref="ModifyChain"/> specifying how to process the clip.</param>
         /// <returns>The player itself.</returns>
-        /// <include file='../XmlDocs/Mixer.xml' path='doc/Player/remarks'/>
+        /// <include file="../XmlDocs/Mixer.xml" path="doc/Player/remarks"/>
         /// <seealso cref="UseMixer(AudioPlayer,Action{Mixer},bool)"/>
         /// <seealso cref="MixerExtensions.AddShortClipAnonymous"/>
         public AudioPlayer MixShortClipAnonymous(ClipName name, ModifyChain? process, bool loop = false)
@@ -250,10 +250,10 @@ public static partial class AudioPlayerExtensions
             return player;
         }
 
-        /// <include file='../XmlDocs/Mixer.xml' path='doc/RemoveAllByName/summary'/>
+        /// <include file="../XmlDocs/Mixer.xml" path="doc/RemoveAllByName/summary"/>
         /// <param name="name">The name to match.</param>
         /// <param name="ignoreCase">Whether to ignore case.</param>
-        /// <include file='../XmlDocs/Mixer.xml' path='doc/RemoveAllByName/remarks'/>
+        /// <include file="../XmlDocs/Mixer.xml" path="doc/RemoveAllByName/remarks"/>
         /// <returns>The player itself.</returns>
         public AudioPlayer RemoveNamedMixerInputs(string name, bool ignoreCase = true)
         {
@@ -261,7 +261,7 @@ public static partial class AudioPlayerExtensions
             return player;
         }
 
-        /// <include file='../XmlDocs/Mixer.xml' path='doc/RemoveAllShortClips/summary'/>
+        /// <include file="../XmlDocs/Mixer.xml" path="doc/RemoveAllShortClips/summary"/>
         /// <returns>The player itself.</returns>
         public AudioPlayer RemoveShortClipMixerInputs()
         {
@@ -269,7 +269,7 @@ public static partial class AudioPlayerExtensions
             return player;
         }
 
-        /// <include file='../XmlDocs/Mixer.xml' path='doc/RemoveAllStreamProcessors/summary'/>
+        /// <include file="../XmlDocs/Mixer.xml" path="doc/RemoveAllStreamProcessors/summary"/>
         /// <returns>The player itself.</returns>
         public AudioPlayer RemoveStreamProcessorMixerInputs()
         {

@@ -54,7 +54,7 @@ public readonly partial record struct FFmpegArguments
     /// </summary>
     /// <param name="input">The input source (e.g. file path, URL).</param>
     /// <returns>A copy of this instance with the new input. Other properties are preserved.</returns>
-    /// <include file='XmlDocs/Args.xml' path='doc/InArg/exception'/>
+    /// <include file="XmlDocs/Args.xml" path="doc/InArg/exception"/>
     public FFmpegArguments WithInput(string input) => this with {Input = input.ValidateProcessArgument(nameof(input), InputMissing, InputHasQuotation)};
 
     /// <summary>

@@ -11,7 +11,7 @@ public sealed class PlaybackBufferSampleProvider : ISampleProvider
     /// <summary>The number of samples in the buffer.</summary>
     public int Length => _buffer.Length;
 
-    /// <include file='../XmlDocs/Providers.xml' path='doc/ReadFully/summary'/>
+    /// <include file="../XmlDocs/Providers.xml" path="doc/ReadFully/summary"/>
     public bool ReadFully { get; set; }
 
     /// <summary>Creates a new endless <see cref="PlaybackBufferSampleProvider"/>.</summary>

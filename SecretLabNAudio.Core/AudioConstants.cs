@@ -28,7 +28,7 @@ public static class AudioConstants
 
     /// <summary>Checks if the given provider is not compatible with <see cref="AudioPlayer"/>s.</summary>
     /// <param name="provider">The provider to check. Null values are skipped.</param>
-    /// <include file='XmlDocs/Providers.xml' path='doc/Format/exception'/>
+    /// <include file="XmlDocs/Providers.xml" path="doc/Format/exception"/>
     public static void ThrowIfIncompatible(ISampleProvider? provider)
     {
         if (provider is {WaveFormat: not {SampleRate: SampleRate, Channels: Channels, Encoding: WaveFormatEncoding.IeeeFloat}})

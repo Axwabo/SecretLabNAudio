@@ -18,8 +18,8 @@ public static class MixerExtensions
         /// <param name="loop">Whether to loop the file.</param>
         /// <param name="process">An optional <see cref="ModifyChain"/> specifying how to process the stream.</param>
         /// <returns>The mixer itself.</returns>
-        /// <include file='../../XmlDocs/Files.xml' path='doc/exception'/>
-        /// <include file='../../XmlDocs/Mixer.xml' path='doc/AddProcess/exception'/>
+        /// <include file="../../XmlDocs/Files.xml" path="doc/exception"/>
+        /// <include file="../../XmlDocs/Mixer.xml" path="doc/AddProcess/exception"/>
         public Mixer AddFileAnonymous(string path, bool loop = false, ModifyChain? process = null)
             => mixer.AddAnonymous(StreamAudioProcessor.CreateFromFile(path, loop).Process(process));
 
@@ -31,8 +31,8 @@ public static class MixerExtensions
         /// <param name="loop">Whether to loop the file.</param>
         /// <param name="process">An optional <see cref="ModifyChain"/> specifying how to process the stream.</param>
         /// <returns>The mixer itself.</returns>
-        /// <include file='../../XmlDocs/Files.xml' path='doc/exception'/>
-        /// <include file='../../XmlDocs/Mixer.xml' path='doc/AddProcess/exception'/>
+        /// <include file="../../XmlDocs/Files.xml" path="doc/exception"/>
+        /// <include file="../../XmlDocs/Mixer.xml" path="doc/AddProcess/exception"/>
         public Mixer AddFileNamed(string path, string inputName, bool loop = false, ModifyChain? process = null)
             => mixer.AddNamed(StreamAudioProcessor.CreateFromFile(path, loop).Process(process), inputName);
 
@@ -43,7 +43,7 @@ public static class MixerExtensions
         /// <param name="loop">Whether to loop the file.</param>
         /// <param name="process">An optional <see cref="ModifyChain"/> specifying how to process the stream.</param>
         /// <returns>The mixer itself.</returns>
-        /// <include file='../../XmlDocs/Mixer.xml' path='doc/AddProcess/exception'/>
+        /// <include file="../../XmlDocs/Mixer.xml" path="doc/AddProcess/exception"/>
         /// <remarks>Nothing happens if the processor couldn't be created.</remarks>
         /// <seealso cref="StreamProcessorExtensions.TryCreateFromFile"/>
         public Mixer TryAddFileAnonymous(string path, bool loop = false, ModifyChain? process = null)
@@ -59,7 +59,7 @@ public static class MixerExtensions
         /// <param name="loop">Whether to loop the file.</param>
         /// <param name="process">An optional <see cref="ModifyChain"/> specifying how to process the stream.</param>
         /// <returns>The mixer itself.</returns>
-        /// <include file='../../XmlDocs/Mixer.xml' path='doc/AddProcess/exception'/>
+        /// <include file="../../XmlDocs/Mixer.xml" path="doc/AddProcess/exception"/>
         /// <remarks>Nothing happens if the processor couldn't be created.</remarks>
         /// <seealso cref="StreamProcessorExtensions.TryCreateFromFile"/>
         public Mixer TryAddFileNamed(string path, string inputName, bool loop = false, ModifyChain? process = null)
@@ -74,8 +74,8 @@ public static class MixerExtensions
         /// <param name="loop">Whether to loop the clip.</param>
         /// <param name="process">An optional <see cref="ModifyChain"/> specifying how to process the clip.</param>
         /// <returns>The mixer itself.</returns>
-        /// <include file='../../XmlDocs/Mixer.xml' path='doc/AddClip/exception'/>
-        /// <include file='../../XmlDocs/Clips.xml' path='doc/TryGet/seealso'/>
+        /// <include file="../../XmlDocs/Mixer.xml" path="doc/AddClip/exception"/>
+        /// <include file="../../XmlDocs/Clips.xml" path="doc/TryGet/seealso"/>
         public Mixer AddShortClipAnonymous(ClipName name, bool loop = false, ModifyChain? process = null)
             => ShortClipCache.TryGet(name, out var provider)
                 ? mixer.AddAnonymous(provider.WithLoop(loop).Process(process), false)
@@ -88,8 +88,8 @@ public static class MixerExtensions
         /// <param name="loop">Whether to loop the clip.</param>
         /// <param name="process">An optional <see cref="ModifyChain"/> specifying how to process the clip.</param>
         /// <returns>The mixer itself.</returns>
-        /// <include file='../../XmlDocs/Mixer.xml' path='doc/AddClip/exception'/>
-        /// <include file='../../XmlDocs/Clips.xml' path='doc/TryGet/seealso'/>
+        /// <include file="../../XmlDocs/Mixer.xml" path="doc/AddClip/exception"/>
+        /// <include file="../../XmlDocs/Clips.xml" path="doc/TryGet/seealso"/>
         public Mixer AddShortClip(ClipName name, bool loop = false, ModifyChain? process = null)
             => ShortClipCache.TryGet(name, out var provider)
                 ? mixer.AddNamed(provider.WithLoop(loop).Process(process), provider.ClipName!, false)
@@ -103,8 +103,8 @@ public static class MixerExtensions
         /// <param name="loop">Whether to loop the clip.</param>
         /// <param name="process">An optional <see cref="ModifyChain"/> specifying how to process the clip.</param>
         /// <returns>The mixer itself.</returns>
-        /// <include file='../../XmlDocs/Mixer.xml' path='doc/AddClip/exception'/>
-        /// <include file='../../XmlDocs/Clips.xml' path='doc/TryGet/seealso'/>
+        /// <include file="../../XmlDocs/Mixer.xml" path="doc/AddClip/exception"/>
+        /// <include file="../../XmlDocs/Clips.xml" path="doc/TryGet/seealso"/>
         public Mixer AddShortClipNamed(ClipName clipName, string inputName, bool loop = false, ModifyChain? process = null)
             => ShortClipCache.TryGet(clipName, out var provider)
                 ? mixer.AddNamed(provider.WithLoop(loop).Process(process), inputName, false)
@@ -130,22 +130,22 @@ public static class MixerExtensions
         public Mixer RemoveAllBySourceType<T>()
             => mixer.RemoveAll(static e => e.Provider is IAudioProcessor provider ? provider.TryGetSourceAs(out T? _) : e.Provider is T);
 
-        /// <include file='../../XmlDocs/Mixer.xml' path='doc/RemoveAllShortClips/summary'/>
+        /// <include file="../../XmlDocs/Mixer.xml" path="doc/RemoveAllShortClips/summary"/>
         /// <returns>The mixer itself.</returns>
         /// <seealso cref="RemoveAllBySourceType"/>
         public Mixer RemoveAllShortClips()
             => mixer.RemoveAllBySourceType<RawSourceSampleProvider>();
 
-        /// <include file='../../XmlDocs/Mixer.xml' path='doc/RemoveAllStreamProcessors/summary'/>
+        /// <include file="../../XmlDocs/Mixer.xml" path="doc/RemoveAllStreamProcessors/summary"/>
         /// <returns>The mixer itself.</returns>
         /// <seealso cref="RemoveAllBySourceType"/>
         public Mixer RemoveAllStreamProcessors()
             => mixer.RemoveAllBySourceType<StreamAudioProcessor>();
 
-        /// <include file='../../XmlDocs/Mixer.xml' path='doc/RemoveAllByName/summary'/>
+        /// <include file="../../XmlDocs/Mixer.xml" path="doc/RemoveAllByName/summary"/>
         /// <param name="name">The name to match.</param>
         /// <param name="ignoreCase">Whether to ignore case.</param>
-        /// <include file='../../XmlDocs/Mixer.xml' path='doc/RemoveAllByName/remarks'/>
+        /// <include file="../../XmlDocs/Mixer.xml" path="doc/RemoveAllByName/remarks"/>
         /// <returns>The mixer itself.</returns>
         public Mixer RemoveAllByName(string name, bool ignoreCase = true)
             => mixer.RemoveAllByName(name, ignoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal);

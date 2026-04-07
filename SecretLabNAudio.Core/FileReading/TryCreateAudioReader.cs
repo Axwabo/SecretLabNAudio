@@ -40,7 +40,7 @@ public static class TryCreateAudioReader
     /// <param name="path">The file path to read the audio from.</param>
     /// <param name="stream">The resulting <see cref="WaveStream"/> if successful. <see langword="null"/> if no factory was found for the file type, or if the factory didn't return a <see cref="WaveStream"/>.</param>
     /// <returns>Whether a <see cref="WaveStream"/> was successfully created.</returns>
-    /// <include file='../XmlDocs/Files.xml' path='doc/exception[@name="NotFound"]'/>
+    /// <include file="../XmlDocs/Files.xml" path="doc/exception[@name='NotFound']"/>
     /// <remarks>This method doesn't check if the file exists. Call <see cref="File.Exists">File.Exists</see> beforehand.</remarks>
     public static bool Stream(string path, [NotNullWhen(true)] out WaveStream? stream)
     {

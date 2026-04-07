@@ -14,8 +14,8 @@ public sealed class AsyncBufferedFFmpegAudioProcessor : AsyncFFmpegProcessorBase
     /// <param name="input">The input source (e.g. file path, URL).</param>
     /// <param name="capacity">The capacity of the buffer in seconds.</param>
     /// <returns>A new <see cref="AsyncBufferedFFmpegAudioProcessor"/>.</returns>
-    /// <include file='../XmlDocs/Args.xml' path='doc/InArg/exception'/>
-    /// <include file='../XmlDocs/Buffered.xml' path='doc/Capacity/remarks'/>
+    /// <include file="../XmlDocs/Args.xml" path="doc/InArg/exception"/>
+    /// <include file="../XmlDocs/Buffered.xml" path="doc/Capacity/remarks"/>
     public static AsyncBufferedFFmpegAudioProcessor CreatePlayerCompatible(string input, double capacity = DefaultCapacity)
         => new(input, capacity, AudioConstants.SupportedFormat);
 
@@ -25,8 +25,8 @@ public sealed class AsyncBufferedFFmpegAudioProcessor : AsyncFFmpegProcessorBase
     /// <param name="arguments">The arguments to pass to FFmpeg.</param>
     /// <param name="capacity">The capacity of the buffer in seconds.</param>
     /// <returns>A new <see cref="AsyncBufferedFFmpegAudioProcessor"/>.</returns>
-    /// <include file='../XmlDocs/Args.xml' path='doc/In/exception'/>
-    /// <include file='../XmlDocs/Buffered.xml' path='doc/Capacity/remarks'/>
+    /// <include file="../XmlDocs/Args.xml" path="doc/In/exception"/>
+    /// <include file="../XmlDocs/Buffered.xml" path="doc/Capacity/remarks"/>
     public static AsyncBufferedFFmpegAudioProcessor CreatePlayerCompatible(FFmpegArguments arguments, double capacity = DefaultCapacity)
         => new(capacity, arguments.ForPlayerCompatibleFloatPiping());
 
@@ -38,8 +38,8 @@ public sealed class AsyncBufferedFFmpegAudioProcessor : AsyncFFmpegProcessorBase
     /// <param name="channels">The number of channels to output.</param>
     /// <param name="capacity">The capacity of the buffer in seconds.</param>
     /// <returns>A new <see cref="AsyncBufferedFFmpegAudioProcessor"/>.</returns>
-    /// <include file='../XmlDocs/Args.xml' path='doc/InArg/exception'/>
-    /// <include file='../XmlDocs/Buffered.xml' path='doc/Capacity/remarks'/>
+    /// <include file="../XmlDocs/Args.xml" path="doc/InArg/exception"/>
+    /// <include file="../XmlDocs/Buffered.xml" path="doc/Capacity/remarks"/>
     public static AsyncBufferedFFmpegAudioProcessor Create(string input, int sampleRate, int channels, double capacity = DefaultCapacity)
         => new(input, capacity, WaveFormat.CreateIeeeFloatWaveFormat(sampleRate, channels));
 
@@ -49,8 +49,8 @@ public sealed class AsyncBufferedFFmpegAudioProcessor : AsyncFFmpegProcessorBase
     /// <param name="arguments">The arguments to pass to FFmpeg.</param>
     /// <param name="capacity">The capacity of the buffer in seconds.</param>
     /// <returns>A new <see cref="AsyncBufferedFFmpegAudioProcessor"/>.</returns>
-    /// <include file='../XmlDocs/Args.xml' path='doc/In/exception'/>
-    /// <include file='../XmlDocs/Buffered.xml' path='doc/Capacity/remarks'/>
+    /// <include file="../XmlDocs/Args.xml" path="doc/In/exception"/>
+    /// <include file="../XmlDocs/Buffered.xml" path="doc/Capacity/remarks"/>
     public static AsyncBufferedFFmpegAudioProcessor Create(FFmpegArguments arguments, double capacity = DefaultCapacity)
         => new(capacity, arguments.ForFloatPiping());
 
@@ -72,7 +72,7 @@ public sealed class AsyncBufferedFFmpegAudioProcessor : AsyncFFmpegProcessorBase
             BufferLoop(ffmpeg);
     });
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     /// <remarks>A graceful termination signal is sent to FFmpeg. This method does not wait for FFmpeg to exit.</remarks>
     public override void StopBuffering()
     {

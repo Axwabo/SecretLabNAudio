@@ -35,7 +35,7 @@ public static partial class AudioPlayerExtensions
         /// <param name="volume">The volume of the input.</param>
         /// <returns>The player itself.</returns>
         /// <remarks>The stream will be converted to be player-compatible.</remarks>
-        /// <include file='../XmlDocs/Files.xml' path='doc/exception'/>
+        /// <include file="../XmlDocs/Files.xml" path="doc/exception"/>
         /// <seealso cref="ProcessorChainExtensions.ToPlayerCompatible"/>
         public AudioPlayer UseFile(string path, bool loop = false, float volume = 1)
             => player.UseFile(path, ModifyChain.AmplifyIfNot1(volume), loop);
@@ -48,7 +48,7 @@ public static partial class AudioPlayerExtensions
         /// <param name="loop">Whether to loop the file.</param>
         /// <returns>The player itself.</returns>
         /// <remarks>The stream will be converted to be player-compatible.</remarks>
-        /// <include file='../XmlDocs/Files.xml' path='doc/exception'/>
+        /// <include file="../XmlDocs/Files.xml" path="doc/exception"/>
         /// <seealso cref="ProcessorChainExtensions.ToPlayerCompatible"/>
         public AudioPlayer UseFile(string path, ModifyChain? modify, bool loop = false)
             => player.Use(StreamAudioProcessor.CreateFromFile(path, loop).ToCompatibleProcessor().Process(modify));
@@ -106,10 +106,10 @@ public static partial class AudioPlayerExtensions
             return player;
         }
 
-        /// <include file='../XmlDocs/Mixer.xml' path='doc/Use/summary'/>
+        /// <include file="../XmlDocs/Mixer.xml" path="doc/Use/summary"/>
         /// <param name="keepInputs">Whether to keep the current non-<see cref="Mixer"/> <see cref="AudioPlayer.SampleProvider"/> as an input.</param>
         /// <returns>The player itself.</returns>
-        /// <include file='../XmlDocs/Mixer.xml' path='doc/Use/remarks'/>
+        /// <include file="../XmlDocs/Mixer.xml" path="doc/Use/remarks"/>
         public AudioPlayer UseMixer(bool keepInputs = true)
         {
             if (!keepInputs)
@@ -123,10 +123,10 @@ public static partial class AudioPlayerExtensions
             return player.Use(mixer);
         }
 
-        /// <include file='../XmlDocs/Mixer.xml' path='doc/Use/summary'/>
+        /// <include file="../XmlDocs/Mixer.xml" path="doc/Use/summary"/>
         /// <param name="mix">A delegate to add inputs to the mixer with.</param>
         /// <param name="keepInputs">Whether to keep the current non-<see cref="Mixer"/> <see cref="AudioPlayer.SampleProvider"/> as an input.</param>
-        /// <include file='../XmlDocs/Mixer.xml' path='doc/Use/remarks'/>
+        /// <include file="../XmlDocs/Mixer.xml" path="doc/Use/remarks"/>
         public AudioPlayer UseMixer(Action<Mixer> mix, bool keepInputs = true)
         {
             mix(player.UseMixer(keepInputs).Mixer!);
@@ -140,7 +140,7 @@ public static partial class AudioPlayerExtensions
         /// <param name="loop">Whether to loop the clip.</param>
         /// <param name="volume">The volume of the clip.</param>
         /// <returns>The player itself.</returns>
-        /// <include file='../XmlDocs/Clips.xml' path='doc/TryGet/seealso'/>
+        /// <include file="../XmlDocs/Clips.xml" path="doc/TryGet/seealso"/>
         public AudioPlayer UseShortClip(ClipName name, bool loop = false, float volume = 1)
             => player.UseShortClip(name, ModifyChain.AmplifyIfNot1(volume), loop);
 
@@ -151,7 +151,7 @@ public static partial class AudioPlayerExtensions
         /// <param name="loop">Whether to loop the clip.</param>
         /// <param name="process">An optional <see cref="ModifyChain"/> specifying how to process the clip.</param>
         /// <returns>The player itself.</returns>
-        /// <include file='../XmlDocs/Clips.xml' path='doc/TryGet/seealso'/>
+        /// <include file="../XmlDocs/Clips.xml" path="doc/TryGet/seealso"/>
         public AudioPlayer UseShortClip(ClipName name, ModifyChain? process, bool loop = false)
             => ShortClipCache.TryGet(name, out var provider)
                 ? player.WithUnmanagedProvider(provider.WithLoop(loop).Process(process))

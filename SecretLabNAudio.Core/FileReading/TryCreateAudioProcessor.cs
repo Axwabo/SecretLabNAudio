@@ -31,7 +31,7 @@ public static class TryCreateAudioProcessor
     /// <see langword="null"/> if no factory was found for the file type, or if the factory didn't return a <see cref="WaveStream"/>.
     /// </param>
     /// <returns>Whether a <see cref="StreamAudioProcessor"/> was successfully created.</returns>
-    /// <include file='../XmlDocs/Files.xml' path='doc/exception[@name="NotFound"]'/>
+    /// <include file="../XmlDocs/Files.xml" path="doc/exception[@name='NotFound']"/>
     /// <remarks>
     /// This method doesn't check if the file exists. Call <see cref="File.Exists">File.Exists</see> beforehand.
     /// The underlying file stream is automatically disposed when the processor is disposed.

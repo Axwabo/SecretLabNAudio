@@ -15,17 +15,17 @@ public sealed class LoopingRawSampleProvider : ISampleProvider, ISeekable, ILoop
     /// <inheritdoc/>
     public WaveFormat WaveFormat => Provider.WaveFormat;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public TimeSpan CurrentTime
     {
         get => Provider.CurrentTime;
         set => Provider.CurrentTime = value;
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public TimeSpan TotalTime => Provider.TotalTime;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public bool Loop { get; set; } = true;
 
     /// <inheritdoc/>

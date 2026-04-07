@@ -15,8 +15,8 @@ public static partial class AudioPlayerExtensions
         /// <param name="input">The provider to play from after the current one has ended.</param>
         /// <param name="isOwned">Whether to dispose of the input after it has ended or if the queue gets disposed.</param>
         /// <returns>The player itself.</returns>
-        /// <include file='../XmlDocs/Queue.xml' path='doc/Player/remarks'/>
-        /// <include file='../XmlDocs/Files.xml' path='doc/exception'/>
+        /// <include file="../XmlDocs/Queue.xml" path="doc/Player/remarks"/>
+        /// <include file="../XmlDocs/Files.xml" path="doc/exception"/>
         /// <seealso cref="UseQueue(AudioPlayer,Action{AudioQueue})"/>
         /// <seealso cref="AudioQueue.Enqueue(ISampleProvider,bool)"/>
         public AudioPlayer Enqueue(ISampleProvider input, bool isOwned = true)
@@ -28,8 +28,8 @@ public static partial class AudioPlayerExtensions
         /// <param name="path">The path to the file.</param>
         /// <param name="volume">The volume of the input.</param>
         /// <returns>The player itself.</returns>
-        /// <include file='../XmlDocs/Queue.xml' path='doc/Player/remarks'/>
-        /// <include file='../XmlDocs/Files.xml' path='doc/exception'/>
+        /// <include file="../XmlDocs/Queue.xml" path="doc/Player/remarks"/>
+        /// <include file="../XmlDocs/Files.xml" path="doc/exception"/>
         /// <seealso cref="UseQueue(AudioPlayer,Action{AudioQueue})"/>
         /// <seealso cref="AudioQueueExtensions.EnqueueFile"/>
         public AudioPlayer EnqueueFile(string path, float volume = 1)
@@ -41,8 +41,8 @@ public static partial class AudioPlayerExtensions
         /// <param name="path">The path to the file.</param>
         /// <param name="process">An optional <see cref="ModifyChain"/> specifying how to process the stream.</param>
         /// <returns>The player itself.</returns>
-        /// <include file='../XmlDocs/Mixer.xml' path='doc/Player/remarks'/>
-        /// <include file='../XmlDocs/Files.xml' path='doc/exception'/>
+        /// <include file="../XmlDocs/Mixer.xml" path="doc/Player/remarks"/>
+        /// <include file="../XmlDocs/Files.xml" path="doc/exception"/>
         /// <seealso cref="UseQueue(AudioPlayer,Action{AudioQueue})"/>
         /// <seealso cref="AudioQueueExtensions.EnqueueFile"/>
         public AudioPlayer EnqueueFile(string path, ModifyChain? process)
@@ -54,7 +54,7 @@ public static partial class AudioPlayerExtensions
         /// <param name="path">The path to the file.</param>
         /// <param name="volume">The volume of the input.</param>
         /// <returns>The player itself.</returns>
-        /// <include file='../XmlDocs/Queue.xml' path='doc/Player/remarks'/>
+        /// <include file="../XmlDocs/Queue.xml" path="doc/Player/remarks"/>
         /// <seealso cref="UseQueue(AudioPlayer,Action{AudioQueue})"/>
         /// <seealso cref="AudioQueueExtensions.TryEnqueueFile"/>
         public AudioPlayer EnqueueFileSafe(string path, float volume = 1)
@@ -66,7 +66,7 @@ public static partial class AudioPlayerExtensions
         /// <param name="path">The path to the file.</param>
         /// <param name="process">An optional <see cref="ModifyChain"/> specifying how to process the stream.</param>
         /// <returns>The player itself.</returns>
-        /// <include file='../XmlDocs/Queue.xml' path='doc/Player/remarks'/>
+        /// <include file="../XmlDocs/Queue.xml" path="doc/Player/remarks"/>
         /// <seealso cref="UseQueue(AudioPlayer,Action{AudioQueue})"/>
         /// <seealso cref="AudioQueueExtensions.TryEnqueueFile"/>
         public AudioPlayer EnqueueFileSafe(string path, ModifyChain? process)
@@ -78,7 +78,7 @@ public static partial class AudioPlayerExtensions
         /// <param name="name">The name of the clip.</param>
         /// <param name="volume">The volume of the input.</param>
         /// <returns>The player itself.</returns>
-        /// <include file='../XmlDocs/Queue.xml' path='doc/Player/remarks'/>
+        /// <include file="../XmlDocs/Queue.xml" path="doc/Player/remarks"/>
         /// <seealso cref="UseQueue(AudioPlayer,Action{AudioQueue})"/>
         /// <seealso cref="AudioQueueExtensions.EnqueueShortClip"/>
         public AudioPlayer EnqueueShortClip(ClipName name, float volume = 1)
@@ -90,7 +90,7 @@ public static partial class AudioPlayerExtensions
         /// <param name="name">The name of the clip.</param>
         /// <param name="process">An optional <see cref="ModifyChain"/> specifying how to process the clip.</param>
         /// <returns>The player itself.</returns>
-        /// <include file='../XmlDocs/Queue.xml' path='doc/Player/remarks'/>
+        /// <include file="../XmlDocs/Queue.xml" path="doc/Player/remarks"/>
         /// <seealso cref="UseQueue(AudioPlayer,Action{AudioQueue})"/>
         /// <seealso cref="AudioQueueExtensions.EnqueueShortClip"/>
         public AudioPlayer EnqueueShortClip(ClipName name, ModifyChain? process)

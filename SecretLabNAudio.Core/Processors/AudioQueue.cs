@@ -85,7 +85,7 @@ public sealed class AudioQueue : IAudioProcessor
         _queue.Clear();
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public void Dispose()
     {
         _current?.Dispose();

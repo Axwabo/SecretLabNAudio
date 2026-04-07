@@ -10,7 +10,7 @@ public sealed partial class SynchronousFFmpegAudioProcessor
     /// </summary>
     /// <param name="input">The input source (e.g. file path, URL).</param>
     /// <returns>A new <see cref="SynchronousFFmpegAudioProcessor"/>.</returns>
-    /// <include file='../XmlDocs/Args.xml' path='doc/InArg/exception'/>
+    /// <include file="../XmlDocs/Args.xml" path="doc/InArg/exception"/>
     public static SynchronousFFmpegAudioProcessor? CreatePlayerCompatible(string input)
         => FFmpegSL.PlayerCompatibleToStdout(input) is { } ffmpeg
             ? new SynchronousFFmpegAudioProcessor(ffmpeg, AudioConstants.SupportedFormat)
@@ -21,7 +21,7 @@ public sealed partial class SynchronousFFmpegAudioProcessor
     /// </summary>
     /// <param name="arguments">The arguments to pass to FFmpeg.</param>
     /// <returns>A new <see cref="SynchronousFFmpegAudioProcessor"/>.</returns>
-    /// <include file='../XmlDocs/Args.xml' path='doc/In/exception'/>
+    /// <include file="../XmlDocs/Args.xml" path="doc/In/exception"/>
     public static SynchronousFFmpegAudioProcessor? CreatePlayerCompatible(FFmpegArguments arguments)
         => FFmpegSL.Start(arguments.ForPlayerCompatibleFloatPiping()) is { } ffmpeg
             ? new SynchronousFFmpegAudioProcessor(ffmpeg, AudioConstants.SupportedFormat)
@@ -34,7 +34,7 @@ public sealed partial class SynchronousFFmpegAudioProcessor
     /// <param name="sampleRate">The sample rate to output.</param>
     /// <param name="channels">The number of channels to output.</param>
     /// <returns>A new <see cref="SynchronousFFmpegAudioProcessor"/>.</returns>
-    /// <include file='../XmlDocs/Args.xml' path='doc/InArg/exception'/>
+    /// <include file="../XmlDocs/Args.xml" path="doc/InArg/exception"/>
     public static SynchronousFFmpegAudioProcessor? Create(string input, int sampleRate, int channels)
         => FFmpegSL.ToStdout(input, sampleRate, channels) is { } ffmpeg
             ? new SynchronousFFmpegAudioProcessor(ffmpeg, WaveFormat.CreateIeeeFloatWaveFormat(sampleRate, channels))
@@ -45,7 +45,7 @@ public sealed partial class SynchronousFFmpegAudioProcessor
     /// </summary>
     /// <param name="arguments">The arguments to pass to FFmpeg.</param>
     /// <returns>A new <see cref="SynchronousFFmpegAudioProcessor"/>.</returns>
-    /// <include file='../XmlDocs/Args.xml' path='doc/In/exception'/>
+    /// <include file="../XmlDocs/Args.xml" path="doc/In/exception"/>
     public static SynchronousFFmpegAudioProcessor? Create(FFmpegArguments arguments)
         => FFmpegSL.Start(arguments.ForFloatPiping()) is { } ffmpeg
             ? new SynchronousFFmpegAudioProcessor(ffmpeg, arguments)

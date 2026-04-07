@@ -21,8 +21,8 @@ public static class AudioPlayerExtensions
         /// <param name="input">The input source (e.g. file path, URL).</param>
         /// <param name="capacity">The capacity of the buffer in seconds.</param>
         /// <returns>The player itself.</returns>
-        /// <include file='../XmlDocs/Args.xml' path='doc/InArg/exception'/>
-        /// <include file='../XmlDocs/Buffered.xml' path='doc/Capacity/remarks'/>
+        /// <include file="../XmlDocs/Args.xml" path="doc/InArg/exception"/>
+        /// <include file="../XmlDocs/Buffered.xml" path="doc/Capacity/remarks"/>
         public AudioPlayer UseFFmpeg(string input, double capacity = AsyncFFmpegProcessorBase.DefaultCapacity)
             => player.Use(AsyncBufferedFFmpegAudioProcessor.CreatePlayerCompatible(input, capacity));
 
@@ -32,8 +32,8 @@ public static class AudioPlayerExtensions
         /// <param name="arguments">The arguments to pass to FFmpeg.</param>
         /// <param name="capacity">The capacity of the buffer in seconds.</param>
         /// <returns>The player itself.</returns>
-        /// <include file='../XmlDocs/Args.xml' path='doc/In/exception'/>
-        /// <include file='../XmlDocs/Buffered.xml' path='doc/Capacity/remarks'/>
+        /// <include file="../XmlDocs/Args.xml" path="doc/In/exception"/>
+        /// <include file="../XmlDocs/Buffered.xml" path="doc/Capacity/remarks"/>
         public AudioPlayer UseFFmpeg(FFmpegArguments arguments, double capacity = AsyncFFmpegProcessorBase.DefaultCapacity)
             => player.Use(AsyncBufferedFFmpegAudioProcessor.CreatePlayerCompatible(arguments, capacity));
 
@@ -46,7 +46,7 @@ public static class AudioPlayerExtensions
         /// <returns>The player itself.</returns>
         /// <remarks>The stream will be converted to be player-compatible.</remarks>
         /// <seealso cref="Core.Extensions.AudioPlayerExtensions.UseFile(AudioPlayer,string,bool,float)"/>
-        /// <include file='../XmlDocs/Files.xml' path='doc/exception'/>
+        /// <include file="../XmlDocs/Files.xml" path="doc/exception"/>
         public AudioPlayer UseCachedFile(string path, bool loop = false, float volume = 1)
             => player.UseFile(SimpleFileCache.Shared.GetPathOrFallback(path), loop, volume);
 
@@ -59,7 +59,7 @@ public static class AudioPlayerExtensions
         /// <returns>The player itself.</returns>
         /// <remarks>The stream will be converted to be player-compatible.</remarks>
         /// <seealso cref="Core.Extensions.AudioPlayerExtensions.UseFile(AudioPlayer,string,ModifyChain,bool)"/>
-        /// <include file='../XmlDocs/Files.xml' path='doc/exception'/>
+        /// <include file="../XmlDocs/Files.xml" path="doc/exception"/>
         public AudioPlayer UseCachedFile(string path, ModifyChain? modify, bool loop = false)
             => player.UseFile(SimpleFileCache.Shared.GetPathOrFallback(path), modify, loop);
 
