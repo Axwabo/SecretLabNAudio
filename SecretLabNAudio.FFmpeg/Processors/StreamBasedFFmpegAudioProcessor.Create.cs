@@ -14,7 +14,7 @@ public sealed partial class StreamBasedFFmpegAudioProcessor
     private static readonly FFmpegArguments PlayerCompatibleArguments = FFmpegArguments.PlayerCompatibleStdout with {Input = FFmpegArguments.StandardPipe};
 
     /// <summary>
-    /// Creates a <see cref="AudioPlayer.SupportedFormat">player-compatible</see> <see cref="StreamBasedFFmpegAudioProcessor"/> with the given stream resolver delegate.
+    /// Creates a <see cref="AudioConstants.SupportedFormat">player-compatible</see> <see cref="StreamBasedFFmpegAudioProcessor"/> with the given stream resolver delegate.
     /// </summary>
     /// <param name="resolver">The delegate to invoke on a background thread which should return a <see cref="Task"/> of <see cref="Stream"/>.</param>
     /// <param name="capacity">The capacity of the buffer in seconds.</param>
@@ -25,7 +25,7 @@ public sealed partial class StreamBasedFFmpegAudioProcessor
         => new(resolver, isOwned, capacity, PlayerCompatibleArguments);
 
     /// <summary>
-    /// Creates a <see cref="AudioPlayer.SupportedFormat">player-compatible</see> <see cref="StreamBasedFFmpegAudioProcessor"/> with the given stream resolver task.
+    /// Creates a <see cref="AudioConstants.SupportedFormat">player-compatible</see> <see cref="StreamBasedFFmpegAudioProcessor"/> with the given stream resolver task.
     /// </summary>
     /// <param name="resolver">A task representing the asynchronous stream resolver.</param>
     /// <param name="capacity">The capacity of the buffer in seconds.</param>
@@ -36,7 +36,7 @@ public sealed partial class StreamBasedFFmpegAudioProcessor
         => CreatePlayerCompatible(_ => resolver, capacity, isOwned);
 
     /// <summary>
-    /// Creates a <see cref="AudioPlayer.SupportedFormat">player-compatible</see> <see cref="StreamBasedFFmpegAudioProcessor"/> with the given stream.
+    /// Creates a <see cref="AudioConstants.SupportedFormat">player-compatible</see> <see cref="StreamBasedFFmpegAudioProcessor"/> with the given stream.
     /// </summary>
     /// <param name="stream">The stream to pipe to FFmpeg.</param>
     /// <param name="capacity">The capacity of the buffer in seconds.</param>
@@ -47,7 +47,7 @@ public sealed partial class StreamBasedFFmpegAudioProcessor
         => CreatePlayerCompatible(Task.FromResult(stream), capacity, isOwned);
 
     /// <summary>
-    /// Creates a <see cref="AudioPlayer.SupportedFormat">player-compatible</see> <see cref="StreamBasedFFmpegAudioProcessor"/> with the given stream resolver delegate.
+    /// Creates a <see cref="AudioConstants.SupportedFormat">player-compatible</see> <see cref="StreamBasedFFmpegAudioProcessor"/> with the given stream resolver delegate.
     /// </summary>
     /// <param name="resolver">The delegate to invoke on a background thread which should return a <see cref="Task"/> of <see cref="Stream"/>.</param>
     /// <param name="arguments">The arguments describing input and output options.</param>
@@ -62,7 +62,7 @@ public sealed partial class StreamBasedFFmpegAudioProcessor
         => new(resolver, isOwned, capacity, PlayerCompatibleArguments with {InputOptions = arguments.InputOptions, OutputOptions = arguments.OutputOptions});
 
     /// <summary>
-    /// Creates a <see cref="AudioPlayer.SupportedFormat">player-compatible</see> <see cref="StreamBasedFFmpegAudioProcessor"/> with the given stream resolver delegate.
+    /// Creates a <see cref="AudioConstants.SupportedFormat">player-compatible</see> <see cref="StreamBasedFFmpegAudioProcessor"/> with the given stream resolver delegate.
     /// </summary>
     /// <param name="resolver">The delegate to invoke on a background thread which should return a <see cref="Task"/> of <see cref="Stream"/>.</param>
     /// <param name="arguments">The arguments describing input and output options.</param>
@@ -77,7 +77,7 @@ public sealed partial class StreamBasedFFmpegAudioProcessor
         => CreatePlayerCompatible(_ => resolver, arguments, capacity, isOwned);
 
     /// <summary>
-    /// Creates a <see cref="AudioPlayer.SupportedFormat">player-compatible</see> <see cref="StreamBasedFFmpegAudioProcessor"/> with the given stream resolver delegate.
+    /// Creates a <see cref="AudioConstants.SupportedFormat">player-compatible</see> <see cref="StreamBasedFFmpegAudioProcessor"/> with the given stream resolver delegate.
     /// </summary>
     /// <param name="stream">The stream to pipe to FFmpeg.</param>
     /// <param name="arguments">The arguments describing input and output options.</param>

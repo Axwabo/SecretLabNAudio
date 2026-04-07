@@ -15,13 +15,13 @@ public static class FFmpegSLExtensions
     {
 
         /// <summary>
-        /// Starts an FFmpeg process that outputs <see cref="AudioPlayer.SupportedFormat">player-compatible</see> 32-bit floats.
+        /// Starts an FFmpeg process that outputs <see cref="AudioConstants.SupportedFormat">player-compatible</see> 32-bit floats.
         /// </summary>
         /// <param name="input">The input source (e.g. file path, URL).</param>
         /// <returns>An <see cref="FFmpegSL"/> wrapper if the process was started, null otherwise.</returns>
         /// <include file='../XmlDocs/Args.xml' path='doc/InArg/exception'/>
         public static FFmpegSL? PlayerCompatibleToStdout(string input)
-            => ToStdout(input, AudioPlayer.SampleRate, AudioPlayer.Channels);
+            => ToStdout(input, AudioConstants.SampleRate, AudioConstants.Channels);
 
         /// <summary>
         /// Starts an FFmpeg process that outputs 32-bit floats.

@@ -19,10 +19,10 @@ public static partial class ShortClipCacheExtensions
         ffmpeg.WaitForExit();
         var byteSpan = _memoryStream.GetBuffer().AsSpan(0, (int) _memoryStream.Position);
         var floatSpan = MemoryMarshal.Cast<byte, float>(byteSpan);
-        if (maxDuration.HasValue && floatSpan.Length > maxDuration.Value.TotalSeconds * AudioPlayer.SampleRate)
+        if (maxDuration.HasValue && floatSpan.Length > maxDuration.Value.TotalSeconds * AudioConstants.SampleRate)
             return null;
         if (!ffmpeg.HasExitedWithError)
-            return new RawSourceSampleProvider(floatSpan.ToArray(), AudioPlayer.SupportedFormat);
+            return new RawSourceSampleProvider(floatSpan.ToArray(), AudioConstants.SupportedFormat);
         Debug.LogError($"FFmpeg exited with code {ffmpeg.ExitCode} while reading player-compatible clip from {input}");
         if (ErrorMessageAnalyzer.HasNoOutputStream(ffmpeg.FinalErrorMessage))
             Debug.LogError("The input most likely does not contain audio");
@@ -31,7 +31,7 @@ public static partial class ShortClipCacheExtensions
     }
 
     /// <summary>
-    /// Attempts to read an input source with FFmpeg as <see cref="AudioPlayer.SupportedFormat">player-compatible</see> samples.
+    /// Attempts to read an input source with FFmpeg as <see cref="AudioConstants.SupportedFormat">player-compatible</see> samples.
     /// </summary>
     /// <param name="input">The input source (e.g. file path, URL).</param>
     /// <param name="maxDuration">If not null and a file's duration is longer than this value, the samples will be discarded.</param>
@@ -47,7 +47,7 @@ public static partial class ShortClipCacheExtensions
     }
 
     /// <summary>
-    /// Attempts to read an input source with FFmpeg as <see cref="AudioPlayer.SupportedFormat">player-compatible</see> samples.
+    /// Attempts to read an input source with FFmpeg as <see cref="AudioConstants.SupportedFormat">player-compatible</see> samples.
     /// </summary>
     /// <param name="arguments">The arguments to pass to FFmpeg.</param>
     /// <param name="maxDuration">If not null and a file's duration is longer than this value, the samples will be discarded.</param>

@@ -29,7 +29,7 @@ public static class ProviderToProcessor
     {
 
         /// <summary>
-        /// Wraps the provider in a <see cref="SampleProviderWrapper"/>, and ensures that its format matches <see cref="AudioPlayer.SupportedFormat"/>.
+        /// Wraps the provider in a <see cref="SampleProviderWrapper"/>, and ensures that its format matches <see cref="AudioConstants.SupportedFormat"/>.
         /// </summary>
         /// <param name="isOwned">Whether to dispose of the provider if format conversion is required. Does nothing if the provider doesn't implement <see cref="IDisposable"/>.</param>
         /// <returns>A player-compatible <see cref="IAudioProcessor"/> (<see cref="ProcessorChain"/> if conversion was performed).</returns>
@@ -37,7 +37,7 @@ public static class ProviderToProcessor
             => SampleProviderToProcessor(provider, isOwned).ToPlayerCompatible(isOwned);
 
         /// <summary>
-        /// Creates a <see cref="ProcessorChain"/> from the provider, and ensures that its format matches <see cref="AudioPlayer.SupportedFormat"/>.
+        /// Creates a <see cref="ProcessorChain"/> from the provider, and ensures that its format matches <see cref="AudioConstants.SupportedFormat"/>.
         /// </summary>
         /// <param name="isOwned">Whether to dispose of the provider when the chain is disposed. Does nothing if the provider doesn't implement <see cref="IDisposable"/>.</param>
         /// <returns>A player-compatible <see cref="ProcessorChain"/>.</returns>
@@ -60,7 +60,7 @@ public static class ProviderToProcessor
     {
 
         /// <summary>
-        /// Converts the wave provider to an <see cref="IAudioProcessor"/>, and ensures that its format matches <see cref="AudioPlayer.SupportedFormat"/>.
+        /// Converts the wave provider to an <see cref="IAudioProcessor"/>, and ensures that its format matches <see cref="AudioConstants.SupportedFormat"/>.
         /// </summary>
         /// <param name="isOwned">Whether to dispose of the provider when the processor is disposed.</param>
         /// <returns>A player-compatible <see cref="ProcessorChain"/>, <see cref="StreamAudioProcessor"/> or <see cref="SampleProviderWrapper"/>.</returns>
@@ -69,7 +69,7 @@ public static class ProviderToProcessor
             => WaveProviderToProcessor(provider, isOwned).ToPlayerCompatible();
 
         /// <summary>
-        /// Creates a <see cref="ProcessorChain"/> from the wave provider, and ensures that its format matches <see cref="AudioPlayer.SupportedFormat"/>.
+        /// Creates a <see cref="ProcessorChain"/> from the wave provider, and ensures that its format matches <see cref="AudioConstants.SupportedFormat"/>.
         /// </summary>
         /// <param name="isOwned">Whether to dispose of the provider when the chain is disposed. Does nothing if the provider doesn't implement <see cref="IDisposable"/>.</param>
         /// <returns>A player-compatible <see cref="ProcessorChain"/>.</returns>

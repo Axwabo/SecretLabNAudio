@@ -14,9 +14,9 @@ public static class NonProcessorExtensions
     {
 
         /// <summary>
-        /// Converts the wave provider to an <see cref="AudioPlayer"/>-compatible <see cref="ISampleProvider"/>.
+        /// Converts the wave provider to an <see cref="AudioConstants"/>-compatible <see cref="ISampleProvider"/>.
         /// </summary>
-        /// <returns>An <see cref="ISampleProvider"/> that is compatible with the <see cref="AudioPlayer"/>.</returns>
+        /// <returns>An <see cref="ISampleProvider"/> that is compatible with the <see cref="AudioConstants"/>.</returns>
         /// <seealso cref="SampleProviderExtensions.ToPlayerCompatible"/>
         public ISampleProvider ToPlayerCompatible() => provider.ToSampleProvider().ToPlayerCompatible();
 
@@ -26,20 +26,20 @@ public static class NonProcessorExtensions
     extension(ISampleProvider provider)
     {
 
-        /// <summary>Converts the provider to be compatible with <see cref="AudioPlayer"/>s.</summary>
+        /// <summary>Converts the provider to be compatible with <see cref="AudioConstants"/>s.</summary>
         /// <returns>The converted provider.</returns>
         /// <exception cref="ArgumentException">Thrown if the format's encoding is not IEEEFloat.</exception>
         /// <remarks>The method first mixes down to mono (if necessary), then resamples (if necessary).
         /// If the format is already compatible, the original provider is returned.</remarks>
-        /// <seealso cref="AudioPlayer.SupportedFormat"/>
+        /// <seealso cref="AudioConstants.SupportedFormat"/>
         public ISampleProvider ToPlayerCompatible()
         {
             if (provider.WaveFormat.Encoding != WaveFormatEncoding.IeeeFloat)
                 throw new ArgumentException($"Expected an IEEEFloat sample provider, got encoding {provider.WaveFormat.Encoding}");
             if (provider.WaveFormat.Channels != 1)
                 provider = new StereoToMonoSampleProvider(provider);
-            if (provider.WaveFormat.SampleRate != AudioPlayer.SampleRate)
-                provider = new WdlResamplingSampleProvider(provider, AudioPlayer.SampleRate);
+            if (provider.WaveFormat.SampleRate != AudioConstants.SampleRate)
+                provider = new WdlResamplingSampleProvider(provider, AudioConstants.SampleRate);
             return provider;
         }
 

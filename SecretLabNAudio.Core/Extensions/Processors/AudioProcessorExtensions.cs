@@ -9,12 +9,12 @@ public static class AudioProcessorExtensions
     {
 
         /// <summary>
-        /// Mixes down and resamples the processor to be compatible with <see cref="AudioPlayer.SupportedFormat"/> if needed.
+        /// Mixes down and resamples the processor to be compatible with <see cref="AudioConstants.SupportedFormat"/> if needed.
         /// </summary>
         /// <param name="isOwned">Whether to dispose this processor when the newly created <see cref="ProcessorChain"/> is disposed.</param>
         /// <returns>The processor itself if the format is already compatible, otherwise, a player-compatible <see cref="ProcessorChain"/>.</returns>
         public IAudioProcessor ToPlayerCompatible(bool isOwned = true)
-            => processor.WaveFormat.Matches(AudioPlayer.SampleRate, AudioPlayer.Channels)
+            => processor.WaveFormat.Matches(AudioConstants.SampleRate, AudioConstants.Channels)
                 ? processor
                 : processor.ToChain(isOwned).ToPlayerCompatible();
 

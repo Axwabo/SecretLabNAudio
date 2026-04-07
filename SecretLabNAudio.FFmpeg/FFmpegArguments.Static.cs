@@ -30,8 +30,8 @@ public readonly partial record struct FFmpegArguments
     /// <remarks>This does not include an input.</remarks>
     public static FFmpegArguments PlayerCompatibleStdout { get; } = new()
     {
-        SampleRate = AudioPlayer.SampleRate,
-        Channels = AudioPlayer.Channels,
+        SampleRate = AudioConstants.SampleRate,
+        Channels = AudioConstants.Channels,
         MuxerFormat = Float32Format,
         Output = StandardPipe
     };
@@ -64,10 +64,10 @@ public readonly partial record struct FFmpegArguments
     /// Creates an IEEEFloat <see cref="WaveFormat"/> based on the arguments' <see cref="SampleRate"/> and <see cref="Channels"/>.
     /// </summary>
     /// <param name="arguments">The arguments to convert.</param>
-    /// <returns><see cref="AudioPlayer.SupportedFormat"/> if the arguments are player-compatible, otherwise, a new <see cref="WaveFormat"/>.</returns>
+    /// <returns><see cref="AudioConstants.SupportedFormat"/> if the arguments are player-compatible, otherwise, a new <see cref="WaveFormat"/>.</returns>
     public static implicit operator WaveFormat(FFmpegArguments arguments)
-        => arguments is {SampleRate: AudioPlayer.SampleRate, Channels: AudioPlayer.Channels}
-            ? AudioPlayer.SupportedFormat
+        => arguments is {SampleRate: AudioConstants.SampleRate, Channels: AudioConstants.Channels}
+            ? AudioConstants.SupportedFormat
             : WaveFormat.CreateIeeeFloatWaveFormat(arguments.SampleRate, arguments.Channels);
 
     /// <summary>

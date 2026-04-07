@@ -6,25 +6,25 @@ public sealed partial class SynchronousFFmpegAudioProcessor
 {
 
     /// <summary>
-    /// Creates a <see cref="AudioPlayer.SupportedFormat">player-compatible</see> <see cref="SynchronousFFmpegAudioProcessor"/>.
+    /// Creates a <see cref="AudioConstants.SupportedFormat">player-compatible</see> <see cref="SynchronousFFmpegAudioProcessor"/>.
     /// </summary>
     /// <param name="input">The input source (e.g. file path, URL).</param>
     /// <returns>A new <see cref="SynchronousFFmpegAudioProcessor"/>.</returns>
     /// <include file='../XmlDocs/Args.xml' path='doc/InArg/exception'/>
     public static SynchronousFFmpegAudioProcessor? CreatePlayerCompatible(string input)
         => FFmpegSL.PlayerCompatibleToStdout(input) is { } ffmpeg
-            ? new SynchronousFFmpegAudioProcessor(ffmpeg, AudioPlayer.SupportedFormat)
+            ? new SynchronousFFmpegAudioProcessor(ffmpeg, AudioConstants.SupportedFormat)
             : null;
 
     /// <summary>
-    /// Creates a <see cref="AudioPlayer.SupportedFormat">player-compatible</see> <see cref="SynchronousFFmpegAudioProcessor"/>.
+    /// Creates a <see cref="AudioConstants.SupportedFormat">player-compatible</see> <see cref="SynchronousFFmpegAudioProcessor"/>.
     /// </summary>
     /// <param name="arguments">The arguments to pass to FFmpeg.</param>
     /// <returns>A new <see cref="SynchronousFFmpegAudioProcessor"/>.</returns>
     /// <include file='../XmlDocs/Args.xml' path='doc/In/exception'/>
     public static SynchronousFFmpegAudioProcessor? CreatePlayerCompatible(FFmpegArguments arguments)
         => FFmpegSL.Start(arguments.ForPlayerCompatibleFloatPiping()) is { } ffmpeg
-            ? new SynchronousFFmpegAudioProcessor(ffmpeg, AudioPlayer.SupportedFormat)
+            ? new SynchronousFFmpegAudioProcessor(ffmpeg, AudioConstants.SupportedFormat)
             : null;
 
     /// <summary>

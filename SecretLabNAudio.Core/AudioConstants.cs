@@ -31,7 +31,7 @@ public static class AudioConstants
     /// <include file='XmlDocs/Providers.xml' path='doc/Format/exception'/>
     public static void ThrowIfIncompatible(ISampleProvider? provider)
     {
-        if (provider is {WaveFormat: not {SampleRate: AudioPlayer.SampleRate, Channels: AudioPlayer.Channels, Encoding: WaveFormatEncoding.IeeeFloat}})
+        if (provider is {WaveFormat: not {SampleRate: SampleRate, Channels: Channels, Encoding: WaveFormatEncoding.IeeeFloat}})
             throw new ArgumentException($"Expected a mono provider with a sample rate of 48000Hz and IEEEFloat encoding, got format {provider.WaveFormat}");
     }
 

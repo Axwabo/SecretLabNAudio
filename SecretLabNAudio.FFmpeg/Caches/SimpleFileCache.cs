@@ -14,8 +14,8 @@ public sealed class SimpleFileCache : AudioCacheBase<string, int>
     /// </summary>
     public static readonly FFmpegArguments ArgumentsTemplate = new()
     {
-        SampleRate = AudioPlayer.SampleRate,
-        Channels = AudioPlayer.Channels,
+        SampleRate = AudioConstants.SampleRate,
+        Channels = AudioConstants.Channels,
         OutputOptions = "-y -vn"
     };
 

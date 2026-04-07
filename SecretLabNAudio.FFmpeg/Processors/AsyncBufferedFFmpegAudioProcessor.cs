@@ -9,7 +9,7 @@ public sealed class AsyncBufferedFFmpegAudioProcessor : AsyncFFmpegProcessorBase
 {
 
     /// <summary>
-    /// Creates a <see cref="AudioPlayer.SupportedFormat">player-compatible</see> <see cref="AsyncBufferedFFmpegAudioProcessor"/> with the given input.
+    /// Creates a <see cref="AudioConstants.SupportedFormat">player-compatible</see> <see cref="AsyncBufferedFFmpegAudioProcessor"/> with the given input.
     /// </summary>
     /// <param name="input">The input source (e.g. file path, URL).</param>
     /// <param name="capacity">The capacity of the buffer in seconds.</param>
@@ -17,10 +17,10 @@ public sealed class AsyncBufferedFFmpegAudioProcessor : AsyncFFmpegProcessorBase
     /// <include file='../XmlDocs/Args.xml' path='doc/InArg/exception'/>
     /// <include file='../XmlDocs/Buffered.xml' path='doc/Capacity/remarks'/>
     public static AsyncBufferedFFmpegAudioProcessor CreatePlayerCompatible(string input, double capacity = DefaultCapacity)
-        => new(input, capacity, AudioPlayer.SupportedFormat);
+        => new(input, capacity, AudioConstants.SupportedFormat);
 
     /// <summary>
-    /// Creates a <see cref="AudioPlayer.SupportedFormat">player-compatible</see> <see cref="AsyncBufferedFFmpegAudioProcessor"/> with the given arguments.
+    /// Creates a <see cref="AudioConstants.SupportedFormat">player-compatible</see> <see cref="AsyncBufferedFFmpegAudioProcessor"/> with the given arguments.
     /// </summary>
     /// <param name="arguments">The arguments to pass to FFmpeg.</param>
     /// <param name="capacity">The capacity of the buffer in seconds.</param>

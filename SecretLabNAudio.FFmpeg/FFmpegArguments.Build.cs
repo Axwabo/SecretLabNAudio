@@ -6,13 +6,13 @@ public readonly partial record struct FFmpegArguments
 {
 
     /// <summary>
-    /// Returns a copy of this instance with <see cref="SampleRate"/> = <see cref="AudioPlayer.SampleRate"/> and <see cref="Channels"/> = <see cref="AudioPlayer.Channels"/>.
+    /// Returns a copy of this instance with <see cref="SampleRate"/> = <see cref="AudioConstants.SampleRate"/> and <see cref="Channels"/> = <see cref="AudioConstants.Channels"/>.
     /// </summary>
-    /// <returns>A <see cref="AudioPlayer.SupportedFormat">player-compatible</see> copy with other properties preserved.</returns>
+    /// <returns>A <see cref="AudioConstants.SupportedFormat">player-compatible</see> copy with other properties preserved.</returns>
     public FFmpegArguments ToPlayerCompatible() => this with
     {
-        SampleRate = AudioPlayer.SampleRate,
-        Channels = AudioPlayer.Channels
+        SampleRate = AudioConstants.SampleRate,
+        Channels = AudioConstants.Channels
     };
 
     /// <summary>
@@ -32,10 +32,10 @@ public readonly partial record struct FFmpegArguments
     /// This method is a combination of <see cref="ToPlayerCompatible"/> and <see cref="ForFloatPiping"/>.
     /// </summary>
     /// <returns>
-    /// A 32-bit float stdout-compatible and <see cref="AudioPlayer.SupportedFormat">player-compatible</see> instance
+    /// A 32-bit float stdout-compatible and <see cref="AudioConstants.SupportedFormat">player-compatible</see> instance
     /// with <see cref="InputOptions"/>, <see cref="Input"/> and <see cref="OutputOptions"/> preserved.
     /// </returns>
-    public FFmpegArguments ForPlayerCompatibleFloatPiping() => new(false, InputOptions, Input, AudioPlayer.SampleRate, AudioPlayer.Channels, OutputOptions, Float32Format, StandardPipe);
+    public FFmpegArguments ForPlayerCompatibleFloatPiping() => new(false, InputOptions, Input, AudioConstants.SampleRate, AudioConstants.Channels, OutputOptions, Float32Format, StandardPipe);
 
     /// <summary>
     /// Returns a copy of this instance with <see cref="Input"/> = <see cref="StandardPipe"/>.

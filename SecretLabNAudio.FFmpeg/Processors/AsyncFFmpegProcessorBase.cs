@@ -17,7 +17,7 @@ public abstract class AsyncFFmpegProcessorBase : IAudioProcessor, IFFmpegWrapper
 
     private const TaskCreationOptions Options = TaskCreationOptions.DenyChildAttach | TaskCreationOptions.LongRunning;
 
-    private const int BufferSize = AudioPlayer.SamplesPerPacket * sizeof(float);
+    private const int BufferSize = AudioConstants.SamplesPerPacket * sizeof(float);
 
     /// <summary>
     /// The minimum capacity of the underlying buffer, measured in samples.
