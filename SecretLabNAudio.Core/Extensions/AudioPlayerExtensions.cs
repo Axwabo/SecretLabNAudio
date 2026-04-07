@@ -164,9 +164,10 @@ public static partial class AudioPlayerExtensions
         }
 
         /// <summary>
-        /// Destroys the <see cref="AudioPlayer"/> when no samples are read.
+        /// Destroys the <see cref="AudioPlayer"/> when the provider ends.
         /// </summary>
         /// <returns>The player itself.</returns>
+        /// <seealso cref="AudioPlayer.Ended"/>
         public AudioPlayer DestroyOnEnd()
         {
             player.Ended += player.Destroy;
@@ -174,9 +175,10 @@ public static partial class AudioPlayerExtensions
         }
 
         /// <summary>
-        /// Returns the <see cref="AudioPlayer"/> to the pool when no samples are read.
+        /// Returns the <see cref="AudioPlayer"/> to the pool when the provider ends.
         /// </summary>
         /// <returns>The player itself.</returns>
+        /// <seealso cref="AudioPlayer.Ended"/>
         public AudioPlayer PoolOnEnd()
         {
             player.Ended += () => AudioPlayerPool.Return(player);
