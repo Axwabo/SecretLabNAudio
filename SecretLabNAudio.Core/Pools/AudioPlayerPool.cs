@@ -13,7 +13,7 @@ public static class AudioPlayerPool
     public static byte NextAvailableId => SpeakerToyPool.NextAvailableId;
 
     /// <summary>
-    /// Rents an <see cref="AudioPlayer"/> from the pool or creates a new one if no <see cref="SpeakerToy"/> is pooled.
+    /// Rents an <see cref="AudioPlayer"/> from the pool, or creates a new one if no <see cref="SpeakerToy"/> is pooled.
     /// </summary>
     /// <param name="id">The controller ID to assign to the player.</param>
     /// <param name="settings">The settings to apply to the player.</param>
@@ -34,12 +34,69 @@ public static class AudioPlayerPool
     }
 
     /// <summary>
-    /// Rents an <see cref="AudioPlayer"/> with the next available ID from the pool or creates a new one if no <see cref="SpeakerToy"/> is pooled.
+    /// Rents an <see cref="AudioPlayer"/> with the next available ID from the pool, or creates a new one if no <see cref="SpeakerToy"/> is pooled.
     /// </summary>
-    /// <inheritdoc cref="Rent(byte,SpeakerSettings,Transform?,Vector3,bool)"/>
+    /// <param name="settings">The settings to apply to the player.</param>
+    /// <param name="parent">The <see cref="Transform"/> to parent the player to. <see langword="null"/> if it should not be parented.</param>
+    /// <param name="position">The position of the speaker in local space (world space if no parent is specified).</param>
+    /// <param name="spawn">Whether to invoke <see cref="NetworkServer.Spawn(GameObject,NetworkConnection)"/>.</param>
+    /// <returns>A new or reused <see cref="AudioPlayer"/>.</returns>
+    /// <exception cref="OverflowException">Thrown when no IDs are available.</exception>
     /// <seealso cref="NextAvailableId"/>
     public static AudioPlayer Rent(SpeakerSettings settings, Transform? parent = null, Vector3 position = default, bool spawn = true)
         => Rent(NextAvailableId, settings, parent, position, spawn);
+
+    /// <summary>
+    /// Rents an <see cref="AudioPlayer"/> with the next available ID from the pool, or creates a new one if no <see cref="SpeakerToy"/> is pooled.
+    /// Applies <see cref="SpeakerSettings.Default"/>.
+    /// </summary>
+    /// <param name="id">The controller ID to assign to the player.</param>
+    /// <param name="position">The position of the speaker in local space (world space if no parent is specified).</param>
+    /// <param name="parent">The <see cref="Transform"/> to parent the player to. <see langword="null"/> if it should not be parented.</param>
+    /// <param name="spawn">Whether to invoke <see cref="NetworkServer.Spawn(GameObject,NetworkConnection)"/>.</param>
+    /// <returns>A new or reused <see cref="AudioPlayer"/>.</returns>
+    /// <seealso cref="NextAvailableId"/>
+    public static AudioPlayer RentDefault(byte id, Vector3 position = default, Transform? parent = null, bool spawn = true)
+        => Rent(id, SpeakerSettings.Default, parent, position, spawn);
+
+    /// <summary>
+    /// Rents an <see cref="AudioPlayer"/> with the next available ID from the pool, or creates a new one if no <see cref="SpeakerToy"/> is pooled.
+    /// Applies <see cref="SpeakerSettings.Default"/>.
+    /// </summary>
+    /// <param name="position">The position of the speaker in local space (world space if no parent is specified).</param>
+    /// <param name="parent">The <see cref="Transform"/> to parent the player to. <see langword="null"/> if it should not be parented.</param>
+    /// <param name="spawn">Whether to invoke <see cref="NetworkServer.Spawn(GameObject,NetworkConnection)"/>.</param>
+    /// <returns>A new or reused <see cref="AudioPlayer"/>.</returns>
+    /// <exception cref="OverflowException">Thrown when no IDs are available.</exception>
+    /// <seealso cref="NextAvailableId"/>
+    public static AudioPlayer RentDefault(Vector3 position = default, Transform? parent = null, bool spawn = true)
+        => Rent(NextAvailableId, SpeakerSettings.Default, parent, position, spawn);
+
+    /// <summary>
+    /// Rents an <see cref="AudioPlayer"/> with the next available ID from the pool, or creates a new one if no <see cref="SpeakerToy"/> is pooled.
+    /// Applies <see cref="SpeakerSettings.GloballyAudible"/>.
+    /// </summary>
+    /// <param name="id">The controller ID to assign to the player.</param>
+    /// <param name="position">The position of the speaker in local space (world space if no parent is specified).</param>
+    /// <param name="parent">The <see cref="Transform"/> to parent the player to. <see langword="null"/> if it should not be parented.</param>
+    /// <param name="spawn">Whether to invoke <see cref="NetworkServer.Spawn(GameObject,NetworkConnection)"/>.</param>
+    /// <returns>A new or reused <see cref="AudioPlayer"/>.</returns>
+    /// <seealso cref="NextAvailableId"/>
+    public static AudioPlayer RentGloballyAudible(byte id, Vector3 position = default, Transform? parent = null, bool spawn = true)
+        => Rent(id, SpeakerSettings.GloballyAudible, parent, position, spawn);
+
+    /// <summary>
+    /// Rents an <see cref="AudioPlayer"/> with the next available ID from the pool, or creates a new one if no <see cref="SpeakerToy"/> is pooled.
+    /// Applies <see cref="SpeakerSettings.GloballyAudible"/>.
+    /// </summary>
+    /// <param name="position">The position of the speaker in local space (world space if no parent is specified).</param>
+    /// <param name="parent">The <see cref="Transform"/> to parent the player to. <see langword="null"/> if it should not be parented.</param>
+    /// <param name="spawn">Whether to invoke <see cref="NetworkServer.Spawn(GameObject,NetworkConnection)"/>.</param>
+    /// <returns>A new or reused <see cref="AudioPlayer"/>.</returns>
+    /// <exception cref="OverflowException">Thrown when no IDs are available.</exception>
+    /// <seealso cref="NextAvailableId"/>
+    public static AudioPlayer RentGloballyAudible(Vector3 position = default, Transform? parent = null, bool spawn = true)
+        => Rent(NextAvailableId, SpeakerSettings.GloballyAudible, parent, position, spawn);
 
     /// <summary>Returns an <see cref="AudioPlayer"/> to the pool.</summary>
     /// <param name="player">The player to return.</param>
