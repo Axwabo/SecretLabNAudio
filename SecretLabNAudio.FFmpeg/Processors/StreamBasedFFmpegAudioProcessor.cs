@@ -22,12 +22,12 @@ public sealed partial class StreamBasedFFmpegAudioProcessor : AsyncFFmpegProcess
         Stream? standardInput = null;
         try
         {
-            stream = await resolver(Token);
+            stream = await resolver(Token).ConfigureAwait(false);
             BufferingState = AsyncBufferingState.StartingFFmpeg;
             if (!TryStartFFmpeg(arguments, out var ffmpeg))
                 return;
             Offload(() => BufferLoop(ffmpeg));
-            await stream.CopyToAsync(standardInput = ffmpeg.Stdin.BaseStream, Token);
+            await stream.CopyToAsync(standardInput = ffmpeg.Stdin.BaseStream, Token).ConfigureAwait(false);
         }
         catch (Exception e) when (!Token.IsCancellationRequested)
         {
@@ -36,7 +36,7 @@ public sealed partial class StreamBasedFFmpegAudioProcessor : AsyncFFmpegProcess
         finally
         {
             if (isOwned && stream != null)
-                await stream.DisposeAsync();
+                await stream.DisposeAsync().ConfigureAwait(false);
             standardInput?.Close();
         }
     }
