@@ -67,6 +67,8 @@ public static class SpeakerToyGroupExtensions
         /// <exception cref="ObjectDisposedException">Thrown if the group has already been destroyed.</exception>
         public SpeakerToyGroup AddFromPool(params IEnumerable<Vector3> positions)
         {
+            if (group.IsDestroyed)
+                throw new ObjectDisposedException(nameof(SpeakerToyGroup));
             foreach (var position in positions)
                 group.AddFromPool(position);
             return group;
@@ -81,6 +83,8 @@ public static class SpeakerToyGroupExtensions
         /// <exception cref="ObjectDisposedException">Thrown if the group has already been destroyed.</exception>
         public SpeakerToyGroup AddFromPool(SpeakerSettings settings, params IEnumerable<Vector3> positions)
         {
+            if (group.IsDestroyed)
+                throw new ObjectDisposedException(nameof(SpeakerToyGroup));
             foreach (var position in positions)
                 group.AddFromPool(position, settings);
             return group;
@@ -94,6 +98,8 @@ public static class SpeakerToyGroupExtensions
         /// <seealso cref="PersonalizationExtensions.AddPersonalization(SpeakerToy)"/>
         public IEnumerable<SpeakerPersonalization> AddPersonalizationToAll()
         {
+            if (group.IsDestroyed)
+                throw new ObjectDisposedException(nameof(SpeakerToyGroup));
             yield return group.Controller.AddPersonalization();
             foreach (var child in group.Children)
                 yield return child.AddPersonalization();
