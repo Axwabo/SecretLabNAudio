@@ -16,6 +16,12 @@ public static partial class SpeakerToyExtensions
             return false;
         }
 
+        internal void DestroyGroupTracker()
+        {
+            if (speaker.TryGetGroup(out var group))
+                Object.Destroy(group);
+        }
+
         /// <summary>
         /// Gets the current <see cref="SpeakerToyGroup"/> this speaker is part of, either as the controller, or as a child.
         /// </summary>

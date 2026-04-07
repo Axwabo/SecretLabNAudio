@@ -68,11 +68,10 @@ public sealed class SpeakerToyGroup
         if (IsDestroyed)
             throw new ObjectDisposedException(nameof(SpeakerToyGroup));
         if (Controller == speaker)
-            throw new InvalidOperationException("Cannot remove the controller of a group. Call Destroy instead.");
+            throw new InvalidOperationException("Cannot remove the controller of a group. Call Ungroup or Destroy instead.");
         if (!_children.Remove(speaker))
             return this;
-        if (speaker.TryGetGroup(out var group))
-            Object.Destroy(group);
+        speaker.DestroyGroupTracker();
         return this;
     }
 
@@ -81,7 +80,12 @@ public sealed class SpeakerToyGroup
     /// </summary>
     public void Ungroup()
     {
+        if (IsDestroyed)
+            return;
         IsDestroyed = true;
+        _controller.DestroyGroupTracker();
+        foreach (var speaker in _children)
+            speaker.DestroyGroupTracker();
         _children.Clear();
     }
 
