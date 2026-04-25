@@ -1,5 +1,7 @@
 <Project>
+
     <Import Project="ReferencePath.props.user" Condition="Exists('ReferencePath.props.user')" />
+
     <PropertyGroup>
         <ReferencePath Condition="$(ReferencePath) == ''">$(SL_REFERENCES)</ReferencePath>
         <AssemblySearchPaths>$(ReferencePath);$(AssemblySearchPaths)</AssemblySearchPaths>
@@ -19,4 +21,5 @@
         <WriteLinesToFile File="$(Props)" Lines="$(Template)" Condition="!Exists($(Props))" />
         <Error Text="The ReferencePath property is not specified! Make sure to set the property in the ReferencePath.props.user file." />
     </Target>
+
 </Project>

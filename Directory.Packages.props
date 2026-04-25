@@ -1,4 +1,5 @@
 <Project>
+
     <PropertyGroup>
         <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
     </PropertyGroup>
@@ -16,4 +17,5 @@
         <PackageVersion Include="NAudio.Vorbis" Version="1.5.0" />
         <PackageVersion Include="System.ValueTuple" Version="4.5.0" />
     </ItemGroup>
+
 </Project>
