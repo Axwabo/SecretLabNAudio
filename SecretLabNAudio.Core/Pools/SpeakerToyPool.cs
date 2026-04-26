@@ -1,4 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using SecretLabNAudio.Core.Extensions;
 using VoiceChat.Playbacks;
 
 namespace SecretLabNAudio.Core.Pools;
@@ -9,7 +9,7 @@ public static class SpeakerToyPool
 
     private static readonly bool[] Occupied = new bool[byte.MaxValue + 1];
 
-    /// <summary>Attempts to get first controller ID not used by any active speakers.</summary>
+    /// <summary>Attempts to get first controller ID not used by any enabled speakers.</summary>
     /// <param name="result">The first free controller ID. 0 if no ID was found.</param>
     /// <returns>Whether there was an available ID.</returns>
     /// <remarks>
@@ -33,7 +33,7 @@ public static class SpeakerToyPool
         return false;
     }
 
-    /// <summary>Gets the first controller ID not used by any active speakers.</summary>
+    /// <summary>Gets the first controller ID not used by any enabled speakers.</summary>
     /// <exception cref="OverflowException">Thrown when no IDs are available.</exception>
     public static byte NextAvailableId => TryGetNextAvailableId(out var id) ? id : throw new OverflowException("No available IDs found");
 
@@ -43,15 +43,13 @@ public static class SpeakerToyPool
     /// <param name="position">The position of the toy in local space (world space if no parent is specified).</param>
     /// <param name="spawn">Whether to invoke <see cref="NetworkServer.Spawn(GameObject,NetworkConnection)"/>.</param>
     /// <returns>Whether a <see cref="SpeakerToy"/> was found in the pool.</returns>
-    /// <remarks>
-    /// The <see cref="SpeakerToy.ControllerId"/> of the returned speaker may already be occupied.
-    /// Assign an ID yourself by setting it or calling <see cref="SpeakerToyExtensions.WithId"/>.
-    /// Speaker settings may also vary.
-    /// </remarks>
+    /// <include file="../XmlDocs/Pools.xml" path="doc/Speaker/TryGet/remarks"/>
     public static bool TryGetFromPool([NotNullWhen(true)] out SpeakerToy? toy, Transform? parent = null, Vector3 position = default, bool spawn = true)
     {
         foreach (var existing in PooledSpeaker.Instances)
         {
+            if (existing.destroyCancellationToken.IsCancellationRequested)
+                continue;
             var o = existing.gameObject;
             o.SetActive(true);
             toy = existing.Speaker;
@@ -67,22 +65,20 @@ public static class SpeakerToyPool
         return false;
     }
 
-    /// <summary>
-    /// Rents a <see cref="SpeakerToy"/> from the pool or creates a new one if no <see cref="SpeakerToy"/> is pooled.
-    /// </summary>
-    /// <inheritdoc cref="TryGetFromPool" path="remarks"/>
+    /// <include file="../XmlDocs/Pools.xml" path="doc/Speaker/Rent/summary"/>
+    /// <include file="../XmlDocs/Pools.xml" path="doc/Speaker/TryGet/remarks"/>
     /// <returns>A new or reused <see cref="SpeakerToy"/>.</returns>
     public static SpeakerToy Rent(Transform? parent = null, Vector3 position = default, bool spawn = true)
         => TryGetFromPool(out var existing, parent, position, spawn)
             ? existing
             : SpeakerToy.Create(position, parent, spawn);
 
-    /// <summary><inheritdoc cref="Rent(Transform?,Vector3,bool)" path="summary"/></summary>
+    /// <include file="../XmlDocs/Pools.xml" path="doc/Speaker/Rent/summary"/>
     /// <param name="id">The controller ID to assign to the toy.</param>
     /// <param name="parent">The <see cref="Transform"/> to parent the toy to. <see langword="null"/> if it should not be parented.</param>
     /// <param name="position">The position of the toy in local space (world space if no parent is specified).</param>
     /// <param name="spawn">Whether to invoke <see cref="NetworkServer.Spawn(GameObject,NetworkConnection)"/>.</param>
-    /// <returns><inheritdoc cref="Rent(Transform?,Vector3,bool)" path="returns"/></returns>
+    /// <returns>A new or reused <see cref="SpeakerToy"/>.</returns>
     public static SpeakerToy Rent(byte id, Transform? parent = null, Vector3 position = default, bool spawn = true)
     {
         if (!TryGetFromPool(out var toy, parent, position, false))
@@ -93,13 +89,13 @@ public static class SpeakerToyPool
         return toy;
     }
 
-    /// <summary><inheritdoc cref="Rent(Transform?,Vector3,bool)" path="summary"/></summary>
+    /// <include file="../XmlDocs/Pools.xml" path="doc/Speaker/Rent/summary"/>
     /// <param name="id">The controller ID to assign to the toy.</param>
     /// <param name="settings">Settings to apply to the toy.</param>
     /// <param name="parent">The <see cref="Transform"/> to parent the toy to. <see langword="null"/> if it should not be parented.</param>
     /// <param name="position">The position of the toy in local space (world space if no parent is specified).</param>
     /// <param name="spawn">Whether to invoke <see cref="NetworkServer.Spawn(GameObject,NetworkConnection)"/>.</param>
-    /// <returns><inheritdoc cref="Rent(Transform?,Vector3,bool)" path="returns"/></returns>
+    /// <returns>A new or reused <see cref="SpeakerToy"/>.</returns>
     public static SpeakerToy Rent(byte id, SpeakerSettings settings, Transform? parent = null, Vector3 position = default, bool spawn = true)
     {
         if (!TryGetFromPool(out var toy, parent, position, false))
@@ -115,14 +111,20 @@ public static class SpeakerToyPool
     public static void Return(SpeakerToy speaker)
     {
         speaker.Stop();
-        if (speaker.IsDestroyed)
+        if (speaker.IsDestroyed || speaker.Base.destroyCancellationToken.IsCancellationRequested)
             return;
         var o = speaker.GameObject;
         o.SetActive(false);
         if (o.TryGetComponent(out PooledSpeaker _))
             return;
+        o.transform.parent = null;
         o.AddComponent<PooledSpeaker>();
         NetworkServer.UnSpawn(o);
     }
+
+    /// <summary>Checks whether the given speaker is currently pooled.</summary>
+    /// <param name="speaker">The speaker to check.</param>
+    /// <returns>Whether the speaker is in the pool.</returns>
+    public static bool IsPooled(SpeakerToy speaker) => !speaker.IsDestroyed && speaker.GameObject.TryGetComponent(out PooledSpeaker pooled) && !pooled.destroyCancellationToken.IsCancellationRequested;
 
 }

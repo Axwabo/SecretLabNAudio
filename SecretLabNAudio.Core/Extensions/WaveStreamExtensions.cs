@@ -1,5 +1,5 @@
 ﻿using System.Buffers;
-using System.Collections.Generic;
+using SecretLabNAudio.Core.Extensions.Providers;
 using SecretLabNAudio.Core.Providers;
 
 namespace SecretLabNAudio.Core.Extensions;
@@ -10,52 +10,50 @@ public static class WaveStreamExtensions
 
     private const int BufferLength = 4800;
 
-    /// <summary>Wraps the stream in a <see cref="LoopingWaveProvider"/>.</summary>
-    /// <param name="stream">The <see cref="WaveStream"/> to wrap.</param>
-    /// <returns>The <see cref="LoopingWaveProvider"/> wrapping the stream.</returns>
-    public static LoopingWaveProvider Loop(this WaveStream stream) => new(stream);
-
-    /// <summary>
-    /// Fully reads the stream in an <see cref="AudioPlayer"/>-compatible format and creates a buffer for the read samples.
-    /// </summary>
     /// <param name="stream">The <see cref="WaveStream"/> to read samples from.</param>
-    /// <param name="seekToBeginning">Whether to rewind the stream to the start before reading samples.</param>
-    /// <returns>A <see cref="RawSourceSampleProvider"/> containing the read samples.</returns>
-    /// <seealso cref="WaveProviderExtensions.ToPlayerCompatible"/>
-    public static RawSourceSampleProvider ReadPlayerCompatibleSamples(this WaveStream stream, bool seekToBeginning = true)
-        => stream.ReadSamples(WaveProviderExtensions.ToPlayerCompatible, seekToBeginning);
-
-    /// <summary>
-    /// Fully reads the stream and creates a buffer for the read samples.
-    /// </summary>
-    /// <param name="stream">The <see cref="WaveStream"/> to read samples from.</param>
-    /// <param name="seekToBeginning">Whether to rewind the stream to the start before reading samples.</param>
-    /// <returns>A <see cref="RawSourceSampleProvider"/> containing the read samples.</returns>
-    public static RawSourceSampleProvider ReadSamples(this WaveStream stream, bool seekToBeginning = true)
-        => stream.ReadSamples(WaveExtensionMethods.ToSampleProvider, seekToBeginning);
-
-    /// <summary>
-    /// Fully reads the stream and creates a buffer for the read samples using a custom <see cref="WaveStream"/> to <see cref="ISampleProvider"/> conversion function.
-    /// </summary>
-    /// <param name="stream">The <see cref="WaveStream"/> to read samples from.</param>
-    /// <param name="toProvider">The function to convert the <see cref="WaveStream"/> to an <see cref="ISampleProvider"/>.</param>
-    /// <param name="seekToBeginning">Whether to rewind the stream to the start before reading samples.</param>
-    /// <returns>A <see cref="RawSourceSampleProvider"/> containing the read samples.</returns>
-    public static RawSourceSampleProvider ReadSamples(this WaveStream stream, Func<WaveStream, ISampleProvider> toProvider, bool seekToBeginning = true)
+    extension(WaveStream stream)
     {
-        if (seekToBeginning && stream.CanSeek)
-            stream.Position = 0;
-        var provider = toProvider(stream);
-        var sampleCount = provider.WaveFormat.SampleCount(stream.TotalTime.TotalSeconds);
-        var align = stream.BlockAlign * (stream.WaveFormat.BitsPerSample / 8);
-        sampleCount += sampleCount % align;
-        var array = new float[sampleCount];
-        var total = 0;
-        int read;
-        while ((read = provider.Read(array, total, Math.Min(BufferLength, array.Length - total))) != 0)
-            total += read;
-        ReadRemaining(provider, ref array, ref total);
-        return new RawSourceSampleProvider(array, total, provider.WaveFormat);
+
+        /// <summary>
+        /// Fully reads the stream in an <see cref="AudioPlayer"/>-compatible format and creates a buffer for the read samples.
+        /// </summary>
+        /// <param name="seekToBeginning">Whether to rewind the stream to the start before reading samples.</param>
+        /// <returns>A <see cref="RawSourceSampleProvider"/> containing the read samples.</returns>
+        /// <seealso cref="NonProcessorExtensions.ToPlayerCompatible(IWaveProvider)"/>
+        public RawSourceSampleProvider ReadPlayerCompatibleSamples(bool seekToBeginning = true)
+            => stream.ReadSamples(NonProcessorExtensions.ToPlayerCompatible, seekToBeginning);
+
+        /// <summary>
+        /// Fully reads the stream and creates a buffer for the read samples.
+        /// </summary>
+        /// <param name="seekToBeginning">Whether to rewind the stream to the start before reading samples.</param>
+        /// <returns>A <see cref="RawSourceSampleProvider"/> containing the read samples.</returns>
+        public RawSourceSampleProvider ReadSamples(bool seekToBeginning = true)
+            => stream.ReadSamples(WaveExtensionMethods.ToSampleProvider, seekToBeginning);
+
+        /// <summary>
+        /// Fully reads the stream and creates a buffer for the read samples using a custom <see cref="WaveStream"/> to <see cref="ISampleProvider"/> conversion function.
+        /// </summary>
+        /// <param name="toProvider">The function to convert the <see cref="WaveStream"/> to an <see cref="ISampleProvider"/>.</param>
+        /// <param name="seekToBeginning">Whether to rewind the stream to the start before reading samples.</param>
+        /// <returns>A <see cref="RawSourceSampleProvider"/> containing the read samples.</returns>
+        public RawSourceSampleProvider ReadSamples(Func<WaveStream, ISampleProvider> toProvider, bool seekToBeginning = true)
+        {
+            if (seekToBeginning && stream.CanSeek)
+                stream.Position = 0;
+            var provider = toProvider(stream);
+            var sampleCount = provider.WaveFormat.SampleCount(stream.TotalTime.TotalSeconds);
+            var align = stream.BlockAlign * (stream.WaveFormat.BitsPerSample / 8);
+            sampleCount += sampleCount % align;
+            var array = new float[sampleCount];
+            var total = 0;
+            int read;
+            while ((read = provider.Read(array, total, Math.Min(BufferLength, array.Length - total))) != 0)
+                total += read;
+            ReadRemaining(provider, ref array, ref total);
+            return new RawSourceSampleProvider(array, total, provider.WaveFormat);
+        }
+
     }
 
     private static void ReadRemaining(ISampleProvider provider, ref float[] array, ref int total)
@@ -88,6 +86,11 @@ public static class WaveStreamExtensions
             throw;
         }
 
+        ReadBuffered(provider, ref array, ref total, firstBuffer, totalRead);
+    }
+
+    private static void ReadBuffered(ISampleProvider provider, ref float[] array, ref int total, float[] firstBuffer, int totalRead)
+    {
         var buffers = new List<float[]> {firstBuffer};
         try
         {

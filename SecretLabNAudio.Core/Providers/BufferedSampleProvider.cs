@@ -1,4 +1,4 @@
-﻿using VoiceChat.Networking;
+﻿using SecretLabNAudio.Core.Extensions;
 
 namespace SecretLabNAudio.Core.Providers;
 
@@ -8,7 +8,7 @@ namespace SecretLabNAudio.Core.Providers;
 public sealed class BufferedSampleProvider : ISampleProvider
 {
 
-    private static readonly float[] ReadBuffer = new float[AudioPlayer.SamplesPerPacket];
+    private static readonly float[] ReadBuffer = new float[AudioConstants.SamplesPerPacket];
 
     private readonly ISampleProvider _source;
     private readonly PlaybackBuffer _buffer;
@@ -40,7 +40,7 @@ public sealed class BufferedSampleProvider : ISampleProvider
     {
         while (_buffer.Length < _size)
         {
-            var read = _source.Read(ReadBuffer, 0, AudioPlayer.SamplesPerPacket);
+            var read = _source.Read(ReadBuffer, 0, AudioConstants.SamplesPerPacket);
             if (read == 0)
                 break;
             _buffer.Write(ReadBuffer, read);
@@ -56,7 +56,7 @@ public sealed class BufferedSampleProvider : ISampleProvider
     /// <summary>Clears the buffer.</summary>
     public void Clear() => _buffer.Clear();
 
-    /// <summary>Disposes the underlying playback buffer when this object is finalized, allowing its buffer to be used later.</summary>
+    /// <summary>Disposes the underlying playback buffer when this object is finalized, allowing for its buffer to be used later.</summary>
     ~BufferedSampleProvider() => _buffer.Dispose();
 
 }

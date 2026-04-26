@@ -1,7 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System.IO;
-
-namespace SecretLabNAudio.Core.FileReading;
+﻿namespace SecretLabNAudio.Core.FileReading;
 
 /// <summary>Methods for creating <see cref="WaveStream"/>s and <see cref="ISampleProvider"/>s with the try pattern.</summary>
 /// <remarks>This class does not protect against nonexistent files.</remarks>
@@ -13,23 +10,28 @@ public static class TryCreateAudioReader
             ? create(factory)
             : default;
 
-    private static bool TryGetStream(this AudioReaderFactoryResult result, [NotNullWhen(true)] out WaveStream? stream)
+    extension(AudioReaderFactoryResult result)
     {
-        stream = result.Stream;
-        return stream != null;
-    }
 
-    private static bool StreamAndProvider(this AudioReaderFactoryResult result, [NotNullWhen(true)] out WaveStream? stream, [NotNullWhen(true)] out ISampleProvider? provider)
-    {
-        if (result is ({ } resultStream, { } resultProvider))
+        private bool TryGetStream([NotNullWhen(true)] out WaveStream? stream)
         {
-            (stream, provider) = (resultStream, resultProvider);
-            return true;
+            stream = result.Stream;
+            return stream != null;
         }
 
-        stream = null;
-        provider = null;
-        return false;
+        private bool StreamAndProvider([NotNullWhen(true)] out WaveStream? stream, [NotNullWhen(true)] out ISampleProvider? provider)
+        {
+            if (result is ({ } resultStream, { } resultProvider))
+            {
+                (stream, provider) = (resultStream, resultProvider);
+                return true;
+            }
+
+            stream = null;
+            provider = null;
+            return false;
+        }
+
     }
 
     /// <summary>
@@ -38,6 +40,7 @@ public static class TryCreateAudioReader
     /// <param name="path">The file path to read the audio from.</param>
     /// <param name="stream">The resulting <see cref="WaveStream"/> if successful. <see langword="null"/> if no factory was found for the file type, or if the factory didn't return a <see cref="WaveStream"/>.</param>
     /// <returns>Whether a <see cref="WaveStream"/> was successfully created.</returns>
+    /// <include file="../XmlDocs/Files.xml" path="doc/exception[@name='NotFound']"/>
     /// <remarks>This method doesn't check if the file exists. Call <see cref="File.Exists">File.Exists</see> beforehand.</remarks>
     public static bool Stream(string path, [NotNullWhen(true)] out WaveStream? stream)
     {

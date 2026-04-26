@@ -1,5 +1,4 @@
 using VoiceChat;
-using VoiceChat.Networking;
 
 namespace SecretLabNAudio.Core.SendEngines;
 

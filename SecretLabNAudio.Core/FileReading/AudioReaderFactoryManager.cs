@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-
-namespace SecretLabNAudio.Core.FileReading;
+﻿namespace SecretLabNAudio.Core.FileReading;
 
 /// <summary>Manages <see cref="IAudioReaderFactory">audio reader factories</see>.</summary>
 public static class AudioReaderFactoryManager

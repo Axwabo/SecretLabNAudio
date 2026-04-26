@@ -1,6 +1,4 @@
-﻿using System.IO;
-
-namespace SecretLabNAudio.Core.FileReading;
+﻿namespace SecretLabNAudio.Core.FileReading;
 
 /// <summary>An interface for creating <see cref="WaveStream"/>s, given a file path or a stream.</summary>
 public interface IAudioReaderFactory

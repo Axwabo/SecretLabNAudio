@@ -1,4 +1,4 @@
-﻿using VoiceChat.Networking;
+﻿using SecretLabNAudio.Core.Extensions;
 
 namespace SecretLabNAudio.Core.Providers;
 
@@ -11,10 +11,7 @@ public sealed class PlaybackBufferSampleProvider : ISampleProvider
     /// <summary>The number of samples in the buffer.</summary>
     public int Length => _buffer.Length;
 
-    /// <summary>
-    /// Whether to pad out the read buffer with zeroes if more samples are requested than available.
-    /// If set to true, makes the provider never-ending.
-    /// </summary>
+    /// <include file="../XmlDocs/Providers.xml" path="doc/ReadFully/summary"/>
     public bool ReadFully { get; set; }
 
     /// <summary>Creates a new endless <see cref="PlaybackBufferSampleProvider"/>.</summary>

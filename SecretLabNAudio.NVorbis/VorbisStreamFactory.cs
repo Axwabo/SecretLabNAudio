@@ -1,5 +1,4 @@
-﻿using System.IO;
-using NAudio.Vorbis;
+﻿using NAudio.Vorbis;
 using SecretLabNAudio.Core.FileReading;
 
 namespace SecretLabNAudio.NVorbis;

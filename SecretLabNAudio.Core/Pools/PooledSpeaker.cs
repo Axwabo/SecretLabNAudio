@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using SecretLabNAudio.Core.Extensions;
 
 namespace SecretLabNAudio.Core.Pools;
 

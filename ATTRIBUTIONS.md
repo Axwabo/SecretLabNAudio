@@ -37,3 +37,27 @@ MPEG 1 & 2 Decoder for Layers 1, 2, & 3
 https://github.com/naudio/NLayer
 
 License: MIT
+
+# FFmpeg
+
+> [!NOTE]
+> While SecretLabNAudio does not ship, nor does it link its libraries with FFmpeg,
+> it starts FFmpeg processes to provide utilities.
+> SecretLabNAudio contains an installer to download FFmpeg.
+
+A complete, cross-platform solution to record, convert and stream audio and video.
+
+https://ffmpeg.org/
+
+License: LGPL-2.1
+
+# .NET
+
+> [!NOTE]
+> SecretLabNAudio redristributes the `System.ValueTuple` library.
+
+.NET is a cross-platform runtime for cloud, mobile, desktop, and IoT apps.
+
+https://github.com/dotnet/runtime
+
+License: MIT

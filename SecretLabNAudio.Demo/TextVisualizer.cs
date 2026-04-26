@@ -12,7 +12,7 @@ public sealed class TextVisualizer : IAudioPacketMonitor
     {
         var bars = string.Join("", Enumerable.Range(0, Count).Select(e => $"<size={{{e + Offset}}}em>|</size>"));
         text.TextFormat = $"<mspace=0.2px><line-height=1em>{bars}{Suffix}";
-        text.Arguments.AddRange(Enumerable.Range(0, Count + Offset).Select(_ => "0"));
+        text.Arguments.AddRange(Enumerable.Repeat("0", Count + Offset));
         return new TextVisualizer(text);
     }
 

@@ -1,4 +1,3 @@
-using System.IO;
 using LabApi.Events.Arguments.ServerEvents;
 using LabApi.Features.Enums;
 using RemoteAdmin;
@@ -16,6 +15,12 @@ internal static class CommandHandler
             || ev.Sender is not PlayerCommandSender {ReferenceHub: var hub})
             return;
         ev.IsAllowed = false;
+        if (!DiscJockeyBoard.Instance)
+        {
+            ev.Reply("DJ#Board is not set up!", false);
+            return;
+        }
+
         var player = Player.Dictionary[hub]; // ideally I'd use Player.Get, but I won't reference CommandSystem.Core
         var path = string.Join(" ", ev.Arguments);
         if (!File.Exists(path))
@@ -24,19 +29,13 @@ internal static class CommandHandler
             return;
         }
 
-        if (!TryCreateAudioReader.Stream(path, out var stream))
+        if (!TryCreateAudioProcessor.FromFile(path, out var processor))
         {
             ev.Reply("DJ#Failed to create audio stream!", false);
             return;
         }
 
-        if (!DiscJockeyBoard.Instance)
-        {
-            ev.Reply("DJ#Board is not set up!", false);
-            return;
-        }
-
-        DiscJockeyBoard.Instance.Play(player, stream, Path.GetFileName(path));
+        DiscJockeyBoard.Instance.Play(player, processor, Path.GetFileName(path));
         ev.Reply("DJ#Playing...", true);
     }
 

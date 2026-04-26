@@ -3,38 +3,25 @@
 public partial class AudioPlayer
 {
 
-    /// <summary>The sample rate to transmit.</summary>
-    public const int SampleRate = 48000;
+    /// <inheritdoc cref="AudioConstants.SampleRate"/>
+    public const int SampleRate = AudioConstants.SampleRate;
 
-    /// <summary>The amount of channels to transmit.</summary>
-    public const int Channels = 1;
+    /// <inheritdoc cref="AudioConstants.Channels"/>
+    public const int Channels = AudioConstants.Channels;
 
-    /// <summary>The amount of packets to be sent every second.</summary>
-    public const int PacketsPerSecond = 100;
+    /// <inheritdoc cref="AudioConstants.PacketsPerSecond"/>
+    public const int PacketsPerSecond = AudioConstants.PacketsPerSecond;
 
-    /// <summary>The amount of samples in a packet.</summary>
-    public const int SamplesPerPacket = SampleRate / PacketsPerSecond;
+    /// <inheritdoc cref="AudioConstants.SamplesPerPacket"/>
+    public const int SamplesPerPacket = AudioConstants.SamplesPerPacket;
 
-    /// <summary>The duration of a packet in seconds.</summary>
-    public const float PacketDuration = 1f / PacketsPerSecond;
+    /// <inheritdoc cref="AudioConstants.PacketDuration"/>
+    public const float PacketDuration = AudioConstants.PacketDuration;
 
-    /// <summary>The <see cref="WaveFormat"/> supported by <see cref="AudioPlayer"/> instances.</summary>
-    public static WaveFormat SupportedFormat { get; } = WaveFormat.CreateIeeeFloatWaveFormat(SampleRate, Channels);
+    /// <inheritdoc cref="AudioConstants.SupportedFormat"/>
+    public static WaveFormat SupportedFormat => AudioConstants.SupportedFormat;
 
-    /// <summary>Checks if the given provider is not compatible with <see cref="AudioPlayer"/>s.</summary>
-    /// <param name="provider">The provider to check. Null values are skipped.</param>
-    /// <exception cref="ArgumentException">
-    /// Thrown when the given sample provider is not null and does not match the following criteria:
-    /// <para>
-    /// Encoding = <see cref="WaveFormatEncoding.IeeeFloat"/><br/>
-    /// Sample Rate = <see cref="SampleRate"/><br/>
-    /// Channels = <see cref="Channels"/>
-    /// </para>
-    /// </exception>
-    public static void ThrowIfIncompatible(ISampleProvider? provider)
-    {
-        if (provider is {WaveFormat: not {SampleRate: SampleRate, Channels: Channels, Encoding: WaveFormatEncoding.IeeeFloat}})
-            throw new ArgumentException($"Expected a mono provider with a sample rate of 48000Hz and IEEEFloat encoding, got format {provider.WaveFormat}");
-    }
+    /// <inheritdoc cref="AudioConstants.ThrowIfIncompatible"/>
+    public static void ThrowIfIncompatible(ISampleProvider? provider) => AudioConstants.ThrowIfIncompatible(provider);
 
 }

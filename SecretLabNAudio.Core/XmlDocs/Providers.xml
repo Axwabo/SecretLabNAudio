@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc>
+    <ReadFully>
+        <summary>
+            Whether to pad out the read buffer with zeroes if more samples are requested than available.
+            If set to true, makes the provider never-ending.
+        </summary>
+    </ReadFully>
+    <Format>
+        <exception cref="T:System.ArgumentException">
+            Thrown when the given sample provider is not null and does not match the following criteria:
+            <para>
+                Encoding =
+                <see cref="F:NAudio.Wave.WaveFormatEncoding.IeeeFloat" />
+                <br />
+                Sample Rate =
+                <see cref="F:SecretLabNAudio.Core.AudioPlayer.SampleRate" />
+                <br />
+                Channels =
+                <see cref="F:SecretLabNAudio.Core.AudioPlayer.Channels" />
+            </para>
+        </exception>
+    </Format>
+</doc>

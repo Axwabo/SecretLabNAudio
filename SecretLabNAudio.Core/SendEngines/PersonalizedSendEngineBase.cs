@@ -1,5 +1,3 @@
-using VoiceChat.Networking;
-
 namespace SecretLabNAudio.Core.SendEngines;
 
 /// <summary>Base class for personalizing settings on each broadcast per player.</summary>

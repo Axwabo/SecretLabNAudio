@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace SecretLabNAudio.Core.Providers;
+﻿namespace SecretLabNAudio.Core.Providers;
 
 /// <summary>A sample provider reading from a queue of providers.</summary>
 public sealed class SampleProviderQueue : ISampleProvider

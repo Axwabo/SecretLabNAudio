@@ -1,5 +1,4 @@
-﻿using System.IO;
-using NLayer.NAudioSupport;
+﻿using NLayer.NAudioSupport;
 using SecretLabNAudio.Core.FileReading;
 
 namespace SecretLabNAudio.NLayer;

@@ -59,14 +59,12 @@ public sealed class Disc : MonoBehaviour
 
     private double _previousTime;
 
-    private DiscJockeySampleProvider? _provider;
-
-    public DiscJockeySampleProvider? Provider
+    public DiscJockeyAudioProcessor? Provider
     {
-        get => _provider;
+        get;
         set
         {
-            _provider = value;
+            field = value;
             _previousTime = 0;
             _time.Arguments[1] = value?.TotalTime.ToString("mm':'ss") ?? UndefinedTime;
         }
@@ -88,7 +86,5 @@ public sealed class Disc : MonoBehaviour
         _previousTime = currentTime;
         _time.Arguments[0] = Provider.CurrentTime.ToString("mm':'ss");
     }
-
-    private void OnDestroy() => _provider = null;
 
 }

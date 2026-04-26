@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc>
+    <InArg>
+        <exception cref="T:System.ArgumentException">
+            Thrown if the input matches any of the following:
+            <list type="bullet">
+                <item>
+                    <description>
+                        <see cref="M:System.String.IsNullOrWhiteSpace(System.String)">null or whitespace</see>
+                    </description>
+                </item>
+                <item>
+                    <description>contains a quotation mark (<c>&quot;</c>)
+                    </description>
+                </item>
+            </list>
+        </exception>
+    </InArg>
+    <In>
+        <exception cref="T:System.InvalidOperationException">
+            Thrown if the
+            <see cref="P:SecretLabNAudio.FFmpeg.FFmpegArguments.Input" />
+            matches any of the following:
+            <list type="bullet">
+                <item>
+                    <description>
+                        <see cref="M:System.String.IsNullOrWhiteSpace(System.String)">null or whitespace</see>
+                    </description>
+                </item>
+                <item>
+                    <description>contains a quotation mark (<c>&quot;</c>)
+                    </description>
+                </item>
+            </list>
+        </exception>
+    </In>
+    <InOut>
+        <exception cref="T:System.InvalidOperationException">
+            Thrown if either
+            <see cref="P:SecretLabNAudio.FFmpeg.FFmpegArguments.Input" />
+            or
+            <see cref="P:SecretLabNAudio.FFmpeg.FFmpegArguments.Output" />
+            matches any of the following:
+            <list type="bullet">
+                <item>
+                    <description>
+                        <see cref="M:System.String.IsNullOrWhiteSpace(System.String)">null or whitespace</see>
+                    </description>
+                </item>
+                <item>
+                    <description>contains a quotation mark (<c>&quot;</c>)
+                    </description>
+                </item>
+            </list>
+        </exception>
+    </InOut>
+</doc>

@@ -1,4 +1,6 @@
+using SecretLabNAudio.Core.Extensions;
 using SecretLabNAudio.Core.Pools;
+using SecretLabNAudio.Core.Processors;
 
 namespace SecretLabNAudio.Demo.Board;
 
@@ -32,8 +34,7 @@ public sealed class DiscJockeyBoard : MonoBehaviour
 
     public static void SetUpStage()
     {
-        var stage = SpawnableCullingParent.Create(Vector3.zero, StageSize);
-        stage.Base.NetworkBoundsPosition = StagePosition; // NW couldn't make a properly working wrapper
+        var stage = SpawnableCullingParent.Create(StagePosition, StageSize);
 
         var text = TextToy.Create(VisualizerPosition, VisualizerRotation, VisualizerScale, stage.Transform);
         text.IsStatic = true;
@@ -45,10 +46,10 @@ public sealed class DiscJockeyBoard : MonoBehaviour
         Instance = board.GameObject.AddComponent<DiscJockeyBoard>();
         var transform = board.Transform;
 
-        Instance._speaker = AudioPlayerPool.Rent(StageSettings, stage.Transform)
-            .WithFilteredSendEngine(p => !p.IsAlive || p.IsOutside())
+        Instance._player = AudioPlayerPool.Rent(StageSettings, stage.Transform)
+            .WithFilteredSendEngine(p => !p.IsAlive || p.IsOutside)
             .WithOutputMonitor(visualizer);
-        Outside.PlaceSpeakers(Instance._speaker.Id);
+        Outside.PlaceSpeakers(Instance._player);
 
         Instance._music = Slider.Create(transform, Vector3.right * 0.4f, SliderRotation, "🎵", "Music");
         Instance._speed = Slider.Create(transform, Vector3.right * 0.5f, SliderRotation, "⏩", "Speed", 0);
@@ -61,13 +62,13 @@ public sealed class DiscJockeyBoard : MonoBehaviour
 
     public static bool CanHearStageSpeaker(Player player) => Vector3.Distance(StagePosition, player.Camera.position) <= StageRange;
 
-    private DiscJockeySampleProvider? _provider;
+    private DiscJockeyAudioProcessor? _provider;
 
     public Player? Owner { get; private set; }
 
 #nullable disable
 
-    private AudioPlayer _speaker;
+    private AudioPlayer _player;
 
     private Slider _music;
 
@@ -94,16 +95,14 @@ public sealed class DiscJockeyBoard : MonoBehaviour
 
     private void OnDestroy()
     {
-        Instance = null;
         _music.ValueChanged -= UpdateMusic;
         _speed.ValueChanged -= UpdateSpeed;
         _voice.ValueChanged -= UpdateVoice;
         _pitch.ValueChanged -= UpdatePitch;
         _master.ValueChanged -= UpdateMaster;
-        DisposeProvider();
     }
 
-    public void Play(Player player, WaveStream stream, string label)
+    public void Play(Player player, StreamAudioProcessor stream, string label)
     {
         var ownerChanged = Owner != player;
         if (Owner != null && ownerChanged)
@@ -112,55 +111,27 @@ public sealed class DiscJockeyBoard : MonoBehaviour
         if (ownerChanged)
             Outside.MuteSpeakers(player);
 
-        DisposeProvider();
-        _provider = new DiscJockeySampleProvider(stream, player);
+        // the previous processor will be disposed, and it'll also be disposed when the player is destroyed
+        _player.Use(_provider = new DiscJockeyAudioProcessor(stream, player));
         UpdateMusic(_music.Value);
         UpdateSpeed(_speed.Value);
         UpdateVoice(_voice.Value);
         UpdatePitch(_pitch.Value);
         UpdateMaster(_master.Value);
-        _speaker.SampleProvider = _provider;
-        _speaker.ClearBuffer();
+        _player.ClearBuffer();
         _disc.Provider = _provider;
         _disc.Label = label;
         Outside.RunEffects(destroyCancellationToken);
     }
 
-    private void UpdateMusic(float value)
-    {
-        if (_provider != null)
-            _provider.MusicVolume = value + HalfOffset;
-    }
+    private void UpdateMusic(float value) => _provider?.MusicVolume = value + HalfOffset;
 
-    private void UpdateSpeed(float value)
-    {
-        if (_provider != null)
-            _provider.MusicSpeed = value * 2 + 1;
-    }
+    private void UpdateSpeed(float value) => _provider?.MusicSpeed = value * 2 + 1;
 
-    private void UpdateVoice(float value)
-    {
-        if (_provider != null)
-            _provider.VoiceVolume = value + HalfOffset;
-    }
+    private void UpdateVoice(float value) => _provider?.VoiceVolume = value + HalfOffset;
 
-    private void UpdatePitch(float value)
-    {
-        if (_provider != null)
-            _provider.VoicePitch = value + 1;
-    }
+    private void UpdatePitch(float value) => _provider?.VoicePitch = value + 1;
 
-    private void UpdateMaster(float value)
-    {
-        if (_provider != null)
-            _provider.MasterVolume = value * 2 + 1;
-    }
-
-    private void DisposeProvider()
-    {
-        _provider?.Dispose();
-        _provider = null;
-        _disc.Provider = null;
-    }
+    private void UpdateMaster(float value) => _provider?.MasterVolume = value * 2 + 1;
 
 }

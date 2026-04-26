@@ -1,6 +1,4 @@
-﻿using System.IO;
-
-namespace SecretLabNAudio.Core.FileReading;
+﻿namespace SecretLabNAudio.Core.FileReading;
 
 internal sealed class WaveReaderFactory : IAudioReaderFactory
 {
@@ -14,15 +12,18 @@ internal sealed class WaveReaderFactory : IAudioReaderFactory
 file sealed class DisposableWaveReader : WaveFileReader
 {
 
-    private readonly ConditionalOneTimeDisposable _disposable;
+    private Stream? _stream;
 
     public DisposableWaveReader(Stream stream, bool closeOnDispose) : base(stream)
-        => _disposable = new ConditionalOneTimeDisposable(stream, closeOnDispose);
+        => _stream = closeOnDispose ? stream : null;
 
     protected override void Dispose(bool disposing)
     {
-        _disposable.Dispose(disposing);
         base.Dispose(disposing);
+        if (!disposing)
+            return;
+        _stream?.Dispose();
+        _stream = null;
     }
 
 }

@@ -1,5 +1,4 @@
-﻿using System.IO;
-using StreamAndProvider = (NAudio.Wave.WaveStream Stream, NAudio.Wave.ISampleProvider Provider);
+﻿using StreamAndProvider = (NAudio.Wave.WaveStream Stream, NAudio.Wave.ISampleProvider Provider);
 
 namespace SecretLabNAudio.Core.FileReading;
 
@@ -14,22 +13,28 @@ public static class CreateAudioReader
     private static AudioReaderFactoryResult Result(Stream source, string type, bool closeOnDispose)
         => AudioReaderFactoryManager.GetFactory(type).FromStream(source, closeOnDispose);
 
-    private static WaveStream GetStream(this AudioReaderFactoryResult result, string fileType)
-        => result.Stream ?? throw new NotSupportedException($"Factory for {fileType} did not return a WaveStream");
-
-    private static ISampleProvider GetProvider(this AudioReaderFactoryResult result, string fileType, bool convertStream) => result switch
+    /// <param name="result">The result to extract from.</param>
+    extension(AudioReaderFactoryResult result)
     {
-        (_, { } provider) => provider,
-        ({ } stream, _) when convertStream => stream.ToSampleProvider(),
-        _ => throw new NotSupportedException($"Factory for {fileType} did not return a SampleProvider")
-    };
+
+        private WaveStream GetStream(string fileType)
+            => result.Stream ?? throw new NotSupportedException($"Factory for {fileType} did not return a WaveStream");
+
+        private ISampleProvider GetProvider(string fileType, bool convertStream) => result switch
+        {
+            (_, { } provider) => provider,
+            ({ } stream, _) when convertStream => stream.ToSampleProvider(),
+            _ => throw new NotSupportedException($"Factory for {fileType} did not return a SampleProvider")
+        };
+
+    }
 
     /// <summary>
     /// Creates a <see cref="WaveStream"/> from the given file path.
     /// </summary>
     /// <param name="path">The file path to read the audio from.</param>
     /// <returns>A <see cref="WaveStream"/> corresponding to the file.</returns>
-    /// <exception cref="NotSupportedException">Thrown if there was no registered factory for the file type, or if the factory didn't return a <see cref="WaveStream"/>.</exception>
+    /// <include file="../XmlDocs/Files.xml" path="doc/exception"/>
     /// <remarks>This method doesn't check if the file exists. Call <see cref="File.Exists">File.Exists</see> beforehand.</remarks>
     public static WaveStream Stream(string path)
     {
@@ -44,6 +49,7 @@ public static class CreateAudioReader
     /// <param name="fileType">The file type of the audio in the stream, e.g. "wav", "aiff".</param>
     /// <param name="closeOnDispose">Whether to close the stream when disposing the <see cref="WaveStream"/>.</param>
     /// <returns>A <see cref="WaveStream"/> corresponding to the stream.</returns>
+    /// <include file="../XmlDocs/Files.xml" path="doc/exception"/>
     /// <remarks>The period is automatically trimmed from the start of the <paramref name="fileType"/>.</remarks>
     public static WaveStream Stream(Stream source, string fileType, bool closeOnDispose = true)
         => Result(source, fileType, closeOnDispose).GetStream(fileType);

@@ -1,11 +1,12 @@
 <Project>
+
     <PropertyGroup>
         <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
     </PropertyGroup>
     
     <ItemGroup>
         <PackageVersion Include="NAudio.Core" Version="2.2.1" />
-        <PackageVersion Include="Northwood.LabAPI" Version="1.1.3" />
+        <PackageVersion Include="Northwood.LabAPI" Version="1.1.6.1" />
         
         <PackageVersion Include="NAudio.Wasapi" Version="2.2.1" />
 
@@ -14,5 +15,7 @@
         
         <PackageVersion Include="NVorbis" Version="0.10.5" />
         <PackageVersion Include="NAudio.Vorbis" Version="1.5.0" />
+        <PackageVersion Include="System.ValueTuple" Version="4.5.0" />
     </ItemGroup>
+
 </Project>

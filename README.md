@@ -7,6 +7,9 @@ This library has a number of open-source dependencies. See [Attributions](ATTRIB
 > [!NOTE]
 > SecretLabNAudio is not sponsored nor endorsed by NAudio.
 
+> [!IMPORTANT]
+> If you're still using v1, [migrate to v2](https://github.com/Axwabo/SecretLabNAudio/wiki/Migration-Guide)
+
 # Features
 
 [Watch the demo](https://youtu.be/6btaXm3BU8s)
@@ -21,10 +24,12 @@ This library has a number of open-source dependencies. See [Attributions](ATTRIB
 - SpeakerToy pooling
 - Automatic reader resolution by file type
 - Cache for short audio clips
+- FFmpeg-based audio processing for (almost) all formats, even over the network
 - Windows-only Media Foundation support for a wider range of formats, and decoding over the network
 
 > [!TIP]
 > Check the [wiki](https://github.com/Axwabo/SecretLabNAudio/wiki) for more information.
+> See [this page](https://github.com/Axwabo/SecretLabNAudio/wiki/Examples) for examples.
 
 # Installation
 
@@ -32,8 +37,8 @@ This library has a number of open-source dependencies. See [Attributions](ATTRIB
 
 1. Download the `SecretLabNAudio.zip` file from the [releases page](https://github.com/Axwabo/SecretLabNAudio/releases)
 2. Extract `bin/SecretLabNAudio.dll` from the archive into the **global plugins** directory
-    - Linux: `.config/SCP Secret Laboratory/LabAPI/plugins/global/`
-    - Windows: `%appdata%/SCP Secret Laboratory/LabAPI/plugins/global/`
+   - Linux: `~/.config/SCP Secret Laboratory/LabAPI/plugins/global/`
+   - Windows: `%appdata%/SCP Secret Laboratory/LabAPI/plugins/global/`
 3. Restart the server
 
 > [!IMPORTANT]
@@ -43,27 +48,41 @@ This library has a number of open-source dependencies. See [Attributions](ATTRIB
 ## Modular
 
 1. Download the `SecretLabNAudio.Core.dll` file from the [releases page](https://github.com/Axwabo/SecretLabNAudio/releases)
-2. Place the file in the **dependencies** directory
-    - Linux: `.config/SCP Secret Laboratory/LabAPI/dependencies/<port>/`
-    - Windows: `%appdata%/SCP Secret Laboratory/LabAPI/dependencies/<port>/`
-3. Download the `SecretLabNAudio.zip` file from the releases page
-4. Extract the necessary files from the `bin/` directory of the archive as **dependencies**
-    - `NAudio.Core.dll` is **always required**
-    - `NLayer` and `NLayer.NAudioSpport.dll` for `.mp3` support (optional)
-    - `NAudio.Vorbis.dll` and `NVorbis.dll` for `.ogg` support (optional)
-    - `NAudio.Wasapi.dll` for Media Foundation support (optional, WIndows-only)
-5. Optionally download the necessary **plugin(s)** from the releases page
-    - `SecretLabNAudio.NLayer.dll` for `.mp3` support
-    - `SecretLabNAudio.NVorbis.dll` for `.ogg` support
-    - `SecretLabNAudio.MediaFoundation.dll` for Media Foundation support (Windows-only)
-6. Place the downloaded plugin(s) into the **plugins** directory
-    - Linux: `.config/SCP Secret Laboratory/LabAPI/plugins/<port>/`
-    - Windows: `%appdata%/SCP Secret Laboratory/LabAPI/plugins/<port>/`
-7. Restart the server
+2. Download the `SecretLabNAudio.zip` file from the releases page
+3. Extract the necessary DLLs from the `bin/` directory
+   - See the [table below](#modules) for what you need
+   - Place dependencies into the **dependencies** directory
+       - Linux: `~/.config/SCP Secret Laboratory/LabAPI/dependencies/<port>/`
+       - Windows: `%appdata%/SCP Secret Laboratory/LabAPI/dependencies/<port>/`
+   - Place plugins into the **plugins** directory
+       - Linux: `~/.config/SCP Secret Laboratory/LabAPI/plugins/<port>/`
+       - Windows: `%appdata%/SCP Secret Laboratory/LabAPI/plugins/<port>/`
+4. Restart the server
+
+### Modules
+
+To support reading from some file formats, install the modules you need.
+
+FFmpeg supports effectively all formats at the cost of running as a separate process.
+The FFmpeg module's APIs must be invoked separately.
+
+| Usage        | Plugin                                | Dependencies                                  |
+|--------------|---------------------------------------|-----------------------------------------------|
+| **required** | (none)                                | `SecretLabNAudio.Core` `NAudio.Core`          |
+| mp3          | `SecretLabNAudio.NLayer`              | `NLayer` `NLayer.NAudioSupport`               |
+| ogg          | `SecretLabNAudio.NVorbis`             | `NVorbis` `NAudio.Vorbis` `System.ValueTuple` |
+| most formats | `SecretLabNAudio.MediaFoundation`[^1] | `NAudio.Wasapi`[^1]                           |
+| FFmpeg       | `SecretLabNAudio.FFmpeg`[^2]          | (none)                                        |
+
+[^1]: MediaFoundation is only available on Windows.
+
+[^2]: FFmpeg itself is not shipped with SecretLabNAudio.
+      See the [wiki](https://github.com/Axwabo/SecretLabNAudio/wiki/FFmpeg-Installation) on how to install it.
 
 ## Development
 
 Simply install the `SecretLabNAudio.Core` package from NuGet.
+You can also add the `SecretLabNAudio.FFmpeg` package, which references the former one.
 
 Manual installation:
 

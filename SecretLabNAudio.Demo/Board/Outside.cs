@@ -1,9 +1,8 @@
-using System.Collections.Generic;
 using System.Threading;
 using CustomPlayerEffects;
 using MapGeneration;
 using PlayerRoles.PlayableScps.Scp079;
-using SecretLabNAudio.Core.Pools;
+using SecretLabNAudio.Core.Extensions;
 
 namespace SecretLabNAudio.Demo.Board;
 
@@ -26,19 +25,23 @@ public static class Outside
 
     private static readonly List<SpeakerPersonalization> PersonalizationInstances = [];
 
-    public static void PlaceSpeakers(byte id)
+    public static void PlaceSpeakers(AudioPlayer controller)
     {
+        var positions = Scp079InteractableBase.AllInstances
+            .Where(static e => e is Scp079Speaker {Room.Name: RoomName.Outside})
+            .Select(static e => e.Position);
         PersonalizationInstances.Clear();
-        foreach (var interactable in Scp079InteractableBase.AllInstances)
-            if (interactable is Scp079Speaker {Room.Name: RoomName.Outside})
-                PersonalizationInstances.Add(SpeakerToyPool.Rent(null, interactable.Position)
-                    .WithId(id)
-                    .ApplySettings(Settings)
-                    .AddPersonalization()
-                );
+        PersonalizationInstances.AddRange(controller.GetOrCreateGroup()
+            .AddFromPool(Settings, positions)
+            .AddPersonalizationToAll());
     }
 
-    public static bool IsOutside(this Player p) => p.Position.y > 250;
+    extension(Player p)
+    {
+
+        public bool IsOutside => p.Position.y > 250;
+
+    }
 
     public static void RunEffects(CancellationToken cancellationToken)
     {
@@ -60,7 +63,7 @@ public static class Outside
             foreach (var light in lights)
                 light.OverrideLightsColor = color;
             foreach (var player in Player.ReadyList)
-                if (player.IsOutside())
+                if (player.IsOutside)
                     player.EnableEffect<SoundtrackMute>();
                 else
                     player.DisableEffect<SoundtrackMute>();
@@ -84,16 +87,8 @@ public static class Outside
         }
     }
 
-    public static void MuteSpeakers(Player owner)
-    {
-        foreach (var personalization in PersonalizationInstances)
-            personalization.Override(owner, Muted);
-    }
+    public static void MuteSpeakers(Player owner) => PersonalizationInstances.Override(owner, Muted);
 
-    public static void ClearMutes(Player owner)
-    {
-        foreach (var personalization in PersonalizationInstances)
-            personalization.ClearOverride(owner);
-    }
+    public static void ClearMutes(Player owner) => PersonalizationInstances.ClearOverride(owner);
 
 }

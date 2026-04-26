@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using SecretLabNAudio.Core.Extensions;
 
 namespace SecretLabNAudio.Core;
 
@@ -18,8 +18,6 @@ public sealed class SpeakerPersonalization : MonoBehaviour
 {
 
     private readonly Dictionary<Player, SpeakerSettings> _settingsPerPlayer = [];
-
-    private SpeakerSettings _previousSettings;
 
     /// <summary>The <see cref="SpeakerToy"/> this component is attached to.</summary>
     public SpeakerToy Speaker { get; private set; } = null!;
@@ -68,37 +66,18 @@ public sealed class SpeakerPersonalization : MonoBehaviour
     }
 
     private void SendSyncVars(Player player, SpeakerSettings previous, SpeakerSettings current)
-        => SpeakerSyncVars.SendFakeSyncVars(player.Connection, Speaker.Base, (
-            Mathf.Approximately(previous.Volume, current.Volume) ? null : current.Volume,
-            previous.IsSpatial == current.IsSpatial ? null : current.IsSpatial,
-            Mathf.Approximately(previous.MinDistance, current.MinDistance) ? null : current.MinDistance,
-            Mathf.Approximately(previous.MaxDistance, current.MaxDistance) ? null : current.MaxDistance
-        ));
-
-    private void ResyncAll(SpeakerSettings previousSettings)
     {
-        foreach (var kvp in _settingsPerPlayer)
-            if (kvp.Key.ReferenceHub)
-                SendSyncVars(kvp.Key, previousSettings, kvp.Value);
+        if (player.ConnectionToClient is {isReady: true} connection)
+            SpeakerSyncVars.SendFakeSyncVars(connection, Speaker.Base, (
+                Mathf.Approximately(previous.Volume, current.Volume) ? null : current.Volume,
+                previous.IsSpatial == current.IsSpatial ? null : current.IsSpatial,
+                Mathf.Approximately(previous.MinDistance, current.MinDistance) ? null : current.MinDistance,
+                Mathf.Approximately(previous.MaxDistance, current.MaxDistance) ? null : current.MaxDistance
+            ));
     }
 
-    private void Awake()
-    {
-        Speaker = this.GetSpeaker("SpeakerPersonalization must be attached to a SpeakerToy.");
-        _previousSettings = SpeakerSettings.From(Speaker);
-    }
-
-    private void LateUpdate()
-    {
-        var currentSettings = SpeakerSettings.From(Speaker);
-        if (_previousSettings == currentSettings)
-            return;
-        ResyncAll(_previousSettings);
-        _previousSettings = currentSettings;
-    }
+    private void Awake() => Speaker = this.GetSpeaker("SpeakerPersonalization must be attached to a SpeakerToy.");
 
     private void OnDisable() => _settingsPerPlayer.Clear();
-
-    private void OnDestroy() => _settingsPerPlayer.Clear();
 
 }
