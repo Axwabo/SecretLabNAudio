@@ -98,6 +98,11 @@ public static class AudioProcessorExtensions
         {
             switch (processor)
             {
+                case SampleProviderWrapper {Source: T t}:
+                    result = t;
+                    return true;
+                case SampleProviderWrapper {Source: IAudioProcessor source}:
+                    return source.TryGetSourceAs(out result);
                 case ProcessorChain {Source: T t}:
                     result = t;
                     return true;
@@ -150,6 +155,11 @@ public static class AudioProcessorExtensions
                 case ProcessorChain {Master: T t}:
                     result = t;
                     return true;
+                case SampleProviderWrapper {Source: T t}:
+                    result = t;
+                    return true;
+                case SampleProviderWrapper {Source: IAudioProcessor source}:
+                    return source.TryGetMasterAs(out result);
                 case ProcessorChain {Master: IAudioProcessor master}:
                     return master.TryGetMasterAs(out result);
                 case Mixer mixer when mixer.TryGetSingleMixerInput(out IAudioProcessor? mixerProcessor):
@@ -180,6 +190,11 @@ public static class AudioProcessorExtensions
                 case Mixer {Inputs: [{Provider: T t}]}:
                     result = t;
                     return true;
+                case SampleProviderWrapper {Source: T t}:
+                    result = t;
+                    return true;
+                case SampleProviderWrapper {Source: IAudioProcessor source}:
+                    return source.TryGetSingleMixerInput(out result);
                 case ProcessorChain {Source: IAudioProcessor master}:
                     return master.TryGetSingleMixerInput(out result);
                 default:
