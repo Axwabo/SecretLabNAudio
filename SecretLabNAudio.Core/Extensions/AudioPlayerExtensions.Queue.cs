@@ -46,7 +46,12 @@ public static partial class AudioPlayerExtensions
         /// <seealso cref="UseQueue(AudioPlayer,Action{AudioQueue})"/>
         /// <seealso cref="AudioQueueExtensions.EnqueueFile"/>
         public AudioPlayer EnqueueFile(string path, ModifyChain? process)
-            => player.UseQueue(queue => queue.EnqueueFile(path, process.Prepend(ProcessorChainExtensions.ToPlayerCompatible)));
+        {
+            if (player.Playlist is not { } playlist)
+                return player.UseQueue(queue => queue.EnqueueFile(path, process.Prepend(ProcessorChainExtensions.ToPlayerCompatible)));
+            playlist.AddFile(path, process);
+            return player;
+        }
 
         /// <summary>
         /// Attempts to enqueue a file to be played without throwing an exception if the file is not found or is not supported.
@@ -70,7 +75,12 @@ public static partial class AudioPlayerExtensions
         /// <seealso cref="UseQueue(AudioPlayer,Action{AudioQueue})"/>
         /// <seealso cref="AudioQueueExtensions.TryEnqueueFile"/>
         public AudioPlayer EnqueueFileSafe(string path, ModifyChain? process)
-            => player.UseQueue(queue => queue.TryEnqueueFile(path, process.Prepend(ProcessorChainExtensions.ToPlayerCompatible)));
+        {
+            if (player.Playlist is not { } playlist)
+                return player.UseQueue(queue => queue.TryEnqueueFile(path, process.Prepend(ProcessorChainExtensions.ToPlayerCompatible)));
+            playlist.AddFileIfReadable(path, process);
+            return player;
+        }
 
         /// <summary>
         /// Enqueues a short clip to be played (if a clip with the given name was registered).
@@ -94,7 +104,12 @@ public static partial class AudioPlayerExtensions
         /// <seealso cref="UseQueue(AudioPlayer,Action{AudioQueue})"/>
         /// <seealso cref="AudioQueueExtensions.EnqueueShortClip"/>
         public AudioPlayer EnqueueShortClip(ClipName name, ModifyChain? process)
-            => player.UseQueue(queue => queue.EnqueueShortClip(name, process));
+        {
+            if (player.Playlist is not { } playlist)
+                return player.UseQueue(queue => queue.EnqueueShortClip(name, process));
+            playlist.AddShortClip(name, process);
+            return player;
+        }
 
     }
 

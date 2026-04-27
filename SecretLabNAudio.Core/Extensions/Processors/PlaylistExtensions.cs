@@ -16,16 +16,25 @@ public static class PlaylistExtensions
                     ? new ProcessedPlaylistItem(innerItem, chain => process(innerProcess(chain)))
                     : new ProcessedPlaylistItem(playlistItem, process);
 
-        public PlaylistItem Amplify(float volume) => playlistItem.Process(ModifyChain.AmplifyIfNot1(volume));
-
     }
 
     extension(LazyPlaylist playlist)
     {
 
-        public LazyPlaylist AddFile(string path, float volume = 1) => playlist.Add(new FilePlaylistItem(path).Amplify(volume));
+        public LazyPlaylist AddFile(string path, float volume = 1) => playlist.AddFile(path, ModifyChain.AmplifyIfNot1(volume));
 
-        public LazyPlaylist AddShortClip(ClipName clipName, float volume = 1) => playlist.Add(new ShortClipPlaylistItem(clipName).Amplify(volume));
+        public LazyPlaylist AddFile(string path, ModifyChain? process) => playlist.Add(new FilePlaylistItem(path).Process(process));
+
+        public LazyPlaylist AddFileIfReadable(string path, float volume = 1) => playlist.AddFileIfReadable(path, ModifyChain.AmplifyIfNot1(volume));
+
+        public LazyPlaylist AddFileIfReadable(string path, ModifyChain? process)
+            => File.Exists(path) && AudioReaderFactoryManager.TryGetFactory(Path.GetExtension(path), out _)
+                ? playlist.AddFile(path, process)
+                : playlist;
+
+        public LazyPlaylist AddShortClip(ClipName clipName, float volume = 1) => playlist.AddShortClip(clipName, ModifyChain.AmplifyIfNot1(volume));
+
+        public LazyPlaylist AddShortClip(ClipName clipName, ModifyChain? process) => playlist.Add(new ShortClipPlaylistItem(clipName).Process(process));
 
     }
 
