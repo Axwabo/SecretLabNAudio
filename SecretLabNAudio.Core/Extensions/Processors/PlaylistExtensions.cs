@@ -42,6 +42,18 @@ public static class PlaylistExtensions
             return playlist;
         }
 
+        public LazyPlaylist RepeatAll()
+        {
+            playlist.RepeatMode = Repeat.All;
+            return playlist;
+        }
+
+        public LazyPlaylist RepeatOne()
+        {
+            playlist.RepeatMode = Repeat.One;
+            return playlist;
+        }
+
     }
 
 }

@@ -8,6 +8,10 @@
         <DisableImplicitFrameworkReferences>true</DisableImplicitFrameworkReferences>
     </PropertyGroup>
 
+    <PropertyGroup Condition="$(Configuration) == 'Debug'">
+        <NoWarn>CS1591</NoWarn>
+    </PropertyGroup>
+
     <PropertyGroup>
         <Authors>Axwabo</Authors>
         <Company>Axwabo</Company>

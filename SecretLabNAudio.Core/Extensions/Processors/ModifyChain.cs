@@ -64,7 +64,11 @@ public static class ModifyChainExtensions
         /// <returns><see langword="null"/> if <paramref name="volume"/> is approximately 1, a new delegate otherwise.</returns>
         /// <seealso cref="ProcessorChainExtensions.Volume"/>
         /// <seealso cref="Amplify"/>
+#if DEBUG
+        public static ModifyChain? AmplifyIfNot1(float volume) => volume is 1 ? null : ModifyChain.Amplify(volume);
+#else
         public static ModifyChain? AmplifyIfNot1(float volume) => Mathf.Approximately(1, volume) ? null : ModifyChain.Amplify(volume);
+#endif
 
     }
 

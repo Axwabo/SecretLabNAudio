@@ -1,4 +1,6 @@
-using Random = UnityEngine.Random;
+using SecretLabNAudio.Core.Extensions;
+using SecretLabNAudio.Core.Extensions.Processors;
+using Random = System.Random;
 
 namespace SecretLabNAudio.Core.Processors.Playlists;
 
@@ -17,11 +19,16 @@ public sealed class LazyPlaylist : IAudioProcessor
 
     public bool ShuffleOnStart { get; set; }
 
-    public LazyPlaylist(WaveFormat waveFormat) => WaveFormat = waveFormat;
+    public Repeat RepeatMode { get; set; }
 
-    public LazyPlaylist(WaveFormat waveFormat, params IEnumerable<PlaylistItem> items)
+    public LazyPlaylist(WaveFormat waveFormat)
     {
         WaveFormat = waveFormat;
+        Items = _items.AsReadOnly();
+    }
+
+    public LazyPlaylist(WaveFormat waveFormat, params IEnumerable<PlaylistItem> items) : this(waveFormat)
+    {
         _items.AddRange(items);
         Items = _items.AsReadOnly();
     }
@@ -41,7 +48,7 @@ public sealed class LazyPlaylist : IAudioProcessor
     private void Shuffle()
     {
 #if DEBUG
-        var random = new System.Random();
+        var random = new Random();
         Comparison<PlaylistItem> comparison = (_, _) => random.NextDouble() < 0.5 ? -1 : 1;
 #else
         Comparison<PlaylistItem> comparison = (_, _) => Random.value < 0.5f ? -1 : 1;
@@ -55,7 +62,14 @@ public sealed class LazyPlaylist : IAudioProcessor
             return;
         try
         {
-            _current = (_items[Index], _items[Index].CreateProvider(WaveFormat.SampleRate, WaveFormat.Channels)); // TODO: convert
+            var item = _items[Index];
+            var created = item.CreateProvider(WaveFormat.SampleRate, WaveFormat.Channels);
+            var final = created.WaveFormat.Matches(WaveFormat)
+                ? created
+                : ProviderToProcessor.SampleProviderToProcessor(created, true)
+                    .ToChain()
+                    .ToFormat(WaveFormat.SampleRate, WaveFormat.Channels);
+            _current = (item, final);
         }
         catch (Exception e)
         {
