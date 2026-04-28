@@ -9,17 +9,23 @@ public sealed class LazyPlaylist : IAudioProcessor
 
     private readonly List<PlaylistItem> _items = [];
 
-    private PlaylistState _state;
-
     private (PlaylistItem Item, ISampleProvider Provider)? _current;
 
-    public IReadOnlyList<PlaylistItem> Items { get; }
-
     public int Index { get; private set; }
+
+    public PlaylistState State { get; private set; }
+
+    public IReadOnlyList<PlaylistItem> Items { get; }
 
     public bool ShuffleOnStart { get; set; }
 
     public Repeat RepeatMode { get; set; }
+
+    public PlaylistItem? CurrentItem => _current?.Item;
+
+    public event Action? CurrentItemChanged;
+
+    public event Action? LastItemEnded;
 
     public LazyPlaylist(WaveFormat waveFormat)
     {
@@ -41,8 +47,60 @@ public sealed class LazyPlaylist : IAudioProcessor
 
     public int Read(float[] buffer, int offset, int count)
     {
-        // TODO
-        return 0;
+        var total = 0;
+        while (total < count)
+        {
+            if (State is PlaylistState.NotStarted or PlaylistState.Ended && !Restart()
+                || State == PlaylistState.BetweenItems && !Next()
+                || !_current.HasValue)
+                break;
+            var target = Math.Max(0, count - total);
+            var read = _current.GetValueOrDefault().Provider.Read(buffer, total + offset, target);
+            total += read;
+            if (read < target)
+                State = PlaylistState.BetweenItems;
+        }
+
+        return total;
+    }
+
+    private bool Restart()
+    {
+        EndCurrent();
+        _current = null;
+        State = PlaylistState.Ended;
+        if (_items.Count == 0 || RepeatMode == Repeat.None && State != PlaylistState.NotStarted)
+            return false;
+        if (ShuffleOnStart)
+            Shuffle();
+        Index = 0;
+        return Next();
+    }
+
+    private bool Next()
+    {
+        var wasPlaying = State is PlaylistState.PlayingItem or PlaylistState.BetweenItems;
+        if (wasPlaying && Index < _items.Count - 1)
+            Index++;
+        while (Index < _items.Count)
+        {
+            if (!BeginCurrent())
+            {
+                Index++;
+                continue;
+            }
+
+            State = PlaylistState.PlayingItem;
+            CurrentItemChanged.InvokeSafely();
+            return true;
+        }
+
+        State = PlaylistState.Ended;
+        EndCurrent();
+        if (wasPlaying)
+            LastItemEnded.InvokeSafely();
+        _current = null;
+        return false;
     }
 
     private void Shuffle()
@@ -56,10 +114,8 @@ public sealed class LazyPlaylist : IAudioProcessor
         _items.Sort(comparison);
     }
 
-    private void Begin()
+    private bool BeginCurrent()
     {
-        if (Index < _items.Count)
-            return;
         try
         {
             var item = _items[Index];
@@ -70,6 +126,7 @@ public sealed class LazyPlaylist : IAudioProcessor
                     .ToChain()
                     .ToFormat(WaveFormat.SampleRate, WaveFormat.Channels);
             _current = (item, final);
+            return true;
         }
         catch (Exception e)
         {
@@ -79,8 +136,14 @@ public sealed class LazyPlaylist : IAudioProcessor
 #else
             Debug.LogError(e);
 #endif
-            throw;
+            return false;
         }
+    }
+
+    private void EndCurrent()
+    {
+        State = PlaylistState.BetweenItems;
+        (_current?.Provider as IDisposable)?.Dispose();
     }
 
     /// <inheritdoc/>
@@ -88,6 +151,10 @@ public sealed class LazyPlaylist : IAudioProcessor
 
     public void Dispose()
     {
+        EndCurrent();
+        _current = null;
+        State = PlaylistState.Ended;
+        CurrentItemChanged = null;
     }
 
 }
