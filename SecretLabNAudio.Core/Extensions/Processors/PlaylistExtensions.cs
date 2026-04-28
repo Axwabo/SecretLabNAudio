@@ -36,6 +36,12 @@ public static class PlaylistExtensions
 
         public LazyPlaylist AddShortClip(ClipName clipName, ModifyChain? process) => playlist.Add(new ShortClipPlaylistItem(clipName).Process(process));
 
+        public LazyPlaylist AutoShuffle(bool shuffle = true)
+        {
+            playlist.ShuffleOnStart = shuffle;
+            return playlist;
+        }
+
     }
 
 }
