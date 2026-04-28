@@ -48,14 +48,10 @@ public sealed class LazyPlaylist : IAudioProcessor
     public int Read(float[] buffer, int offset, int count)
     {
         var total = 0;
-        while (total < count)
+        while (total < count && TryGetCurrent(out var provider))
         {
-            if (State is PlaylistState.NotStarted or PlaylistState.Ended && !Restart()
-                || State == PlaylistState.BetweenItems && !Next()
-                || !_current.HasValue)
-                break;
             var target = Math.Max(0, count - total);
-            var read = _current.GetValueOrDefault().Provider.Read(buffer, total + offset, target);
+            var read = provider.Read(buffer, total + offset, target);
             total += read;
             if (read < target)
                 State = PlaylistState.BetweenItems;
@@ -64,27 +60,56 @@ public sealed class LazyPlaylist : IAudioProcessor
         return total;
     }
 
-    private bool Restart()
+    private bool TryGetCurrent([NotNullWhen(true)] out ISampleProvider? provider)
+    {
+        switch (State, RepeatMode)
+        {
+            case (PlaylistState.NotStarted, _):
+            case (PlaylistState.Ended, Repeat.All):
+            case (PlaylistState.BetweenItems, Repeat.All) when Index >= _items.Count:
+                return Restart(out provider);
+            case (PlaylistState.BetweenItems, Repeat.One) when _current.HasValue:
+                return Begin(_current.Value.Item, out provider);
+            case (PlaylistState.BetweenItems, _):
+                if (Index < _items.Count - 1)
+                    return Next(true, out provider);
+                End(true);
+                provider = null;
+                return false;
+            case (PlaylistState.Ended, _):
+                provider = null;
+                return false;
+            default:
+                provider = _current?.Provider;
+                return provider != null;
+        }
+    }
+
+    private bool Restart([NotNullWhen(true)] out ISampleProvider? provider)
     {
         EndCurrent();
         _current = null;
         State = PlaylistState.Ended;
-        if (_items.Count == 0 || RepeatMode == Repeat.None && State != PlaylistState.NotStarted)
+        if (_items.Count == 0)
+        {
+            provider = null;
             return false;
+        }
+
         if (ShuffleOnStart)
             Shuffle();
         Index = 0;
-        return Next();
+        return Next(false, out provider);
     }
 
-    private bool Next()
+    private bool Next(bool advance, [NotNullWhen(true)] out ISampleProvider? provider)
     {
         var wasPlaying = State is PlaylistState.PlayingItem or PlaylistState.BetweenItems;
-        if (wasPlaying && Index < _items.Count - 1)
+        if (advance && Index < _items.Count - 1)
             Index++;
         while (Index < _items.Count)
         {
-            if (!BeginCurrent())
+            if (!Begin(_items[Index], out provider))
             {
                 Index++;
                 continue;
@@ -95,11 +120,8 @@ public sealed class LazyPlaylist : IAudioProcessor
             return true;
         }
 
-        State = PlaylistState.Ended;
-        EndCurrent();
-        if (wasPlaying)
-            LastItemEnded.InvokeSafely();
-        _current = null;
+        End(wasPlaying);
+        provider = null;
         return false;
     }
 
@@ -114,18 +136,19 @@ public sealed class LazyPlaylist : IAudioProcessor
         _items.Sort(comparison);
     }
 
-    private bool BeginCurrent()
+    private bool Begin(PlaylistItem item, [NotNullWhen(true)] out ISampleProvider? provider)
     {
+        EndCurrent();
+        State = PlaylistState.BetweenItems;
         try
         {
-            var item = _items[Index];
             var created = item.CreateProvider(WaveFormat.SampleRate, WaveFormat.Channels);
-            var final = created.WaveFormat.Matches(WaveFormat)
+            provider = created.WaveFormat.Matches(WaveFormat)
                 ? created
                 : ProviderToProcessor.SampleProviderToProcessor(created, true)
                     .ToChain()
                     .ToFormat(WaveFormat.SampleRate, WaveFormat.Channels);
-            _current = (item, final);
+            _current = (item, provider);
             return true;
         }
         catch (Exception e)
@@ -136,14 +159,23 @@ public sealed class LazyPlaylist : IAudioProcessor
 #else
             Debug.LogError(e);
 #endif
+            provider = null;
             return false;
         }
     }
 
     private void EndCurrent()
     {
-        State = PlaylistState.BetweenItems;
         (_current?.Provider as IDisposable)?.Dispose();
+        _current = null;
+    }
+
+    private void End(bool wasPlaying)
+    {
+        State = PlaylistState.Ended;
+        if (wasPlaying)
+            LastItemEnded.InvokeSafely();
+        EndCurrent();
     }
 
     /// <inheritdoc/>
