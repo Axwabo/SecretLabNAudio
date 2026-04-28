@@ -19,7 +19,16 @@ public sealed class LazyPlaylist : IAudioProcessor
 
     public bool ShuffleOnStart { get; set; }
 
-    public Repeat RepeatMode { get; set; }
+    public Repeat RepeatMode
+    {
+        get;
+        set
+        {
+            field = value;
+            if (TryGetSource(out ILoopable? loopable))
+                loopable.Loop = value == Repeat.One;
+        }
+    }
 
     public PlaylistItem? CurrentItem => _current?.Item;
 
@@ -149,6 +158,7 @@ public sealed class LazyPlaylist : IAudioProcessor
                     .ToChain()
                     .ToFormat(WaveFormat.SampleRate, WaveFormat.Channels);
             _current = (item, provider);
+            RepeatMode = RepeatMode;
             return true;
         }
         catch (Exception e)
@@ -178,6 +188,21 @@ public sealed class LazyPlaylist : IAudioProcessor
         EndCurrent();
     }
 
+    private bool TryGetSource<T>([NotNullWhen(true)] out T? provider) where T : notnull
+    {
+        switch (_current.GetValueOrDefault().Provider)
+        {
+            case T t:
+                provider = t;
+                return true;
+            case IAudioProcessor processor:
+                return processor.TryGetSourceAs(out provider);
+            default:
+                provider = default;
+                return false;
+        }
+    }
+
     /// <inheritdoc/>
     public WaveFormat WaveFormat { get; }
 
@@ -187,6 +212,7 @@ public sealed class LazyPlaylist : IAudioProcessor
         _current = null;
         State = PlaylistState.Ended;
         CurrentItemChanged = null;
+        LastItemEnded = null;
     }
 
 }
