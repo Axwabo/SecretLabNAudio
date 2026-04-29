@@ -9,6 +9,42 @@ public sealed partial class LazyPlaylist
         return this;
     }
 
+    public LazyPlaylist Remove(PlaylistItem item, bool stopCurrent = true)
+    {
+        var index = _items.IndexOf(item);
+        return index == -1 ? this : RemoveAt(index, stopCurrent);
+    }
+
+    public LazyPlaylist RemoveAt(int index, bool stopCurrent = true)
+    {
+        _items.RemoveAt(index);
+        if (index == Index)
+        {
+            if (stopCurrent)
+                EndCurrent();
+            if (IsPlaying)
+                _isDetached = true;
+            State = PlaylistState.BetweenItems;
+        }
+        else if (index < Index)
+        {
+            if (IsPlaying)
+                _isDetached = true;
+            Index--;
+        }
+
+        return this;
+    }
+
+    public LazyPlaylist Clear(bool stopCurrent = true)
+    {
+        _items.Clear();
+        _isDetached = !stopCurrent;
+        if (stopCurrent)
+            End(IsPlaying);
+        return this;
+    }
+
     public bool Previous()
     {
         if (Index <= 0)

@@ -14,6 +14,8 @@ public sealed partial class LazyPlaylist : IAudioProcessor
 
     private (PlaylistItem Item, ISampleProvider Provider)? _current;
 
+    private bool _isDetached;
+
     public int Index { get; private set; }
 
     public PlaylistState State { get; private set; }
@@ -35,6 +37,8 @@ public sealed partial class LazyPlaylist : IAudioProcessor
     public PlaylistItem? CurrentItem => _current?.Item;
 
     private bool IsPlaying => State is PlaylistState.PlayingItem or PlaylistState.BetweenItems;
+
+    private bool NextAvailable => Index < _items.Count - 2;
 
     public event Action? CurrentItemChanged;
 
@@ -73,12 +77,12 @@ public sealed partial class LazyPlaylist : IAudioProcessor
         {
             case (PlaylistState.NotStarted, _):
             case (PlaylistState.Ended, Repeat.All):
-            case (PlaylistState.BetweenItems, Repeat.All) when Index >= _items.Count - 1:
+            case (PlaylistState.BetweenItems, Repeat.All) when !NextAvailable:
                 return Restart(out provider);
             case (PlaylistState.BetweenItems, Repeat.One) when _current is var (item, _) && Begin(item, out provider):
                 return true;
             case (PlaylistState.BetweenItems, _):
-                if (Index < _items.Count - 1)
+                if (NextAvailable)
                     return Next(true, out provider);
                 End(true);
                 provider = null;
@@ -112,7 +116,7 @@ public sealed partial class LazyPlaylist : IAudioProcessor
     private bool Next(bool advance, [NotNullWhen(true)] out ISampleProvider? provider)
     {
         var wasPlaying = IsPlaying;
-        if (advance && Index < _items.Count - 2)
+        if (advance && !_isDetached && NextAvailable)
             Index++;
         while (Index < _items.Count)
         {
@@ -176,6 +180,7 @@ public sealed partial class LazyPlaylist : IAudioProcessor
     {
         (_current?.Provider as IDisposable)?.Dispose();
         _current = null;
+        _isDetached = false;
     }
 
     private void End(bool wasPlaying)
@@ -200,6 +205,8 @@ public sealed partial class LazyPlaylist : IAudioProcessor
     {
         EndCurrent();
         _current = null;
+        _isDetached = false;
+        _items.Clear();
         State = PlaylistState.Ended;
         CurrentItemChanged = null;
         LastItemEnded = null;
