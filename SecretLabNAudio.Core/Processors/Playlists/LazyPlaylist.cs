@@ -50,11 +50,7 @@ public sealed partial class LazyPlaylist : IAudioProcessor
         Items = _items.AsReadOnly();
     }
 
-    public LazyPlaylist(WaveFormat waveFormat, params IEnumerable<PlaylistItem> items) : this(waveFormat)
-    {
-        _items.AddRange(items);
-        Items = _items.AsReadOnly();
-    }
+    public LazyPlaylist(WaveFormat waveFormat, params IEnumerable<PlaylistItem> items) : this(waveFormat) => _items.AddRange(items);
 
     public int Read(float[] buffer, int offset, int count)
     {
