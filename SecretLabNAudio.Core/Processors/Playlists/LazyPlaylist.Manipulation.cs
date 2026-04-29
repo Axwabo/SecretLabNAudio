@@ -55,7 +55,7 @@ public sealed partial class LazyPlaylist
 
     public bool Next()
     {
-        if (Index >= _items.Count - 2)
+        if (!NextAvailable)
             return false;
         if (IsPlaying)
             return Next(true, out _);
