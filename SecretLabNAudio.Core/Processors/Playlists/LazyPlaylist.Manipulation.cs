@@ -9,6 +9,12 @@ public sealed partial class LazyPlaylist
         return this;
     }
 
+    public LazyPlaylist AddRange(params IEnumerable<PlaylistItem> items)
+    {
+        _items.AddRange(items);
+        return this;
+    }
+
     public LazyPlaylist Remove(PlaylistItem item, bool stopCurrent = true)
     {
         var index = _items.IndexOf(item);

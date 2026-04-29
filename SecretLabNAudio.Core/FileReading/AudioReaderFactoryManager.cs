@@ -47,4 +47,8 @@ public static class AudioReaderFactoryManager
             ? factory
             : throw new NotSupportedException($"No factory registered for file type {fileType}");
 
+    public static bool HasFactory(string fileType) => Factories.ContainsKey(fileType.TrimStart('.'));
+
+    public static bool IsReadable(string filePath) => File.Exists(filePath) && HasFactory(Path.GetExtension(filePath));
+
 }
