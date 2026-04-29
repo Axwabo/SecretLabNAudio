@@ -7,7 +7,7 @@ using Random = UnityEngine.Random;
 
 namespace SecretLabNAudio.Core.Processors.Playlists;
 
-public sealed class LazyPlaylist : IAudioProcessor
+public sealed partial class LazyPlaylist : IAudioProcessor
 {
 
     private readonly List<PlaylistItem> _items = [];
@@ -34,6 +34,8 @@ public sealed class LazyPlaylist : IAudioProcessor
 
     public PlaylistItem? CurrentItem => _current?.Item;
 
+    private bool IsPlaying => State is PlaylistState.PlayingItem or PlaylistState.BetweenItems;
+
     public event Action? CurrentItemChanged;
 
     public event Action? LastItemEnded;
@@ -48,12 +50,6 @@ public sealed class LazyPlaylist : IAudioProcessor
     {
         _items.AddRange(items);
         Items = _items.AsReadOnly();
-    }
-
-    public LazyPlaylist Add(PlaylistItem item)
-    {
-        _items.Add(item);
-        return this;
     }
 
     public int Read(float[] buffer, int offset, int count)
@@ -77,7 +73,7 @@ public sealed class LazyPlaylist : IAudioProcessor
         {
             case (PlaylistState.NotStarted, _):
             case (PlaylistState.Ended, Repeat.All):
-            case (PlaylistState.BetweenItems, Repeat.All) when Index >= _items.Count:
+            case (PlaylistState.BetweenItems, Repeat.All) when Index >= _items.Count - 1:
                 return Restart(out provider);
             case (PlaylistState.BetweenItems, Repeat.One) when _current is var (item, _) && Begin(item, out provider):
                 return true;
@@ -96,7 +92,7 @@ public sealed class LazyPlaylist : IAudioProcessor
         }
     }
 
-    private bool Restart([NotNullWhen(true)] out ISampleProvider? provider)
+    private bool Restart([NotNullWhen(true)] out ISampleProvider? provider, bool allowShuffle = true)
     {
         EndCurrent();
         _current = null;
@@ -107,7 +103,7 @@ public sealed class LazyPlaylist : IAudioProcessor
             return false;
         }
 
-        if (ShuffleOnStart)
+        if (allowShuffle && ShuffleOnStart)
             Shuffle();
         Index = 0;
         return Next(false, out provider);
@@ -115,8 +111,8 @@ public sealed class LazyPlaylist : IAudioProcessor
 
     private bool Next(bool advance, [NotNullWhen(true)] out ISampleProvider? provider)
     {
-        var wasPlaying = State is PlaylistState.PlayingItem or PlaylistState.BetweenItems;
-        if (advance && Index < _items.Count - 1)
+        var wasPlaying = IsPlaying;
+        if (advance && Index < _items.Count - 2)
             Index++;
         while (Index < _items.Count)
         {
