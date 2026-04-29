@@ -1,6 +1,6 @@
 using SecretLabNAudio.Core.Extensions;
 using SecretLabNAudio.Core.Extensions.Processors;
-using Random = System.Random;
+using Random = UnityEngine.Random;
 
 namespace SecretLabNAudio.Core.Processors.Playlists;
 
@@ -25,8 +25,7 @@ public sealed class LazyPlaylist : IAudioProcessor
         set
         {
             field = value;
-            if (TryGetSource(out ILoopable? loopable))
-                loopable.Loop = value == Repeat.One;
+            GetSource<ILoopable>()?.Loop = value == Repeat.One;
         }
     }
 
@@ -77,8 +76,8 @@ public sealed class LazyPlaylist : IAudioProcessor
             case (PlaylistState.Ended, Repeat.All):
             case (PlaylistState.BetweenItems, Repeat.All) when Index >= _items.Count:
                 return Restart(out provider);
-            case (PlaylistState.BetweenItems, Repeat.One) when _current.HasValue:
-                return Begin(_current.Value.Item, out provider);
+            case (PlaylistState.BetweenItems, Repeat.One) when _current is var (item, _) && Begin(item, out provider):
+                return true;
             case (PlaylistState.BetweenItems, _):
                 if (Index < _items.Count - 1)
                     return Next(true, out provider);
@@ -188,20 +187,12 @@ public sealed class LazyPlaylist : IAudioProcessor
         EndCurrent();
     }
 
-    private bool TryGetSource<T>([NotNullWhen(true)] out T? provider) where T : notnull
+    private T? GetSource<T>() where T : notnull => _current.GetValueOrDefault().Provider switch
     {
-        switch (_current.GetValueOrDefault().Provider)
-        {
-            case T t:
-                provider = t;
-                return true;
-            case IAudioProcessor processor:
-                return processor.TryGetSourceAs(out provider);
-            default:
-                provider = default;
-                return false;
-        }
-    }
+        T t => t,
+        IAudioProcessor processor when processor.TryGetSourceAs(out T? provider) => provider,
+        _ => default
+    };
 
     /// <inheritdoc/>
     public WaveFormat WaveFormat { get; }
