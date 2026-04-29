@@ -66,7 +66,7 @@ public readonly record struct SpeakerSettings
     /// <summary>Whether the speaker is spatial (has 3D sound).</summary>
     public bool IsSpatial { get; init; }
 
-    /// <summary>The volume of the speaker.</summary>
+    /// <summary>The client-side volume of the speaker. 0 = muted, 1 = 100% volume.</summary>
     public float Volume { get; init; }
 
     /// <summary>Minimum distance where attenuation begins at. Up until this distance the audio is heard at full volume.</summary>
