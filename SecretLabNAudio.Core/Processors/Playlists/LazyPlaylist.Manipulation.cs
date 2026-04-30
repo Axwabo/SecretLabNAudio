@@ -42,32 +42,41 @@ public sealed partial class LazyPlaylist
         return this;
     }
 
-    public LazyPlaylist Clear(bool stopCurrent = true)
+    public LazyPlaylist Clear(bool stop = true)
     {
         _items.Clear();
-        _isDetached = !stopCurrent;
-        if (stopCurrent)
+        _isDetached = !stop;
+        if (stop)
             End(IsPlaying);
         return this;
     }
 
-    public bool Previous()
+    public bool Previous(bool? wrapAround = null)
     {
-        if (Index <= 0)
+        if (_items.Count == 0)
             return false;
-        Index--;
-        return _items.Count != 0 && Next(false, out _);
+        if (_isDetached)
+            return Next(false, out _);
+        if (Index > 0)
+        {
+            Index--;
+            return Next(false, out _);
+        }
+
+        if (!wrapAround ?? RepeatMode != Repeat.All)
+            return false;
+        Index = _items.Count - 1;
+        return Next(false, out _);
     }
 
-    public bool Next()
+    public bool Next(bool? wrapAround = null)
     {
+        var wrap = wrapAround ?? RepeatMode == Repeat.All;
         if (!NextAvailable)
-            return false;
+            return wrap && Restart(out _);
         if (IsPlaying)
             return Next(true, out _);
-        if (State == PlaylistState.NotStarted
-            || State == PlaylistState.Ended && RepeatMode == Repeat.All
-            || State == PlaylistState.BetweenItems && Index >= _items.Count - 1)
+        if (State == PlaylistState.NotStarted || wrap && State == PlaylistState.Ended)
             return Restart(out _);
         return false;
     }
@@ -80,7 +89,7 @@ public sealed partial class LazyPlaylist
         return true;
     }
 
-    public bool RestartPlaylist(bool allowShuffle = true) => Restart(out _, allowShuffle);
+    public bool RestartPlaylist(bool? shuffle = null) => Restart(out _, shuffle);
 
     public void EndPlaylist() => End(IsPlaying);
 

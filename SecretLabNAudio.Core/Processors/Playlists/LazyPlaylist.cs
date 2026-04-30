@@ -1,5 +1,6 @@
 using SecretLabNAudio.Core.Extensions;
 using SecretLabNAudio.Core.Extensions.Processors;
+using Random = System.Random;
 #if !DEBUG
 using Random = UnityEngine.Random;
 #endif
@@ -37,7 +38,9 @@ public sealed partial class LazyPlaylist : IAudioProcessor
 
     private bool IsPlaying => State is PlaylistState.PlayingItem or PlaylistState.BetweenItems;
 
-    private bool NextAvailable => Index < _items.Count - 2;
+    private bool NextAvailable => Index < _items.Count - 1;
+
+    public event Action? BeforeStarted;
 
     public event Action? CurrentItemChanged;
 
@@ -53,6 +56,8 @@ public sealed partial class LazyPlaylist : IAudioProcessor
 
     public int Read(float[] buffer, int offset, int count)
     {
+        if (State == PlaylistState.Ended)
+            return 0;
         var total = 0;
         while (total < count && TryGetCurrent(out var provider))
         {
@@ -71,7 +76,6 @@ public sealed partial class LazyPlaylist : IAudioProcessor
         switch (State, RepeatMode)
         {
             case (PlaylistState.NotStarted, _):
-            case (PlaylistState.Ended, Repeat.All):
             case (PlaylistState.BetweenItems, Repeat.All) when !NextAvailable:
                 return Restart(out provider);
             case (PlaylistState.BetweenItems, Repeat.One) when _current is var (item, _) && Begin(item, out provider):
@@ -82,28 +86,27 @@ public sealed partial class LazyPlaylist : IAudioProcessor
                 End(true);
                 provider = null;
                 return false;
-            case (PlaylistState.Ended, _):
-                provider = null;
-                return false;
             default:
                 provider = _current?.Provider;
                 return provider != null;
         }
     }
 
-    private bool Restart([NotNullWhen(true)] out ISampleProvider? provider, bool allowShuffle = true)
+    private bool Restart([NotNullWhen(true)] out ISampleProvider? provider, bool? shuffle = null)
     {
         EndCurrent();
         _current = null;
-        State = PlaylistState.Ended;
         if (_items.Count == 0)
         {
+            State = PlaylistState.Ended;
             provider = null;
             return false;
         }
 
-        if (allowShuffle && ShuffleOnStart)
+        State = PlaylistState.NotStarted;
+        if (shuffle ?? ShuffleOnStart)
             Shuffle();
+        BeforeStarted.InvokeSafely();
         Index = 0;
         return Next(false, out provider);
     }
@@ -131,7 +134,7 @@ public sealed partial class LazyPlaylist : IAudioProcessor
         return false;
     }
 
-    private void Shuffle()
+    public LazyPlaylist Shuffle()
     {
 #if DEBUG
         var random = new Random();
@@ -140,6 +143,7 @@ public sealed partial class LazyPlaylist : IAudioProcessor
         Comparison<PlaylistItem> comparison = (_, _) => Random.value < 0.5f ? -1 : 1;
 #endif
         _items.Sort(comparison);
+        return this;
     }
 
     private bool Begin(PlaylistItem item, [NotNullWhen(true)] out ISampleProvider? provider)
