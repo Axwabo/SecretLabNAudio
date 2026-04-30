@@ -19,8 +19,20 @@ public static class PlaylistExtensions
     extension(LazyPlaylist playlist)
     {
 
+        /// <summary>
+        /// Adds a file to the end of the playlist.
+        /// </summary>
+        /// <param name="path">The path to the file.</param>
+        /// <param name="volume">The volume of the item.</param>
+        /// <returns>The playlist itself.</returns>
         public LazyPlaylist AddFile(string path, float volume = 1) => playlist.AddFile(path, ModifyChain.AmplifyIfNot1(volume));
 
+        /// <summary>
+        /// Adds a file to the end of the playlist.
+        /// </summary>
+        /// <param name="path">The path to the file.</param>
+        /// <param name="process">An optional <see cref="ModifyChain"/> specifying how to process the stream.</param>
+        /// <returns>The playlist itself.</returns>
         public LazyPlaylist AddFile(string path, ModifyChain? process) => playlist.Add(new FilePlaylistItem(path).Process(process));
 
         public LazyPlaylist AddFileIfReadable(string path, float volume = 1) => playlist.AddFileIfReadable(path, ModifyChain.AmplifyIfNot1(volume));
@@ -63,28 +75,59 @@ public static class PlaylistExtensions
             return playlist;
         }
 
+        /// <summary>
+        /// Adds a short clip to the end of the playlist.
+        /// </summary>
+        /// <param name="clipName">The name of the clip.</param>
+        /// <param name="volume">The volume of the item.</param>
+        /// <returns>The playlist itself.</returns>
+        /// <seealso cref="ShortClipCache"/>
         public LazyPlaylist AddShortClip(ClipName clipName, float volume = 1) => playlist.AddShortClip(clipName, ModifyChain.AmplifyIfNot1(volume));
 
+        /// <summary>
+        /// Adds a short clip to the end of the playlist.
+        /// </summary>
+        /// <param name="clipName">The name of the clip.</param>
+        /// <param name="process">An optional <see cref="ModifyChain"/> specifying how to process the clip.</param>
+        /// <returns>The playlist itself.</returns>
+        /// <seealso cref="ShortClipCache"/>
         public LazyPlaylist AddShortClip(ClipName clipName, ModifyChain? process) => playlist.Add(new ShortClipPlaylistItem(clipName).Process(process));
 
+        /// <summary>
+        /// Sets whether to shuffle items when the playlist (re)starts.
+        /// </summary>
+        /// <param name="shuffle">Whether to shuffle items.</param>
+        /// <returns>The playlist itself.</returns>
         public LazyPlaylist AutoShuffle(bool shuffle = true)
         {
             playlist.ShuffleOnStart = shuffle;
             return playlist;
         }
 
+        /// <summary>
+        /// Sets <see cref="LazyPlaylist.RepeatMode"/> to <see cref="Repeat.All"/>.
+        /// </summary>
+        /// <returns>The playlist itself.</returns>
         public LazyPlaylist RepeatAll()
         {
             playlist.RepeatMode = Repeat.All;
             return playlist;
         }
 
+        /// <summary>
+        /// Sets <see cref="LazyPlaylist.RepeatMode"/> to <see cref="Repeat.One"/>.
+        /// </summary>
+        /// <returns>The playlist itself.</returns>
         public LazyPlaylist RepeatOne()
         {
             playlist.RepeatMode = Repeat.One;
             return playlist;
         }
 
+        /// <summary>
+        /// Sets <see cref="LazyPlaylist.RepeatMode"/> to <see cref="Repeat.None"/>.
+        /// </summary>
+        /// <returns>The playlist itself.</returns>
         public LazyPlaylist NoRepeat()
         {
             playlist.RepeatMode = Repeat.None;

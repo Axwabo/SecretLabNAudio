@@ -8,6 +8,10 @@ using SecretLabNAudio.Core.Extensions.Processors;
 
 namespace SecretLabNAudio.Core.Processors.Playlists;
 
+/// <summary>
+/// A lazily-evaluated playlist that plays items one after another.
+/// Sample providers are only created when each item starts, which saves memory, and reduces open file handles.
+/// </summary>
 public sealed partial class LazyPlaylist : IAudioProcessor
 {
 
@@ -19,8 +23,14 @@ public sealed partial class LazyPlaylist : IAudioProcessor
 
     public PlaylistState State { get; private set; }
 
+    /// <summary>
+    /// A read-only view of the items in the playlist.
+    /// </summary>
     public IReadOnlyList<PlaylistItem> Items { get; }
 
+    /// <summary>
+    /// Whether to shuffle items when the playlist (re)starts.
+    /// </summary>
     public bool ShuffleOnStart { get; set; }
 
     public Repeat RepeatMode
@@ -33,6 +43,9 @@ public sealed partial class LazyPlaylist : IAudioProcessor
         }
     }
 
+    /// <summary>
+    /// The item currently being played, if any.
+    /// </summary>
     public PlaylistItem? CurrentItem => _current?.Item;
 
     private bool IsPlaying => State is PlaylistState.PlayingIndex or PlaylistState.PlayingDetachedItem or PlaylistState.MovingToNextItem;
@@ -53,6 +66,7 @@ public sealed partial class LazyPlaylist : IAudioProcessor
 
     public LazyPlaylist(WaveFormat waveFormat, params IEnumerable<PlaylistItem> items) : this(waveFormat) => _items.AddRange(items);
 
+    /// <inheritdoc/>
     public int Read(float[] buffer, int offset, int count)
     {
         if (State == PlaylistState.Ended)
@@ -133,6 +147,10 @@ public sealed partial class LazyPlaylist : IAudioProcessor
         return false;
     }
 
+    /// <summary>
+    /// Randomizes the order of items in-place.
+    /// </summary>
+    /// <returns>The playlist itself.</returns>
     public LazyPlaylist Shuffle()
     {
 #if DEBUG
@@ -168,6 +186,7 @@ public sealed partial class LazyPlaylist : IAudioProcessor
             Console.WriteLine($"Failed to play {item}");
             Console.WriteLine(e);
 #else
+            Debug.LogError($"Failed to play {item}");
             Debug.LogError(e);
 #endif
             provider = null;
@@ -199,6 +218,9 @@ public sealed partial class LazyPlaylist : IAudioProcessor
     /// <inheritdoc/>
     public WaveFormat WaveFormat { get; }
 
+    /// <summary>
+    /// Clears the playlist, and disposes of the current provider. 
+    /// </summary>
     public void Dispose()
     {
         EndCurrent();
