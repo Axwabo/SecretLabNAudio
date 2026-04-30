@@ -164,6 +164,7 @@ public sealed partial class LazyPlaylist : IAudioProcessor
         {
             // TODO: add log message, remove debug
 #if DEBUG
+            Console.WriteLine($"Failed to play {item}");
             Console.WriteLine(e);
 #else
             Debug.LogError(e);

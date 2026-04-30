@@ -54,8 +54,6 @@ public sealed partial class LazyPlaylist
     {
         if (_items.Count == 0)
             return false;
-        if (State == PlaylistState.PlayingDetachedItem)
-            return Next(false, out _);
         if (Index > 0)
         {
             Index--;
@@ -63,7 +61,7 @@ public sealed partial class LazyPlaylist
         }
 
         if (!wrapAround ?? RepeatMode != Repeat.All)
-            return false;
+            return State == PlaylistState.PlayingDetachedItem && Index == 0 && Next(false, out _);
         Index = _items.Count - 1;
         return Next(false, out _);
     }
@@ -71,6 +69,10 @@ public sealed partial class LazyPlaylist
     public bool Next(bool? wrapAround = null)
     {
         var wrap = wrapAround ?? RepeatMode == Repeat.All;
+        if (State == PlaylistState.PlayingDetachedItem)
+            return !NextAvailable && wrap
+                ? Restart(out _)
+                : Next(false, out _);
         if (!NextAvailable)
             return wrap && Restart(out _);
         if (IsPlaying)
