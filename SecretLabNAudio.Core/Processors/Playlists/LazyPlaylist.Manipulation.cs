@@ -28,11 +28,15 @@ public sealed partial class LazyPlaylist
         {
             if (stopCurrent)
                 EndCurrent();
-            State = !IsPlaying
-                ? State
-                : stopCurrent
-                    ? PlaylistState.MovingToNextItem
-                    : PlaylistState.PlayingDetachedItem;
+            if (!IsPlaying)
+                return this;
+            if (stopCurrent)
+            {
+                Index--;
+                State = PlaylistState.MovingToNextItem;
+            }
+            else
+                State = PlaylistState.PlayingDetachedItem;
         }
         else if (index < Index)
             Index--;

@@ -1,9 +1,10 @@
-using SecretLabNAudio.Core.Extensions;
-using SecretLabNAudio.Core.Extensions.Processors;
+#if DEBUG
 using Random = System.Random;
-#if !DEBUG
+#else
 using Random = UnityEngine.Random;
 #endif
+using SecretLabNAudio.Core.Extensions;
+using SecretLabNAudio.Core.Extensions.Processors;
 
 namespace SecretLabNAudio.Core.Processors.Playlists;
 
