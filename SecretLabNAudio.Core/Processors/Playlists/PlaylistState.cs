@@ -5,7 +5,8 @@ public enum PlaylistState
 
     NotStarted,
     Ended,
-    PlayingItem,
-    BetweenItems
+    PlayingIndex,
+    PlayingDetachedItem,
+    MovingToNextItem
 
 }

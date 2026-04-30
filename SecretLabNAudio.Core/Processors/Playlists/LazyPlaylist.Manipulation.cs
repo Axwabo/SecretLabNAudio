@@ -28,16 +28,14 @@ public sealed partial class LazyPlaylist
         {
             if (stopCurrent)
                 EndCurrent();
-            if (IsPlaying)
-                _isDetached = true;
-            State = PlaylistState.BetweenItems;
+            State = !IsPlaying
+                ? State
+                : stopCurrent
+                    ? PlaylistState.MovingToNextItem
+                    : PlaylistState.PlayingDetachedItem;
         }
         else if (index < Index)
-        {
-            if (IsPlaying)
-                _isDetached = true;
             Index--;
-        }
 
         return this;
     }
@@ -45,9 +43,10 @@ public sealed partial class LazyPlaylist
     public LazyPlaylist Clear(bool stop = true)
     {
         _items.Clear();
-        _isDetached = !stop;
         if (stop)
             End(IsPlaying);
+        else if (IsPlaying)
+            State = PlaylistState.PlayingDetachedItem;
         return this;
     }
 
@@ -55,7 +54,7 @@ public sealed partial class LazyPlaylist
     {
         if (_items.Count == 0)
             return false;
-        if (_isDetached)
+        if (State == PlaylistState.PlayingDetachedItem)
             return Next(false, out _);
         if (Index > 0)
         {

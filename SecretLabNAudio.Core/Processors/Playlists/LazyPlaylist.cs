@@ -14,8 +14,6 @@ public sealed partial class LazyPlaylist : IAudioProcessor
 
     private (PlaylistItem Item, ISampleProvider Provider)? _current;
 
-    private bool _isDetached;
-
     public int Index { get; private set; }
 
     public PlaylistState State { get; private set; }
@@ -36,7 +34,7 @@ public sealed partial class LazyPlaylist : IAudioProcessor
 
     public PlaylistItem? CurrentItem => _current?.Item;
 
-    private bool IsPlaying => State is PlaylistState.PlayingItem or PlaylistState.BetweenItems;
+    private bool IsPlaying => State is PlaylistState.PlayingIndex or PlaylistState.PlayingDetachedItem or PlaylistState.MovingToNextItem;
 
     private bool NextAvailable => Index < _items.Count - 1;
 
@@ -65,7 +63,7 @@ public sealed partial class LazyPlaylist : IAudioProcessor
             var read = provider.Read(buffer, total + offset, target);
             total += read;
             if (read < target)
-                State = PlaylistState.BetweenItems;
+                State = PlaylistState.MovingToNextItem;
         }
 
         return total;
@@ -76,16 +74,16 @@ public sealed partial class LazyPlaylist : IAudioProcessor
         switch (State, RepeatMode)
         {
             case (PlaylistState.NotStarted, _):
-            case (PlaylistState.BetweenItems, Repeat.All) when !NextAvailable:
+            case (PlaylistState.MovingToNextItem, Repeat.All) when !NextAvailable:
                 return Restart(out provider);
-            case (PlaylistState.BetweenItems, Repeat.One) when _current is var (item, _) && Begin(item, out provider):
-                return true;
-            case (PlaylistState.BetweenItems, _):
+            case (PlaylistState.MovingToNextItem, _):
                 if (NextAvailable)
                     return Next(true, out provider);
                 End(true);
                 provider = null;
                 return false;
+            case (PlaylistState.PlayingDetachedItem, Repeat.One) when _current is var (item, _) && Begin(item, out provider):
+                return true;
             default:
                 provider = _current?.Provider;
                 return provider != null;
@@ -114,7 +112,7 @@ public sealed partial class LazyPlaylist : IAudioProcessor
     private bool Next(bool advance, [NotNullWhen(true)] out ISampleProvider? provider)
     {
         var wasPlaying = IsPlaying;
-        if (advance && !_isDetached && NextAvailable)
+        if (advance && State != PlaylistState.PlayingDetachedItem && NextAvailable)
             Index++;
         while (Index < _items.Count)
         {
@@ -124,7 +122,7 @@ public sealed partial class LazyPlaylist : IAudioProcessor
                 continue;
             }
 
-            State = PlaylistState.PlayingItem;
+            State = PlaylistState.PlayingIndex;
             CurrentItemChanged.InvokeSafely();
             return true;
         }
@@ -149,7 +147,7 @@ public sealed partial class LazyPlaylist : IAudioProcessor
     private bool Begin(PlaylistItem item, [NotNullWhen(true)] out ISampleProvider? provider)
     {
         EndCurrent();
-        State = PlaylistState.BetweenItems;
+        State = PlaylistState.MovingToNextItem;
         try
         {
             var created = item.CreateProvider(WaveFormat.SampleRate, WaveFormat.Channels);
@@ -179,7 +177,6 @@ public sealed partial class LazyPlaylist : IAudioProcessor
     {
         (_current?.Provider as IDisposable)?.Dispose();
         _current = null;
-        _isDetached = false;
     }
 
     private void End(bool wasPlaying)
@@ -203,12 +200,9 @@ public sealed partial class LazyPlaylist : IAudioProcessor
     public void Dispose()
     {
         EndCurrent();
-        _current = null;
-        _isDetached = false;
         _items.Clear();
         State = PlaylistState.Ended;
-        CurrentItemChanged = null;
-        LastItemEnded = null;
+        BeforeStarted = CurrentItemChanged = LastItemEnded = null;
     }
 
 }
