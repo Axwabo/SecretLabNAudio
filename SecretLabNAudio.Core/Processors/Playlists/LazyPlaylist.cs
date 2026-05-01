@@ -151,7 +151,7 @@ public sealed partial class LazyPlaylist : IAudioProcessor
     /// Randomizes the order of items in-place.
     /// </summary>
     /// <returns>The playlist itself.</returns>
-    public LazyPlaylist Shuffle()
+    private void Shuffle()
     {
 #if DEBUG
         var random = new Random();
@@ -160,7 +160,6 @@ public sealed partial class LazyPlaylist : IAudioProcessor
         Comparison<PlaylistItem> comparison = (_, _) => Random.value < 0.5f ? -1 : 1;
 #endif
         _items.Sort(comparison);
-        return this;
     }
 
     private bool Begin(PlaylistItem item, [NotNullWhen(true)] out ISampleProvider? provider)
