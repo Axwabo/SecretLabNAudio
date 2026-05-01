@@ -89,7 +89,7 @@ public sealed partial class LazyPlaylist
     public bool RestartCurrentItem()
     {
         if (GetSource<ISeekable>() is not { } seekable)
-            return _current.HasValue && Next(false, out _);
+            return _current is var (item, _) && Begin(item, out _);
         seekable.CurrentTime = TimeSpan.Zero;
         return true;
     }
