@@ -134,6 +134,38 @@ public static class ProcessorChainExtensions
             return chain;
         }
 
+        public ProcessorChain DelayBy(TimeSpan delay)
+        {
+            if (chain.Master is not OffsetSampleProvider offset)
+                return chain.Layer(provider => new OffsetSampleProvider(provider) {DelayBy = delay});
+            offset.DelayBy = delay;
+            return chain;
+        }
+
+        public ProcessorChain Skip(TimeSpan skipDuration)
+        {
+            if (chain.Master is not OffsetSampleProvider offset)
+                return chain.Layer(provider => provider.Skip(skipDuration));
+            offset.SkipOver = skipDuration;
+            return chain;
+        }
+
+        public ProcessorChain Take(TimeSpan takeDuration)
+        {
+            if (chain.Master is not OffsetSampleProvider offset)
+                return chain.Layer(provider => provider.Take(takeDuration));
+            offset.Take = takeDuration;
+            return chain;
+        }
+
+        public ProcessorChain LeadOut(TimeSpan silenceDuration)
+        {
+            if (chain.Master is not OffsetSampleProvider offset)
+                return chain.Layer(provider => new OffsetSampleProvider(provider) {LeadOut = silenceDuration});
+            offset.LeadOut = silenceDuration;
+            return chain;
+        }
+
     }
 
     /// <param name="chain">The audio processor chain.</param>
