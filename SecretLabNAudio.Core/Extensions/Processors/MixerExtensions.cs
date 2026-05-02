@@ -116,7 +116,7 @@ public static class MixerExtensions
         /// <typeparam name="T">The type to match.</typeparam>
         /// <returns>The mixer itself.</returns>
         public Mixer RemoveAllByImmediateType<T>()
-            => mixer.RemoveAll(static e => e.Provider is T);
+            => mixer.RemoveAll(e => e.Provider is T);
 
         /// <summary>
         /// Removes all inputs whose source type is of type <typeparamref name="T"/>.
@@ -128,7 +128,7 @@ public static class MixerExtensions
         /// </remarks>
         /// <returns>The mixer itself.</returns>
         public Mixer RemoveAllBySourceType<T>()
-            => mixer.RemoveAll(static e => e.Provider is IAudioProcessor provider ? provider.TryGetSourceAs(out T? _) : e.Provider is T);
+            => mixer.RemoveAll(e => e.Provider is IAudioProcessor provider ? provider.TryGetSourceAs(out T? _) : e.Provider is T);
 
         /// <include file="../../XmlDocs/Mixer.xml" path="doc/RemoveAllShortClips/summary"/>
         /// <returns>The mixer itself.</returns>

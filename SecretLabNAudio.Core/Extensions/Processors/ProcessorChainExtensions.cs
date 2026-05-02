@@ -53,14 +53,14 @@ public static class ProcessorChainExtensions
         /// </summary>
         /// <returns>The chain itself.</returns>
         /// <remarks>The <see cref="ProcessorChain.Master"/> <see cref="MonoToStereoSampleProvider"/> will be removed if needed.</remarks>
-        public ProcessorChain ToMono() => chain.SwapTOrLayer<MonoToStereoSampleProvider>(static provider => provider.ToMono());
+        public ProcessorChain ToMono() => chain.SwapTOrLayer<MonoToStereoSampleProvider>(provider => provider.ToMono());
 
         /// <summary>
         /// Converts the chain to stereo if needed.
         /// </summary>
         /// <returns>The chain itself.</returns>
         /// <remarks>The <see cref="ProcessorChain.Master"/> <see cref="StereoToMonoSampleProvider"/> will be removed if needed.</remarks>
-        public ProcessorChain ToStereo() => chain.SwapTOrLayer<StereoToMonoSampleProvider>(static provider => provider.ToStereo());
+        public ProcessorChain ToStereo() => chain.SwapTOrLayer<StereoToMonoSampleProvider>(provider => provider.ToStereo());
 
         /// <summary>
         /// Processes the chain to ensure that the <see cref="ProcessorChain.WaveFormat"/> matches <see cref="AudioConstants.SupportedFormat"/>.

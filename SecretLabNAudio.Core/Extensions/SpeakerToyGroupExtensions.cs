@@ -32,13 +32,13 @@ public static class SpeakerToyGroupExtensions
         /// A grouping based on groups of grouped speakers.
         /// </summary>
         public static IEnumerable<IGrouping<SpeakerToy, SpeakerToyGroup>> SpeakersPerGroup
-            => GroupedSpeaker.Instances.GroupBy(static e => e.Speaker, static e => e.Group);
+            => GroupedSpeaker.Instances.GroupBy(e => e.Speaker, e => e.Group);
 
         /// <summary>
         /// Enumerates all speakers that are part of a group.
         /// </summary>
         public static IEnumerable<SpeakerToy> GroupedSpeakers
-            => GroupedSpeaker.Instances.Select(static e => e.Speaker);
+            => GroupedSpeaker.Instances.Select(e => e.Speaker);
 
         /// <summary>
         /// Rents one speaker from the <see cref="SpeakerToyPool"/>, and adds it to the group.

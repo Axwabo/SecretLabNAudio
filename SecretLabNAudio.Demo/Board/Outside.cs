@@ -28,8 +28,8 @@ public static class Outside
     public static void PlaceSpeakers(AudioPlayer controller)
     {
         var positions = Scp079InteractableBase.AllInstances
-            .Where(static e => e is Scp079Speaker {Room.Name: RoomName.Outside})
-            .Select(static e => e.Position);
+            .Where(e => e is Scp079Speaker {Room.Name: RoomName.Outside})
+            .Select(e => e.Position);
         PersonalizationInstances.Clear();
         PersonalizationInstances.AddRange(controller.GetOrCreateGroup()
             .AddFromPool(Settings, positions)
