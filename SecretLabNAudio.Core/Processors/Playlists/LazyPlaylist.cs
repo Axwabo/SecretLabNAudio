@@ -1,10 +1,10 @@
-using SecretLabNAudio.Core.Extensions;
-using SecretLabNAudio.Core.Extensions.Processors;
 #if DEBUG
 using Random = System.Random;
 #else
 using Random = UnityEngine.Random;
 #endif
+using SecretLabNAudio.Core.Extensions;
+using SecretLabNAudio.Core.Extensions.Processors;
 
 namespace SecretLabNAudio.Core.Processors.Playlists;
 
@@ -48,7 +48,7 @@ public sealed partial class LazyPlaylist : IAudioProcessor
     /// </summary>
     public PlaylistItem? CurrentItem => _current?.Item;
 
-    private bool IsPlaying => State is PlaylistState.PlayingIndex or PlaylistState.PlayingDetachedItem or PlaylistState.MovingToNextItem;
+    private bool IsPlaying => State is PlaylistState.PlayingIndex or PlaylistState.MovingToNextItem;
 
     private bool NextAvailable => Index < _items.Count - 1;
 
@@ -91,8 +91,6 @@ public sealed partial class LazyPlaylist : IAudioProcessor
             case (PlaylistState.NotStarted, _):
             case (PlaylistState.MovingToNextItem, Repeat.All) when !NextAvailable:
                 return Restart(out provider);
-            case (PlaylistState.MovingToNextItem, Repeat.One) when _current is var (item, _) && Begin(item, out provider):
-                return true;
             case (PlaylistState.MovingToNextItem, Repeat.One):
                 return Next(false, out provider);
             case (PlaylistState.MovingToNextItem, _):
@@ -101,11 +99,6 @@ public sealed partial class LazyPlaylist : IAudioProcessor
                 End(true);
                 provider = null;
                 return false;
-            case (PlaylistState.PlayingDetachedItem, Repeat.One) when _current is var (item, _):
-                if (!Begin(item, out provider))
-                    return Next(false, out provider);
-                State = PlaylistState.PlayingDetachedItem;
-                return true;
             default:
                 provider = _current?.Provider;
                 return provider != null;
@@ -134,7 +127,7 @@ public sealed partial class LazyPlaylist : IAudioProcessor
     private bool Next(bool advance, [NotNullWhen(true)] out ISampleProvider? provider)
     {
         var wasPlaying = IsPlaying;
-        if (advance && State != PlaylistState.PlayingDetachedItem && NextAvailable)
+        if (advance && NextAvailable)
             Index++;
         while (Index < _items.Count)
         {

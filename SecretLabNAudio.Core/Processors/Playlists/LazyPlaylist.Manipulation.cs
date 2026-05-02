@@ -15,28 +15,20 @@ public sealed partial class LazyPlaylist
         return this;
     }
 
-    public LazyPlaylist Remove(PlaylistItem item, bool stopCurrent = true)
+    public LazyPlaylist Remove(PlaylistItem item)
     {
         var index = _items.IndexOf(item);
-        return index == -1 ? this : RemoveAt(index, stopCurrent);
+        return index == -1 ? this : RemoveAt(index);
     }
 
-    public LazyPlaylist RemoveAt(int index, bool stopCurrent = true)
+    public LazyPlaylist RemoveAt(int index)
     {
         _items.RemoveAt(index);
         if (index == Index)
         {
-            if (stopCurrent)
-                EndCurrent();
-            if (!IsPlaying)
-                return this;
-            if (stopCurrent)
-            {
-                Index--;
-                State = PlaylistState.MovingToNextItem;
-            }
-            else
-                State = PlaylistState.PlayingDetachedItem;
+            EndCurrent();
+            if (IsPlaying)
+                Next(false, out _);
         }
         else if (index < Index)
             Index--;
@@ -44,13 +36,10 @@ public sealed partial class LazyPlaylist
         return this;
     }
 
-    public LazyPlaylist Clear(bool stop = true)
+    public LazyPlaylist Clear()
     {
         _items.Clear();
-        if (stop)
-            End(IsPlaying);
-        else if (IsPlaying)
-            State = PlaylistState.PlayingDetachedItem;
+        End(IsPlaying);
         return this;
     }
 
@@ -65,7 +54,7 @@ public sealed partial class LazyPlaylist
         }
 
         if (!wrapAround ?? RepeatMode != Repeat.All)
-            return State == PlaylistState.PlayingDetachedItem && Index == 0 && Next(false, out _);
+            return false;
         Index = _items.Count - 1;
         return Next(false, out _);
     }
@@ -73,10 +62,6 @@ public sealed partial class LazyPlaylist
     public bool Next(bool? wrapAround = null)
     {
         var wrap = wrapAround ?? RepeatMode == Repeat.All;
-        if (State == PlaylistState.PlayingDetachedItem)
-            return !NextAvailable && wrap
-                ? Restart(out _)
-                : Next(false, out _);
         if (!NextAvailable)
             return wrap && Restart(out _);
         if (IsPlaying)
