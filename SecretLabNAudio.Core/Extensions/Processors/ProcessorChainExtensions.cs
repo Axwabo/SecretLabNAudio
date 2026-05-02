@@ -169,7 +169,7 @@ public static class ProcessorChainExtensions
         public ProcessorChain Speed(float scalar)
         {
             if (chain.Master is not SpeedChangingSampleProvider speed)
-                return chain.Layer(provider => new OffsetSampleProvider(provider));
+                return chain.Layer(provider => new SpeedChangingSampleProvider(provider) {Speed = scalar});
             speed.Speed = scalar;
             return chain;
         }
