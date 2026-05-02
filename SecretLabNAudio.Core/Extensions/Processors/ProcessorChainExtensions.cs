@@ -166,6 +166,14 @@ public static class ProcessorChainExtensions
             return chain;
         }
 
+        public ProcessorChain Speed(float scalar)
+        {
+            if (chain.Master is not SpeedChangingSampleProvider speed)
+                return chain.Layer(provider => new OffsetSampleProvider(provider));
+            speed.Speed = scalar;
+            return chain;
+        }
+
     }
 
     /// <param name="chain">The audio processor chain.</param>

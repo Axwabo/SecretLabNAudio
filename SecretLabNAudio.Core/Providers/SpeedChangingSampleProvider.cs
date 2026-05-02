@@ -1,6 +1,6 @@
 using NAudio.Dsp;
 
-namespace SecretLabNAudio.Demo;
+namespace SecretLabNAudio.Core.Providers;
 
 public sealed class SpeedChangingSampleProvider : ISampleProvider
 {
