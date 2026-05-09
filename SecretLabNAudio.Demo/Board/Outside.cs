@@ -33,7 +33,7 @@ public static class Outside
         PersonalizationInstances.Clear();
         PersonalizationInstances.AddRange(controller.GetOrCreateGroup()
             .AddFromPool(Settings, positions)
-            .AddPersonalizationToAll());
+            .AddPersonalizationToChildren());
     }
 
     extension(Player p)

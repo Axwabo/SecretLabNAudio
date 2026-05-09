@@ -105,6 +105,20 @@ public static class SpeakerToyGroupExtensions
                 yield return child.AddPersonalization();
         }
 
+        /// <summary>
+        /// Adds a <see cref="SpeakerPersonalization"/> instance to each child, but not the controller.
+        /// </summary>
+        /// <returns>An <see cref="IEnumerable{T}"/> of <see cref="SpeakerPersonalization"/>s.</returns>
+        /// <exception cref="ObjectDisposedException">Thrown if the group has already been destroyed.</exception>
+        /// <seealso cref="PersonalizationExtensions.AddPersonalization(SpeakerToy)"/>
+        public IEnumerable<SpeakerPersonalization> AddPersonalizationToChildren()
+        {
+            if (group.IsDestroyed)
+                throw new ObjectDisposedException(nameof(SpeakerToyGroup));
+            foreach (var child in group.Children)
+                yield return child.AddPersonalization();
+        }
+
     }
 
 }
