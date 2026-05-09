@@ -180,7 +180,9 @@ public static class AudioProcessorExtensions
         /// <remarks>
         /// This method does not directly check the processor against type <typeparamref name="T"/>.<br/>
         /// It first checks if the processor is a <see cref="Mixer"/>.<br/>
-        /// If the processor is a <see cref="ProcessorChain"/>, it tries calls <see cref="TryGetSingleMixerInput"/>
+        /// If the processor is a <see cref="ProcessorChain"/>, and its <see cref="ProcessorChain.Source"/>
+        /// is of type <typeparamref name="T"/>, it returns the source.<br/>
+        /// If the processor is a <see cref="ProcessorChain"/>, it calls <see cref="TryGetSingleMixerInput"/>
         /// on the <see cref="ProcessorChain.Source"/> if it's an <see cref="IAudioProcessor"/>.
         /// </remarks>
         public bool TryGetSingleMixerInput([NotNullWhen(true)] out T? result)
@@ -195,6 +197,9 @@ public static class AudioProcessorExtensions
                     return true;
                 case SampleProviderWrapper {Source: IAudioProcessor source}:
                     return source.TryGetSingleMixerInput(out result);
+                case ProcessorChain {Source: T t}:
+                    result = t;
+                    return true;
                 case ProcessorChain {Source: IAudioProcessor master}:
                     return master.TryGetSingleMixerInput(out result);
                 default:

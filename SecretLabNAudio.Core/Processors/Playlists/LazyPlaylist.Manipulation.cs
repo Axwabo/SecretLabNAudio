@@ -39,6 +39,7 @@ public sealed partial class LazyPlaylist
     public LazyPlaylist Clear()
     {
         _items.Clear();
+        Index = 0;
         End(IsPlaying);
         return this;
     }
@@ -74,7 +75,13 @@ public sealed partial class LazyPlaylist
     public bool RestartCurrentItem()
     {
         if (GetSource<ISeekable>() is not { } seekable)
-            return _current is var (item, _) && Begin(item, out _);
+        {
+            if (_current is not var (item, _) || !Begin(item, out _))
+                return false;
+            State = PlaylistState.PlayingIndex;
+            return true;
+        }
+
         seekable.CurrentTime = TimeSpan.Zero;
         return true;
     }

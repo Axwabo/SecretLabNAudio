@@ -27,6 +27,16 @@ public static partial class AudioPlayerExtensions
         /// </summary>
         public Mixer? Mixer => player.ImmediateProviderAs<Mixer>();
 
+        /// <summary>
+        /// Safely casts the single input to a <see cref="LazyPlaylist"/>.
+        /// </summary>
+        /// <remarks>
+        /// The single input may be:
+        /// <list type="number">
+        /// <item>the immediate <see cref="AudioPlayer.SampleProvider"/></item>
+        /// <item>the only input if the <see cref="AudioPlayer.SampleProvider"/> is a <see cref="Mixer"/></item>
+        /// </list>
+        /// </remarks>
         public LazyPlaylist? Playlist => player.SingleInputAs<LazyPlaylist>();
 
     }

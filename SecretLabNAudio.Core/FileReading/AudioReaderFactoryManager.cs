@@ -47,8 +47,18 @@ public static class AudioReaderFactoryManager
             ? factory
             : throw new NotSupportedException($"No factory registered for file type {fileType}");
 
+    /// <summary>
+    /// Checks if a factory exists for the given file type.
+    /// </summary>
+    /// <param name="fileType">The file type to check.</param>
+    /// <returns>Whether a factory has been registered.</returns>
     public static bool HasFactory(string fileType) => Factories.ContainsKey(fileType.TrimStart('.'));
 
+    /// <summary>
+    /// Checks if the file exists and if a factory exists for its extension.
+    /// </summary>
+    /// <param name="filePath">The path to the file to check.</param>
+    /// <returns>Whether audio can be read from the file.</returns>
     public static bool IsReadable(string filePath) => File.Exists(filePath) && HasFactory(Path.GetExtension(filePath));
 
 }

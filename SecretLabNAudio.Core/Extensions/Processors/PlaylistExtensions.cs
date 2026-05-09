@@ -3,12 +3,20 @@ using SecretLabNAudio.Core.Processors.Playlists;
 
 namespace SecretLabNAudio.Core.Extensions.Processors;
 
+/// <summary>
+/// Extension members for playlists.
+/// </summary>
 public static class PlaylistExtensions
 {
 
     extension(PlaylistItem playlistItem)
     {
 
+        /// <summary>
+        /// Wraps the item in a <see cref="ProcessedPlaylistItem"/> if a <see cref="ModifyChain"/> is specified.
+        /// </summary>
+        /// <param name="process">A delegate specifying how to modify the audio processor.</param>
+        /// <returns>A new <see cref="ProcessedPlaylistItem"/> or the item itself.</returns>
         public PlaylistItem Process(ModifyChain? process)
             => process == null
                 ? playlistItem
@@ -35,13 +43,32 @@ public static class PlaylistExtensions
         /// <returns>The playlist itself.</returns>
         public LazyPlaylist AddFile(string path, ModifyChain? process) => playlist.Add(new FilePlaylistItem(path).Process(process));
 
+        /// <summary>
+        /// Adds a file to the end of the playlist if the file currently exists and is supported.
+        /// </summary>
+        /// <param name="path">The path to the file.</param>
+        /// <param name="volume">The volume of the item.</param>
+        /// <returns>The playlist itself.</returns>
+        /// <seealso cref="AudioReaderFactoryManager.IsReadable"/>
         public LazyPlaylist AddFileIfReadable(string path, float volume = 1) => playlist.AddFileIfReadable(path, ModifyChain.AmplifyIfNot1(volume));
 
+        /// <summary>
+        /// Adds a file to the end of the playlist if the file currently exists and is supported.
+        /// </summary>
+        /// <param name="path">The path to the file.</param>
+        /// <param name="process">An optional <see cref="ModifyChain"/> specifying how to process the stream.</param>
+        /// <returns>The playlist itself.</returns>
+        /// <seealso cref="AudioReaderFactoryManager.IsReadable"/>
         public LazyPlaylist AddFileIfReadable(string path, ModifyChain? process)
             => AudioReaderFactoryManager.IsReadable(path)
                 ? playlist.AddFile(path, process)
                 : playlist;
 
+        /// <summary>
+        /// Adds multiple files to the end of the playlist.
+        /// </summary>
+        /// <param name="paths">The paths to files.</param>
+        /// <returns>The playlist itself.</returns>
         public LazyPlaylist AddFiles(params IEnumerable<string> paths)
         {
             foreach (var path in paths)
@@ -49,15 +76,33 @@ public static class PlaylistExtensions
             return playlist;
         }
 
+        /// <summary>
+        /// Adds multiple files to the end of the playlist.
+        /// </summary>
+        /// <param name="paths">The paths to files.</param>
+        /// <param name="volume">The volume of the items.</param>
+        /// <returns>The playlist itself.</returns>
         public LazyPlaylist AddFiles(IEnumerable<string> paths, float volume) => playlist.AddFiles(paths, ModifyChain.AmplifyIfNot1(volume));
 
-        public LazyPlaylist AddFiles(IEnumerable<string> paths, ModifyChain? modifyChain)
+        /// <summary>
+        /// Adds multiple files to the end of the playlist.
+        /// </summary>
+        /// <param name="paths">The paths to files.</param>
+        /// <param name="process">An optional <see cref="ModifyChain"/> specifying how to process streams.</param>
+        /// <returns>The playlist itself.</returns>
+        public LazyPlaylist AddFiles(IEnumerable<string> paths, ModifyChain? process)
         {
             foreach (var path in paths)
-                playlist.AddFile(path, modifyChain);
+                playlist.AddFile(path, process);
             return playlist;
         }
 
+        /// <summary>
+        /// Adds multiple files to the end of the playlist, skipping those that are currently not readable.
+        /// </summary>
+        /// <param name="paths">The paths to files.</param>
+        /// <returns>The playlist itself.</returns>
+        /// <seealso cref="AudioReaderFactoryManager.IsReadable"/>
         public LazyPlaylist AddReadableFiles(params IEnumerable<string> paths)
         {
             foreach (var path in paths)
@@ -66,12 +111,24 @@ public static class PlaylistExtensions
             return playlist;
         }
 
+        /// <summary>
+        /// Adds multiple files to the end of the playlist, skipping those that are currently not readable.
+        /// </summary>
+        /// <param name="paths">The paths to files.</param>
+        /// <param name="volume">The volume of the items.</param>
+        /// <returns>The playlist itself.</returns>
         public LazyPlaylist AddReadableFiles(IEnumerable<string> paths, float volume) => playlist.AddFiles(paths, ModifyChain.AmplifyIfNot1(volume));
 
-        public LazyPlaylist AddReadableFiles(IEnumerable<string> paths, ModifyChain? modifyChain)
+        /// <summary>
+        /// Adds multiple files to the end of the playlist, skipping those that are currently not readable.
+        /// </summary>
+        /// <param name="paths">The paths to files.</param>
+        /// <param name="process">An optional <see cref="ModifyChain"/> specifying how to process streams.</param>
+        /// <returns>The playlist itself.</returns>
+        public LazyPlaylist AddReadableFiles(IEnumerable<string> paths, ModifyChain? process)
         {
             foreach (var path in paths)
-                playlist.AddFileIfReadable(path, modifyChain);
+                playlist.AddFileIfReadable(path, process);
             return playlist;
         }
 
