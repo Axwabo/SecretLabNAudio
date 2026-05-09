@@ -134,6 +134,12 @@ public static class ProcessorChainExtensions
             return chain;
         }
 
+        /// <summary>
+        /// Sets the <see cref="OffsetSampleProvider.DelayBy"/> property, adding delay before the source.
+        /// </summary>
+        /// <param name="delay">The amount of delay to set.</param>
+        /// <returns>The chain itself.</returns>
+        /// <remarks>If the <see cref="ProcessorChain.Master"/> is already an <see cref="OffsetSampleProvider"/>, the delay will be overwritten.</remarks>
         public ProcessorChain DelayBy(TimeSpan delay)
         {
             if (chain.Master is not OffsetSampleProvider offset)
@@ -142,6 +148,12 @@ public static class ProcessorChainExtensions
             return chain;
         }
 
+        /// <summary>
+        /// Sets the <see cref="OffsetSampleProvider.SkipOver"/> property, skipping a number of the source's samples.
+        /// </summary>
+        /// <param name="skipDuration">The amount of skip time to set.</param>
+        /// <returns>The chain itself.</returns>
+        /// <remarks>If the <see cref="ProcessorChain.Master"/> is already an <see cref="OffsetSampleProvider"/>, the skip time will be overwritten.</remarks>
         public ProcessorChain Skip(TimeSpan skipDuration)
         {
             if (chain.Master is not OffsetSampleProvider offset)
@@ -150,6 +162,12 @@ public static class ProcessorChainExtensions
             return chain;
         }
 
+        /// <summary>
+        /// Sets the <see cref="OffsetSampleProvider.Take"/> property, effectively specifying the maximum duration.
+        /// </summary>
+        /// <param name="takeDuration">The amount of take time to set.</param>
+        /// <returns>The chain itself.</returns>
+        /// <remarks>If the <see cref="ProcessorChain.Master"/> is already an <see cref="OffsetSampleProvider"/>, the take time will be overwritten.</remarks>
         public ProcessorChain Take(TimeSpan takeDuration)
         {
             if (chain.Master is not OffsetSampleProvider offset)
@@ -158,6 +176,12 @@ public static class ProcessorChainExtensions
             return chain;
         }
 
+        /// <summary>
+        /// Sets the <see cref="OffsetSampleProvider.LeadOut"/> property, adding delay after the source's end.
+        /// </summary>
+        /// <param name="silenceDuration">The amount of silence to append.</param>
+        /// <returns>The chain itself.</returns>
+        /// <remarks>If the <see cref="ProcessorChain.Master"/> is already an <see cref="OffsetSampleProvider"/>, the lead out time will be overwritten.</remarks>
         public ProcessorChain LeadOut(TimeSpan silenceDuration)
         {
             if (chain.Master is not OffsetSampleProvider offset)
@@ -166,6 +190,11 @@ public static class ProcessorChainExtensions
             return chain;
         }
 
+        /// <summary>
+        /// Changes the playback speed of the chain by layering a <see cref="SpeedChangingSampleProvider"/>.
+        /// </summary>
+        /// <param name="scalar">The speed scalar. 0 produces silence. 1 is normal speed.</param>
+        /// <returns>The chain itself.</returns>
         public ProcessorChain Speed(float scalar)
         {
             if (chain.Master is not SpeedChangingSampleProvider speed)

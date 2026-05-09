@@ -19,8 +19,14 @@ public sealed partial class LazyPlaylist : IAudioProcessor
 
     private (PlaylistItem Item, ISampleProvider Provider)? _current;
 
+    /// <summary>
+    /// The index of the current item or the last item that was played.
+    /// </summary>
     public int Index { get; private set; }
 
+    /// <summary>
+    /// The state of the playlist.
+    /// </summary>
     public PlaylistState State { get; private set; }
 
     /// <summary>
@@ -33,6 +39,9 @@ public sealed partial class LazyPlaylist : IAudioProcessor
     /// </summary>
     public bool ShuffleOnStart { get; set; }
 
+    /// <summary>
+    /// How to loop.
+    /// </summary>
     public Repeat RepeatMode
     {
         get;
@@ -52,18 +61,36 @@ public sealed partial class LazyPlaylist : IAudioProcessor
 
     private bool NextAvailable => Index < _items.Count - 1;
 
+    /// <summary>
+    /// Invoked before the playlist's first item is started if the <see cref="State"/> is <see cref="PlaylistState.NotStarted"/>.
+    /// </summary>
     public event Action? BeforeStarted;
 
+    /// <summary>
+    /// Invoked after a new item has started.
+    /// </summary>
     public event Action? CurrentItemChanged;
 
+    /// <summary>
+    /// Invoked after all items have ended when <see cref="RepeatMode"/> is <see cref="Repeat.None"/>.
+    /// </summary>
     public event Action? LastItemEnded;
 
+    /// <summary>
+    /// Creates an empty <see cref="LazyPlaylist"/>.
+    /// </summary>
+    /// <param name="waveFormat">The format of the playlist.</param>
     public LazyPlaylist(WaveFormat waveFormat)
     {
         WaveFormat = waveFormat;
         Items = _items.AsReadOnly();
     }
 
+    /// <summary>
+    /// Creates an empty <see cref="LazyPlaylist"/> with the specified items.
+    /// </summary>
+    /// <param name="waveFormat">The format of the playlist.</param>
+    /// <param name="items">The initial items.</param>
     public LazyPlaylist(WaveFormat waveFormat, params IEnumerable<PlaylistItem> items) : this(waveFormat) => _items.AddRange(items);
 
     /// <inheritdoc/>
@@ -225,6 +252,7 @@ public sealed partial class LazyPlaylist : IAudioProcessor
         EndCurrent();
         _items.Clear();
         State = PlaylistState.Ended;
+        Index = 0;
         BeforeStarted = CurrentItemChanged = LastItemEnded = null;
     }
 
