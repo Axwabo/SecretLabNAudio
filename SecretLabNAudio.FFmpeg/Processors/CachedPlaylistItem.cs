@@ -4,6 +4,13 @@ using SecretLabNAudio.FFmpeg.Caches;
 
 namespace SecretLabNAudio.FFmpeg.Processors;
 
+/// <summary>
+/// A queued playlist item using a cached version if available.
+/// </summary>
+/// <param name="Source">The input to look for in the cache.</param>
+/// <param name="Name">The name of the item.</param>
+/// <typeparam name="TSource">The type of input the cache accepts.</typeparam>
+/// <typeparam name="TKey">The type of key the cache generates the file path with.</typeparam>
 public abstract record CachedPlaylistItem<TSource, TKey>(TSource Source, string? Name = null) : PlaylistItem(Name)
 {
 
@@ -25,6 +32,10 @@ public abstract record CachedPlaylistItem<TSource, TKey>(TSource Source, string?
 
 }
 
+/// <summary>
+/// A queued playlist item that uses a cached version of a file if available.
+/// </summary>
+/// <param name="FilePath">The path to the file.</param>
 public sealed record CachedFilePlaylistItem(string FilePath) : CachedPlaylistItem<string, int>(FilePath, Path.GetFileNameWithoutExtension(FilePath))
 {
 

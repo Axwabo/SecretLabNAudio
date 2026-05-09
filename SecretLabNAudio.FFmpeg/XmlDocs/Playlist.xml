@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc>
+    <remarks>
+        If the file was cached in
+        <see cref="P:SecretLabNAudio.FFmpeg.Caches.SimpleFileCache.Shared">the shared cache</see>, the cached version will be used.
+    </remarks>
+</doc>
