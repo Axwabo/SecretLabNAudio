@@ -1,10 +1,6 @@
-#if DEBUG
-using Random = System.Random;
-#else
-using Random = UnityEngine.Random;
-#endif
 using SecretLabNAudio.Core.Extensions;
 using SecretLabNAudio.Core.Extensions.Processors;
+using Random = UnityEngine.Random;
 
 namespace SecretLabNAudio.Core.Processors.Playlists;
 
@@ -174,20 +170,7 @@ public sealed partial class LazyPlaylist : IAudioProcessor
         return false;
     }
 
-    /// <summary>
-    /// Randomizes the order of items in-place.
-    /// </summary>
-    /// <returns>The playlist itself.</returns>
-    private void Shuffle()
-    {
-#if DEBUG
-        var random = new Random();
-        Comparison<PlaylistItem> comparison = (_, _) => random.NextDouble() < 0.5 ? -1 : 1;
-#else
-        Comparison<PlaylistItem> comparison = (_, _) => Random.value < 0.5f ? -1 : 1;
-#endif
-        _items.Sort(comparison);
-    }
+    private void Shuffle() => _items.Sort((_, _) => Random.value < 0.5f ? -1 : 1);
 
     private bool Begin(PlaylistItem item, [NotNullWhen(true)] out ISampleProvider? provider)
     {
@@ -207,14 +190,8 @@ public sealed partial class LazyPlaylist : IAudioProcessor
         }
         catch (Exception e)
         {
-            // TODO: add log message, remove debug
-#if DEBUG
-            Console.WriteLine($"Failed to play {item}");
-            Console.WriteLine(e);
-#else
             Debug.LogError($"Failed to play {item}");
             Debug.LogError(e);
-#endif
             provider = null;
             return false;
         }

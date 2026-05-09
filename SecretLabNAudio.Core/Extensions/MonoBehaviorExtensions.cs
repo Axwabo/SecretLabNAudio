@@ -16,11 +16,7 @@ internal static class MonoBehaviorExtensions
         }
         catch (Exception e)
         {
-#if DEBUG
-            Console.WriteLine(e);
-#else
             Debug.LogError(e);
-#endif
         }
     }
 
