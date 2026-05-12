@@ -1,7 +1,11 @@
 using NAudio.Dsp;
 
-namespace SecretLabNAudio.Demo;
+namespace SecretLabNAudio.Core.Providers;
 
+/// <summary>
+/// A sample provider that stretches the input using a <see cref="WdlResampler"/>.
+/// Both tempo and pitch are affected.
+/// </summary>
 public sealed class SpeedChangingSampleProvider : ISampleProvider
 {
 
@@ -13,6 +17,10 @@ public sealed class SpeedChangingSampleProvider : ISampleProvider
 
     private float _previousSpeed = 1;
 
+    /// <summary>
+    /// Creates a new <see cref="SpeedChangingSampleProvider"/>.
+    /// </summary>
+    /// <param name="source">The provider to read from.</param>
     public SpeedChangingSampleProvider(ISampleProvider source)
     {
         _source = source;
@@ -22,13 +30,24 @@ public sealed class SpeedChangingSampleProvider : ISampleProvider
         _resampler.SetMode(true, 2, false);
         _resampler.SetFilterParms();
         _resampler.SetFeedMode(false);
-        _resampler.SetRates(WaveFormat.SampleRate, WaveFormat.SampleRate);
+        _resampler.SetRates(_sampleRate, _sampleRate);
     }
 
-    public float Speed { get; set; } = 1;
+    /// <summary>
+    /// The speed scalar, validated to be at least 0.
+    /// A speed of 0 produces constant silence.
+    /// A speed of 1 produces output directly from the underlying provider. 
+    /// </summary>
+    public float Speed
+    {
+        get;
+        set => field = Mathf.Max(0, value);
+    } = 1;
 
+    /// <inheritdoc/>
     public WaveFormat WaveFormat => _source.WaveFormat;
 
+    /// <inheritdoc/>
     public int Read(float[] buffer, int offset, int count)
     {
         if (Mathf.Approximately(Speed, 0))

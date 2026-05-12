@@ -32,13 +32,13 @@ public static class SpeakerToyGroupExtensions
         /// A grouping based on groups of grouped speakers.
         /// </summary>
         public static IEnumerable<IGrouping<SpeakerToy, SpeakerToyGroup>> SpeakersPerGroup
-            => GroupedSpeaker.Instances.GroupBy(static e => e.Speaker, static e => e.Group);
+            => GroupedSpeaker.Instances.GroupBy(e => e.Speaker, e => e.Group);
 
         /// <summary>
         /// Enumerates all speakers that are part of a group.
         /// </summary>
         public static IEnumerable<SpeakerToy> GroupedSpeakers
-            => GroupedSpeaker.Instances.Select(static e => e.Speaker);
+            => GroupedSpeaker.Instances.Select(e => e.Speaker);
 
         /// <summary>
         /// Rents one speaker from the <see cref="SpeakerToyPool"/>, and adds it to the group.
@@ -101,6 +101,20 @@ public static class SpeakerToyGroupExtensions
             if (group.IsDestroyed)
                 throw new ObjectDisposedException(nameof(SpeakerToyGroup));
             yield return group.Controller.AddPersonalization();
+            foreach (var child in group.Children)
+                yield return child.AddPersonalization();
+        }
+
+        /// <summary>
+        /// Adds a <see cref="SpeakerPersonalization"/> instance to each child, but not the controller.
+        /// </summary>
+        /// <returns>An <see cref="IEnumerable{T}"/> of <see cref="SpeakerPersonalization"/>s.</returns>
+        /// <exception cref="ObjectDisposedException">Thrown if the group has already been destroyed.</exception>
+        /// <seealso cref="PersonalizationExtensions.AddPersonalization(SpeakerToy)"/>
+        public IEnumerable<SpeakerPersonalization> AddPersonalizationToChildren()
+        {
+            if (group.IsDestroyed)
+                throw new ObjectDisposedException(nameof(SpeakerToyGroup));
             foreach (var child in group.Children)
                 yield return child.AddPersonalization();
         }

@@ -1,5 +1,6 @@
 using SecretLabNAudio.Core.Extensions.Processors;
 using SecretLabNAudio.Core.FileReading;
+using SecretLabNAudio.Core.Processors.Playlists;
 
 namespace SecretLabNAudio.Core.Extensions;
 
@@ -86,13 +87,9 @@ public static partial class AudioPlayerExtensions
         /// <returns>The player itself.</returns>
         /// <seealso cref="SingleInputAs"/>
         public AudioPlayer UseQueue()
-        {
-            var queue = player.Queue;
-            if (queue != null)
-                return player;
-            player.Use(new AudioQueue(AudioPlayer.SupportedFormat));
-            return player;
-        }
+            => player.Queue != null
+                ? player
+                : player.Use(new AudioQueue(AudioPlayer.SupportedFormat));
 
         /// <summary>
         /// If the <see cref="SingleInputAs">single input</see> is not an <see cref="AudioQueue"/>,
@@ -156,6 +153,29 @@ public static partial class AudioPlayerExtensions
             => ShortClipCache.TryGet(name, out var provider)
                 ? player.WithUnmanagedProvider(provider.WithLoop(loop).Process(process))
                 : player;
+
+        /// <summary>
+        /// If the <see cref="SingleInputAs">single input</see> is not a <see cref="LazyPlaylist"/>,
+        /// replaces the <see cref="AudioPlayer.SampleProvider"/> with a new one.
+        /// </summary>
+        /// <returns>The player itself.</returns>
+        /// <seealso cref="SingleInputAs"/>
+        public AudioPlayer UsePlaylist()
+            => player.Playlist != null
+                ? player
+                : player.Use(new LazyPlaylist(AudioPlayer.SupportedFormat));
+
+        /// <summary>
+        /// If the <see cref="SingleInputAs">single input</see> is not a <see cref="LazyPlaylist"/>,
+        /// replaces the <see cref="AudioPlayer.SampleProvider"/> with a new one.
+        /// </summary>
+        /// <param name="configure">A delegate to configure the playlist with.</param>
+        /// <returns>The player itself.</returns>
+        public AudioPlayer UsePlaylist(Action<LazyPlaylist> configure)
+        {
+            configure(player.UsePlaylist().Playlist!);
+            return player;
+        }
 
     }
 

@@ -25,6 +25,35 @@ public sealed partial class AudioPlayer : MonoBehaviour
         set => Speaker.ControllerId = value;
     }
 
+    /// <inheritdoc cref="SpeakerSettings.Volume"/>
+    public bool IsSpatial
+    {
+        get => Speaker.IsSpatial;
+        set => Speaker.IsSpatial = value;
+    }
+
+    /// <inheritdoc cref="SpeakerSettings.Volume"/>
+    /// <seealso cref="MasterAmplification"/>
+    public float Volume
+    {
+        get => Speaker.Volume;
+        set => Speaker.Volume = value;
+    }
+
+    /// <inheritdoc cref="SpeakerSettings.MinDistance"/>
+    public float MinDistance
+    {
+        get => Speaker.MinDistance;
+        set => Speaker.MinDistance = value;
+    }
+
+    /// <inheritdoc cref="SpeakerSettings.MaxDistance"/>
+    public float MaxDistance
+    {
+        get => Speaker.MaxDistance;
+        set => Speaker.MaxDistance = value;
+    }
+
     /// <summary>The provider this player will read from. Set to null to skip updates.</summary>
     /// <exception cref="ArgumentException">
     /// Thrown when the given sample provider is not null and does not match the following criteria:
@@ -40,6 +69,7 @@ public sealed partial class AudioPlayer : MonoBehaviour
     /// <seealso cref="AudioPlayerExtensions.UseShortClip(AudioPlayer,FileReading.ClipName,bool,float)"/>
     /// <seealso cref="AudioPlayerExtensions.UseMixer(AudioPlayer,bool)"/>
     /// <seealso cref="AudioPlayerExtensions.UseQueue(AudioPlayer)"/>
+    /// <seealso cref="AudioPlayerExtensions.UsePlaylist(AudioPlayer)"/>
     /// <seealso cref="AudioPlayerExtensions.WithUnmanagedProvider(AudioPlayer,ISampleProvider)"/>
     public ISampleProvider? SampleProvider
     {

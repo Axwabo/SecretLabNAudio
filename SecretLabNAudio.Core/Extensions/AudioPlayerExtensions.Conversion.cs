@@ -1,4 +1,5 @@
 using SecretLabNAudio.Core.Extensions.Processors;
+using SecretLabNAudio.Core.Processors.Playlists;
 
 namespace SecretLabNAudio.Core.Extensions;
 
@@ -25,6 +26,18 @@ public static partial class AudioPlayerExtensions
         /// Safely casts the <see cref="AudioPlayer.SampleProvider"/> to a <see cref="Mixer"/>.
         /// </summary>
         public Mixer? Mixer => player.ImmediateProviderAs<Mixer>();
+
+        /// <summary>
+        /// Safely casts the single input to a <see cref="LazyPlaylist"/>.
+        /// </summary>
+        /// <remarks>
+        /// The single input may be:
+        /// <list type="number">
+        /// <item>the immediate <see cref="AudioPlayer.SampleProvider"/></item>
+        /// <item>the only input if the <see cref="AudioPlayer.SampleProvider"/> is a <see cref="Mixer"/></item>
+        /// </list>
+        /// </remarks>
+        public LazyPlaylist? Playlist => player.SingleInputAs<LazyPlaylist>();
 
     }
 

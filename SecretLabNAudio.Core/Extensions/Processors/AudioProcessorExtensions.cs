@@ -87,6 +87,14 @@ public static class AudioProcessorExtensions
         /// = <see cref="TryGetSourceAs"/> called with the source processor
         /// </description></item>
         /// <item><description>
+        /// <see cref="SampleProviderWrapper"/> with a source of type <typeparamref name="T"/>
+        /// = the source of the wrapper as <typeparamref name="T"/>
+        /// </description></item>
+        /// <item><description>
+        /// <see cref="SampleProviderWrapper"/> with an <see cref="IAudioProcessor"/> source
+        /// = <see cref="TryGetSourceAs"/> called with the source processor
+        /// </description></item>
+        /// <item><description>
         /// <see cref="Mixer"/> with a <see cref="TryGetSingleMixerInput">single input</see> of type <see cref="IAudioProcessor"/>
         /// = <see cref="TryGetSourceAs"/> called with the single input
         /// </description></item>
@@ -102,6 +110,11 @@ public static class AudioProcessorExtensions
                     result = t;
                     return true;
                 case ProcessorChain {Source: IAudioProcessor source}:
+                    return source.TryGetSourceAs(out result);
+                case SampleProviderWrapper {Source: T t}:
+                    result = t;
+                    return true;
+                case SampleProviderWrapper {Source: IAudioProcessor source}:
                     return source.TryGetSourceAs(out result);
                 case Mixer mixer when mixer.TryGetSingleMixerInput(out IAudioProcessor? mixerProcessor):
                     return mixerProcessor.TryGetSourceAs(out result);
@@ -134,6 +147,14 @@ public static class AudioProcessorExtensions
         /// = <see cref="TryGetMasterAs"/> called with the master processor
         /// </description></item>
         /// <item><description>
+        /// <see cref="SampleProviderWrapper"/> with a source of type <typeparamref name="T"/>
+        /// = the source of the wrapper as <typeparamref name="T"/>
+        /// </description></item>
+        /// <item><description>
+        /// <see cref="SampleProviderWrapper"/> with an <see cref="IAudioProcessor"/> source
+        /// = <see cref="TryGetMasterAs"/> called with the source processor
+        /// </description></item>
+        /// <item><description>
         /// <see cref="Mixer"/> with a <see cref="TryGetSingleMixerInput">single input</see> of type <see cref="IAudioProcessor"/>
         /// = <see cref="TryGetMasterAs"/> called with the single input
         /// </description></item>
@@ -152,6 +173,11 @@ public static class AudioProcessorExtensions
                     return true;
                 case ProcessorChain {Master: IAudioProcessor master}:
                     return master.TryGetMasterAs(out result);
+                case SampleProviderWrapper {Source: T t}:
+                    result = t;
+                    return true;
+                case SampleProviderWrapper {Source: IAudioProcessor source}:
+                    return source.TryGetMasterAs(out result);
                 case Mixer mixer when mixer.TryGetSingleMixerInput(out IAudioProcessor? mixerProcessor):
                     return mixerProcessor.TryGetMasterAs(out result);
                 case Mixer mixer:
@@ -169,15 +195,34 @@ public static class AudioProcessorExtensions
         /// <returns>Whether there was exactly 1 input found.</returns>
         /// <remarks>
         /// This method does not directly check the processor against type <typeparamref name="T"/>.<br/>
-        /// It first checks if the processor is a <see cref="Mixer"/>.<br/>
-        /// If the processor is a <see cref="ProcessorChain"/>, it tries calls <see cref="TryGetSingleMixerInput"/>
-        /// on the <see cref="ProcessorChain.Source"/> if it's an <see cref="IAudioProcessor"/>.
+        /// The order of processor checks is as follows:
+        /// <list type="number">
+        /// <item><description><see cref="Mixer"/> with exactly one input of type <typeparamref name="T"/> = the one input</description></item>
+        /// <item><description><see cref="SampleProviderWrapper"/> with source of type <typeparamref name="T"/> = the source</description></item>
+        /// <item><description>
+        /// <see cref="SampleProviderWrapper"/> with an <see cref="IAudioProcessor"/> source
+        /// = <see cref="TryGetSingleMixerInput"/> called with the source
+        /// </description></item>
+        /// <item><description><see cref="ProcessorChain"/> with <see cref="ProcessorChain.Source"/> of type <typeparamref name="T"/> = the source</description></item>
+        /// <item><description>
+        /// <see cref="ProcessorChain"/> with an <see cref="IAudioProcessor"/> <see cref="ProcessorChain.Source"/>
+        /// = <see cref="TryGetSingleMixerInput"/> called with the source
+        /// </description></item>
+        /// </list>
         /// </remarks>
         public bool TryGetSingleMixerInput([NotNullWhen(true)] out T? result)
         {
             switch (processor)
             {
                 case Mixer {Inputs: [{Provider: T t}]}:
+                    result = t;
+                    return true;
+                case SampleProviderWrapper {Source: T t}:
+                    result = t;
+                    return true;
+                case SampleProviderWrapper {Source: IAudioProcessor source}:
+                    return source.TryGetSingleMixerInput(out result);
+                case ProcessorChain {Source: T t}:
                     result = t;
                     return true;
                 case ProcessorChain {Source: IAudioProcessor master}:

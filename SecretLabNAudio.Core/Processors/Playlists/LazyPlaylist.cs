@@ -1,0 +1,236 @@
+using SecretLabNAudio.Core.Extensions;
+using SecretLabNAudio.Core.Extensions.Processors;
+using Random = UnityEngine.Random;
+
+namespace SecretLabNAudio.Core.Processors.Playlists;
+
+/// <summary>
+/// A lazily-evaluated playlist that plays items one after another.
+/// Sample providers are only created when each item starts, which saves memory, and reduces open file handles.
+/// </summary>
+public sealed partial class LazyPlaylist : IAudioProcessor
+{
+
+    private readonly List<PlaylistItem> _items = [];
+
+    private (PlaylistItem Item, ISampleProvider Provider)? _current;
+
+    /// <summary>
+    /// The index of the current item or the last item that was played.
+    /// </summary>
+    public int Index { get; private set; }
+
+    /// <summary>
+    /// The state of the playlist.
+    /// </summary>
+    public PlaylistState State { get; private set; }
+
+    /// <summary>
+    /// A read-only view of the items in the playlist.
+    /// </summary>
+    public IReadOnlyList<PlaylistItem> Items { get; }
+
+    /// <summary>
+    /// Whether to shuffle items when the playlist (re)starts.
+    /// </summary>
+    public bool ShuffleOnStart { get; set; }
+
+    /// <summary>
+    /// How to loop.
+    /// </summary>
+    public Repeat RepeatMode
+    {
+        get;
+        set
+        {
+            field = value;
+            GetSource<ILoopable>()?.Loop = value == Repeat.One;
+        }
+    }
+
+    /// <summary>
+    /// The item currently being played, if any.
+    /// </summary>
+    public PlaylistItem? CurrentItem => _current?.Item;
+
+    private bool IsPlaying => State is PlaylistState.PlayingIndex or PlaylistState.MovingToNextItem;
+
+    private bool NextAvailable => Index < _items.Count - 1;
+
+    /// <summary>
+    /// Invoked before the playlist's first item is started if the <see cref="State"/> is <see cref="PlaylistState.NotStarted"/>.
+    /// </summary>
+    public event Action? BeforeStarted;
+
+    /// <summary>
+    /// Invoked after a new item has started.
+    /// </summary>
+    public event Action? CurrentItemChanged;
+
+    /// <summary>
+    /// Invoked after all items have ended when <see cref="RepeatMode"/> is <see cref="Repeat.None"/>.
+    /// </summary>
+    public event Action? LastItemEnded;
+
+    /// <summary>
+    /// Creates an empty <see cref="LazyPlaylist"/>.
+    /// </summary>
+    /// <param name="waveFormat">The format of the playlist.</param>
+    public LazyPlaylist(WaveFormat waveFormat)
+    {
+        WaveFormat = waveFormat;
+        Items = _items.AsReadOnly();
+    }
+
+    /// <summary>
+    /// Creates an empty <see cref="LazyPlaylist"/> with the specified items.
+    /// </summary>
+    /// <param name="waveFormat">The format of the playlist.</param>
+    /// <param name="items">The initial items.</param>
+    public LazyPlaylist(WaveFormat waveFormat, params IEnumerable<PlaylistItem> items) : this(waveFormat) => _items.AddRange(items);
+
+    /// <inheritdoc/>
+    public int Read(float[] buffer, int offset, int count)
+    {
+        if (State == PlaylistState.Ended)
+            return 0;
+        var total = 0;
+        while (total < count && TryGetCurrent(out var provider))
+        {
+            var target = Math.Max(0, count - total);
+            var read = provider.Read(buffer, total + offset, target);
+            total += read;
+            if (read < target)
+                State = PlaylistState.MovingToNextItem;
+        }
+
+        return total;
+    }
+
+    private bool TryGetCurrent([NotNullWhen(true)] out ISampleProvider? provider)
+    {
+        switch (State, RepeatMode)
+        {
+            case (PlaylistState.NotStarted, _):
+            case (PlaylistState.MovingToNextItem, Repeat.All) when !NextAvailable:
+                return Restart(out provider);
+            case (PlaylistState.MovingToNextItem, Repeat.One):
+                return Next(false, out provider);
+            case (PlaylistState.MovingToNextItem, _):
+                if (NextAvailable)
+                    return Next(true, out provider);
+                End(true);
+                provider = null;
+                return false;
+            default:
+                provider = _current?.Provider;
+                return provider != null;
+        }
+    }
+
+    private bool Restart([NotNullWhen(true)] out ISampleProvider? provider, bool? shuffle = null)
+    {
+        EndCurrent();
+        _current = null;
+        if (_items.Count == 0)
+        {
+            State = PlaylistState.Ended;
+            provider = null;
+            return false;
+        }
+
+        State = PlaylistState.NotStarted;
+        if (shuffle ?? ShuffleOnStart)
+            Shuffle();
+        BeforeStarted.InvokeSafely();
+        Index = 0;
+        return Next(false, out provider);
+    }
+
+    private bool Next(bool advance, [NotNullWhen(true)] out ISampleProvider? provider)
+    {
+        var wasPlaying = IsPlaying;
+        if (advance && NextAvailable)
+            Index++;
+        while (Index < _items.Count)
+        {
+            if (!Begin(_items[Index], out provider))
+            {
+                Index++;
+                continue;
+            }
+
+            State = PlaylistState.PlayingIndex;
+            CurrentItemChanged.InvokeSafely();
+            return true;
+        }
+
+        End(wasPlaying);
+        provider = null;
+        return false;
+    }
+
+    private void Shuffle() => _items.Sort((_, _) => Random.value < 0.5f ? -1 : 1);
+
+    private bool Begin(PlaylistItem item, [NotNullWhen(true)] out ISampleProvider? provider)
+    {
+        EndCurrent();
+        State = PlaylistState.MovingToNextItem;
+        try
+        {
+            var created = item.CreateProvider(WaveFormat.SampleRate, WaveFormat.Channels);
+            provider = created.WaveFormat.Matches(WaveFormat)
+                ? created
+                : ProviderToProcessor.SampleProviderToProcessor(created, true)
+                    .ToChain()
+                    .ToFormat(WaveFormat.SampleRate, WaveFormat.Channels);
+            _current = (item, provider);
+            RepeatMode = RepeatMode;
+            return true;
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"Failed to play {item}");
+            Debug.LogError(e);
+            provider = null;
+            return false;
+        }
+    }
+
+    private void EndCurrent()
+    {
+        (_current?.Provider as IDisposable)?.Dispose();
+        _current = null;
+    }
+
+    private void End(bool wasPlaying)
+    {
+        State = PlaylistState.Ended;
+        if (wasPlaying)
+            LastItemEnded.InvokeSafely();
+        EndCurrent();
+    }
+
+    private T? GetSource<T>() where T : notnull => _current.GetValueOrDefault().Provider switch
+    {
+        T t => t,
+        IAudioProcessor processor when processor.TryGetSourceAs(out T? provider) => provider,
+        _ => default
+    };
+
+    /// <inheritdoc/>
+    public WaveFormat WaveFormat { get; }
+
+    /// <summary>
+    /// Clears the playlist, and disposes of the current provider. 
+    /// </summary>
+    public void Dispose()
+    {
+        EndCurrent();
+        _items.Clear();
+        State = PlaylistState.Ended;
+        Index = 0;
+        BeforeStarted = CurrentItemChanged = LastItemEnded = null;
+    }
+
+}

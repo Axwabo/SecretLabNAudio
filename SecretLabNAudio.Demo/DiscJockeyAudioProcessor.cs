@@ -1,6 +1,7 @@
 using NAudio.Wave.SampleProviders;
 using SecretLabNAudio.Core.Extensions.Processors;
 using SecretLabNAudio.Core.Processors;
+using SecretLabNAudio.Core.Providers;
 
 namespace SecretLabNAudio.Demo;
 
@@ -52,10 +53,10 @@ public sealed class DiscJockeyAudioProcessor : IAudioProcessor
 
         _music = stream
             .ToCompatibleChain()
-            .Layer(static provider => new SpeedChangingSampleProvider(provider), out _musicSpeed);
+            .Layer(provider => new SpeedChangingSampleProvider(provider), out _musicSpeed);
         _voice = new PlayerVoiceSampleProvider(owner)
             .ToCompatibleChain()
-            .Layer(static provider => new SmbPitchShiftingSampleProvider(provider), out _voicePitch);
+            .Layer(provider => new SmbPitchShiftingSampleProvider(provider), out _voicePitch);
         _master = _music.MixWith(_voice).ToChain();
     }
 
