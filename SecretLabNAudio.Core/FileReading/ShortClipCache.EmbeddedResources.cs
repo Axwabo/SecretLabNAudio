@@ -7,26 +7,40 @@ namespace SecretLabNAudio.Core.FileReading;
 public static partial class ShortClipCache
 {
 
-    /// <include file="../XmlDocs/Clips.xml" path="doc/Add/Embedded/One/summary"/>
-    /// <include file="../XmlDocs/Clips.xml" path="doc/Add/Embedded/One/param"/>
-    /// <include file="../XmlDocs/Clips.xml" path="doc/Add/Embedded/param[@name='maxDuration']"/>
-    /// <include file="../XmlDocs/Clips.xml" path="doc/Add/Embedded/param[@name='trimExtension']"/>
-    /// <include file="../XmlDocs/Clips.xml" path="doc/Add/Embedded/returns"/>
+    /// <summary>
+    /// </summary>
+    /// <include file="../XmlDocs/Clips.xml" path="doc/Add/Embedded/One/param[name='assembly']"/>
+    /// <include file="../XmlDocs/Clips.xml" path="doc/Add/Embedded/One/param[name='resourceName']"/>
+    /// <include file="../XmlDocs/Clips.xml" path="doc/Add/Embedded/One/param[@name='maxDuration']"/>
+    /// <include file="../XmlDocs/Clips.xml" path="doc/Add/Embedded/One/param[@name='trimExtension']"/>
+    /// <include file="../XmlDocs/Clips.xml" path="doc/Add/Embedded/One/returns"/>
     /// <include file="../XmlDocs/Clips.xml" path="doc/Add/Time/remarks"/>
     /// <include file="../XmlDocs/Clips.xml" path="doc/Add/Embedded/seealso"/>
     public static RawSourceSampleProvider? AddFromEmbeddedResource(Assembly assembly, string resourceName, TimeSpan? maxDuration = null, bool trimExtension = true)
         => AddFromEmbeddedResource(assembly, resourceName, Path.GetExtension(resourceName), (resourceName, trimExtension), maxDuration);
 
-    /// <include file="../XmlDocs/Clips.xml" path="doc/Add/Embedded/One/summary"/>
-    /// <include file="../XmlDocs/Clips.xml" path="doc/Add/Embedded/One/param"/>
-    /// 
-    /// <include file="../XmlDocs/Clips.xml" path="doc/Add/Embedded/param[@name='maxDuration']"/>
-    /// <include file="../XmlDocs/Clips.xml" path="doc/Add/Embedded/returns"/>
+    /// <summary>
+    /// </summary>
+    /// <include file="../XmlDocs/Clips.xml" path="doc/Add/Embedded/One/param[name='assembly']"/>
+    /// <include file="../XmlDocs/Clips.xml" path="doc/Add/Embedded/One/param[name='resourceName']"/>
+    /// <include file="../XmlDocs/Clips.xml" path="doc/Add/Embedded/One/param[@name='clipName']"/>
+    /// <include file="../XmlDocs/Clips.xml" path="doc/Add/Embedded/One/param[@name='maxDuration']"/>
+    /// <include file="../XmlDocs/Clips.xml" path="doc/Add/Embedded/One/returns"/>
     /// <include file="../XmlDocs/Clips.xml" path="doc/Add/Time/remarks"/>
     /// <include file="../XmlDocs/Clips.xml" path="doc/Add/Embedded/seealso"/>
     public static RawSourceSampleProvider? AddFromEmbeddedResource(Assembly assembly, string resourceName, ClipName clipName, TimeSpan? maxDuration = null)
         => AddFromEmbeddedResource(assembly, resourceName, Path.GetExtension(resourceName), clipName, maxDuration);
 
+    /// <summary>
+    /// </summary>
+    /// <include file="../XmlDocs/Clips.xml" path="doc/Add/Embedded/One/param[name='assembly']"/>
+    /// <include file="../XmlDocs/Clips.xml" path="doc/Add/Embedded/One/param[name='resourceName']"/>
+    /// <include file="../XmlDocs/Clips.xml" path="doc/Add/Embedded/One/param[name='fileType']"/>
+    /// <include file="../XmlDocs/Clips.xml" path="doc/Add/Embedded/One/param[@name='clipName']"/>
+    /// <include file="../XmlDocs/Clips.xml" path="doc/Add/Embedded/One/param[@name='maxDuration']"/>
+    /// <include file="../XmlDocs/Clips.xml" path="doc/Add/Embedded/One/returns"/>
+    /// <include file="../XmlDocs/Clips.xml" path="doc/Add/Time/remarks"/>
+    /// <include file="../XmlDocs/Clips.xml" path="doc/Add/Embedded/seealso"/>
     public static RawSourceSampleProvider? AddFromEmbeddedResource(Assembly assembly, string resourceName, string fileType, ClipName clipName, TimeSpan? maxDuration = null)
     {
         using var resource = assembly.GetManifestResourceStream(resourceName);

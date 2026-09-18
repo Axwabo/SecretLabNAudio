@@ -21,28 +21,15 @@
                 <b>Do not use this for storing lengthy audio, stream the files instead.</b>
             </summary>
         </FromFiles>
-        <Embed>
-            <seealso href="https://learn.microsoft.com/en-us/dotnet/core/resources/manifest-file-names">Manifest file names</seealso>
-            <seealso href="https://github.com/Axwabo/SecretLabNAudio/wiki/Short-Clips#embedded-resources">Setting up embedded resources</seealso>
-        </Embed>
-        <EmbedOne>
-            <summary>
-                Attempts to add the samples from an EmbeddedResource to the cache.
-                <b>Do not use this for storing lengthy audio, stream the files instead.</b>
-            </summary>
-            <param name="assembly">The assembly to locate the resource in.</param>
-            <param name="resourceName">The name of the manifest resource.</param>
-        </EmbedOne>
-        <EmbedMultiple>
-            <param name="assembly">The assembly to locate the resources in.</param>
-            <param name="maxDuration">If not null and a resource's duration is longer than this value, it will not be added to the cache.</param>
-        </EmbedMultiple>
         <Embedded>
             <One>
-                <summary>
-                    Attempts to add the samples from an EmbeddedResource to the cache.
-                    <b>Do not use this for storing lengthy audio, stream the files instead.</b>
-                </summary>
+                <param name="assembly">The assembly to locate the resource in.</param>
+                <param name="resourceName">The name of the manifest resource.</param>
+                <param name="fileType">The type of the file used to create a <see cref="T:SecretLabNAudio.Core.FileReading.IAudioReaderFactory">reader factory</see>.
+                </param>
+                <param name="clipName">The key to add by.</param>
+                <param name="maxDuration">If not null and the resource's duration is longer than this value, it will not be added to the cache.</param>
+                <param name="trimExtension">Whether to trim the file extension from the name.</param>
                 <returns>
                     A
                     <see cref="T:SecretLabNAudio.Core.Providers.RawSourceSampleProvider" />
@@ -52,7 +39,13 @@
                     was returned.
                 </returns>
             </One>
-            <param name="trimExtension">Whether to trim the file extension from the name.</param>
+            <Multiple>
+                <param name="assembly">The assembly to locate the resources in.</param>
+                <param name="maxDuration">If not null and a resource's duration is longer than this value, it will not be added to the cache.</param>
+                <param name="trimExtension">Whether to trim the file extension from names.</param>
+            </Multiple>
+            <seealso href="https://learn.microsoft.com/en-us/dotnet/core/resources/manifest-file-names">Manifest file names</seealso>
+            <seealso href="https://github.com/Axwabo/SecretLabNAudio/wiki/Short-Clips#embedded-resources">Setting up embedded resources</seealso>
         </Embedded>
         <NoTime>
             <remarks>
