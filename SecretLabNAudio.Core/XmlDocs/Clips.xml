@@ -21,6 +21,39 @@
                 <b>Do not use this for storing lengthy audio, stream the files instead.</b>
             </summary>
         </FromFiles>
+        <Embed>
+            <seealso href="https://learn.microsoft.com/en-us/dotnet/core/resources/manifest-file-names">Manifest file names</seealso>
+            <seealso href="https://github.com/Axwabo/SecretLabNAudio/wiki/Short-Clips#embedded-resources">Setting up embedded resources</seealso>
+        </Embed>
+        <EmbedOne>
+            <summary>
+                Attempts to add the samples from an EmbeddedResource to the cache.
+                <b>Do not use this for storing lengthy audio, stream the files instead.</b>
+            </summary>
+            <param name="assembly">The assembly to locate the resource in.</param>
+            <param name="resourceName">The name of the manifest resource.</param>
+        </EmbedOne>
+        <EmbedMultiple>
+            <param name="assembly">The assembly to locate the resources in.</param>
+            <param name="maxDuration">If not null and a resource's duration is longer than this value, it will not be added to the cache.</param>
+        </EmbedMultiple>
+        <Embedded>
+            <One>
+                <summary>
+                    Attempts to add the samples from an EmbeddedResource to the cache.
+                    <b>Do not use this for storing lengthy audio, stream the files instead.</b>
+                </summary>
+                <returns>
+                    A
+                    <see cref="T:SecretLabNAudio.Core.Providers.RawSourceSampleProvider" />
+                    if the clip was added to the cache.
+                    Null if the resource doesn't exist or couldn't be opened, no <see cref="T:SecretLabNAudio.Core.FileReading.IAudioReaderFactory">factory</see> was registered for the type, or no
+                    <see cref="T:NAudio.Wave.WaveStream" />
+                    was returned.
+                </returns>
+            </One>
+            <param name="trimExtension">Whether to trim the file extension from the name.</param>
+        </Embedded>
         <NoTime>
             <remarks>
                 If an entry already exists, it will be overwritten.

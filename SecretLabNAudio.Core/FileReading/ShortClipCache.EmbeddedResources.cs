@@ -7,9 +7,23 @@ namespace SecretLabNAudio.Core.FileReading;
 public static partial class ShortClipCache
 {
 
+    /// <include file="../XmlDocs/Clips.xml" path="doc/Add/Embedded/One/summary"/>
+    /// <include file="../XmlDocs/Clips.xml" path="doc/Add/Embedded/One/param"/>
+    /// <include file="../XmlDocs/Clips.xml" path="doc/Add/Embedded/param[@name='maxDuration']"/>
+    /// <include file="../XmlDocs/Clips.xml" path="doc/Add/Embedded/param[@name='trimExtension']"/>
+    /// <include file="../XmlDocs/Clips.xml" path="doc/Add/Embedded/returns"/>
+    /// <include file="../XmlDocs/Clips.xml" path="doc/Add/Time/remarks"/>
+    /// <include file="../XmlDocs/Clips.xml" path="doc/Add/Embedded/seealso"/>
     public static RawSourceSampleProvider? AddFromEmbeddedResource(Assembly assembly, string resourceName, TimeSpan? maxDuration = null, bool trimExtension = true)
         => AddFromEmbeddedResource(assembly, resourceName, Path.GetExtension(resourceName), (resourceName, trimExtension), maxDuration);
 
+    /// <include file="../XmlDocs/Clips.xml" path="doc/Add/Embedded/One/summary"/>
+    /// <include file="../XmlDocs/Clips.xml" path="doc/Add/Embedded/One/param"/>
+    /// 
+    /// <include file="../XmlDocs/Clips.xml" path="doc/Add/Embedded/param[@name='maxDuration']"/>
+    /// <include file="../XmlDocs/Clips.xml" path="doc/Add/Embedded/returns"/>
+    /// <include file="../XmlDocs/Clips.xml" path="doc/Add/Time/remarks"/>
+    /// <include file="../XmlDocs/Clips.xml" path="doc/Add/Embedded/seealso"/>
     public static RawSourceSampleProvider? AddFromEmbeddedResource(Assembly assembly, string resourceName, ClipName clipName, TimeSpan? maxDuration = null)
         => AddFromEmbeddedResource(assembly, resourceName, Path.GetExtension(resourceName), clipName, maxDuration);
 
@@ -36,32 +50,19 @@ public static partial class ShortClipCache
     public static int AddFromEmbeddedResources(Assembly assembly, TimeSpan? maxDuration = null, bool trimExtension = true)
         => AddFromEmbeddedResources(assembly, null, maxDuration, trimExtension);
 
-    public static int AddFromEmbeddedResources(Assembly assembly, string? prefixToTrim, TimeSpan? maxDuration = null, bool trimExtension = true)
-        => AddFromEmbeddedResources(assembly, null, prefixToTrim, maxDuration, trimExtension);
-
-    public static int AddFromEmbeddedResources(Assembly assembly, string? fileTypeFilter, string? prefixToTrim = null, TimeSpan? maxDuration = null, bool trimExtension = true)
+    public static int AddFromEmbeddedResources(Assembly assembly, string? fileTypeFilter, TimeSpan? maxDuration = null, bool trimExtension = true)
     {
         var count = 0;
         var type = fileTypeFilter.AsSpan().TrimStart('.');
         foreach (var resource in assembly.GetManifestResourceNames())
         {
-            if (!type.IsEmpty && !Path.GetExtension(resource.AsSpan()).Equals(type, StringComparison.OrdinalIgnoreCase))
+            if (!type.IsEmpty && !Path.GetExtension(resource.AsSpan()).TrimStart('.').Equals(type, StringComparison.OrdinalIgnoreCase))
                 continue;
-            var name = string.IsNullOrEmpty(prefixToTrim) ? resource : resource.RemoveStart(prefixToTrim!);
-            if (AddFromEmbeddedResource(assembly, name, maxDuration, trimExtension) != null)
+            if (AddFromEmbeddedResource(assembly, resource, maxDuration, trimExtension) != null)
                 count++;
         }
 
         return count;
-    }
-
-    extension(string s)
-    {
-
-        private string RemoveStart(string start) => s.StartsWith(start, StringComparison.OrdinalIgnoreCase)
-            ? s.AsSpan(start.Length).TrimStart('.').ToString()
-            : s;
-
     }
 
 }
