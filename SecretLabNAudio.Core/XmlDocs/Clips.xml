@@ -23,9 +23,15 @@
         </FromFiles>
         <Embedded>
             <One>
+                <summary>
+                    Attempts to add the samples from the given embedded resource to the cache.
+                    <b>Do not use this for storing lengthy audio, stream the resource instead.</b>
+                </summary>
                 <param name="assembly">The assembly to locate the resource in.</param>
                 <param name="resourceName">The name of the manifest resource.</param>
-                <param name="fileType">The type of the file used to create a <see cref="T:SecretLabNAudio.Core.FileReading.IAudioReaderFactory">reader factory</see>.
+                <param name="fileType">
+                    The type of the file, used to resolve a
+                    <see cref="T:SecretLabNAudio.Core.FileReading.IAudioReaderFactory">reader factory</see>.
                 </param>
                 <param name="clipName">The key to add by.</param>
                 <param name="maxDuration">If not null and the resource's duration is longer than this value, it will not be added to the cache.</param>
@@ -40,9 +46,11 @@
                 </returns>
             </One>
             <Multiple>
-                <param name="assembly">The assembly to locate the resources in.</param>
+                <param name="assembly">The assembly to locate resources in.</param>
+                <param name="fileTypeFilter">If not null, resources with a different extension (based on the resource name) will be skipped.</param>
                 <param name="maxDuration">If not null and a resource's duration is longer than this value, it will not be added to the cache.</param>
                 <param name="trimExtension">Whether to trim the file extension from names.</param>
+                <returns>The number of clips added to the cache.</returns>
             </Multiple>
             <seealso href="https://learn.microsoft.com/en-us/dotnet/core/resources/manifest-file-names">Manifest file names</seealso>
             <seealso href="https://github.com/Axwabo/SecretLabNAudio/wiki/Short-Clips#embedded-resources">Setting up embedded resources</seealso>
