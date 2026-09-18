@@ -6,6 +6,7 @@ on:
 
 permissions:
   contents: write
+  id-token: write
 
 jobs:
 
@@ -28,7 +29,13 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: Out/SecretLabNAudio*.dll,Out/SecretLabNAudio*.xml,Out/SecretLabNAudio.zip
+          
+      - name: NuGet login
+        uses: NuGet/login@v1
+        id: login
+        with:
+          user: ${{ secrets.NUGET_USER }}
 
       - name: Push to NuGet
         working-directory: Out
-        run: dotnet nuget push SecretLabNAudio.*.nupkg -k ${{ secrets.NUGET_API_KEY }} -s https://api.nuget.org/v3/index.json
+        run: dotnet nuget push SecretLabNAudio.*.nupkg -k ${{ steps.login.outputs.NUGET_API_KEY }} -s https://api.nuget.org/v3/index.json
