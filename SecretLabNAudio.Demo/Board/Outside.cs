@@ -2,6 +2,7 @@ using System.Threading;
 using CustomPlayerEffects;
 using MapGeneration;
 using PlayerRoles.PlayableScps.Scp079;
+using SecretLabNAudio.Core.Builders;
 using SecretLabNAudio.Core.Extensions;
 
 namespace SecretLabNAudio.Demo.Board;
@@ -25,13 +26,13 @@ public static class Outside
 
     private static readonly List<SpeakerPersonalization> PersonalizationInstances = [];
 
-    public static void PlaceSpeakers(SpeakerToy speaker)
+    public static void PlaceSpeakers(AudioPlayerBuilder builder)
     {
         var positions = Scp079InteractableBase.AllInstances
             .Where(e => e is Scp079Speaker {Room.Name: RoomName.Outside})
             .Select(e => e.Position);
         PersonalizationInstances.Clear();
-        PersonalizationInstances.AddRange(speaker.GetOrCreateGroup()
+        PersonalizationInstances.AddRange(builder.GetOrCreateGroup()
             .AddFromPool(Settings, positions)
             .AddPersonalizationToChildren());
     }

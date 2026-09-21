@@ -21,8 +21,8 @@ public partial class AudioPlayer
     /// <param name="position">The position of the speaker in local space (world space if no parent is specified).</param>
     /// <param name="spawn">Whether to invoke <see cref="NetworkServer.Spawn(GameObject,NetworkConnection)"/>.</param>
     /// <returns>A new <see cref="AudioPlayer"/>.</returns>
-    public static AudioPlayerBuilder Create(byte id, SpeakerSettings settings, Transform? parent = null, Vector3 position = default, bool spawn = true)
-        => AudioPlayerBuilder.Create(id, settings, position, parent, spawn);
+    public static AudioPlayer Create(byte id, SpeakerSettings settings, Transform? parent = null, Vector3 position = default, bool spawn = true)
+        => AudioPlayerBuilder.Create(id, settings, position, parent, spawn).Player;
 
     /// <summary>
     /// Creates a new <see cref="SpeakerToy"/> with an <see cref="AudioPlayer"/>, and sets its ID to <see cref="NextAvailableId"/>.
@@ -33,7 +33,7 @@ public partial class AudioPlayer
     /// <param name="spawn">Whether to invoke <see cref="NetworkServer.Spawn(GameObject,NetworkConnection)"/>.</param>
     /// <exception cref="OverflowException">Thrown when no IDs are available.</exception>
     /// <returns>A new <see cref="AudioPlayer"/>.</returns>
-    public static AudioPlayerBuilder Create(SpeakerSettings settings, Vector3 position = default, Transform? parent = null, bool spawn = true)
+    public static AudioPlayer Create(SpeakerSettings settings, Vector3 position = default, Transform? parent = null, bool spawn = true)
         => Create(NextAvailableId, settings, parent, position, spawn);
 
     /// <summary>
@@ -44,7 +44,7 @@ public partial class AudioPlayer
     /// <param name="position">The position of the speaker in local space (world space if no parent is specified).</param>
     /// <param name="spawn">Whether to invoke <see cref="NetworkServer.Spawn(GameObject,NetworkConnection)"/>.</param>
     /// <returns>A new <see cref="AudioPlayer"/>.</returns>
-    public static AudioPlayerBuilder CreateDefault(byte id, Vector3 position = default, Transform? parent = null, bool spawn = true)
+    public static AudioPlayer CreateDefault(byte id, Vector3 position = default, Transform? parent = null, bool spawn = true)
         => Create(id, SpeakerSettings.Default, parent, position, spawn);
 
     /// <summary>
@@ -55,7 +55,7 @@ public partial class AudioPlayer
     /// <param name="spawn">Whether to invoke <see cref="NetworkServer.Spawn(GameObject,NetworkConnection)"/>.</param>
     /// <exception cref="OverflowException">Thrown when no IDs are available.</exception>
     /// <returns>A new <see cref="AudioPlayer"/>.</returns>
-    public static AudioPlayerBuilder CreateDefault(Vector3 position = default, Transform? parent = null, bool spawn = true)
+    public static AudioPlayer CreateDefault(Vector3 position = default, Transform? parent = null, bool spawn = true)
         => CreateDefault(NextAvailableId, position, parent, spawn);
 
     /// <summary>
@@ -66,8 +66,8 @@ public partial class AudioPlayer
     /// <param name="position">The position of the speaker in local space (world space if no parent is specified).</param>
     /// <param name="spawn">Whether to invoke <see cref="NetworkServer.Spawn(GameObject,NetworkConnection)"/>.</param>
     /// <returns>A new <see cref="AudioPlayer"/>.</returns>
-    public static AudioPlayerBuilder CreateGlobal(byte id, Vector3 position = default, Transform? parent = null, bool spawn = true)
-        => Create(id, SpeakerSettings.Default, parent, position, spawn);
+    public static AudioPlayer CreateGlobal(byte id, Vector3 position = default, Transform? parent = null, bool spawn = true)
+        => Create(id, SpeakerSettings.GloballyAudible, parent, position, spawn);
 
     /// <summary>
     /// Creates a new <see cref="SpeakerSettings.GloballyAudible">globally audible</see> <see cref="SpeakerToy"/>, adds an <see cref="AudioPlayer"/>, and sets its ID to <see cref="NextAvailableId"/>.
@@ -77,7 +77,7 @@ public partial class AudioPlayer
     /// <param name="spawn">Whether to invoke <see cref="NetworkServer.Spawn(GameObject,NetworkConnection)"/>.</param>
     /// <exception cref="OverflowException">Thrown when no IDs are available.</exception>
     /// <returns>A new <see cref="AudioPlayer"/>.</returns>
-    public static AudioPlayerBuilder CreateGlobal(Vector3 position = default, Transform? parent = null, bool spawn = true)
+    public static AudioPlayer CreateGlobal(Vector3 position = default, Transform? parent = null, bool spawn = true)
         => CreateGlobal(NextAvailableId, position, parent, spawn);
 
 }

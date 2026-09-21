@@ -4,7 +4,6 @@ using SecretLabNAudio.Core.Pools;
 
 namespace SecretLabNAudio.Core.Builders;
 
-// TODO: extend ugh
 public readonly struct AudioPlayerBuilder : IAudioPlayerBuilder, ISpeakerBuilder
 {
 

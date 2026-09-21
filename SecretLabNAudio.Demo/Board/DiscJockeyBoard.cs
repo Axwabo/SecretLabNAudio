@@ -46,10 +46,11 @@ public sealed class DiscJockeyBoard : MonoBehaviour
         Instance = board.GameObject.AddComponent<DiscJockeyBoard>();
         var transform = board.Transform;
 
-        Instance._player = AudioPlayer.Create(StageSettings, parent: stage.Transform)
+        var builder = AudioPlayerBuilder.Create(StageSettings, parent: stage.Transform)
             .WithSendFilter(p => !p.IsAlive || p.IsOutside)
             .WithOutputMonitor(visualizer);
-        Outside.PlaceSpeakers(Instance._player.OutputSpeaker!);
+        Outside.PlaceSpeakers(builder);
+        Instance._player = builder.Player;
 
         Instance._music = Slider.Create(transform, Vector3.right * 0.4f, SliderRotation, "🎵", "Music");
         Instance._speed = Slider.Create(transform, Vector3.right * 0.5f, SliderRotation, "⏩", "Speed", 0);

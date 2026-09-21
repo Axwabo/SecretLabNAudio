@@ -3,10 +3,17 @@ using SecretLabNAudio.Core.Outputs;
 
 namespace SecretLabNAudio.Core.Builders;
 
-public static class AudioPlayerBuilderExtensions
+public interface IAudioPlayerBaseBuilder
 {
 
-    extension<T>(T builder) where T : IAudioPlayerBuilder
+    AudioPlayerBase Player { get; }
+
+}
+
+public static class AudioPlayerBaseBuilderExtensions
+{
+
+    extension<T>(T builder) where T : IAudioPlayerBaseBuilder
     {
 
         public T WithSendFilter(SendFilter filter)
@@ -24,12 +31,6 @@ public static class AudioPlayerBuilderExtensions
         public T WithPacketOutput(AudioPacketOutput output)
         {
             builder.Player.Output = output;
-            return builder;
-        }
-
-        public T WithOutputMonitor(IAudioPacketMonitor monitor)
-        {
-            builder.Player.OutputMonitor = monitor;
             return builder;
         }
 
