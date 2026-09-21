@@ -10,7 +10,7 @@ namespace SecretLabNAudio.Core;
 public sealed partial class AudioPlayer : MonoBehaviour
 {
 
-    private static readonly float[] ReadBuffer = new float[SamplesPerPacket];
+    private static readonly float[] ReadBuffer = new float[AudioConstants.SamplesPerPacket];
 
     private static readonly byte[] EncoderBuffer = new byte[1024];
 
@@ -78,7 +78,7 @@ public sealed partial class AudioPlayer : MonoBehaviour
         {
             if (value == field)
                 return;
-            ThrowIfIncompatible(value);
+            AudioConstants.ThrowIfIncompatible(value);
             try
             {
                 if (OwnsProvider)
@@ -184,7 +184,7 @@ public sealed partial class AudioPlayer : MonoBehaviour
         int read;
         try
         {
-            read = SampleProvider!.Read(ReadBuffer, 0, SamplesPerPacket);
+            read = SampleProvider!.Read(ReadBuffer, 0, AudioConstants.SamplesPerPacket);
         }
         catch (Exception e)
         {
@@ -198,15 +198,15 @@ public sealed partial class AudioPlayer : MonoBehaviour
             return;
         }
 
-        if (read < SamplesPerPacket)
+        if (read < AudioConstants.SamplesPerPacket)
         {
-            Array.Clear(ReadBuffer, read, SamplesPerPacket - read);
+            Array.Clear(ReadBuffer, read, AudioConstants.SamplesPerPacket - read);
             End(false);
         }
         else
         {
             HasEnded = false;
-            _remainingTime -= PacketDuration;
+            _remainingTime -= AudioConstants.PacketDuration;
         }
 
         OutputMonitor?.OnRead(ReadBuffer.AsSpan(0, read));

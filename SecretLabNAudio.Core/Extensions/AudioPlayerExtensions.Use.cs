@@ -89,7 +89,7 @@ public static partial class AudioPlayerExtensions
         public AudioPlayer UseQueue()
             => player.Queue != null
                 ? player
-                : player.Use(new AudioQueue(AudioPlayer.SupportedFormat));
+                : player.Use(new AudioQueue(AudioConstants.SupportedFormat));
 
         /// <summary>
         /// If the <see cref="SingleInputAs">single input</see> is not an <see cref="AudioQueue"/>,
@@ -110,10 +110,10 @@ public static partial class AudioPlayerExtensions
         public AudioPlayer UseMixer(bool keepInputs = true)
         {
             if (!keepInputs)
-                return player.Use(new Mixer(AudioPlayer.SupportedFormat));
+                return player.Use(new Mixer(AudioConstants.SupportedFormat));
             if (player.Mixer != null)
                 return player;
-            var mixer = new Mixer(AudioPlayer.SupportedFormat);
+            var mixer = new Mixer(AudioConstants.SupportedFormat);
             if (player.SampleProvider is { } provider)
                 mixer.AddAnonymous(provider, player.OwnsProvider);
             player.OwnsProvider = false;
@@ -163,7 +163,7 @@ public static partial class AudioPlayerExtensions
         public AudioPlayer UsePlaylist()
             => player.Playlist != null
                 ? player
-                : player.Use(new LazyPlaylist(AudioPlayer.SupportedFormat));
+                : player.Use(new LazyPlaylist(AudioConstants.SupportedFormat));
 
         /// <summary>
         /// If the <see cref="SingleInputAs">single input</see> is not a <see cref="LazyPlaylist"/>,

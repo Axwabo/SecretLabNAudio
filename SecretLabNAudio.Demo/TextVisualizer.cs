@@ -4,7 +4,7 @@ public sealed class TextVisualizer : IAudioPacketMonitor
 {
 
     private const int Count = 120;
-    private const int Offset = AudioPlayer.PacketsPerSecond / 10; // client-side delay
+    private const int Offset = AudioConstants.PacketsPerSecond / 10; // client-side delay
 
     private const string Suffix = "<alpha=#00><size=1em>|"; // "jumping" prevention
 

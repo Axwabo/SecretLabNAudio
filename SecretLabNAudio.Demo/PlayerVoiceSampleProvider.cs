@@ -12,11 +12,11 @@ public sealed class PlayerVoiceSampleProvider : ISampleProvider, IDisposable
     private readonly PlaybackBufferSampleProvider _provider;
 
     private readonly OpusDecoder _decoder = new();
-    private readonly float[] _decoderBuffer = new float[AudioPlayer.SamplesPerPacket];
+    private readonly float[] _decoderBuffer = new float[AudioConstants.SamplesPerPacket];
 
     public PlayerVoiceSampleProvider(Player owner)
     {
-        _provider = new PlaybackBufferSampleProvider(1d, AudioPlayer.SampleRate) {ReadFully = true};
+        _provider = new PlaybackBufferSampleProvider(1d, AudioConstants.SampleRate) {ReadFully = true};
         _owner = owner;
         PlayerEvents.SendingVoiceMessage += OnSendingMessage;
     }
