@@ -71,7 +71,7 @@ public sealed partial class LazyPlaylist : IAudioProcessor
     /// Invoked before a sample provider is disposed.
     /// Useful for inspecting errors if the provider defines such a mechanism.
     /// </summary>
-    public event Action<(PlaylistItem Item, ISampleProvider Provider)>? ItemEnded;
+    public event Action<PlaylistItem, ISampleProvider>? ItemEnded;
 
     /// <summary>
     /// Invoked after all items have ended when <see cref="RepeatMode"/> is <see cref="Repeat.None"/>.
@@ -206,10 +206,10 @@ public sealed partial class LazyPlaylist : IAudioProcessor
 
     private void EndCurrent()
     {
-        if (_current is {Provider: not null} tuple)
+        if (_current is (var item, { } provider))
         {
-            ItemEnded?.InvokeSafely(tuple);
-            (tuple.Provider as IDisposable)?.Dispose();
+            ItemEnded?.InvokeSafely(item, provider);
+            (provider as IDisposable)?.Dispose();
         }
 
         _current = null;

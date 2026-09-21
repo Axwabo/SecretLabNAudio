@@ -20,11 +20,11 @@ internal static class MonoBehaviorExtensions
         }
     }
 
-    public static void InvokeSafely<T>(this Action<T>? @event, T arg)
+    public static void InvokeSafely<T1, T2>(this Action<T1, T2>? @event, T1 arg1, T2 arg2)
     {
         try
         {
-            @event?.Invoke(arg);
+            @event?.Invoke(arg1, arg2);
         }
         catch (Exception e)
         {
