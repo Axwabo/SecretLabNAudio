@@ -28,12 +28,6 @@ public static class AudioPlayerBaseBuilderExtensions
             return builder;
         }
 
-        public T WithPacketOutput(AudioPacketOutput output)
-        {
-            builder.Player.Output = output;
-            return builder;
-        }
-
     }
 
 }

@@ -1,5 +1,6 @@
 using SecretLabNAudio.Core.Extensions;
 using SecretLabNAudio.Core.Groups;
+using SecretLabNAudio.Core.Outputs;
 
 namespace SecretLabNAudio.Core.Builders;
 
@@ -7,6 +8,8 @@ public interface ISpeakerBuilder
 {
 
     SpeakerToy Speaker { get; }
+
+    SpeakerToyOutput Output { get; }
 
 }
 
@@ -49,6 +52,12 @@ public static class SpeakerBuilderExtensions
         public T WithSpatial(bool isSpatial = true)
         {
             builder.Speaker.IsSpatial = isSpatial;
+            return builder;
+        }
+
+        public T PoolOnEnd()
+        {
+            builder.Output.PoolOnEnd = true;
             return builder;
         }
 

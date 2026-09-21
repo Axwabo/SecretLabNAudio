@@ -1,4 +1,6 @@
-﻿namespace SecretLabNAudio.Core.Extensions;
+﻿using SecretLabNAudio.Core.Outputs;
+
+namespace SecretLabNAudio.Core.Extensions;
 
 /// <summary>Extension methods for the <see cref="SpeakerToy"/> wrapper.</summary>
 public static partial class SpeakerToyExtensions
@@ -84,7 +86,8 @@ public static partial class SpeakerToyExtensions
         public AudioPlayer AddAudioPlayer()
             => speaker.GameObject.TryGetComponent(out AudioPlayer existing)
                 ? existing
-                : speaker.GameObject.AddComponent<AudioPlayer>();
+                : speaker.GameObject.AddComponent<AudioPlayer>()
+                    .WithPacketOutput(new SpeakerToyOutput(speaker));
 
         /// <summary>
         /// Destroys the speaker if it hasn't already been destroyed.
