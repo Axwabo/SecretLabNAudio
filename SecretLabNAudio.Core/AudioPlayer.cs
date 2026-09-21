@@ -1,58 +1,17 @@
 ﻿using SecretLabNAudio.Core.Extensions;
 using SecretLabNAudio.Core.Providers;
-using SecretLabNAudio.Core.SendEngines;
 using VoiceChat.Codec;
 using VoiceChat.Codec.Enums;
 
 namespace SecretLabNAudio.Core;
 
 /// <summary>A <see cref="SpeakerToy"/>-bound component playing audio using an <see cref="ISampleProvider"/>.</summary>
-public sealed partial class AudioPlayer : MonoBehaviour
+public sealed partial class AudioPlayer : AudioPlayerBase
 {
 
     private static readonly float[] ReadBuffer = new float[AudioConstants.SamplesPerPacket];
 
     private static readonly byte[] EncoderBuffer = new byte[1024];
-
-    /// <summary>The <see cref="SpeakerToy"/> this player is attached to.</summary>
-    public SpeakerToy Speaker { get; private set; } = null!;
-
-    /// <summary>The controller ID of this player.</summary>
-    /// <seealso cref="SpeakerToy.ControllerId"/>
-    public byte Id
-    {
-        get => Speaker.ControllerId;
-        set => Speaker.ControllerId = value;
-    }
-
-    /// <inheritdoc cref="SpeakerSettings.Volume"/>
-    public bool IsSpatial
-    {
-        get => Speaker.IsSpatial;
-        set => Speaker.IsSpatial = value;
-    }
-
-    /// <inheritdoc cref="SpeakerSettings.Volume"/>
-    /// <seealso cref="MasterAmplification"/>
-    public float Volume
-    {
-        get => Speaker.Volume;
-        set => Speaker.Volume = value;
-    }
-
-    /// <inheritdoc cref="SpeakerSettings.MinDistance"/>
-    public float MinDistance
-    {
-        get => Speaker.MinDistance;
-        set => Speaker.MinDistance = value;
-    }
-
-    /// <inheritdoc cref="SpeakerSettings.MaxDistance"/>
-    public float MaxDistance
-    {
-        get => Speaker.MaxDistance;
-        set => Speaker.MaxDistance = value;
-    }
 
     /// <summary>The provider this player will read from. Set to null to skip updates.</summary>
     /// <exception cref="ArgumentException">
@@ -98,12 +57,6 @@ public sealed partial class AudioPlayer : MonoBehaviour
     /// <remarks>This property is automatically set when the <see cref="SampleProvider"/> changes.</remarks>
     public bool OwnsProvider { get; set; }
 
-    /// <summary>
-    /// The <see cref="SendEngine"/> used to broadcast audio messages.
-    /// If null, encoding and broadcasting is skipped.
-    /// </summary>
-    public SendEngine? SendEngine { get; set; } = SendEngine.DefaultEngine;
-
     /// <summary>An optional monitor to consume read audio samples.</summary>
     public IAudioPacketMonitor? OutputMonitor { get; set; }
 
@@ -148,12 +101,6 @@ public sealed partial class AudioPlayer : MonoBehaviour
 
     private readonly OpusEncoder _encoder = new(OpusApplicationType.Audio);
 
-    private void Awake()
-    {
-        Speaker = this.GetSpeaker("AudioPlayer must be attached to a SpeakerToy.");
-        _ = Speaker.Base.destroyCancellationToken;
-    }
-
     private void Update()
     {
         if (IsPaused || SampleProvider == null)
@@ -163,15 +110,15 @@ public sealed partial class AudioPlayer : MonoBehaviour
             ProcessPacket();
     }
 
-    private void OnDisable()
+    protected override void OnDisable()
     {
+        base.OnDisable();
         Destroyed.InvokeSafely();
         NoSamplesRead = null;
         Ended = null;
         Destroyed = null;
         HasEnded = IsPaused = false;
         SampleProvider = null;
-        SendEngine = SendEngine.DefaultEngine;
         OutputMonitor = null;
         AlwaysRead = true;
         _remainingTime = 0;
@@ -241,8 +188,5 @@ public sealed partial class AudioPlayer : MonoBehaviour
         _remainingTime = 0;
         this.SingleInputAs<BufferedSampleProvider>()?.Clear();
     }
-
-    /// <summary>Destroys the player and its <see cref="Speaker"/>.</summary>
-    public void Destroy() => Speaker.Destroy();
 
 }

@@ -1,6 +1,4 @@
-﻿using SecretLabNAudio.Core.SendEngines;
-
-namespace SecretLabNAudio.Core.Extensions;
+﻿namespace SecretLabNAudio.Core.Extensions;
 
 /// <summary>Extension methods to manage <see cref="SpeakerPersonalization"/> components.</summary>
 public static partial class PersonalizationExtensions
@@ -50,39 +48,7 @@ public static partial class PersonalizationExtensions
             return player;
         }
 
-        /// <summary>
-        /// Sets the <see cref="AudioPlayer.SendEngine"/> of the <see cref="AudioPlayer"/> to a <see cref="LivePersonalizedSendEngine"/> based on the given <see cref="SpeakerPersonalization"/> component.
-        /// </summary>
-        /// <param name="personalization">The <see cref="SpeakerPersonalization"/> component to use for personalization.</param>
-        /// <param name="transform">A delegate that transforms the personalized settings.</param>
-        /// <param name="baseEngine">
-        /// The base engine used to construct the <see cref="LivePersonalizedSendEngine"/>.
-        /// If <see langword="null"/>, <see cref="SendEngine.DefaultEngine"/> will be used.
-        /// </param>
-        /// <returns>The <see cref="AudioPlayer"/> itself with the personalized send engine set.</returns>
-        /// <seealso cref="PersonalizedSettingsTransform"/>
-        public AudioPlayer WithLivePersonalizedSendEngine(SpeakerPersonalization personalization, PersonalizedSettingsTransform transform, SendEngine? baseEngine = null)
-        {
-            player.SendEngine = new LivePersonalizedSendEngine(
-                baseEngine ?? SendEngine.DefaultEngine,
-                personalization,
-                transform
-            );
-            return player;
-        }
-
-        /// <summary>
-        /// Attaches a <see cref="SpeakerPersonalization"/> component, and sets the <see cref="AudioPlayer.SendEngine"/> of the <see cref="AudioPlayer"/> to a <see cref="LivePersonalizedSendEngine"/>.
-        /// </summary>
-        /// <param name="transform">A delegate that transforms the personalized settings.</param>
-        /// <param name="baseEngine">
-        /// The base engine used to construct the <see cref="LivePersonalizedSendEngine"/>.
-        /// If <see langword="null"/>, <see cref="SendEngine.DefaultEngine"/> will be used.
-        /// </param>
-        /// <returns>The <see cref="AudioPlayer"/> itself with the personalized send engine set.</returns>
-        /// <seealso cref="PersonalizedSettingsTransform"/>
-        public AudioPlayer WithLivePersonalizedSendEngine(PersonalizedSettingsTransform transform, SendEngine? baseEngine = null)
-            => player.WithLivePersonalizedSendEngine(player.AddPersonalization(), transform, baseEngine);
+        // TODO: per-frame personalization
 
     }
 

@@ -111,25 +111,6 @@ public static partial class AudioPlayerExtensions
         }
 
         /// <summary>
-        /// Sets the <see cref="AudioPlayer.SendEngine"/> of the <see cref="AudioPlayer"/>.
-        /// </summary>
-        /// <param name="engine">The engine to send audio with.</param>
-        /// <returns>The player itself.</returns>
-        public AudioPlayer WithSendEngine(SendEngine engine)
-        {
-            player.SendEngine = engine;
-            return player;
-        }
-
-        /// <summary>
-        /// Sets the <see cref="AudioPlayer.SendEngine"/> of the <see cref="AudioPlayer"/> to a <see cref="FilteredSendEngine"/>.
-        /// </summary>
-        /// <param name="filter">The condition to satisfy for a <see cref="Player"/> to receive the audio.</param>
-        /// <returns>The player itself.</returns>
-        public AudioPlayer WithFilteredSendEngine(Predicate<Player> filter)
-            => throw new NotSupportedException();
-
-        /// <summary>
         /// Sets the <see cref="AudioPlayer.OutputMonitor"/> of the <see cref="AudioPlayer"/> to the given <see cref="IAudioPacketMonitor"/>.
         /// </summary>
         /// <param name="monitor">The monitor to set.</param>

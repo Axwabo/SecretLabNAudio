@@ -47,7 +47,7 @@ public sealed class DiscJockeyBoard : MonoBehaviour
         var transform = board.Transform;
 
         Instance._player = AudioPlayerPool.Rent(StageSettings, stage.Transform)
-            .WithFilteredSendEngine(p => !p.IsAlive || p.IsOutside)
+            .WithSendFilter(p => !p.IsAlive || p.IsOutside)
             .WithOutputMonitor(visualizer);
         Outside.PlaceSpeakers(Instance._player);
 
