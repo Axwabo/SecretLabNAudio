@@ -1,6 +1,5 @@
 ﻿using NAudio.Wave.SampleProviders;
 using SecretLabNAudio.Core.Pools;
-using SecretLabNAudio.Core.SendEngines;
 
 namespace SecretLabNAudio.Core.Extensions;
 
@@ -128,7 +127,7 @@ public static partial class AudioPlayerExtensions
         /// <param name="filter">The condition to satisfy for a <see cref="Player"/> to receive the audio.</param>
         /// <returns>The player itself.</returns>
         public AudioPlayer WithFilteredSendEngine(Predicate<Player> filter)
-            => player.WithSendEngine(new FilteredSendEngine(filter));
+            => throw new NotSupportedException();
 
         /// <summary>
         /// Sets the <see cref="AudioPlayer.OutputMonitor"/> of the <see cref="AudioPlayer"/> to the given <see cref="IAudioPacketMonitor"/>.
