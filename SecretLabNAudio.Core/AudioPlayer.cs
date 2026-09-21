@@ -11,7 +11,7 @@ public sealed partial class AudioPlayer : AudioPlayerBase
 
     private static readonly float[] ReadBuffer = new float[AudioConstants.SamplesPerPacket];
 
-    private static readonly byte[] EncoderBuffer = new byte[1024];
+    private static readonly byte[] EncoderBuffer = new byte[AudioConstants.MaxEncodedBytesPerPacket];
 
     /// <summary>The provider this player will read from. Set to null to skip updates.</summary>
     /// <exception cref="ArgumentException">

@@ -8,7 +8,9 @@ public readonly struct AudioPlayerBuilder : IAudioPlayerBuilder, ISpeakerBuilder
 {
 
     public AudioPlayer Player { get; }
+
     public SpeakerToy Speaker { get; }
+
     public SpeakerToyOutput Output { get; }
 
     public static AudioPlayerBuilder Create(SpeakerSettings settings, Vector3 position = default, Transform? parent = null, bool spawn = true)

@@ -23,6 +23,8 @@ public static class AudioConstants
     /// <summary>The duration of a packet in seconds.</summary>
     public const float PacketDuration = 1f / PacketsPerSecond;
 
+    public const int MaxEncodedBytesPerPacket = VoiceChatSettings.MaxEncodedSize;
+
     /// <summary>The <see cref="WaveFormat"/> supported by <see cref="AudioPlayer"/> instances.</summary>
     public static WaveFormat SupportedFormat { get; } = WaveFormat.CreateIeeeFloatWaveFormat(SampleRate, Channels);
 
