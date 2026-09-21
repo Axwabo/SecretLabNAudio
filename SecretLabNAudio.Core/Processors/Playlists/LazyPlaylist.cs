@@ -76,7 +76,7 @@ public sealed partial class LazyPlaylist : IAudioProcessor
     /// Invoked before a sample provider is disposed.
     /// Useful for inspecting errors if the provider defines such a mechanism.
     /// </summary>
-    public event Action<ISampleProvider>? BeforeDisposingProvider;
+    public event Action<ISampleProvider>? DisposingProvider;
 
     /// <summary>
     /// Creates an empty <see cref="LazyPlaylist"/>.
@@ -208,7 +208,7 @@ public sealed partial class LazyPlaylist : IAudioProcessor
     {
         if (_current is {Provider: { } provider})
         {
-            BeforeDisposingProvider?.InvokeSafely(provider);
+            DisposingProvider?.InvokeSafely(provider);
             (provider as IDisposable)?.Dispose();
         }
 
@@ -243,6 +243,7 @@ public sealed partial class LazyPlaylist : IAudioProcessor
         State = PlaylistState.Ended;
         Index = 0;
         BeforeStarted = CurrentItemChanged = LastItemEnded = null;
+        DisposingProvider = null;
     }
 
 }
