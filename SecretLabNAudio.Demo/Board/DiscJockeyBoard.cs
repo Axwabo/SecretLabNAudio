@@ -1,3 +1,4 @@
+using SecretLabNAudio.Core.Builders;
 using SecretLabNAudio.Core.Extensions;
 using SecretLabNAudio.Core.Processors;
 

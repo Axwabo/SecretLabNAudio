@@ -14,6 +14,36 @@ public static class SpeakerBuilderExtensions
             return builder;
         }
 
+        public T WithId(byte id)
+        {
+            builder.Speaker.ControllerId = id;
+            return builder;
+        }
+
+        public T WithVolume(float volume)
+        {
+            builder.Speaker.Volume = volume;
+            return builder;
+        }
+
+        public T WithMinDistance(float minDistance)
+        {
+            builder.Speaker.MinDistance = minDistance;
+            return builder;
+        }
+
+        public T WithMaxDistance(float maxDistance)
+        {
+            builder.Speaker.MaxDistance = maxDistance;
+            return builder;
+        }
+
+        public T WithSpatial(bool isSpatial = true)
+        {
+            builder.Speaker.IsSpatial = isSpatial;
+            return builder;
+        }
+
     }
 
 }
