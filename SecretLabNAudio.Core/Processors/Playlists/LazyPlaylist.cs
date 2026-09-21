@@ -1,3 +1,4 @@
+using System.Linq;
 using SecretLabNAudio.Core.Extensions;
 using SecretLabNAudio.Core.Extensions.Processors;
 using Random = UnityEngine.Random;
@@ -112,6 +113,13 @@ public sealed partial class LazyPlaylist : IAudioProcessor
 
         return total;
     }
+
+    /// <summary>
+    /// Enumerates the remaining playlist items.
+    /// </summary>
+    /// <param name="includeCurrent">Whether to include the current item.</param>
+    /// <returns>An enumerable containing the remaining items.</returns>
+    public IEnumerable<PlaylistItem> GetRemainingItems(bool includeCurrent = true) => _items.Skip(includeCurrent ? Index : Index + 1);
 
     private bool TryGetCurrent([NotNullWhen(true)] out ISampleProvider? provider)
     {
