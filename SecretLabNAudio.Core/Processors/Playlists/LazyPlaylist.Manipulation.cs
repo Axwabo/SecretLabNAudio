@@ -96,7 +96,7 @@ public sealed partial class LazyPlaylist
     }
 
     /// <summary>
-    /// Skips to the next item.
+    /// Stops playing the current item, and attempts to move on to the next.
     /// </summary>
     /// <param name="wrapAround">
     /// If null, wrapping around will apply if <see cref="RepeatMode"/> is <see cref="Repeat.All"/>.
@@ -113,6 +113,23 @@ public sealed partial class LazyPlaylist
         if (State == PlaylistState.NotStarted || wrap && State == PlaylistState.Ended)
             return Restart(out _);
         return false;
+    }
+
+    /// <summary>
+    /// Skips the current item, and returns whether the state has changed.
+    /// </summary>
+    /// <param name="wrapAround">
+    /// If null, wrapping around will apply if <see cref="RepeatMode"/> is <see cref="Repeat.All"/>.
+    /// When wrap around is enabled, the first item will be played if calling this method while the current item is the last item.
+    /// </param>
+    /// <returns>True if the next item was started or if the playlist ended.</returns>
+    public bool Skip(bool? wrapAround = null)
+    {
+        var playing = IsPlaying;
+        if (Next(wrapAround))
+            return true;
+        EndPlaylist();
+        return playing;
     }
 
     /// <summary>
