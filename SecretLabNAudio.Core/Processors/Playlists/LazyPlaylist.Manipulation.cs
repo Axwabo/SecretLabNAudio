@@ -60,12 +60,14 @@ public sealed partial class LazyPlaylist
     /// <summary>
     /// Clears the playlist, stopping current playback (if any).
     /// </summary>
+    /// <remarks><see cref="State"/> is set to <see cref="PlaylistState.NotStarted"/>.</remarks>
     /// <returns>The playlist itself.</returns>
     public LazyPlaylist Clear()
     {
         _items.Clear();
         Index = 0;
         End(IsPlaying);
+        State = PlaylistState.NotStarted;
         return this;
     }
 

@@ -134,7 +134,8 @@ public sealed partial class LazyPlaylist : IAudioProcessor
         _current = null;
         if (_items.Count == 0)
         {
-            State = PlaylistState.Ended;
+            if (State != PlaylistState.NotStarted)
+                State = PlaylistState.Ended;
             provider = null;
             return false;
         }
