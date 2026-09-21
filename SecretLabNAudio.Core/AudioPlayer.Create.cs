@@ -1,4 +1,5 @@
 ﻿using SecretLabNAudio.Core.Extensions;
+using SecretLabNAudio.Core.Outputs;
 using SecretLabNAudio.Core.Pools;
 
 namespace SecretLabNAudio.Core;
@@ -23,10 +24,11 @@ public partial class AudioPlayer
     /// <returns>A new <see cref="AudioPlayer"/>.</returns>
     public static AudioPlayer Create(byte id, SpeakerSettings settings, Transform? parent = null, Vector3 position = default, bool spawn = true)
     {
-        var o = SpeakerToy.Create(position, Quaternion.identity, parent, false).GameObject;
-        var player = o.AddComponent<AudioPlayer>()
-            .WithId(id)
-            .ApplySettings(settings);
+        var speaker = SpeakerToy.Create(position, Quaternion.identity, parent, false);
+        speaker.WithId(id).ApplySettings(settings);
+        var o = speaker.GameObject;
+        var player = o.AddComponent<AudioPlayer>();
+        player.Output = new SpeakerToyOutput(speaker);
         if (spawn)
             NetworkServer.Spawn(o);
         return player;
@@ -87,5 +89,13 @@ public partial class AudioPlayer
     /// <returns>A new <see cref="AudioPlayer"/>.</returns>
     public static AudioPlayer CreateGlobal(Vector3 position = default, Transform? parent = null, bool spawn = true)
         => CreateGlobal(NextAvailableId, position, parent, spawn);
+
+    public static AudioPlayer CreateGlobal(Player speakerPlayer)
+    {
+        if (speakerPlayer.IsDestroyed)
+            throw new InvalidOperationException(); // TODO
+        return speakerPlayer.GameObject!.AddComponent<AudioPlayer>()
+            .WithPacketOutput(new PlayerVoiceOutput(speakerPlayer));
+    }
 
 }

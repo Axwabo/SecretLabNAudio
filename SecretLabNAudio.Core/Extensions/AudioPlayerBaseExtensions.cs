@@ -32,6 +32,12 @@ public static class AudioPlayerBaseExtensions
             return player;
         }
 
+        public T WithPacketOutput(AudioPacketOutput output)
+        {
+            player.Output = output;
+            return player;
+        }
+
     }
 
     extension(AudioPlayerBase player)

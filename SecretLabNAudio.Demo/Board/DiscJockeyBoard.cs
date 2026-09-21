@@ -1,4 +1,3 @@
-using SecretLabNAudio.Core.Builders;
 using SecretLabNAudio.Core.Extensions;
 using SecretLabNAudio.Core.Processors;
 
@@ -46,12 +45,10 @@ public sealed class DiscJockeyBoard : MonoBehaviour
         Instance = board.GameObject.AddComponent<DiscJockeyBoard>();
         var transform = board.Transform;
 
-        AudioPlayerBuilder.Create(StageSettings, parent: stage.Transform)
-            .WithSendFilter(p => !p.IsAlive || p.IsOutside);
         Instance._player = AudioPlayer.Create(StageSettings, parent: stage.Transform)
             .WithSendFilter(p => !p.IsAlive || p.IsOutside)
             .WithOutputMonitor(visualizer);
-        Outside.PlaceSpeakers(Instance._player);
+        Outside.PlaceSpeakers(Instance._player.OutputSpeaker!);
 
         Instance._music = Slider.Create(transform, Vector3.right * 0.4f, SliderRotation, "🎵", "Music");
         Instance._speed = Slider.Create(transform, Vector3.right * 0.5f, SliderRotation, "⏩", "Speed", 0);

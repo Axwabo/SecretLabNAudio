@@ -12,7 +12,7 @@ public static partial class AudioPlayerExtensions
 
         /// <summary>
         /// Sets the master amplification of the <see cref="AudioPlayer"/>.
-        /// This is different from <see cref="WithVolume"/>, which changes the volume of the <see cref="SpeakerToy"/>.
+        /// This is different from <see cref="SpeakerToyExtensions.WithVolume"/> (which changes the volume of the <see cref="SpeakerToy"/>).
         /// </summary>
         /// <param name="scalar">The scalar to multiply samples by before encoding. 1 is normal volume, 2 is double volume, 0.5 is half volume, etc.</param>
         /// <returns>The player itself.</returns>
@@ -99,17 +99,6 @@ public static partial class AudioPlayerExtensions
                     speaker.Destroy();
                 Object.Destroy(player);
             };
-            return player;
-        }
-
-        /// <summary>
-        /// Returns the <see cref="AudioPlayer"/> to the pool when the provider ends.
-        /// </summary>
-        /// <returns>The player itself.</returns>
-        /// <seealso cref="AudioPlayer.Ended"/>
-        public AudioPlayer PoolOnEnd()
-        {
-            player.Ended += () => { AudioPlayerPool.Return(player); };
             return player;
         }
 
