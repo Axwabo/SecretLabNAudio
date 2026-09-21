@@ -1,5 +1,5 @@
+using SecretLabNAudio.Core.Builders;
 using SecretLabNAudio.Core.Extensions;
-using SecretLabNAudio.Core.Pools;
 using SecretLabNAudio.Core.Processors;
 
 namespace SecretLabNAudio.Demo.Board;
@@ -46,7 +46,9 @@ public sealed class DiscJockeyBoard : MonoBehaviour
         Instance = board.GameObject.AddComponent<DiscJockeyBoard>();
         var transform = board.Transform;
 
-        Instance._player = AudioPlayerPool.Rent(StageSettings, stage.Transform)
+        AudioPlayerBuilder.Create(StageSettings, parent: stage.Transform)
+            .WithSendFilter(p => !p.IsAlive || p.IsOutside);
+        Instance._player = AudioPlayer.Create(StageSettings, parent: stage.Transform)
             .WithSendFilter(p => !p.IsAlive || p.IsOutside)
             .WithOutputMonitor(visualizer);
         Outside.PlaceSpeakers(Instance._player);

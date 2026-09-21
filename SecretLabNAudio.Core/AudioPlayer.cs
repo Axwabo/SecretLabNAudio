@@ -87,13 +87,6 @@ public sealed partial class AudioPlayer : AudioPlayerBase
     /// <seealso cref="Ended"/>
     public event Action? NoSamplesRead;
 
-    /// <summary>
-    /// Invoked when <see cref="HasEnded"/> becomes true if it was previously false.
-    /// The provider is considered ended if it returns fewer samples than requested (or 0).
-    /// </summary>
-    /// <remarks>This event is called after <see cref="NoSamplesRead"/></remarks>
-    public event Action? Ended;
-
     private float _remainingTime;
 
     private readonly OpusEncoder _encoder = new(OpusApplicationType.Audio);
@@ -111,7 +104,6 @@ public sealed partial class AudioPlayer : AudioPlayerBase
     {
         base.OnDisable();
         NoSamplesRead = null;
-        Ended = null;
         HasEnded = IsPaused = false;
         SampleProvider = null;
         OutputMonitor = null;
@@ -172,7 +164,11 @@ public sealed partial class AudioPlayer : AudioPlayerBase
             NoSamplesRead.InvokeSafely();
         }
 
-        if (!hasEndedBefore) Ended.InvokeSafely();
+        if (!hasEndedBefore)
+        {
+            InvokeEnded();
+        }
+
         if (!AlwaysRead)
             SampleProvider = null;
     }

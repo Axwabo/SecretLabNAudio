@@ -1,5 +1,6 @@
 using SecretLabNAudio.Core.Extensions;
 using SecretLabNAudio.Core.Outputs;
+using SecretLabNAudio.Core.Pools;
 
 namespace SecretLabNAudio.Core;
 
@@ -16,7 +17,7 @@ public abstract class AudioPlayerBase : MonoBehaviour
     /// </summary>
     public AudioPacketOutput? Output { get; set; }
 
-    public SpeakerToy? Speaker => (Output as SpeakerToyOutput)?.Speaker;
+    public event Action? Ended;
 
     /// <summary>Invoked when this player is disabled or destroyed.</summary>
     public event Action? Destroyed;
@@ -26,8 +27,16 @@ public abstract class AudioPlayerBase : MonoBehaviour
         Destroy(this);
         Destroyed.InvokeSafely();
         Destroyed = null;
+        Ended = null;
         SendFilter = null!;
         Output = null;
+    }
+
+    protected void InvokeEnded()
+    {
+        Ended.InvokeSafely();
+        if (Output is SpeakerToyOutput {Speaker: var speaker, PoolOnEnd: true})
+            SpeakerToyPool.Return(speaker);
     }
 
 }

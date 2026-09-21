@@ -25,13 +25,13 @@ public static class Outside
 
     private static readonly List<SpeakerPersonalization> PersonalizationInstances = [];
 
-    public static void PlaceSpeakers(AudioPlayer controller)
+    public static void PlaceSpeakers(SpeakerToy speaker)
     {
         var positions = Scp079InteractableBase.AllInstances
             .Where(e => e is Scp079Speaker {Room.Name: RoomName.Outside})
             .Select(e => e.Position);
         PersonalizationInstances.Clear();
-        PersonalizationInstances.AddRange(controller.GetOrCreateGroup()
+        PersonalizationInstances.AddRange(speaker.GetOrCreateGroup()
             .AddFromPool(Settings, positions)
             .AddPersonalizationToChildren());
     }

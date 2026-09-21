@@ -5,6 +5,8 @@ public class SpeakerToyOutput : AudioPacketOutput
 
     public SpeakerToy Speaker { get; }
 
+    public bool PoolOnEnd { get; set; }
+
     public SpeakerToyOutput(SpeakerToy speaker) => Speaker = speaker;
 
     public override void BroadcastEncodedData(byte[] buffer, int length, SendFilter filter)

@@ -37,13 +37,6 @@ public readonly record struct SpeakerSettings
     };
 
     /// <summary>
-    /// Gets the settings of the given <see cref="AudioPlayer"/>.
-    /// </summary>
-    /// <param name="player">The player to get the settings from.</param>
-    /// <returns>The settings of the player.</returns>
-    public static SpeakerSettings From(AudioPlayer player) => From(player.Speaker);
-
-    /// <summary>
     /// Gets the settings of the given <see cref="SpeakerPersonalization"/>.
     /// </summary>
     /// <param name="personalization">The personalization component to get the settings from.</param>

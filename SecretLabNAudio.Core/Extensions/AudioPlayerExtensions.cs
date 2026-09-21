@@ -1,5 +1,4 @@
 ﻿using NAudio.Wave.SampleProviders;
-using SecretLabNAudio.Core.Pools;
 
 namespace SecretLabNAudio.Core.Extensions;
 
@@ -10,62 +9,6 @@ public static partial class AudioPlayerExtensions
     /// <param name="player">The player to apply the settings to.</param>
     extension(AudioPlayer player)
     {
-
-        private AudioPlayer PatchSpeaker<T>(Func<SpeakerToy, T, SpeakerToy> method, T parameter)
-        {
-            method(player.Speaker, parameter);
-            return player;
-        }
-
-        /// <summary>
-        /// Applies the given <see cref="SpeakerSettings"/> to the <see cref="AudioPlayer"/>.
-        /// </summary>
-        /// <param name="settings">The settings to apply.</param>
-        /// <returns>The player itself.</returns>
-        public AudioPlayer ApplySettings(SpeakerSettings settings)
-            => player.PatchSpeaker(SpeakerToyExtensions.ApplySettings, settings);
-
-        /// <summary>
-        /// Sets the controller ID of the <see cref="AudioPlayer"/>.
-        /// </summary>
-        /// <param name="id">The ID to set.</param>
-        /// <returns>The player itself.</returns>
-        public AudioPlayer WithId(byte id)
-            => player.PatchSpeaker(SpeakerToyExtensions.WithId, id);
-
-        /// <summary>
-        /// Sets the volume of the <see cref="AudioPlayer"/>.
-        /// </summary>
-        /// <param name="volume">The volume to set.</param>
-        /// <returns>The player itself.</returns>
-        public AudioPlayer WithVolume(float volume)
-            => player.PatchSpeaker(SpeakerToyExtensions.WithVolume, volume);
-
-        /// <summary>
-        /// Sets the minimum full volume distance of the <see cref="AudioPlayer"/>.
-        /// </summary>
-        /// <param name="minDistance">The minimum distance to set.</param>
-        /// <returns>The player itself.</returns>
-        /// <seealso cref="SpeakerSettings.MinDistance"/>
-        public AudioPlayer WithMinDistance(float minDistance)
-            => player.PatchSpeaker(SpeakerToyExtensions.WithMinDistance, minDistance);
-
-        /// <summary>
-        /// Sets the maximum audible distance of the <see cref="AudioPlayer"/>.
-        /// </summary>
-        /// <param name="maxDistance">The maximum distance to set.</param>
-        /// <returns>The player itself.</returns>
-        /// <seealso cref="SpeakerSettings.MaxDistance"/>
-        public AudioPlayer WithMaxDistance(float maxDistance)
-            => player.PatchSpeaker(SpeakerToyExtensions.WithMaxDistance, maxDistance);
-
-        /// <summary>
-        /// Sets whether the <see cref="AudioPlayer"/> is spatial (3D sound).
-        /// /// </summary>
-        /// <param name="isSpatial">Whether the player should be spatial.</param>
-        /// <returns>The player itself.</returns>
-        public AudioPlayer WithSpatial(bool isSpatial = true)
-            => player.PatchSpeaker(SpeakerToyExtensions.WithSpatial, isSpatial);
 
         /// <summary>
         /// Sets the master amplification of the <see cref="AudioPlayer"/>.
@@ -152,7 +95,7 @@ public static partial class AudioPlayerExtensions
         {
             player.Ended += () =>
             {
-                if (player.Speaker is { } speaker)
+                if (player.OutputSpeaker is { } speaker)
                     speaker.Destroy();
                 Object.Destroy(player);
             };

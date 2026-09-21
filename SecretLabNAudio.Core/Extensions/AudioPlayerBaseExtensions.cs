@@ -37,6 +37,8 @@ public static class AudioPlayerBaseExtensions
     extension(AudioPlayerBase player)
     {
 
+        public SpeakerToy? OutputSpeaker => (player.Output as SpeakerToyOutput)?.Speaker;
+
     }
 
 }
