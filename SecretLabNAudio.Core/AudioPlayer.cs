@@ -94,9 +94,6 @@ public sealed partial class AudioPlayer : AudioPlayerBase
     /// <remarks>This event is called after <see cref="NoSamplesRead"/></remarks>
     public event Action? Ended;
 
-    /// <summary>Invoked when this player is disabled or destroyed.</summary>
-    public event Action? Destroyed;
-
     private float _remainingTime;
 
     private readonly OpusEncoder _encoder = new(OpusApplicationType.Audio);
@@ -113,10 +110,8 @@ public sealed partial class AudioPlayer : AudioPlayerBase
     protected override void OnDisable()
     {
         base.OnDisable();
-        Destroyed.InvokeSafely();
         NoSamplesRead = null;
         Ended = null;
-        Destroyed = null;
         HasEnded = IsPaused = false;
         SampleProvider = null;
         OutputMonitor = null;
@@ -157,13 +152,13 @@ public sealed partial class AudioPlayer : AudioPlayerBase
         }
 
         OutputMonitor?.OnRead(ReadBuffer.AsSpan(0, read));
-        if (SendEngine == null)
+        if (Output == null)
             return;
         if (MasterAmplification is not 1f)
             for (var i = 0; i < read; i++)
                 ReadBuffer[i] *= MasterAmplification;
         var encoded = _encoder.Encode(ReadBuffer, EncoderBuffer);
-        SendEngine.Broadcast(new AudioMessage(Id, EncoderBuffer, encoded));
+        Output.BroadcastEncodedData(EncoderBuffer, encoded, SendFilter);
     }
 
     private void End(bool zero)

@@ -150,7 +150,12 @@ public static partial class AudioPlayerExtensions
         /// <seealso cref="AudioPlayer.Ended"/>
         public AudioPlayer DestroyOnEnd()
         {
-            player.Ended += player.Destroy;
+            player.Ended += () =>
+            {
+                if (player.Speaker is { } speaker)
+                    speaker.Destroy();
+                Object.Destroy(player);
+            };
             return player;
         }
 
@@ -161,7 +166,7 @@ public static partial class AudioPlayerExtensions
         /// <seealso cref="AudioPlayer.Ended"/>
         public AudioPlayer PoolOnEnd()
         {
-            player.Ended += () => AudioPlayerPool.Return(player);
+            player.Ended += () => { AudioPlayerPool.Return(player); };
             return player;
         }
 

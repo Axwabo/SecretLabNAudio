@@ -1,3 +1,4 @@
+using SecretLabNAudio.Core.Extensions;
 using SecretLabNAudio.Core.Outputs;
 
 namespace SecretLabNAudio.Core;
@@ -17,9 +18,14 @@ public abstract class AudioPlayerBase : MonoBehaviour
 
     public SpeakerToy? Speaker => (Output as SpeakerToyOutput)?.Speaker;
 
+    /// <summary>Invoked when this player is disabled or destroyed.</summary>
+    public event Action? Destroyed;
+
     protected virtual void OnDisable()
     {
         Destroy(this);
+        Destroyed.InvokeSafely();
+        Destroyed = null;
         SendFilter = null!;
         Output = null;
     }
