@@ -7,8 +7,6 @@ namespace SecretLabNAudio.Core.Builders;
 public interface ISpeakerBuilder
 {
 
-    SpeakerToy Speaker { get; }
-
     SpeakerToyOutput Output { get; }
 
 }
@@ -18,6 +16,8 @@ public static class SpeakerBuilderExtensions
 
     extension<T>(T builder) where T : ISpeakerBuilder
     {
+
+        public SpeakerToy Speaker => builder.Output.Speaker;
 
         public T ApplySettings(SpeakerSettings settings)
         {

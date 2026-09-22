@@ -9,8 +9,6 @@ public readonly struct AudioPlayerBuilder : IAudioPlayerBuilder, ISpeakerBuilder
 
     public AudioPlayer Player { get; }
 
-    public SpeakerToy Speaker { get; }
-
     public SpeakerToyOutput Output { get; }
 
     public static AudioPlayerBuilder Create(SpeakerSettings settings, Vector3 position = default, Transform? parent = null, bool spawn = true)
@@ -26,7 +24,7 @@ public readonly struct AudioPlayerBuilder : IAudioPlayerBuilder, ISpeakerBuilder
         if (spawn)
             NetworkServer.Spawn(o);
         var player = o.AddComponent<AudioPlayer>().WithPacketOutput(output);
-        return new AudioPlayerBuilder(player, speaker, output);
+        return new AudioPlayerBuilder(player, output);
     }
 
     public static AudioPlayerBuilder CreatePrivate(Player target, float volume = 1, bool spawn = true)
@@ -34,10 +32,9 @@ public readonly struct AudioPlayerBuilder : IAudioPlayerBuilder, ISpeakerBuilder
             .WithVolume(volume)
             .WithSendFilter(new SinglePlayerFilter(target));
 
-    private AudioPlayerBuilder(AudioPlayer player, SpeakerToy speaker, SpeakerToyOutput output)
+    private AudioPlayerBuilder(AudioPlayer player, SpeakerToyOutput output)
     {
         Player = player;
-        Speaker = speaker;
         Output = output;
     }
 
