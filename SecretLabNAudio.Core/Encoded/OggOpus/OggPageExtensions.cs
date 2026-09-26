@@ -57,8 +57,6 @@ public static class OggPageExtensions
 
         public bool IsContinuation => page.HasValue && (page.Value.Flags & HeaderType.Continuation) != 0;
 
-        public bool IsEndOfStream => page.HasValue && (page.Value.Flags & HeaderType.EndOfStream) != 0;
-
     }
 
     extension(Stream stream)
