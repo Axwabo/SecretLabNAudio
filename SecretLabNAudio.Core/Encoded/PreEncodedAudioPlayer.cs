@@ -28,10 +28,14 @@ public class PreEncodedAudioPlayer : AudioPlayerBase
             time += Time.deltaTime;
             while (time > 0)
             {
-                time--;
+                time -= AudioConstants.PacketDuration;
                 var read = provider.ReadPacket(EncodedBuffer);
                 if (read == 0)
+                {
+                    InvokeEnded();
                     return;
+                }
+
                 Output?.BroadcastEncodedData(EncodedBuffer, read, SendFilter);
             }
         }
