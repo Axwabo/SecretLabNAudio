@@ -1,23 +1,25 @@
 namespace SecretLabNAudio.Core.FileReading.OggOpus;
 
-public readonly struct OggPage
+public readonly ref struct OggPage
 {
 
-    private readonly ReadOnlyMemory<byte> _rawPacket;
+    private readonly ReadOnlySpan<byte> _rawPacket;
 
     public long GranulePosition { get; }
 
     public HeaderType Flags { get; }
 
-    public ReadOnlyMemory<Range> Ranges { get; }
+    public ReadOnlySpan<Range> Ranges { get; }
 
-    public ReadOnlySpan<byte> this[int index] => _rawPacket.Span[Ranges.Span[index]];
+    public ReadOnlySpan<byte> this[int index] => _rawPacket[Ranges[index]];
 
     public int Count => Ranges.Length;
 
     public int TotalSize => _rawPacket.Length;
 
-    public OggPage(long granulePosition, HeaderType flags, ReadOnlyMemory<byte> rawPacket, ReadOnlySpan<byte> packetLengths)
+    public bool IsValid => !_rawPacket.IsEmpty;
+
+    public OggPage(long granulePosition, HeaderType flags, ReadOnlySpan<byte> rawPacket, ReadOnlySpan<byte> packetLengths)
     {
         GranulePosition = granulePosition;
         Flags = flags;
