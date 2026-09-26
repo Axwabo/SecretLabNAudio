@@ -58,8 +58,6 @@ public sealed class OggOpusPacketProvider : IOpusPacketProvider
 
     public int ReadPacket(Span<byte> buffer)
     {
-        if (buffer.Length < AudioConstants.MaxEncodedBytesPerPacket)
-            throw new ArgumentException("Buffer too short");
         while (_page is { } page)
         {
             if (AdvancePage(buffer, page, out var length))
