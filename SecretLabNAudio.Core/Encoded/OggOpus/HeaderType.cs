@@ -1,4 +1,4 @@
-namespace SecretLabNAudio.Core.FileReading.OggOpus;
+namespace SecretLabNAudio.Core.Encoded.OggOpus;
 
 [Flags]
 public enum HeaderType : byte

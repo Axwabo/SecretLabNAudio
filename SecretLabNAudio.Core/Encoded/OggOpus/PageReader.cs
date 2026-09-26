@@ -1,6 +1,6 @@
 using System.Text;
 
-namespace SecretLabNAudio.Core.FileReading.OggOpus;
+namespace SecretLabNAudio.Core.Encoded.OggOpus;
 
 public static class PageReader
 {
@@ -13,11 +13,11 @@ public static class PageReader
     private static readonly byte[] OpusHead = Encoding.ASCII.GetBytes(nameof(OpusHead));
     private static readonly byte[] OpusTags = Encoding.ASCII.GetBytes(nameof(OpusTags));
 
-    public static bool IsIDHeader(OggPage page) => page is [{Length: >= 19} packet] && packet[..OpusHead.Length].SequenceEqual(OpusHead);
+    public static bool IsIDHeader(OggPage? page) => page is [{Length: >= 19} packet] && packet[..OpusHead.Length].SequenceEqual(OpusHead);
 
-    public static bool IsCommentHeader(OggPage page) => page is [{Length: >= 8} packet, ..] && packet[..OpusTags.Length].SequenceEqual(OpusTags);
+    public static bool IsCommentHeader(OggPage? page) => page is [{Length: >= 8} packet, ..] && packet[..OpusTags.Length].SequenceEqual(OpusTags);
 
-    public static OggPage Read(Stream stream, byte[] buffer)
+    public static OggPage? Read(Stream stream, byte[] buffer)
     {
         var seekable = stream.CanSeek;
         var streamLength = seekable ? stream.Length : 0;
@@ -30,13 +30,13 @@ public static class PageReader
         }
         while (seekable && stream.Position < streamLength);
 
-        return default;
+        return null;
     }
 
-    private static OggPage ReadReady(Stream stream, byte[] buffer)
+    private static OggPage? ReadReady(Stream stream, byte[] buffer)
     {
         if (stream.Read(buffer.AsSpan(Magic, HeaderRemaining)) != HeaderRemaining)
-            return default;
+            return null;
         var flags = buffer[5];
         var granulePosition = BitConverter.ToInt32(buffer, 6);
         var packetCount = buffer[Header - 1];
