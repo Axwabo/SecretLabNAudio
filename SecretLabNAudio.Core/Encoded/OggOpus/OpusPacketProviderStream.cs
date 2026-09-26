@@ -17,17 +17,17 @@ public sealed class OpusPacketProviderStream : IOpusPacketProvider
     public static OpusPacketProviderStream? TryCreate(Stream source)
     {
         var buffer = PageBuffer;
-        if (!PageReader.Read(source, buffer).IsIDHeader)
+        if (!OggPage.Read(source, buffer).IsIDHeader)
             return null;
         var channels = buffer[9];
-        if (!PageReader.Read(source, buffer).IsCommentHeader)
+        if (!OggPage.Read(source, buffer).IsCommentHeader)
             return null;
         long position;
         OggPage? next;
         do
         {
             position = source.Position;
-            next = PageReader.Read(source, buffer);
+            next = OggPage.Read(source, buffer);
         }
         while (next.IsContinuation);
 
