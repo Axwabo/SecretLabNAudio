@@ -35,4 +35,16 @@ public readonly struct OggPage
         _rawPacket = rawPacket[..total];
     }
 
+    private OggPage(long granulePosition, HeaderType flags, ReadOnlyMemory<byte> rawPacket, (ReadOnlyMemory<Range> Ranges, int Total) sum)
+    {
+        GranulePosition = granulePosition;
+        Flags = flags;
+        Ranges = sum.Ranges;
+        _rawPacket = rawPacket[..sum.Total];
+    }
+
+    internal OggPage SwitchBuffers(ReadOnlyMemory<byte> rawPacket) => rawPacket.Length < TotalSize
+        ? throw new ArgumentException("Destination buffer is smaller than the current packet")
+        : new OggPage(GranulePosition, Flags, rawPacket, (Ranges, TotalSize));
+
 }

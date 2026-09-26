@@ -17,12 +17,10 @@ public sealed class OpusPacketProviderStream : IOpusPacketProvider
     public static OpusPacketProviderStream? TryCreate(Stream source)
     {
         var buffer = PageBuffer;
-        var id = PageReader.Read(source, buffer);
-        if (!PageReader.IsIDHeader(id))
+        if (!PageReader.Read(source, buffer).IsIDHeader)
             return null;
         var channels = buffer[9];
-        var comment = PageReader.Read(source, buffer);
-        if (!PageReader.IsCommentHeader(comment))
+        if (!PageReader.Read(source, buffer).IsCommentHeader)
             return null;
         long position;
         OggPage? next;
@@ -31,9 +29,11 @@ public sealed class OpusPacketProviderStream : IOpusPacketProvider
             position = source.Position;
             next = PageReader.Read(source, buffer);
         }
-        while (next != null && (next.Value.Flags & HeaderType.Continuation) != 0);
+        while (next.IsContinuation);
 
-        return next == null ? null : new OpusPacketProviderStream(source, channels, position);
+        if (next == null)
+            return null;
+        return new OpusPacketProviderStream(source, channels, position);
     }
 
     public int Channels { get; }
