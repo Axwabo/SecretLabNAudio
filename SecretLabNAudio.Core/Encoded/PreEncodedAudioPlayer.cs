@@ -1,3 +1,5 @@
+using System.Threading;
+
 namespace SecretLabNAudio.Core.Encoded;
 
 public class PreEncodedAudioPlayer : AudioPlayerBase
@@ -5,15 +7,34 @@ public class PreEncodedAudioPlayer : AudioPlayerBase
 
     private static readonly byte[] EncodedBuffer = new byte[AudioConstants.MaxEncodedBytesPerPacket];
 
-    public IOpusPacketProvider? PacketProvider { get; set; }
-
-    private void ProcessPacket()
+    public IOpusPacketProvider? PacketProvider
     {
-        if (PacketProvider == null)
+        get;
+        set
+        {
+            field = value;
+            _ = ProcessAsync(destroyCancellationToken);
+        }
+    }
+
+    private async Awaitable ProcessAsync(CancellationToken cancellationToken)
+    {
+        if (PacketProvider is not { } provider)
             return;
-        int read;
-        while ((read = PacketProvider.ReadPacket(EncodedBuffer)) > 0)
-            Output?.BroadcastEncodedData(EncodedBuffer, read, SendFilter);
+        var time = 0f;
+        while (!cancellationToken.IsCancellationRequested)
+        {
+            await Awaitable.NextFrameAsync(cancellationToken);
+            time += Time.deltaTime;
+            while (time > 0)
+            {
+                time--;
+                var read = provider.ReadPacket(EncodedBuffer);
+                if (read == 0)
+                    return;
+                Output?.BroadcastEncodedData(EncodedBuffer, read, SendFilter);
+            }
+        }
     }
 
     protected override void OnDisable()
