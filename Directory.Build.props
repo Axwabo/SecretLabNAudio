@@ -56,7 +56,7 @@
     </ItemGroup>
 
     <ItemGroup Condition="$(ProjectName) != 'SecretLabNAudio.Core'">
-        <ProjectReference Include="../SecretLabNAudio.Core/SecretLabNAudio.Core.csproj" />
+        <ProjectReference Include="$(MSBuildThisFileDirectory)SecretLabNAudio.Core/SecretLabNAudio.Core.csproj" />
     </ItemGroup>
 
 </Project>
