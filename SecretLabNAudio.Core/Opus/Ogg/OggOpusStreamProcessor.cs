@@ -33,12 +33,13 @@ public sealed class OggOpusStreamProcessor : IStreamAudioProcessor
 
     public int Read(float[] buffer, int offset, int count)
     {
-        var total = _remaining.Length;
-        if (total != 0)
+        var total = 0;
+        if (_remaining.Length != 0)
         {
-            _remaining.Read(buffer, count, offset);
-            offset += total;
-            count -= total;
+            var read = _remaining.Read(buffer, count, offset);
+            offset += read;
+            total += read;
+            count -= read;
         }
 
         while (total < count)
@@ -56,12 +57,13 @@ public sealed class OggOpusStreamProcessor : IStreamAudioProcessor
                 _skip -= skip;
             }
 
-            var write = Math.Min(count - total, read);
+            var needed = count - total;
+            var write = Math.Min(needed, read);
             _sampleBuffer.AsSpan(sampleOffset, write).CopyTo(buffer.AsSpan(offset));
             total += write;
             offset += write;
-            if (write > count)
-                _remaining.Write(_sampleBuffer, sampleOffset + read, write - count);
+            if (read > needed)
+                _remaining.Write(_sampleBuffer, sampleOffset + read, read - needed);
         }
 
         SamplePosition += total;
