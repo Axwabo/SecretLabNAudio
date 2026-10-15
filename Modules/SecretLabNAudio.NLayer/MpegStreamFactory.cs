@@ -1,13 +1,14 @@
 ﻿using NLayer.NAudioSupport;
 using SecretLabNAudio.Core.FileReading;
+using SecretLabNAudio.Core.Processors;
 
 namespace SecretLabNAudio.NLayer;
 
 internal sealed class MpegStreamFactory : IAudioReaderFactory
 {
 
-    public AudioReaderFactoryResult FromPath(string path) => new ManagedMpegStream(path);
+    public StreamAudioProcessor FromPath(string path) => new(new ManagedMpegStream(path)) {FilePath = path};
 
-    public AudioReaderFactoryResult FromStream(Stream stream, bool closeOnDispose) => new ManagedMpegStream(stream, closeOnDispose);
+    public StreamAudioProcessor FromStream(Stream stream, bool closeOnDispose) => new(new ManagedMpegStream(stream, closeOnDispose), closeOnDispose);
 
 }

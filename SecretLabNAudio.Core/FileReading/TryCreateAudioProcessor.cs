@@ -5,23 +5,6 @@ namespace SecretLabNAudio.Core.FileReading;
 public static class TryCreateAudioProcessor
 {
 
-    private static bool TryCreate(string type, Func<IAudioReaderFactory, AudioReaderFactoryResult> create, [NotNullWhen(true)] out StreamAudioProcessor? processor, string? path = null)
-    {
-        if (!AudioReaderFactoryManager.TryGetFactory(type, out var factory))
-        {
-            processor = null;
-            return false;
-        }
-
-        processor = create(factory) switch
-        {
-            ({ } stream, { } provider) => new StreamAudioProcessor(stream, provider) {FilePath = path},
-            ({ } stream, _) => new StreamAudioProcessor(stream) {FilePath = path},
-            _ => null
-        };
-        return processor != null;
-    }
-
     /// <summary>
     /// Attempts to create a <see cref="StreamAudioProcessor"/> from the given file path.
     /// </summary>
@@ -37,7 +20,16 @@ public static class TryCreateAudioProcessor
     /// The underlying file stream is automatically disposed when the processor is disposed.
     /// </remarks>
     public static bool FromFile(string path, [NotNullWhen(true)] out StreamAudioProcessor? processor)
-        => TryCreate(Path.GetExtension(path), factory => factory.FromPath(path), out processor, path);
+    {
+        if (!AudioReaderFactoryManager.TryGetFactory(Path.GetExtension(path), out var factory))
+        {
+            processor = null;
+            return false;
+        }
+
+        processor = factory.FromPath(path);
+        return true;
+    }
 
     /// <summary>
     /// Attempts to create a <see cref="StreamAudioProcessor"/> from the given <see cref="System.IO.Stream"/>.
@@ -55,6 +47,15 @@ public static class TryCreateAudioProcessor
     /// The underlying file stream is automatically disposed when the processor is disposed.
     /// </remarks>
     public static bool FromStream(Stream baseStream, string fileType, bool isOwned, [NotNullWhen(true)] out StreamAudioProcessor? processor)
-        => TryCreate(Path.GetExtension(fileType), factory => factory.FromStream(baseStream, isOwned), out processor);
+    {
+        if (!AudioReaderFactoryManager.TryGetFactory(fileType, out var factory))
+        {
+            processor = null;
+            return false;
+        }
+
+        processor = factory.FromStream(baseStream, isOwned);
+        return true;
+    }
 
 }

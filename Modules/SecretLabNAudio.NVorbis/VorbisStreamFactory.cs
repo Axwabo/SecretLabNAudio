@@ -1,16 +1,14 @@
 ﻿using NAudio.Vorbis;
 using SecretLabNAudio.Core.FileReading;
+using SecretLabNAudio.Core.Processors;
 
 namespace SecretLabNAudio.NVorbis;
 
 internal sealed class VorbisStreamFactory : IAudioReaderFactory
 {
 
-    private static AudioReaderFactoryResult Result(VorbisWaveReader reader)
-        => new(reader, reader);
+    public StreamAudioProcessor FromPath(string path) => new(new VorbisWaveReader(path)) {FilePath = path};
 
-    public AudioReaderFactoryResult FromPath(string path) => Result(new VorbisWaveReader(path));
-
-    public AudioReaderFactoryResult FromStream(Stream stream, bool closeOnDispose) => Result(new VorbisWaveReader(stream, closeOnDispose));
+    public StreamAudioProcessor FromStream(Stream stream, bool closeOnDispose) => new(new VorbisWaveReader(stream, closeOnDispose), closeOnDispose);
 
 }

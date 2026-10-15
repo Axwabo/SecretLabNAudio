@@ -5,13 +5,6 @@ namespace SecretLabNAudio.Core.FileReading;
 public static class CreateAudioProcessor
 {
 
-    private static StreamAudioProcessor Convert(this AudioReaderFactoryResult result, string type, string? path = null) => result switch
-    {
-        ({ } stream, { } provider) => new StreamAudioProcessor(stream, provider) {FilePath = path},
-        ({ } stream, null) => new StreamAudioProcessor(stream) {FilePath = path},
-        _ => throw new NotSupportedException($"Factory for {type} did not return a WaveStream")
-    };
-
     /// <summary>
     /// Creates a <see cref="StreamAudioProcessor"/> from a file.
     /// </summary>
@@ -19,11 +12,7 @@ public static class CreateAudioProcessor
     /// <returns>An audio processor that reads from the file.</returns>
     /// <include file="../XmlDocs/Files.xml" path="doc/exception"/>
     /// <remarks>The underlying file stream is automatically disposed when the processor is disposed.</remarks>
-    public static StreamAudioProcessor FromFile(string path)
-    {
-        var type = Path.GetExtension(path);
-        return AudioReaderFactoryManager.GetFactory(type).FromPath(path).Convert(type, path);
-    }
+    public static StreamAudioProcessor FromFile(string path) => AudioReaderFactoryManager.GetFactory(Path.GetExtension(path)).FromPath(path);
 
     /// <summary>
     /// Creates a <see cref="StreamAudioProcessor"/> from a <see cref="Stream"/>.
@@ -34,6 +23,6 @@ public static class CreateAudioProcessor
     /// <returns>An audio processor that reads from the stream.</returns>
     /// <include file="../XmlDocs/Files.xml" path="doc/exception[@name='NotSupported']"/>
     public static StreamAudioProcessor FromStream(Stream baseStream, string fileType, bool isOwned = true)
-        => AudioReaderFactoryManager.GetFactory(fileType).FromStream(baseStream, isOwned).Convert(fileType);
+        => AudioReaderFactoryManager.GetFactory(fileType).FromStream(baseStream, isOwned);
 
 }

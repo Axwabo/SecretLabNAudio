@@ -5,18 +5,18 @@ public interface IAudioReaderFactory
 {
 
     /// <summary>
-    /// Creates an <see cref="AudioReaderFactoryResult"/> from the given file path.
+    /// Creates a <see cref="StreamAudioProcessor"/> from the given file path.
     /// </summary>
     /// <param name="path">The file path to read the audio from.</param>
-    /// <returns>The factory result.</returns>
-    AudioReaderFactoryResult FromPath(string path);
+    /// <returns>A processor on success, null otherwise.</returns>
+    StreamAudioProcessor FromPath(string path);
 
     /// <summary>
-    /// Creates an <see cref="AudioReaderFactoryResult"/> from the given <see cref="Stream"/>.
+    /// Creates a <see cref="StreamAudioProcessor"/> from the given <see cref="Stream"/>.
     /// </summary>
     /// <param name="stream">The <see cref="Stream"/> to read the audio from.</param>
-    /// <param name="closeOnDispose">Whether to close the stream when disposing the <see cref="WaveStream"/>.</param>
-    /// <returns>The factory result.</returns>
-    AudioReaderFactoryResult FromStream(Stream stream, bool closeOnDispose);
+    /// <param name="closeOnDispose">Whether to close the stream when disposing the processor.</param>
+    /// <returns>A processor on success, null otherwise.</returns>
+    StreamAudioProcessor FromStream(Stream stream, bool closeOnDispose);
 
 }
