@@ -61,6 +61,7 @@ public static class OggPageExtensions
                 return false;
             }
 
+            var current = stream.Position;
             if (stream.Length < BufferSize)
                 stream.Position = 0;
             else
@@ -68,6 +69,7 @@ public static class OggPageExtensions
             var read = stream.Read(buffer);
             var span = buffer.AsSpan(0, read);
             var header = span.LastIndexOf(OggS);
+            stream.Position = current;
             total = header == -1 ? 0 : BitConverter.ToInt64(buffer, header + Granule);
             return true;
         }

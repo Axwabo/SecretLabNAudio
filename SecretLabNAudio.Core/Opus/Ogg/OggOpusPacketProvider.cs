@@ -19,11 +19,13 @@ public sealed class OggOpusPacketProvider : IOpusPacketProvider
             var preSkip = BitConverter.ToUInt16(buffer, 10);
             if (!OggPage.Read(source, buffer).IsCommentHeader)
                 return null;
-            long dataPosition;
+            var dataPosition = 0L;
+            var canSeek = source.CanSeek;
             OggPage? next;
             do
             {
-                dataPosition = source.Position;
+                if (canSeek)
+                    dataPosition = source.Position;
                 next = OggPage.Read(source, buffer);
             }
             while (next.IsContinuation);
@@ -69,11 +71,7 @@ public sealed class OggOpusPacketProvider : IOpusPacketProvider
         Channels = channels;
         PreSkip = preSkip;
         if (OggPage.TryGetLastGranulePosition(source, _rawPacketBuffer, out var total))
-        {
-            source.Position = dataPosition;
             TotalSamples = total - preSkip;
-        }
-
         TotalTime = TimeSpan.FromSeconds(TotalSamples * SecondsPerSample / Channels); // TODO: divide or not
         _page = next.CopyTo(_rawPacketBuffer);
     }

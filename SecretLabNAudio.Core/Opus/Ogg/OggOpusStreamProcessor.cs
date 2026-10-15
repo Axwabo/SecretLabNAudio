@@ -13,7 +13,8 @@ public sealed class OggOpusStreamProcessor : IStreamAudioProcessor
 
     private readonly float[] _sampleBuffer = new float[AudioConstants.VoiceChatBufferSize];
 
-    private Range _remaining;
+    private int _remainingStart;
+    private int _remainingLength;
 
     private int _skip;
 
@@ -32,14 +33,13 @@ public sealed class OggOpusStreamProcessor : IStreamAudioProcessor
     public int Read(float[] buffer, int offset, int count)
     {
         var total = 0;
-        var (remainingStart, remainingLength) = _remaining.GetOffsetAndLength(AudioConstants.VoiceChatBufferSize);
-        if (remainingLength != 0)
+        if (_remainingLength != 0)
         {
-            var read = Math.Min(count, remainingLength);
-            _sampleBuffer.AsSpan(remainingStart, read).CopyTo(buffer.AsSpan(offset));
+            var read = Math.Min(count, _remainingLength);
+            _sampleBuffer.AsSpan(_remainingStart, read).CopyTo(buffer.AsSpan(offset));
             offset += read;
             total += read;
-            count -= read;
+            _remainingStart = _remainingLength = 0;
         }
 
         while (total < count)
@@ -63,14 +63,9 @@ public sealed class OggOpusStreamProcessor : IStreamAudioProcessor
             total += write;
             offset += write;
             if (read <= needed)
-            {
-                _remaining = default;
                 continue;
-            }
-
-            var rangeStart = sampleOffset + write;
-            var rangeEnd = rangeStart + read - needed;
-            _remaining = rangeStart..rangeEnd;
+            _remainingStart = sampleOffset + write;
+            _remainingLength = read - needed;
         }
 
         SamplePosition += total;
