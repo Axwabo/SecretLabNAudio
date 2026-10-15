@@ -1,5 +1,7 @@
 using System.Text;
 
+// ReSharper disable InvokeAsExtensionMemberFromSameClass
+
 namespace SecretLabNAudio.Core.Opus.Ogg;
 
 public static class OggPageExtensions
@@ -17,9 +19,9 @@ public static class OggPageExtensions
     {
         if (stream.Read(buffer.AsSpan(Magic, HeaderRemaining)) != HeaderRemaining)
             return null;
-        var flags = buffer[5];
-        var granulePosition = BitConverter.ToInt32(buffer, 6);
-        var packetCount = buffer[Header - 1];
+        var flags = buffer[Magic + 1];
+        var granulePosition = GetGranulePosition(buffer);
+        var packetCount = GetPacketCount(buffer);
         var packetSizes = buffer.AsSpan(0, packetCount);
         stream.ReadExactly(packetSizes, "Lacing values missing");
         var page = new OggPage(granulePosition, (HeaderType) flags, buffer, packetSizes);
@@ -45,6 +47,12 @@ public static class OggPageExtensions
 
             return null;
         }
+
+        public static int FindLastIndex(ReadOnlySpan<byte> buffer) => buffer.LastIndexOf(OggS);
+
+        public static int GetGranulePosition(byte[] buffer) => BitConverter.ToInt32(buffer, Magic + 2);
+
+        public static byte GetPacketCount(byte[] buffer) => buffer[Header - 1];
 
     }
 

@@ -7,10 +7,11 @@ public sealed class OggOpusPacketProvider : IOpusPacketProvider
 {
 
     public const double SecondsPerSample = 1d / AudioConstants.SampleRate;
+    private const int PageSize = ushort.MaxValue;
 
     public static OggOpusPacketProvider? TryCreate(Stream source)
     {
-        var buffer = ArrayPool<byte>.Shared.Rent(ushort.MaxValue);
+        var buffer = ArrayPool<byte>.Shared.Rent(PageSize);
         try
         {
             if (!OggPage.Read(source, buffer).IsIDHeader)
@@ -18,16 +19,18 @@ public sealed class OggOpusPacketProvider : IOpusPacketProvider
             var channels = buffer[9];
             if (!OggPage.Read(source, buffer).IsCommentHeader)
                 return null;
+            long dataPosition;
             OggPage? next;
             do
             {
+                dataPosition = source.Position;
                 next = OggPage.Read(source, buffer);
             }
             while (next.IsContinuation);
 
             return next == null
                 ? null
-                : new OggOpusPacketProvider(source, channels, next.Value);
+                : new OggOpusPacketProvider(source, channels, next.Value, dataPosition);
         }
         finally
         {
@@ -37,7 +40,9 @@ public sealed class OggOpusPacketProvider : IOpusPacketProvider
 
     private readonly Stream _source;
 
-    private readonly byte[] _rawPacketBuffer = new byte[ushort.MaxValue];
+    private readonly long _dataPosition;
+
+    private readonly byte[] _rawPacketBuffer = new byte[PageSize];
 
     private readonly byte[] _singlePacketBuffer = new byte[AudioConstants.MaxEncodedBytesPerPacket];
 
@@ -49,11 +54,33 @@ public sealed class OggOpusPacketProvider : IOpusPacketProvider
 
     public int Channels { get; }
 
-    private OggOpusPacketProvider(Stream source, int channels, OggPage next)
+    public int TotalSamples { get; }
+
+    private OggOpusPacketProvider(Stream source, int channels, OggPage next, long dataPosition)
     {
         _source = source;
+        _dataPosition = dataPosition;
         Channels = channels;
+        TotalSamples = CalculateTotalSamples();
         _page = next.CopyTo(_rawPacketBuffer);
+    }
+
+    private int CalculateTotalSamples()
+    {
+        if (!_source.CanSeek)
+            return 0;
+        if (_source.Length < PageSize)
+            _source.Seek(0, SeekOrigin.Begin);
+        else
+            _source.Seek(-PageSize, SeekOrigin.End);
+        var read = _source.Read(_rawPacketBuffer);
+        _source.Position = _dataPosition;
+        var span = _rawPacketBuffer.AsSpan(0, read);
+        var header = OggPage.FindLastIndex(span);
+        if (header == -1)
+            return 0;
+        var granule = OggPage.GetGranulePosition(_rawPacketBuffer);
+        return granule;
     }
 
     public int ReadPacket(Span<byte> buffer)

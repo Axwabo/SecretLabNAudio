@@ -28,7 +28,7 @@ public static class TryCreateAudioProcessor
         }
 
         processor = factory.FromPath(path);
-        return true;
+        return processor != null;
     }
 
     /// <summary>
@@ -55,7 +55,7 @@ public static class TryCreateAudioProcessor
         }
 
         processor = factory.FromStream(baseStream, isOwned);
-        return true;
+        return processor != null;
     }
 
 }
