@@ -82,8 +82,7 @@ public sealed class OggOpusPacketProvider : IOpusPacketProvider
         {
             if (AdvancePage(buffer, page, out var length))
                 return length;
-            if (page.GranulePosition != -1)
-                LastPagePosition = page.GranulePosition - PreSkip;
+            LastPagePosition = page.GranulePosition - PreSkip;
             if (page.IsEndOfStream)
                 break;
             _page = OggPage.Read(_source, _rawPacketBuffer);
