@@ -45,20 +45,19 @@ public static partial class ShortClipCache
     public static RawSourceSampleProvider? AddFromEmbeddedResource(Assembly assembly, string resourceName, string fileType, ClipName clipName, TimeSpan? maxDuration = null)
     {
         using var resource = assembly.GetManifestResourceStream(resourceName);
-        if (resource == null)
-            return null;
-        if (!TryCreateAudioReader.Stream(resource, fileType, false, out var stream)
-            || maxDuration.HasValue && stream.TotalTime > maxDuration.Value)
+        if (resource == null || !TryCreateAudioProcessor.FromStream(resource, fileType, false, out var processor))
             return null;
         try
         {
-            var provider = stream.ReadPlayerCompatibleSamples();
+            if (maxDuration.HasValue && processor.TotalTime > maxDuration.Value)
+                return null;
+            var provider = processor.Stream.ReadPlayerCompatibleSamples();
             Add(clipName, provider);
             return provider;
         }
         finally
         {
-            stream.Dispose();
+            processor.Dispose();
         }
     }
 

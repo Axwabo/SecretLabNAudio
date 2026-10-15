@@ -218,9 +218,7 @@ public static partial class ShortClipCache
 
     private static bool TryRead(string path, [NotNullWhen(true)] out RawSourceSampleProvider? provider, TimeSpan? maxDuration)
     {
-        if (!File.Exists(path)
-            || !TryCreateAudioReader.Stream(path, out var stream)
-            || maxDuration.HasValue && stream.TotalTime > maxDuration.Value)
+        if (!File.Exists(path) || !TryCreateAudioProcessor.FromFile(path, out var processor))
         {
             provider = null;
             return false;
@@ -228,12 +226,18 @@ public static partial class ShortClipCache
 
         try
         {
-            provider = stream.ReadPlayerCompatibleSamples();
+            if (maxDuration.HasValue && processor.TotalTime > maxDuration.Value)
+            {
+                provider = null;
+                return false;
+            }
+
+            provider = processor.Stream.ReadPlayerCompatibleSamples();
             return true;
         }
         finally
         {
-            stream.Dispose();
+            processor.Dispose();
         }
     }
 

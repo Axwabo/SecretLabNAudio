@@ -36,7 +36,13 @@ public static class AudioPlayerBaseExtensions
     extension(AudioPlayerBase player)
     {
 
-        public SpeakerToy? OutputSpeaker => (player.Output as SpeakerToyOutput)?.Speaker;
+        public bool TryGetSpeaker([NotNullWhen(true)] out SpeakerToy? speaker)
+        {
+            speaker = player.OutputSpeaker;
+            return speaker != null;
+        }
+
+        internal SpeakerToy? OutputSpeaker => (player.Output as SpeakerToyOutput)?.Speaker;
 
     }
 
