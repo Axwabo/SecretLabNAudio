@@ -1,5 +1,6 @@
 using System.Linq;
 using SecretLabNAudio.Core.Extensions;
+using SecretLabNAudio.Core.Extensions.Processors;
 using SecretLabNAudio.Core.Providers;
 
 namespace SecretLabNAudio.Core.FileReading;
@@ -78,7 +79,7 @@ public static partial class ShortClipCache
     /// <include file="../XmlDocs/Clips.xml" path="doc/Add/Time/remarks"/>
     /// <seealso cref="AudioPlayerExtensions.UseFile(AudioPlayer,string,bool,float)"/>
     public static RawSourceSampleProvider? AddFromFile(string path, TimeSpan? maxDuration, bool trimExtension = true)
-        => AddFromFile(path, path.FileName(trimExtension), maxDuration);
+        => AddFromFile(path, new ClipName(path, trimExtension).ToString(), maxDuration);
 
     /// <include file="../XmlDocs/Clips.xml" path="doc/Add/FromFile/summary"/>
     /// <param name="path">The path to the file.</param>
@@ -239,16 +240,6 @@ public static partial class ShortClipCache
         {
             processor.Dispose();
         }
-    }
-
-    extension(string path)
-    {
-
-        private string FileName(bool trimExtension)
-            => trimExtension
-                ? Path.GetFileNameWithoutExtension(path)
-                : Path.GetFileName(path);
-
     }
 
 }
