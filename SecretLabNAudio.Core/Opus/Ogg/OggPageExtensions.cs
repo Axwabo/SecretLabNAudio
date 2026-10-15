@@ -30,11 +30,11 @@ public static class OggPageExtensions
         var packetSizes = buffer.AsSpan(0, packetCount);
         stream.ReadExactly(packetSizes, "Lacing values missing");
         var page = new OggPage(granulePosition, (HeaderType) flags, buffer, packetSizes);
-        stream.ReadExactly(buffer.AsSpan(0, page.TotalSize), "Not enough data to fill packet buffer");
+        stream.ReadExactly(buffer.AsSpan(0, page.PacketSizeSum), "Not enough data to fill packet buffer");
         return page;
     }
 
-    extension(OggPage)
+    extension(OggPage page)
     {
 
         public static OggPage? Read(Stream stream, byte[] buffer)
@@ -55,12 +55,6 @@ public static class OggPageExtensions
 
         public static bool TryGetLastGranulePosition(Stream stream, byte[] buffer, out long total)
         {
-            if (!stream.CanSeek)
-            {
-                total = 0;
-                return false;
-            }
-
             var current = stream.Position;
             if (stream.Length < BufferSize)
                 stream.Position = 0;
@@ -73,6 +67,8 @@ public static class OggPageExtensions
             total = header == -1 ? 0 : BitConverter.ToInt64(buffer, header + Granule);
             return true;
         }
+
+        public int TotalSize => Header + page.Count + page.PacketSizeSum;
 
     }
 
