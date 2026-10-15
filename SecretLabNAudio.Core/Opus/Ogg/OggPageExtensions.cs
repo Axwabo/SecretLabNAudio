@@ -73,8 +73,7 @@ public static class OggPageExtensions
                 return true;
             }
 
-            var granule = BitConverter.ToInt64(buffer, Granule);
-            // TODO: sum packets
+            var granule = BitConverter.ToInt64(buffer, header + Granule);
             total = granule;
             return true;
         }
