@@ -72,7 +72,7 @@ public sealed class OggOpusPacketProvider : IOpusPacketProvider
                 TotalSamples = total - preSkip;
         }
 
-        TotalTime = TimeSpan.FromSeconds(TotalSamples * SecondsPerSample / Channels); // TODO: divide or not
+        TotalTime = TimeSpan.FromSeconds(TotalSamples * SecondsPerSample);
         _page = next.CopyTo(_rawPacketBuffer);
     }
 
