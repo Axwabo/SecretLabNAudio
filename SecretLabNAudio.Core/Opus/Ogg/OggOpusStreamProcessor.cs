@@ -1,4 +1,3 @@
-using SecretLabNAudio.Core.Providers;
 using VoiceChat.Codec;
 
 namespace SecretLabNAudio.Core.Opus.Ogg;
@@ -10,11 +9,11 @@ public sealed class OggOpusStreamProcessor : IStreamAudioProcessor
 
     private readonly OpusDecoder _decoder = new();
 
-    private readonly PlaybackBufferSampleProvider _remaining;
-
     private readonly byte[] _packetBuffer = new byte[AudioConstants.MaxEncodedBytesPerPacket];
 
     private readonly float[] _sampleBuffer = new float[AudioConstants.VoiceChatBufferSize];
+
+    private Range _remaining;
 
     private int _skip;
 
@@ -23,7 +22,6 @@ public sealed class OggOpusStreamProcessor : IStreamAudioProcessor
     public OggOpusStreamProcessor(OggOpusPacketProvider provider)
     {
         _provider = provider;
-        _remaining = new PlaybackBufferSampleProvider(AudioConstants.VoiceChatBufferSize, true, AudioConstants.SampleRate, provider.Channels);
         _skip = provider.PreSkip;
         TotalTime = provider.TotalTime;
         WaveFormat = provider.Channels == AudioConstants.Channels
@@ -34,9 +32,11 @@ public sealed class OggOpusStreamProcessor : IStreamAudioProcessor
     public int Read(float[] buffer, int offset, int count)
     {
         var total = 0;
-        if (_remaining.Length != 0)
+        var (remainingStart, remainingLength) = _remaining.GetOffsetAndLength(AudioConstants.VoiceChatBufferSize);
+        if (remainingLength != 0)
         {
-            var read = _remaining.Read(buffer, offset, count);
+            var read = Math.Min(count, remainingLength);
+            _sampleBuffer.AsSpan(remainingStart, read).CopyTo(buffer.AsSpan(offset));
             offset += read;
             total += read;
             count -= read;
@@ -62,8 +62,15 @@ public sealed class OggOpusStreamProcessor : IStreamAudioProcessor
             _sampleBuffer.AsSpan(sampleOffset, write).CopyTo(buffer.AsSpan(offset));
             total += write;
             offset += write;
-            if (read > needed)
-                _remaining.Write(_sampleBuffer, sampleOffset + read, read - needed);
+            if (read <= needed)
+            {
+                _remaining = default;
+                continue;
+            }
+
+            var rangeStart = sampleOffset + write;
+            var rangeEnd = rangeStart + read - needed;
+            _remaining = rangeStart..rangeEnd;
         }
 
         SamplePosition += total;
