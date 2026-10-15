@@ -56,8 +56,8 @@ public sealed class OggOpusStreamProcessor : IStreamAudioProcessor
                 _skip -= skip;
             }
 
-            var write = Math.Min(count, read);
-            buffer.AsSpan(sampleOffset, read).CopyTo(buffer.AsSpan(offset));
+            var write = Math.Min(count - total, read);
+            _sampleBuffer.AsSpan(sampleOffset, write).CopyTo(buffer.AsSpan(offset));
             total += write;
             offset += write;
             if (write > count)
