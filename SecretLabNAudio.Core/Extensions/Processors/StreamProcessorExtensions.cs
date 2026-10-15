@@ -8,8 +8,10 @@ namespace SecretLabNAudio.Core.Extensions.Processors;
 public static class StreamProcessorExtensions
 {
 
+    private const int BufferLength = 48000;
+
     /// <param name="processor">The processor to modify.</param>
-    extension(StreamAudioProcessor processor)
+    extension(IStreamAudioProcessor processor)
     {
 
         /// <summary>
@@ -17,7 +19,7 @@ public static class StreamProcessorExtensions
         /// </summary>
         /// <param name="loop">Whether to loop the processor.</param>
         /// <returns>The processor itself.</returns>
-        public StreamAudioProcessor WithLoop(bool loop)
+        public IStreamAudioProcessor WithLoop(bool loop)
         {
             processor.Loop = loop;
             return processor;
@@ -26,7 +28,7 @@ public static class StreamProcessorExtensions
     }
 
     /// <summary>Methods to create a <see cref="StreamAudioProcessor"/> from a file.</summary>
-    extension(StreamAudioProcessor)
+    extension(IStreamAudioProcessor)
     {
 
         /// <summary>
@@ -37,7 +39,7 @@ public static class StreamProcessorExtensions
         /// <returns>An audio processor that reads from the file.</returns>
         /// <include file="../../XmlDocs/Files.xml" path="doc/exception"/>
         /// <remarks>The underlying file stream is automatically disposed when the processor is disposed.</remarks>
-        public static StreamAudioProcessor CreateFromFile(string path, bool loop = false)
+        public static IStreamAudioProcessor CreateFromFile(string path, bool loop = false)
             => CreateAudioProcessor.FromFile(path).WithLoop(loop);
 
         /// <summary>
@@ -51,7 +53,7 @@ public static class StreamProcessorExtensions
         /// </param>
         /// <returns>Whether a <see cref="StreamAudioProcessor"/> was successfully created.</returns>
         /// <remarks>The underlying file stream is automatically disposed when the processor is disposed.</remarks>
-        public static bool TryCreateFromFile(string path, bool loop, [NotNullWhen(true)] out StreamAudioProcessor? processor)
+        public static bool TryCreateFromFile(string path, bool loop, [NotNullWhen(true)] out IStreamAudioProcessor? processor)
         {
             if (!File.Exists(path) || !TryCreateAudioProcessor.FromFile(path, out var result))
             {

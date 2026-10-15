@@ -1,4 +1,6 @@
-﻿namespace SecretLabNAudio.Core.FileReading;
+﻿using SecretLabNAudio.Core.Opus;
+
+namespace SecretLabNAudio.Core.FileReading;
 
 /// <summary>Manages <see cref="IAudioReaderFactory">audio reader factories</see>.</summary>
 public static class AudioReaderFactoryManager
@@ -14,6 +16,8 @@ public static class AudioReaderFactoryManager
         var aiff = new AiffReaderFactory();
         RegisterFactory("aiff", aiff);
         RegisterFactory("aif", aiff);
+        var opus = new OpusReaderFactory();
+        RegisterFactory("opus", opus);
     }
 
     /// <summary>

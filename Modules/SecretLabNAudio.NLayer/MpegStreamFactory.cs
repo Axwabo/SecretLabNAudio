@@ -7,8 +7,8 @@ namespace SecretLabNAudio.NLayer;
 internal sealed class MpegStreamFactory : IAudioReaderFactory
 {
 
-    public StreamAudioProcessor FromPath(string path) => new(new ManagedMpegStream(path)) {FilePath = path};
+    public IStreamAudioProcessor FromPath(string path) => new StreamAudioProcessor(new ManagedMpegStream(path)) {FilePath = path};
 
-    public StreamAudioProcessor FromStream(Stream stream, bool closeOnDispose) => new(new ManagedMpegStream(stream, closeOnDispose), closeOnDispose);
+    public IStreamAudioProcessor FromStream(Stream stream, bool closeOnDispose) => new StreamAudioProcessor(new ManagedMpegStream(stream, closeOnDispose), closeOnDispose);
 
 }

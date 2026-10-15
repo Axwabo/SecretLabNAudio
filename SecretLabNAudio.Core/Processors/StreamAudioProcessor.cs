@@ -1,7 +1,7 @@
 namespace SecretLabNAudio.Core.Processors;
 
 /// <summary>A loopable, managed <see cref="IAudioProcessor"/> wrapping a <see cref="WaveStream"/>.</summary>
-public sealed class StreamAudioProcessor : IAudioProcessor, ISeekable, ILoopable
+public sealed class StreamAudioProcessor : IStreamAudioProcessor, ILoopable
 {
 
     private ISampleProvider? _provider;

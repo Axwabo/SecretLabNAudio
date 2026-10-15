@@ -3,8 +3,8 @@
 internal sealed class AiffReaderFactory : IAudioReaderFactory
 {
 
-    public StreamAudioProcessor FromPath(string path) => new(new AiffFileReader(path)) {FilePath = path};
+    public IStreamAudioProcessor FromPath(string path) => new StreamAudioProcessor(new AiffFileReader(path)) {FilePath = path};
 
-    public StreamAudioProcessor FromStream(Stream stream, bool closeOnDispose) => new(new AiffFileReader(stream), closeOnDispose);
+    public IStreamAudioProcessor FromStream(Stream stream, bool closeOnDispose) => new StreamAudioProcessor(new AiffFileReader(stream), closeOnDispose);
 
 }

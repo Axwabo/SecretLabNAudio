@@ -7,8 +7,16 @@ namespace SecretLabNAudio.NVorbis;
 internal sealed class VorbisStreamFactory : IAudioReaderFactory
 {
 
-    public StreamAudioProcessor FromPath(string path) => new(new VorbisWaveReader(path)) {FilePath = path};
+    public IStreamAudioProcessor FromPath(string path)
+    {
+        var reader = new VorbisWaveReader(path);
+        return new StreamAudioProcessor(reader, reader) {FilePath = path};
+    }
 
-    public StreamAudioProcessor FromStream(Stream stream, bool closeOnDispose) => new(new VorbisWaveReader(stream, closeOnDispose), closeOnDispose);
+    public IStreamAudioProcessor FromStream(Stream stream, bool closeOnDispose)
+    {
+        var reader = new VorbisWaveReader(stream, closeOnDispose);
+        return new StreamAudioProcessor(reader, reader, closeOnDispose);
+    }
 
 }

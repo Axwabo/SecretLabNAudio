@@ -12,7 +12,7 @@ public static class CreateAudioProcessor
     /// <returns>An audio processor that reads from the file.</returns>
     /// <include file="../XmlDocs/Files.xml" path="doc/exception"/>
     /// <remarks>The underlying file stream is automatically disposed when the processor is disposed.</remarks>
-    public static StreamAudioProcessor FromFile(string path) => AudioReaderFactoryManager.GetFactory(Path.GetExtension(path)).FromPath(path);
+    public static IStreamAudioProcessor FromFile(string path) => AudioReaderFactoryManager.GetFactory(Path.GetExtension(path)).FromPath(path);
 
     /// <summary>
     /// Creates a <see cref="StreamAudioProcessor"/> from a <see cref="Stream"/>.
@@ -22,7 +22,7 @@ public static class CreateAudioProcessor
     /// <param name="isOwned">Whether to dispose of <paramref name="baseStream"/> when the processor is disposed.</param>
     /// <returns>An audio processor that reads from the stream.</returns>
     /// <include file="../XmlDocs/Files.xml" path="doc/exception[@name='NotSupported']"/>
-    public static StreamAudioProcessor FromStream(Stream baseStream, string fileType, bool isOwned = true)
+    public static IStreamAudioProcessor FromStream(Stream baseStream, string fileType, bool isOwned = true)
         => AudioReaderFactoryManager.GetFactory(fileType).FromStream(baseStream, isOwned);
 
 }

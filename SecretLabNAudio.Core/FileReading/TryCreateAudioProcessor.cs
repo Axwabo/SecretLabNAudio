@@ -19,7 +19,7 @@ public static class TryCreateAudioProcessor
     /// This method doesn't check if the file exists. Call <see cref="File.Exists">File.Exists</see> beforehand.
     /// The underlying file stream is automatically disposed when the processor is disposed.
     /// </remarks>
-    public static bool FromFile(string path, [NotNullWhen(true)] out StreamAudioProcessor? processor)
+    public static bool FromFile(string path, [NotNullWhen(true)] out IStreamAudioProcessor? processor)
     {
         if (!AudioReaderFactoryManager.TryGetFactory(Path.GetExtension(path), out var factory))
         {
@@ -46,7 +46,7 @@ public static class TryCreateAudioProcessor
     /// The period is automatically trimmed from the start of the <paramref name="fileType"/>.
     /// The underlying file stream is automatically disposed when the processor is disposed.
     /// </remarks>
-    public static bool FromStream(Stream baseStream, string fileType, bool isOwned, [NotNullWhen(true)] out StreamAudioProcessor? processor)
+    public static bool FromStream(Stream baseStream, string fileType, bool isOwned, [NotNullWhen(true)] out IStreamAudioProcessor? processor)
     {
         if (!AudioReaderFactoryManager.TryGetFactory(fileType, out var factory))
         {
