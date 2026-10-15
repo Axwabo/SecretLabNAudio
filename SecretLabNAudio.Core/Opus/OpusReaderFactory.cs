@@ -10,7 +10,7 @@ internal sealed class OpusReaderFactory : IAudioReaderFactory
     {
         var stream = File.OpenRead(path);
         return OggOpusPacketProvider.TryCreate(stream) is { } provider
-            ? new StreamAudioProcessor(new OggOpusWaveStream()) {FilePath = path}
+            ? new WaveStreamAudioProcessor(new OggOpusWaveStream()) {FilePath = path}
             : throw new IOException("Not an Ogg Opus file");
     }
 

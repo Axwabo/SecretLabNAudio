@@ -36,7 +36,7 @@ public sealed record FilePlaylistItem(string FilePath) : PlaylistItem(Path.GetFi
     /// </summary>
     /// <param name="sampleRate">The sample rate of the playlist.</param>
     /// <param name="channels">The channel count of the playlist.</param>
-    /// <returns>A new <see cref="StreamAudioProcessor"/> based on the item.</returns>
+    /// <returns>A new <see cref="WaveStreamAudioProcessor"/> based on the item.</returns>
     /// <include file="../../XmlDocs/Files.xml" path="doc/exception"/>
     protected internal override ISampleProvider CreateProvider(int sampleRate, int channels)
         => CreateAudioProcessor.FromFile(FilePath);

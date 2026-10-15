@@ -103,7 +103,7 @@ public sealed class DiscJockeyBoard : MonoBehaviour
         _master.ValueChanged -= UpdateMaster;
     }
 
-    public void Play(Player player, StreamAudioProcessor stream, string label)
+    public void Play(Player player, IStreamAudioProcessor stream, string label)
     {
         var ownerChanged = Owner != player;
         if (Owner != null && ownerChanged)

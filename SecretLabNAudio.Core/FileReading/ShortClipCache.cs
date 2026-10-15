@@ -232,7 +232,7 @@ public static partial class ShortClipCache
                 return false;
             }
 
-            provider = processor.Stream.ReadPlayerCompatibleSamples();
+            provider = processor.ReadPlayerCompatibleSamples();
             return true;
         }
         finally

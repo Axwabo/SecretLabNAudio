@@ -1,5 +1,4 @@
 using System.Reflection;
-using SecretLabNAudio.Core.Extensions;
 using SecretLabNAudio.Core.Providers;
 
 namespace SecretLabNAudio.Core.FileReading;
@@ -51,7 +50,7 @@ public static partial class ShortClipCache
         {
             if (maxDuration.HasValue && processor.TotalTime > maxDuration.Value)
                 return null;
-            var provider = processor.Stream.ReadPlayerCompatibleSamples();
+            var provider = processor.ReadPlayerCompatibleSamples();
             Add(clipName, provider);
             return provider;
         }

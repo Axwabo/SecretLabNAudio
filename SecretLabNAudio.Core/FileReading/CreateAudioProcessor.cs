@@ -1,12 +1,12 @@
 namespace SecretLabNAudio.Core.FileReading;
 
-/// <summary>Quick methods to create <see cref="StreamAudioProcessor"/>s based on the file type.</summary>
+/// <summary>Quick methods to create <see cref="WaveStreamAudioProcessor"/>s based on the file type.</summary>
 /// <remarks>This class does not protect against nonexistent files.</remarks>
 public static class CreateAudioProcessor
 {
 
     /// <summary>
-    /// Creates a <see cref="StreamAudioProcessor"/> from a file.
+    /// Creates a <see cref="WaveStreamAudioProcessor"/> from a file.
     /// </summary>
     /// <param name="path">The path to the file.</param>
     /// <returns>An audio processor that reads from the file.</returns>
@@ -15,7 +15,7 @@ public static class CreateAudioProcessor
     public static IStreamAudioProcessor FromFile(string path) => AudioReaderFactoryManager.GetFactory(Path.GetExtension(path)).FromPath(path);
 
     /// <summary>
-    /// Creates a <see cref="StreamAudioProcessor"/> from a <see cref="Stream"/>.
+    /// Creates a <see cref="WaveStreamAudioProcessor"/> from a <see cref="Stream"/>.
     /// </summary>
     /// <param name="baseStream">The stream to read from.</param>
     /// <param name="fileType">The type of the audio file.</param>

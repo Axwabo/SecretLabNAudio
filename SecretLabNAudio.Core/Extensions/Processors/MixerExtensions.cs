@@ -21,7 +21,7 @@ public static class MixerExtensions
         /// <include file="../../XmlDocs/Files.xml" path="doc/exception"/>
         /// <include file="../../XmlDocs/Mixer.xml" path="doc/AddProcess/exception"/>
         public Mixer AddFileAnonymous(string path, bool loop = false, ModifyChain? process = null)
-            => mixer.AddAnonymous(StreamAudioProcessor.CreateFromFile(path, loop).Process(process));
+            => mixer.AddAnonymous(WaveStreamAudioProcessor.CreateFromFile(path, loop).Process(process));
 
         /// <summary>
         /// Adds a named file input.
@@ -34,7 +34,7 @@ public static class MixerExtensions
         /// <include file="../../XmlDocs/Files.xml" path="doc/exception"/>
         /// <include file="../../XmlDocs/Mixer.xml" path="doc/AddProcess/exception"/>
         public Mixer AddFileNamed(string path, string inputName, bool loop = false, ModifyChain? process = null)
-            => mixer.AddNamed(StreamAudioProcessor.CreateFromFile(path, loop).Process(process), inputName);
+            => mixer.AddNamed(WaveStreamAudioProcessor.CreateFromFile(path, loop).Process(process), inputName);
 
         /// <summary>
         /// Attempts to add an anonymous file input, avoiding nonexistent or unreadable files.
@@ -47,7 +47,7 @@ public static class MixerExtensions
         /// <remarks>Nothing happens if the processor couldn't be created.</remarks>
         /// <seealso cref="StreamProcessorExtensions.TryCreateFromFile"/>
         public Mixer TryAddFileAnonymous(string path, bool loop = false, ModifyChain? process = null)
-            => StreamAudioProcessor.TryCreateFromFile(path, loop, out var processor)
+            => WaveStreamAudioProcessor.TryCreateFromFile(path, loop, out var processor)
                 ? mixer.AddAnonymous(processor.Process(process))
                 : mixer;
 
@@ -63,7 +63,7 @@ public static class MixerExtensions
         /// <remarks>Nothing happens if the processor couldn't be created.</remarks>
         /// <seealso cref="StreamProcessorExtensions.TryCreateFromFile"/>
         public Mixer TryAddFileNamed(string path, string inputName, bool loop = false, ModifyChain? process = null)
-            => StreamAudioProcessor.TryCreateFromFile(path, loop, out var processor)
+            => WaveStreamAudioProcessor.TryCreateFromFile(path, loop, out var processor)
                 ? mixer.AddNamed(processor.Process(process), inputName)
                 : mixer;
 
@@ -140,7 +140,7 @@ public static class MixerExtensions
         /// <returns>The mixer itself.</returns>
         /// <seealso cref="RemoveAllBySourceType"/>
         public Mixer RemoveAllStreamProcessors()
-            => mixer.RemoveAllBySourceType<StreamAudioProcessor>();
+            => mixer.RemoveAllBySourceType<WaveStreamAudioProcessor>();
 
         /// <include file="../../XmlDocs/Mixer.xml" path="doc/RemoveAllByName/summary"/>
         /// <param name="name">The name to match.</param>

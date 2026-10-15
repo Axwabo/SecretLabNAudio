@@ -14,7 +14,7 @@ public static class NonProcessorExtensions
     {
 
         /// <summary>
-        /// Converts the wave provider to an <see cref="AudioConstants"/>-compatible <see cref="ISampleProvider"/>.
+        /// Converts the wave provider to an <see cref="AudioPlayer"/>-compatible <see cref="ISampleProvider"/>.
         /// </summary>
         /// <returns>An <see cref="ISampleProvider"/> that is compatible with the <see cref="AudioConstants"/>.</returns>
         /// <seealso cref="ToPlayerCompatible(ISampleProvider)"/>
@@ -26,7 +26,7 @@ public static class NonProcessorExtensions
     extension(ISampleProvider provider)
     {
 
-        /// <summary>Converts the provider to be compatible with <see cref="AudioConstants"/>s.</summary>
+        /// <summary>Converts the provider to be compatible with <see cref="AudioPlayer"/>s.</summary>
         /// <returns>The converted provider.</returns>
         /// <exception cref="ArgumentException">Thrown if the format's encoding is not IEEEFloat.</exception>
         /// <remarks>The method first mixes down to mono (if necessary), then resamples (if necessary).

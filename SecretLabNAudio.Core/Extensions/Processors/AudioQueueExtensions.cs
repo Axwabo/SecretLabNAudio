@@ -19,7 +19,7 @@ public static class AudioQueueExtensions
         /// <include file="../../XmlDocs/Files.xml" path="doc/exception"/>
         /// <include file="../../XmlDocs/Queue.xml" path="doc/EnqueueProcess/exception"/>
         public AudioQueue EnqueueFile(string path, ModifyChain? process = null)
-            => queue.Enqueue(StreamAudioProcessor.CreateFromFile(path).Process(process));
+            => queue.Enqueue(WaveStreamAudioProcessor.CreateFromFile(path).Process(process));
 
         /// <summary>
         /// Attempts to enqueue an anonymous file input, avoiding nonexistent or unreadable files.
@@ -31,7 +31,7 @@ public static class AudioQueueExtensions
         /// <remarks>Nothing happens if the processor couldn't be created.</remarks>
         /// <seealso cref="StreamProcessorExtensions.TryCreateFromFile"/>
         public AudioQueue TryEnqueueFile(string path, ModifyChain? process = null)
-            => StreamAudioProcessor.TryCreateFromFile(path, false, out var processor)
+            => WaveStreamAudioProcessor.TryCreateFromFile(path, false, out var processor)
                 ? queue.Enqueue(processor.Process(process))
                 : queue;
 
