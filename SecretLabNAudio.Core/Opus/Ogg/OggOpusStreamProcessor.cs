@@ -36,7 +36,7 @@ public sealed class OggOpusStreamProcessor : IStreamAudioProcessor
         var total = 0;
         if (_remaining.Length != 0)
         {
-            var read = _remaining.Read(buffer, count, offset);
+            var read = _remaining.Read(buffer, offset, count);
             offset += read;
             total += read;
             count -= read;
