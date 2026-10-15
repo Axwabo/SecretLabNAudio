@@ -24,7 +24,7 @@ public static class OggPageExtensions
         if (stream.Read(buffer.AsSpan(Magic, HeaderRemaining)) != HeaderRemaining)
             return null;
         var flags = buffer[Magic + 1];
-        var granulePosition = BitConverter.ToInt32(buffer, Granule);
+        var granulePosition = BitConverter.ToInt64(buffer, Granule);
         var packetCount = buffer[PacketCount];
         var packetSizes = buffer.AsSpan(0, packetCount);
         stream.ReadExactly(packetSizes, "Lacing values missing");
@@ -52,7 +52,7 @@ public static class OggPageExtensions
             return null;
         }
 
-        public static bool TryGetTotalSamples(Stream stream, byte[] buffer, out int total)
+        public static bool TryGetTotalSamples(Stream stream, byte[] buffer, out long total)
         {
             if (!stream.CanSeek)
             {
@@ -73,7 +73,7 @@ public static class OggPageExtensions
                 return true;
             }
 
-            var granule = BitConverter.ToInt32(buffer, Granule);
+            var granule = BitConverter.ToInt64(buffer, Granule);
             // TODO: sum packets
             total = granule;
             return true;

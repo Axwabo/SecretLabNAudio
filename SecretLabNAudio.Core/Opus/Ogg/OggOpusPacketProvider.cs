@@ -53,7 +53,7 @@ public sealed class OggOpusPacketProvider : IOpusPacketProvider
 
     public int Channels { get; }
 
-    public int TotalSamples { get; }
+    public long TotalSamples { get; }
 
     public TimeSpan TotalTime { get; }
 
