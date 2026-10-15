@@ -8,22 +8,23 @@ public static class OggPageExtensions
 {
 
     private const int Magic = 4;
+    private const int Flags = Magic + 1;
     private const int Granule = Magic + 2;
     private const int Header = 27;
     private const int PacketCount = Header - 1;
     private const int HeaderRemaining = Header - Magic;
 
+    public const int BufferSize = ushort.MaxValue;
+
     private static readonly byte[] OggS = Encoding.ASCII.GetBytes(nameof(OggS));
     private static readonly byte[] OpusHead = Encoding.ASCII.GetBytes(nameof(OpusHead));
     private static readonly byte[] OpusTags = Encoding.ASCII.GetBytes(nameof(OpusTags));
-
-    public const int BufferSize = ushort.MaxValue;
 
     private static OggPage? ReadReady(Stream stream, byte[] buffer)
     {
         if (stream.Read(buffer.AsSpan(Magic, HeaderRemaining)) != HeaderRemaining)
             return null;
-        var flags = buffer[Magic + 1];
+        var flags = buffer[Flags];
         var granulePosition = BitConverter.ToInt64(buffer, Granule);
         var packetCount = buffer[PacketCount];
         var packetSizes = buffer.AsSpan(0, packetCount);
@@ -52,7 +53,7 @@ public static class OggPageExtensions
             return null;
         }
 
-        public static bool TryGetTotalSamples(Stream stream, byte[] buffer, out long total)
+        public static bool TryGetLastGranulePosition(Stream stream, byte[] buffer, out long total)
         {
             if (!stream.CanSeek)
             {
@@ -61,20 +62,13 @@ public static class OggPageExtensions
             }
 
             if (stream.Length < BufferSize)
-                stream.Seek(0, SeekOrigin.Begin);
+                stream.Position = 0;
             else
                 stream.Seek(-BufferSize, SeekOrigin.End);
             var read = stream.Read(buffer);
             var span = buffer.AsSpan(0, read);
             var header = span.LastIndexOf(OggS);
-            if (header == -1)
-            {
-                total = 0;
-                return true;
-            }
-
-            var granule = BitConverter.ToInt64(buffer, header + Granule);
-            total = granule;
+            total = header == -1 ? 0 : BitConverter.ToInt64(buffer, header + Granule);
             return true;
         }
 

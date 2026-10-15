@@ -16,6 +16,7 @@ public sealed class OggOpusPacketProvider : IOpusPacketProvider
             if (!OggPage.Read(source, buffer).IsIDHeader)
                 return null;
             var channels = buffer[9];
+            var preSkip = BitConverter.ToUInt16(buffer, 10);
             if (!OggPage.Read(source, buffer).IsCommentHeader)
                 return null;
             long dataPosition;
@@ -29,7 +30,7 @@ public sealed class OggOpusPacketProvider : IOpusPacketProvider
 
             return next == null
                 ? null
-                : new OggOpusPacketProvider(source, channels, next.Value, dataPosition);
+                : new OggOpusPacketProvider(source, channels, preSkip, next.Value, dataPosition);
         }
         finally
         {
@@ -53,19 +54,24 @@ public sealed class OggOpusPacketProvider : IOpusPacketProvider
 
     public int Channels { get; }
 
+    public ushort PreSkip { get; }
+
     public long TotalSamples { get; }
 
     public TimeSpan TotalTime { get; }
 
-    private OggOpusPacketProvider(Stream source, int channels, OggPage next, long dataPosition)
+    public long LastPagePosition { get; private set; }
+
+    private OggOpusPacketProvider(Stream source, int channels, ushort preSkip, OggPage next, long dataPosition)
     {
         _source = source;
         _dataPosition = dataPosition;
         Channels = channels;
-        if (OggPage.TryGetTotalSamples(source, _rawPacketBuffer, out var total))
+        PreSkip = preSkip;
+        if (OggPage.TryGetLastGranulePosition(source, _rawPacketBuffer, out var total))
         {
             source.Position = dataPosition;
-            TotalSamples = total;
+            TotalSamples = total - preSkip;
         }
 
         TotalTime = TimeSpan.FromSeconds(TotalSamples * SecondsPerSample / Channels); // TODO: divide or not
@@ -78,6 +84,8 @@ public sealed class OggOpusPacketProvider : IOpusPacketProvider
         {
             if (AdvancePage(buffer, page, out var length))
                 return length;
+            if (page.GranulePosition != -1)
+                LastPagePosition = page.GranulePosition - PreSkip;
             if (page.IsEndOfStream)
                 break;
             _page = OggPage.Read(_source, _rawPacketBuffer);

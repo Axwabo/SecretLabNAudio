@@ -25,6 +25,8 @@ public static class AudioConstants
 
     public const int MaxEncodedBytesPerPacket = VoiceChatSettings.MaxEncodedSize;
 
+    public const int VoiceChatBufferSize = VoiceChatSettings.BufferLength;
+
     /// <summary>The <see cref="WaveFormat"/> supported by <see cref="AudioPlayer"/> instances.</summary>
     public static WaveFormat SupportedFormat { get; } = WaveFormat.CreateIeeeFloatWaveFormat(SampleRate, Channels);
 
