@@ -7,11 +7,10 @@ public sealed class OggOpusPacketProvider : IOpusPacketProvider
 {
 
     public const double SecondsPerSample = 1d / AudioConstants.SampleRate;
-    private const int PageSize = ushort.MaxValue;
 
     public static OggOpusPacketProvider? TryCreate(Stream source)
     {
-        var buffer = ArrayPool<byte>.Shared.Rent(PageSize);
+        var buffer = ArrayPool<byte>.Shared.Rent(OggPageExtensions.BufferSize);
         try
         {
             if (!OggPage.Read(source, buffer).IsIDHeader)
@@ -42,7 +41,7 @@ public sealed class OggOpusPacketProvider : IOpusPacketProvider
 
     private readonly long _dataPosition;
 
-    private readonly byte[] _rawPacketBuffer = new byte[PageSize];
+    private readonly byte[] _rawPacketBuffer = new byte[OggPageExtensions.BufferSize];
 
     private readonly byte[] _singlePacketBuffer = new byte[AudioConstants.MaxEncodedBytesPerPacket];
 
@@ -56,31 +55,21 @@ public sealed class OggOpusPacketProvider : IOpusPacketProvider
 
     public int TotalSamples { get; }
 
+    public TimeSpan TotalTime { get; }
+
     private OggOpusPacketProvider(Stream source, int channels, OggPage next, long dataPosition)
     {
         _source = source;
         _dataPosition = dataPosition;
         Channels = channels;
-        TotalSamples = CalculateTotalSamples();
-        _page = next.CopyTo(_rawPacketBuffer);
-    }
+        if (OggPage.TryGetTotalSamples(source, _rawPacketBuffer, out var total))
+        {
+            source.Position = dataPosition;
+            TotalSamples = total;
+        }
 
-    private int CalculateTotalSamples()
-    {
-        if (!_source.CanSeek)
-            return 0;
-        if (_source.Length < PageSize)
-            _source.Seek(0, SeekOrigin.Begin);
-        else
-            _source.Seek(-PageSize, SeekOrigin.End);
-        var read = _source.Read(_rawPacketBuffer);
-        _source.Position = _dataPosition;
-        var span = _rawPacketBuffer.AsSpan(0, read);
-        var header = OggPage.FindLastIndex(span);
-        if (header == -1)
-            return 0;
-        var granule = OggPage.GetGranulePosition(_rawPacketBuffer);
-        return granule;
+        TotalTime = TimeSpan.FromSeconds(TotalSamples * SecondsPerSample / Channels); // TODO: divide or not
+        _page = next.CopyTo(_rawPacketBuffer);
     }
 
     public int ReadPacket(Span<byte> buffer)
