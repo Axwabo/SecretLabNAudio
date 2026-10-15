@@ -1,7 +1,7 @@
 using System.Buffers;
 using Logger = LabApi.Features.Console.Logger;
 
-namespace SecretLabNAudio.Core.Encoded.OggOpus;
+namespace SecretLabNAudio.Core.Opus.Ogg;
 
 public sealed class OggOpusPacketProvider : IOpusPacketProvider
 {

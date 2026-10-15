@@ -1,6 +1,8 @@
 using System.Threading;
+using SecretLabNAudio.Core;
+using SecretLabNAudio.Core.Opus;
 
-namespace SecretLabNAudio.Core.Encoded;
+namespace SecretLabNAudio.HighPerformance;
 
 public class PreEncodedAudioPlayer : AudioPlayerBase
 {

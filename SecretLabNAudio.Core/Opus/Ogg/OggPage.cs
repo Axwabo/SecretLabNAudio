@@ -1,4 +1,4 @@
-namespace SecretLabNAudio.Core.Encoded.OggOpus;
+namespace SecretLabNAudio.Core.Opus.Ogg;
 
 public readonly struct OggPage
 {

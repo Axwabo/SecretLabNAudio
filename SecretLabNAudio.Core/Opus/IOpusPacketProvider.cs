@@ -1,4 +1,4 @@
-namespace SecretLabNAudio.Core.Encoded;
+namespace SecretLabNAudio.Core.Opus;
 
 public interface IOpusPacketProvider : IDisposable
 {

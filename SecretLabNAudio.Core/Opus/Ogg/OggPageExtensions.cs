@@ -1,6 +1,6 @@
 using System.Text;
 
-namespace SecretLabNAudio.Core.Encoded.OggOpus;
+namespace SecretLabNAudio.Core.Opus.Ogg;
 
 public static class OggPageExtensions
 {
