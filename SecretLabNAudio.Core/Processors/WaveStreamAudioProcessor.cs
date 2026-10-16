@@ -1,7 +1,7 @@
 namespace SecretLabNAudio.Core.Processors;
 
 /// <summary>A loopable, managed <see cref="IAudioProcessor"/> wrapping a <see cref="WaveStream"/>.</summary>
-public sealed class WaveStreamAudioProcessor : IStreamAudioProcessor
+public class WaveStreamAudioProcessor : IStreamAudioProcessor
 {
 
     private ISampleProvider? _provider;
@@ -20,6 +20,12 @@ public sealed class WaveStreamAudioProcessor : IStreamAudioProcessor
 
     /// <summary>The path to the file if this processor was created from one.</summary>
     public string? FilePath { get; init; }
+
+    public long SamplePosition
+    {
+        get => Stream.Position;
+        set => Stream.Position = value - value % Stream.WaveFormat.BlockAlign;
+    }
 
     /// <inheritdoc/>
     /// <exception cref="ObjectDisposedException">Thrown if the processor has already been disposed.</exception>

@@ -60,6 +60,8 @@ public sealed class OggOpusPacketProvider : IOpusPacketProvider
 
     public long LastPagePosition { get; private set; }
 
+    public bool CanSeek => _source.CanSeek;
+
     private OggOpusPacketProvider(Stream source, int channels, ushort preSkip, OggPage next)
     {
         _source = source;
@@ -91,6 +93,17 @@ public sealed class OggOpusPacketProvider : IOpusPacketProvider
 
         _page = null;
         return 0;
+    }
+
+    public void Seek(long samplePosition)
+    {
+        if (samplePosition == 0)
+        {
+            _source.Position = _dataPosition;
+            return;
+        }
+
+        throw new NotImplementedException(); // TODO
     }
 
     private bool AdvancePage(Span<byte> buffer, OggPage page, out int length)
