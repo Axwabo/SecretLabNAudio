@@ -53,7 +53,8 @@ public sealed class OggOpusStreamProcessor : IStreamAudioProcessor
             offset += read;
             total += read;
             _samplePosition += read / _provider.Channels;
-            _remainingStart = _remainingLength = 0;
+            _remainingStart += read;
+            _remainingLength -= read;
         }
 
         while (total < count)
@@ -61,7 +62,7 @@ public sealed class OggOpusStreamProcessor : IStreamAudioProcessor
             var packetLength = _provider.ReadPacket(_packetBuffer);
             if (packetLength != 0)
             {
-                DecodePacket(buffer, packetLength, ref offset, count, ref total);
+                DecodePacket(packetLength, buffer, ref offset, count, ref total);
                 continue;
             }
 
@@ -75,7 +76,7 @@ public sealed class OggOpusStreamProcessor : IStreamAudioProcessor
         return total;
     }
 
-    private void DecodePacket(float[] buffer, int packetLength, ref int offset, int count, ref int total)
+    private void DecodePacket(int packetLength, float[] buffer, ref int offset, int count, ref int total)
     {
         var decoded = _decoder.Decode(_packetBuffer, packetLength, _sampleBuffer) * _provider.Channels;
         var read = _total == 0 ? decoded : Math.Min(decoded, (int) (_total - SamplePosition));
