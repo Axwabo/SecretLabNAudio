@@ -27,33 +27,6 @@ public static partial class AudioPlayerExtensions
         }
 
         /// <summary>
-        /// Pauses (or unpauses) the <see cref="AudioPlayer"/>.
-        /// </summary>
-        /// <param name="pause">Whether to pause the player.</param>
-        /// <returns>The player itself.</returns>
-        public AudioPlayer Pause(bool pause = true)
-        {
-            player.IsPaused = pause;
-            return player;
-        }
-
-        /// <summary>
-        /// Unpauses the <see cref="AudioPlayer"/>.
-        /// </summary>
-        /// <returns>The player itself.</returns>
-        public AudioPlayer Resume() => player.Pause(false);
-
-        /// <summary>
-        /// Sets <seealso cref="AudioPlayer.SampleProvider"/> to <see langword="null"/>, effectively stopping playback.
-        /// </summary>
-        /// <returns>The player itself.</returns>
-        public AudioPlayer WithoutProvider()
-        {
-            player.SampleProvider = null;
-            return player;
-        }
-
-        /// <summary>
         /// Sets the <see cref="AudioPlayer.OutputMonitor"/> of the <see cref="AudioPlayer"/> to the given <see cref="IAudioPacketMonitor"/>.
         /// </summary>
         /// <param name="monitor">The monitor to set.</param>
@@ -72,33 +45,6 @@ public static partial class AudioPlayerExtensions
         public AudioPlayer WithProviderOwnership(bool isOwned = true)
         {
             player.OwnsProvider = isOwned;
-            return player;
-        }
-
-        /// <summary>
-        /// Sets the <see cref="AudioPlayer.SampleProvider"/> to <see langword="null"/> of the <see cref="AudioPlayer"/> when no samples are read.
-        /// </summary>
-        /// <returns>The player itself.</returns>
-        /// <seealso cref="AudioPlayer.AlwaysRead"/>
-        public AudioPlayer UnsetProviderOnEnd()
-        {
-            player.AlwaysRead = false;
-            return player;
-        }
-
-        /// <summary>
-        /// Destroys the <see cref="AudioPlayer"/> when the provider ends.
-        /// </summary>
-        /// <returns>The player itself.</returns>
-        /// <seealso cref="AudioPlayer.Ended"/>
-        public AudioPlayer DestroyOnEnd()
-        {
-            player.Ended += () =>
-            {
-                if (player.OutputSpeaker is { } speaker)
-                    speaker.Destroy();
-                Object.Destroy(player);
-            };
             return player;
         }
 

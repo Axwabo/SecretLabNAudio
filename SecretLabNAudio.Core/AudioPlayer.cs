@@ -67,23 +67,9 @@ public sealed partial class AudioPlayer : AudioPlayerBase
     /// </remarks>
     public float MasterAmplification { get; set; } = 1;
 
-    /// <summary>Whether the playback is paused.</summary>
-    public bool IsPaused { get; set; }
-
-    /// <summary>True if playback has finished on the previous frame (fewer samples were read than requested).</summary>
-    public bool HasEnded { get; private set; }
-
-    /// <summary>
-    /// If true, the <see cref="SampleProvider"/> will be read from continuously.
-    /// If false, the <see cref="SampleProvider"/> will be set to null upon reaching its end.
-    /// </summary>
-    /// <seealso cref="Ended"/>
-    public bool AlwaysRead { get; set; } = true;
-
     /// <summary>Invoked every frame when no samples were read from the <see cref="SampleProvider"/>.</summary>
     /// <remarks>The provider is not set to null by default.</remarks>
-    /// <seealso cref="AlwaysRead"/>
-    /// <seealso cref="HasEnded"/>
+    /// <seealso cref="AudioPlayerBase.HasEnded"/>
     /// <seealso cref="Ended"/>
     public event Action? NoSamplesRead;
 
@@ -116,6 +102,8 @@ public sealed partial class AudioPlayer : AudioPlayerBase
     /// <remarks>The value will be zero if there's more than 1 mixer input.</remarks>
     public override TimeSpan TotalTime => this.SourceAs<ISeekable>()?.TotalTime ?? TimeSpan.Zero;
 
+    protected internal override void Stop() => SampleProvider = null;
+
     protected override void OnDisable()
     {
         base.OnDisable();
@@ -123,7 +111,6 @@ public sealed partial class AudioPlayer : AudioPlayerBase
         HasEnded = IsPaused = false;
         SampleProvider = null;
         OutputMonitor = null;
-        AlwaysRead = true;
         _remainingTime = 0;
     }
 
@@ -171,8 +158,6 @@ public sealed partial class AudioPlayer : AudioPlayerBase
 
     private void End(bool zero)
     {
-        var hasEndedBefore = HasEnded;
-        HasEnded = true;
         ClearBuffer();
         if (zero)
         {
@@ -180,12 +165,8 @@ public sealed partial class AudioPlayer : AudioPlayerBase
             NoSamplesRead.InvokeSafely();
         }
 
-        if (!hasEndedBefore)
-        {
-            InvokeEnded();
-        }
-
-        if (!AlwaysRead)
+        InvokeEnded();
+        if (EndAction == EndAction.Stop)
             SampleProvider = null;
     }
 

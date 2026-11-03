@@ -69,6 +69,8 @@ public class PreEncodedAudioPlayer : AudioPlayerBase
 
     protected virtual void Start() => _ = ProcessAsync(destroyCancellationToken);
 
+    protected override void Stop() => PacketProvider = null;
+
     protected override void OnDisable()
     {
         base.OnDisable();

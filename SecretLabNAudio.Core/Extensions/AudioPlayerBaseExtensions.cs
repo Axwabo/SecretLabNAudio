@@ -31,6 +31,47 @@ public static class AudioPlayerBaseExtensions
             return player;
         }
 
+        public T PoolOnEnd()
+        {
+            player.EndAction = EndAction.Pool;
+            return player;
+        }
+
+        public T DestroyOnEnd()
+        {
+            player.EndAction = EndAction.Destroy;
+            return player;
+        }
+
+        public T StopOnEnd()
+        {
+            player.EndAction = EndAction.Stop;
+            return player;
+        }
+
+        /// <summary>
+        /// Pauses (or unpauses) the audio player.
+        /// </summary>
+        /// <param name="pause">Whether to pause the player.</param>
+        /// <returns>The player itself.</returns>
+        public T Pause(bool pause = true)
+        {
+            player.IsPaused = pause;
+            return player;
+        }
+
+        /// <summary>
+        /// Unpauses the audio player.
+        /// </summary>
+        /// <returns>The player itself.</returns>
+        public T Resume() => player.Pause(false);
+
+        public T Stop()
+        {
+            player.Stop();
+            return player;
+        }
+
     }
 
     extension(AudioPlayerBase player)

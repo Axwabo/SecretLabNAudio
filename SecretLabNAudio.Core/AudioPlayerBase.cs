@@ -17,6 +17,14 @@ public abstract class AudioPlayerBase : MonoBehaviour
     /// </summary>
     public AudioPacketOutput? Output { get; set; }
 
+    public EndAction EndAction { get; set; }
+
+    /// <summary>Whether the playback is paused.</summary>
+    public bool IsPaused { get; set; }
+
+    /// <summary>True if playback has finished on the previous frame (fewer samples were read than requested).</summary>
+    public bool HasEnded { get; protected set; }
+
     public abstract TimeSpan CurrentTime { get; set; }
 
     public abstract TimeSpan TotalTime { get; }
@@ -25,6 +33,8 @@ public abstract class AudioPlayerBase : MonoBehaviour
 
     /// <summary>Invoked when this player is disabled or destroyed.</summary>
     public event Action? Destroyed;
+
+    protected internal abstract void Stop();
 
     protected virtual void OnDisable()
     {
@@ -38,9 +48,27 @@ public abstract class AudioPlayerBase : MonoBehaviour
 
     protected void InvokeEnded()
     {
+        if (HasEnded)
+            return;
+        HasEnded = true;
         Ended.InvokeSafely();
-        if (Output is SpeakerToyOutput {Speaker: var speaker, PoolOnEnd: true})
-            SpeakerToyPool.Return(speaker);
+        switch (EndAction)
+        {
+            case EndAction.Pool:
+                if (this.TryGetSpeaker(out var speaker))
+                    SpeakerToyPool.Return(speaker);
+                Destroy(this);
+                break;
+            case EndAction.Destroy:
+                this.OutputSpeaker?.DestroySafe();
+                Destroy(this);
+                break;
+            case EndAction.Stop:
+                Stop();
+                break;
+            case EndAction.Nothing:
+                break;
+        }
     }
 
 }

@@ -55,12 +55,6 @@ public static class SpeakerBuilderExtensions
             return builder;
         }
 
-        public T PoolOnEnd()
-        {
-            builder.Output.PoolOnEnd = true;
-            return builder;
-        }
-
         public SpeakerToyGroup GetOrCreateGroup() => builder.Speaker.GetOrCreateGroup();
 
         public SpeakerToyGroup CreateGroup() => builder.Speaker.CreateGroup();
