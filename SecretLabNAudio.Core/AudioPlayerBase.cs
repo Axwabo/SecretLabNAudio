@@ -17,6 +17,10 @@ public abstract class AudioPlayerBase : MonoBehaviour
     /// </summary>
     public AudioPacketOutput? Output { get; set; }
 
+    public abstract TimeSpan CurrentTime { get; set; }
+
+    public abstract TimeSpan TotalTime { get; }
+
     public event Action? Ended;
 
     /// <summary>Invoked when this player is disabled or destroyed.</summary>

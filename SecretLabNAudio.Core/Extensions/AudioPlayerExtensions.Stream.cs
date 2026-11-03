@@ -20,24 +20,6 @@ public static partial class AudioPlayerExtensions
         }
 
         /// <summary>
-        /// Gets or sets the current time of the single <see cref="ISeekable"/> source.
-        /// </summary>
-        /// <remarks>The value will be zero and will not be set if there's more than 1 mixer input.</remarks>
-        /// <seealso cref="SourceAs"/>
-        public TimeSpan CurrentTime
-        {
-            get => player.SourceAs<ISeekable>()?.CurrentTime ?? TimeSpan.Zero;
-            set => player.SourceAs<ISeekable>()?.CurrentTime = value;
-        }
-
-        /// <summary>
-        /// Gets the total time of the single <see cref="ISeekable"/> source.
-        /// </summary>
-        /// <remarks>The value will be zero if there's more than 1 mixer input.</remarks>
-        /// <seealso cref="SourceAs"/>
-        public TimeSpan TotalTime => player.SourceAs<ISeekable>()?.TotalTime ?? TimeSpan.Zero;
-
-        /// <summary>
         /// Gets whether the single <see cref="ILoopable"/> source has its loop property set to true.
         /// </summary>
         /// <seealso cref="SourceAs"/>

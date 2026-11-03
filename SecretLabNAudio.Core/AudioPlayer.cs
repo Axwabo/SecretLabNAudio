@@ -100,6 +100,22 @@ public sealed partial class AudioPlayer : AudioPlayerBase
             ProcessPacket();
     }
 
+    /// <summary>
+    /// Gets or sets the current time of the single <see cref="ISeekable"/> source.
+    /// </summary>
+    /// <remarks>The value will be zero and will not be set if there's more than 1 mixer input.</remarks>
+    public override TimeSpan CurrentTime
+    {
+        get => this.SourceAs<ISeekable>()?.CurrentTime ?? TimeSpan.Zero;
+        set => this.SourceAs<ISeekable>()?.CurrentTime = value;
+    }
+
+    /// <summary>
+    /// Gets the total time of the single <see cref="ISeekable"/> source.
+    /// </summary>
+    /// <remarks>The value will be zero if there's more than 1 mixer input.</remarks>
+    public override TimeSpan TotalTime => this.SourceAs<ISeekable>()?.TotalTime ?? TimeSpan.Zero;
+
     protected override void OnDisable()
     {
         base.OnDisable();

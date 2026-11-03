@@ -27,6 +27,8 @@ public static class AudioConstants
 
     public const int VoiceChatBufferSize = VoiceChatSettings.BufferLength;
 
+    public const float SecondsPerSample = 1f / SampleRate;
+
     /// <summary>The <see cref="WaveFormat"/> supported by <see cref="AudioPlayer"/> instances.</summary>
     public static WaveFormat SupportedFormat { get; } = WaveFormat.CreateIeeeFloatWaveFormat(SampleRate, Channels);
 
