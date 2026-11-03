@@ -17,7 +17,7 @@ public class PreEncodedAudioPlayer : AudioPlayerBase
         var time = 0f;
         while (!cancellationToken.IsCancellationRequested)
         {
-            if (PacketProvider is { } provider)
+            if (!IsPaused && PacketProvider is { } provider)
                 SendPackets(provider, ref time);
             await Awaitable.NextFrameAsync(cancellationToken);
         }
@@ -45,17 +45,13 @@ public class PreEncodedAudioPlayer : AudioPlayerBase
 
         if (read > 1)
         {
+            HasEnded = false;
             time -= TocByte.TotalSamples(EncodedBuffer) * AudioConstants.SecondsPerSample;
             Output?.BroadcastEncodedData(EncodedBuffer, read, SendFilter);
             return;
         }
 
         time = 0;
-        End();
-    }
-
-    private void End()
-    {
         InvokeEnded();
     }
 

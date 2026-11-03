@@ -166,8 +166,6 @@ public sealed partial class AudioPlayer : AudioPlayerBase
         }
 
         InvokeEnded();
-        if (EndAction == EndAction.Stop)
-            SampleProvider = null;
     }
 
     /// <summary>Resets the amount of samples to send and clears the buffer of the single <see cref="BufferedSampleProvider"/> input (if present).</summary>
