@@ -58,7 +58,7 @@ public sealed class OggOpusPacketProvider : IOpusPacketProvider
 
     public TimeSpan TotalTime { get; }
 
-    public long LastPagePosition { get; private set; }
+    public long SamplePosition { get; private set; }
 
     public bool CanSeek => _source.CanSeek;
 
@@ -70,8 +70,8 @@ public sealed class OggOpusPacketProvider : IOpusPacketProvider
         if (source.CanSeek)
         {
             _dataPosition = source.Position - next.TotalSize;
-            if (OggPage.TryGetLastGranulePosition(source, _rawPacketBuffer, out var total))
-                TotalSamples = total - preSkip;
+            if (OggPage.TryGetLastGranulePosition(source, _rawPacketBuffer, out var granule))
+                TotalSamples = granule - preSkip;
         }
 
         TotalTime = TimeSpan.FromSeconds(TotalSamples * SecondsPerSample);
@@ -84,7 +84,7 @@ public sealed class OggOpusPacketProvider : IOpusPacketProvider
         {
             if (AdvancePage(buffer, page, out var length))
                 return length;
-            LastPagePosition = page.GranulePosition - PreSkip;
+            SamplePosition = page.GranulePosition - PreSkip;
             if (page.IsEndOfStream)
                 break;
             _page = OggPage.Read(_source, _rawPacketBuffer);
@@ -100,6 +100,7 @@ public sealed class OggOpusPacketProvider : IOpusPacketProvider
         if (samplePosition == 0)
         {
             _source.Position = _dataPosition;
+            SamplePosition = 0;
             return;
         }
 
@@ -123,6 +124,7 @@ public sealed class OggOpusPacketProvider : IOpusPacketProvider
             length = _packetLength += span.Length;
             if (span.Length >= byte.MaxValue)
                 continue;
+            SamplePosition += TocByte.TotalSamples(_singlePacketBuffer);
             _singlePacketBuffer.CopyTo(buffer);
             _packetLength = 0;
             _packetIndex++;

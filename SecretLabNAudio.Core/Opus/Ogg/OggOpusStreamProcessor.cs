@@ -20,16 +20,10 @@ public sealed class OggOpusStreamProcessor : IStreamAudioProcessor
 
     private int _skip;
 
-    private long _samplePosition;
-
     public long SamplePosition
     {
-        get => _samplePosition;
-        set
-        {
-            _provider.Seek(value);
-            _samplePosition = value;
-        }
+        get => _provider.SamplePosition;
+        set => _provider.Seek(value);
     }
 
     public OggOpusStreamProcessor(OggOpusPacketProvider provider)
@@ -52,7 +46,6 @@ public sealed class OggOpusStreamProcessor : IStreamAudioProcessor
             _sampleBuffer.AsSpan(_remainingStart, read).CopyTo(buffer.AsSpan(offset));
             offset += read;
             total += read;
-            _samplePosition += read / _provider.Channels;
             _remainingStart += read;
             _remainingLength -= read;
         }
@@ -94,7 +87,6 @@ public sealed class OggOpusStreamProcessor : IStreamAudioProcessor
         _sampleBuffer.AsSpan(sampleOffset, write).CopyTo(buffer.AsSpan(offset));
         total += write;
         offset += write;
-        _samplePosition += write / _provider.Channels;
         if (read <= needed)
             return;
         _remainingStart = sampleOffset + write;
@@ -105,7 +97,7 @@ public sealed class OggOpusStreamProcessor : IStreamAudioProcessor
 
     public TimeSpan CurrentTime
     {
-        get => TimeSpan.FromSeconds(SamplePosition / OggOpusPacketProvider.SecondsPerSample);
+        get => TimeSpan.FromSeconds(SamplePosition * OggOpusPacketProvider.SecondsPerSample);
         set => SamplePosition = (long) (value.TotalSeconds * AudioConstants.SampleRate);
     }
 
