@@ -43,16 +43,16 @@ public class PreEncodedAudioPlayer : AudioPlayerBase
             Debug.LogError(e);
         }
 
-        if (read > 1)
+        if (read <= 1)
         {
-            HasEnded = false;
-            time -= TocByte.TotalSamples(EncodedBuffer) * AudioConstants.SecondsPerSample;
-            Output?.BroadcastEncodedData(EncodedBuffer, read, SendFilter);
+            time = 0;
+            InvokeEnded();
             return;
         }
 
-        time = 0;
-        InvokeEnded();
+        HasEnded = false;
+        time -= TocByte.TotalSamples(EncodedBuffer) * AudioConstants.SecondsPerSample;
+        Output?.BroadcastEncodedData(EncodedBuffer, read, SendFilter);
     }
 
     public override TimeSpan CurrentTime
@@ -61,7 +61,7 @@ public class PreEncodedAudioPlayer : AudioPlayerBase
         set => (PacketProvider as ISeekable)?.CurrentTime = value;
     }
 
-    public override TimeSpan TotalTime => throw new NotImplementedException();
+    public override TimeSpan TotalTime => (PacketProvider as ISeekable)?.TotalTime ?? TimeSpan.Zero;
 
     protected virtual void Start() => _ = ProcessAsync(destroyCancellationToken);
 

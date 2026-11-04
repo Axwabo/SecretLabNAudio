@@ -22,7 +22,7 @@ public abstract class AudioPlayerBase : MonoBehaviour
     /// <summary>Whether the playback is paused.</summary>
     public bool IsPaused { get; set; }
 
-    /// <summary>True if playback has finished on the previous frame.</summary>
+    /// <summary>True if playback has finished.</summary>
     public bool HasEnded { get; protected set; }
 
     public abstract TimeSpan CurrentTime { get; set; }

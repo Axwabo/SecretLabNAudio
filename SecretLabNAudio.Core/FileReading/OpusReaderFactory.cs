@@ -1,7 +1,6 @@
-using SecretLabNAudio.Core.FileReading;
 using SecretLabNAudio.Core.Opus.Ogg;
 
-namespace SecretLabNAudio.Core.Opus;
+namespace SecretLabNAudio.Core.FileReading;
 
 internal sealed class OpusReaderFactory : IAudioReaderFactory
 {

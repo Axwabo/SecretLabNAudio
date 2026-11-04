@@ -18,8 +18,7 @@ internal sealed class GroupedSpeaker : MonoBehaviour
     private void OnDisable()
     {
         Instances.Remove(this);
-        if (!destroyCancellationToken.IsCancellationRequested)
-            Destroy(this);
+        Destroy(this);
         RemoveFromGroup();
     }
 
