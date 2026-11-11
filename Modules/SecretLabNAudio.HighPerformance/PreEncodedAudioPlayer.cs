@@ -15,7 +15,7 @@ public class PreEncodedAudioPlayer : AudioPlayerBase
         get;
         set
         {
-            value?.Dispose();
+            field?.Dispose();
             field = value;
         }
     }
