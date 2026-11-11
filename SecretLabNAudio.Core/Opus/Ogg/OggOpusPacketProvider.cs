@@ -71,7 +71,7 @@ public sealed class OggOpusPacketProvider : IOpusPacketProvider
         {
             _dataPosition = source.Position - next.TotalSize;
             if (OggPage.TryGetLastGranulePosition(source, _rawPacketBuffer, out var granule))
-                TotalSamples = granule - preSkip;
+                TotalSamples = granule;
         }
 
         TotalTime = TimeSpan.FromSeconds(TotalSamples * SecondsPerSample);
@@ -84,7 +84,7 @@ public sealed class OggOpusPacketProvider : IOpusPacketProvider
         {
             if (AdvancePage(buffer, page, out var length))
                 return length;
-            SamplePosition = page.GranulePosition - PreSkip;
+            SamplePosition = page.GranulePosition;
             if (page.IsEndOfStream)
                 break;
             _page = OggPage.Read(_source, _rawPacketBuffer);

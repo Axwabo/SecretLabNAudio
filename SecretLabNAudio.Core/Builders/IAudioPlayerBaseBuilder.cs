@@ -31,6 +31,24 @@ public static class AudioPlayerBaseBuilderExtensions
             return builder;
         }
 
+        public T PoolOnEnd()
+        {
+            builder.Player.PoolOnEnd();
+            return builder;
+        }
+
+        public T DestroyOnEnd()
+        {
+            builder.Player.DestroyOnEnd();
+            return builder;
+        }
+
+        public T StopOnEnd()
+        {
+            builder.Player.StopOnEnd();
+            return builder;
+        }
+
     }
 
     extension<T>(IAudioPlayerBaseBuilder) where T : AudioPlayerBase

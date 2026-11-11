@@ -16,6 +16,7 @@ public static class AudioReaderFactoryManager
         RegisterFactory("aif", aiff);
         var opus = new OpusReaderFactory();
         RegisterFactory("opus", opus);
+        RegisterFactory("opusl", opus);
     }
 
     /// <summary>

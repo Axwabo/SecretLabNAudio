@@ -10,7 +10,15 @@ public class PreEncodedAudioPlayer : AudioPlayerBase
 
     private static readonly byte[] EncodedBuffer = new byte[AudioConstants.MaxEncodedBytesPerPacket];
 
-    public IOpusPacketProvider? PacketProvider { get; set; }
+    public IOpusPacketProvider? PacketProvider
+    {
+        get;
+        set
+        {
+            value?.Dispose();
+            field = value;
+        }
+    }
 
     private async Awaitable ProcessAsync(CancellationToken cancellationToken)
     {

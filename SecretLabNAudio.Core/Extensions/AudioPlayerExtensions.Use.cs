@@ -52,7 +52,7 @@ public static partial class AudioPlayerExtensions
         /// <include file="../XmlDocs/Files.xml" path="doc/exception"/>
         /// <seealso cref="ProcessorChainExtensions.ToPlayerCompatible"/>
         public AudioPlayer UseFile(string path, ModifyChain? modify, bool loop = false)
-            => player.Use(WaveStreamAudioProcessor.CreateFromFile(path, loop).ToCompatibleProcessor().Process(modify));
+            => player.Use(IStreamAudioProcessor.CreateFromFile(path, loop).ToCompatibleProcessor().Process(modify));
 
         /// <summary>
         /// If the file exists and is supported, replaces the <see cref="AudioPlayer.SampleProvider"/> with a file stream processor.
