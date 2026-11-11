@@ -41,8 +41,7 @@ public static class StreamProcessorExtensions
             do
             {
                 var requested = Math.Min(length - position, BufferLength);
-                requested -= requested % blockAlign;
-                var read = processor.Read(buffer, position, requested);
+                var read = provider.Read(buffer, position, requested);
                 position += read;
                 if (read == 0)
                     break;
@@ -57,8 +56,7 @@ public static class StreamProcessorExtensions
             {
                 memory.Write(MemoryMarshal.Cast<float, byte>(buffer.AsSpan(0, position)));
                 var requested = Math.Min(length, BufferLength);
-                requested -= requested % blockAlign;
-                position = processor.Read(buffer, 0, requested);
+                position = provider.Read(buffer, 0, requested);
             }
 
             var bytes = memory.GetBuffer().AsSpan(0, (int) memory.Length);
