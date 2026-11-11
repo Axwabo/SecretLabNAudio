@@ -18,8 +18,8 @@ public sealed partial class AudioPlayer : AudioPlayerBase
     /// Thrown when the given sample provider is not null and does not match the following criteria:
     /// <para>
     /// Encoding = <see cref="WaveFormatEncoding.IeeeFloat"/><br/>
-    /// Sample Rate = <see cref="SampleRate"/><br/>
-    /// Channels = <see cref="Channels"/>
+    /// Sample Rate = <see cref="AudioConstants.SampleRate"/><br/>
+    /// Channels = <see cref="AudioConstants.Channels"/>
     /// </para>
     /// </exception>
     /// <remarks>Setting the provider changes the value of <see cref="OwnsProvider"/> to whether the given provider is an <see cref="IAudioProcessor"/>.</remarks>

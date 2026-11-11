@@ -18,7 +18,7 @@ public static class StreamProcessorExtensions
     {
 
         /// <summary>
-        /// Sets the <see cref="IStreamAudioProcessor.Loop"/> property.
+        /// Sets the <see cref="ILoopable.Loop"/> property.
         /// </summary>
         /// <param name="loop">Whether to loop the processor.</param>
         /// <returns>The processor itself.</returns>
@@ -41,7 +41,7 @@ public static class StreamProcessorExtensions
                 var requested = Math.Min(length - position, BufferLength);
                 var read = processor.Read(buffer, position, requested);
                 position += read;
-                if (read == 0)
+                if (read == 0 || position == length)
                     return new RawSourceSampleProvider(buffer, position, provider.WaveFormat);
             }
             while (position < length);
