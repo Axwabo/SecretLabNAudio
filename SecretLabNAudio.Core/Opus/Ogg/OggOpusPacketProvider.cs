@@ -3,7 +3,7 @@ using Logger = LabApi.Features.Console.Logger;
 
 namespace SecretLabNAudio.Core.Opus.Ogg;
 
-public sealed class OggOpusPacketProvider : IOpusPacketProvider
+public sealed class OggOpusPacketProvider : IOpusPacketProvider, ISeekable
 {
 
     public const double SecondsPerSample = 1d / AudioConstants.SampleRate;
@@ -55,6 +55,12 @@ public sealed class OggOpusPacketProvider : IOpusPacketProvider
     public ushort PreSkip { get; }
 
     public long TotalSamples { get; }
+
+    public TimeSpan CurrentTime
+    {
+        get => TimeSpan.FromSeconds(SamplePosition * SecondsPerSample);
+        set => Seek((long) Math.Clamp(value.TotalSeconds * AudioConstants.SampleRate, 0, TotalSamples));
+    }
 
     public TimeSpan TotalTime { get; }
 
