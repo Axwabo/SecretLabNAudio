@@ -33,24 +33,31 @@ public static class StreamProcessorExtensions
         public RawSourceSampleProvider ReadSamples(Func<IStreamAudioProcessor, ISampleProvider> toProvider)
         {
             var provider = toProvider(processor);
+            var blockAlign = processor.WaveFormat.BlockAlign;
             var length = provider.WaveFormat.SampleCount(processor.TotalTime.TotalSeconds);
+            length += length % provider.WaveFormat.BlockAlign;
             var buffer = new float[length];
             var position = 0;
             do
             {
                 var requested = Math.Min(length - position, BufferLength);
+                requested -= requested % blockAlign;
                 var read = processor.Read(buffer, position, requested);
                 position += read;
-                if (read == 0 || position == length)
-                    return new RawSourceSampleProvider(buffer, position, provider.WaveFormat);
+                if (read == 0)
+                    break;
             }
             while (position < length);
+
+            if (position >= length)
+                return new RawSourceSampleProvider(buffer, position, provider.WaveFormat);
 
             using var memory = new MemoryStream(position * sizeof(float));
             while (position != 0)
             {
                 memory.Write(MemoryMarshal.Cast<float, byte>(buffer.AsSpan(0, position)));
                 var requested = Math.Min(length, BufferLength);
+                requested -= requested % blockAlign;
                 position = processor.Read(buffer, 0, requested);
             }
 
