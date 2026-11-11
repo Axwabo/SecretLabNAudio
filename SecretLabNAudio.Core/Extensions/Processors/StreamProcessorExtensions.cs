@@ -35,7 +35,7 @@ public static class StreamProcessorExtensions
             var provider = toProvider(processor);
             var blockAlign = processor.WaveFormat.BlockAlign;
             var length = provider.WaveFormat.SampleCount(processor.TotalTime.TotalSeconds);
-            length += length % provider.WaveFormat.BlockAlign;
+            length += length % blockAlign;
             var buffer = new float[length];
             var position = 0;
             do
