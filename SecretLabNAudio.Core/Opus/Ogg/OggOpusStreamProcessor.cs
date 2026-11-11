@@ -14,6 +14,7 @@ public sealed class OggOpusStreamProcessor : IStreamAudioProcessor
     private readonly float[] _sampleBuffer = new float[AudioConstants.VoiceChatBufferSize];
 
     private readonly long _total;
+    private readonly TimeSpan _preSkipTime;
 
     private int _remainingStart;
     private int _remainingLength;
@@ -22,8 +23,8 @@ public sealed class OggOpusStreamProcessor : IStreamAudioProcessor
 
     public long SamplePosition
     {
-        get => _provider.SamplePosition;
-        set => _provider.Seek(value);
+        get => _provider.SamplePosition - _provider.PreSkip;
+        set => _provider.Seek(value - _provider.PreSkip);
     }
 
     public OggOpusStreamProcessor(OggOpusPacketProvider provider)
@@ -31,6 +32,7 @@ public sealed class OggOpusStreamProcessor : IStreamAudioProcessor
         _provider = provider;
         _skip = provider.PreSkip;
         _total = provider.TotalSamples * provider.Channels;
+        _preSkipTime = TimeSpan.FromSeconds(provider.PreSkip * OggOpusPacketProvider.SecondsPerSample);
         TotalTime = provider.TotalTime;
         WaveFormat = provider.Channels == AudioConstants.Channels
             ? AudioConstants.SupportedFormat
@@ -97,8 +99,12 @@ public sealed class OggOpusStreamProcessor : IStreamAudioProcessor
 
     public TimeSpan CurrentTime
     {
-        get => TimeSpan.FromSeconds(SamplePosition * OggOpusPacketProvider.SecondsPerSample);
-        set => SamplePosition = (long) (value.TotalSeconds * AudioConstants.SampleRate);
+        get => _provider.CurrentTime - _preSkipTime;
+        set
+        {
+            _provider.CurrentTime = value - _preSkipTime;
+            _skip = _provider.PreSkip;
+        }
     }
 
     public TimeSpan TotalTime { get; }

@@ -20,6 +20,10 @@ public class PreEncodedAudioPlayer : AudioPlayerBase
         }
     }
 
+    protected PreEncodedAudioPlayer()
+    {
+    }
+
     private async Awaitable ProcessAsync(CancellationToken cancellationToken)
     {
         var time = 0f;

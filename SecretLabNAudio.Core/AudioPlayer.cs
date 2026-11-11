@@ -6,7 +6,7 @@ using VoiceChat.Codec.Enums;
 namespace SecretLabNAudio.Core;
 
 /// <summary>A <see cref="SpeakerToy"/>-bound component playing audio using an <see cref="ISampleProvider"/>.</summary>
-public sealed partial class AudioPlayer : AudioPlayerBase
+public partial class AudioPlayer : AudioPlayerBase
 {
 
     private static readonly float[] ReadBuffer = new float[AudioConstants.SamplesPerPacket];
@@ -76,6 +76,10 @@ public sealed partial class AudioPlayer : AudioPlayerBase
     private float _remainingTime;
 
     private readonly OpusEncoder _encoder = new(OpusApplicationType.Audio);
+
+    protected AudioPlayer()
+    {
+    }
 
     private void Update()
     {
