@@ -21,11 +21,9 @@ public class WaveStreamAudioProcessor : IStreamAudioProcessor
     /// <summary>The path to the file if this processor was created from one.</summary>
     public string? FilePath { get; init; }
 
-    public long SamplePosition
-    {
-        get => Stream.Position;
-        set => Stream.Position = value - value % Stream.WaveFormat.BlockAlign;
-    }
+    public long SamplePosition => Stream.Position;
+
+    public void Seek(long sample) => Stream.Position = sample - sample % Stream.WaveFormat.BlockAlign;
 
     /// <inheritdoc/>
     /// <exception cref="ObjectDisposedException">Thrown if the processor has already been disposed.</exception>

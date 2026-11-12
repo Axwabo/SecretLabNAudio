@@ -5,6 +5,8 @@ public interface IStreamAudioProcessor : IAudioProcessor, ISeekable, ILoopable
 
     string? FilePath { get; init; }
 
-    long SamplePosition { get; set; }
+    long SamplePosition { get; }
+
+    void Seek(long sample);
 
 }
