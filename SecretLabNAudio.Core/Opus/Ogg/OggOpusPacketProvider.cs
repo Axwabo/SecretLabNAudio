@@ -1,12 +1,11 @@
 using System.Buffers;
+using SecretLabNAudio.Core.Extensions;
 using Logger = LabApi.Features.Console.Logger;
 
 namespace SecretLabNAudio.Core.Opus.Ogg;
 
 public sealed class OggOpusPacketProvider : IOpusPacketProvider, ISeekable
 {
-
-    public const double SecondsPerSample = 1d / AudioConstants.SampleRate;
 
     public static OggOpusPacketProvider? TryCreate(Stream source)
     {
@@ -58,8 +57,8 @@ public sealed class OggOpusPacketProvider : IOpusPacketProvider, ISeekable
 
     public TimeSpan CurrentTime
     {
-        get => TimeSpan.FromSeconds(SamplePosition * SecondsPerSample);
-        set => Seek((long) Math.Clamp(value.TotalSeconds * AudioConstants.SampleRate, 0, TotalSamples));
+        get => TimeSpan.FromSamples(SamplePosition);
+        set => Seek(value.Samples);
     }
 
     public TimeSpan TotalTime { get; }
@@ -67,6 +66,8 @@ public sealed class OggOpusPacketProvider : IOpusPacketProvider, ISeekable
     public long SamplePosition { get; private set; }
 
     public bool CanSeek => _source.CanSeek;
+
+    public bool IsEndOfStream => _page == null;
 
     private OggOpusPacketProvider(Stream source, int channels, ushort preSkip, OggPage next)
     {
@@ -80,7 +81,7 @@ public sealed class OggOpusPacketProvider : IOpusPacketProvider, ISeekable
                 TotalSamples = granule;
         }
 
-        TotalTime = TimeSpan.FromSeconds(TotalSamples * SecondsPerSample);
+        TotalTime = TimeSpan.FromSeconds(TotalSamples * TimeSpanExtensions.SecondsPerSample);
         _page = next.CopyTo(_rawPacketBuffer);
     }
 
@@ -93,20 +94,39 @@ public sealed class OggOpusPacketProvider : IOpusPacketProvider, ISeekable
             SamplePosition = page.GranulePosition;
             if (page.IsEndOfStream)
                 break;
-            _page = OggPage.Read(_source, _rawPacketBuffer);
-            _packetLength = _packetIndex = 0;
+            ReadPage();
         }
 
         _page = null;
         return 0;
     }
 
-    public void Seek(long samplePosition)
+    private void ReadPage()
     {
-        if (samplePosition == 0)
+        _page = OggPage.Read(_source, _rawPacketBuffer);
+        ResetIndexes();
+    }
+
+    private void ResetIndexes() => _packetLength = _packetIndex = 0;
+
+    public void Seek(long sample)
+    {
+        if (sample <= 0)
         {
+            if (_source.Position == _dataPosition)
+                return;
             _source.Position = _dataPosition;
+            ReadPage();
             SamplePosition = 0;
+            return;
+        }
+
+        if (sample >= TotalSamples)
+        {
+            _source.Seek(0, SeekOrigin.End);
+            _page = null;
+            ResetIndexes();
+            SamplePosition = TotalSamples;
             return;
         }
 
@@ -130,7 +150,7 @@ public sealed class OggOpusPacketProvider : IOpusPacketProvider, ISeekable
             length = _packetLength += span.Length;
             if (span.Length >= byte.MaxValue)
                 continue;
-            SamplePosition += TocByte.TotalSamples(_singlePacketBuffer);
+            SamplePosition += TocByte.TotalSamplesPerChannel(_singlePacketBuffer);
             _singlePacketBuffer.CopyTo(buffer);
             _packetLength = 0;
             _packetIndex++;
