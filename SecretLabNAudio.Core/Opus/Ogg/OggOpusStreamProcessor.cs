@@ -54,8 +54,8 @@ public sealed class OggOpusStreamProcessor : IStreamAudioProcessor
 
     public OggOpusStreamProcessor(OggOpusPacketProvider provider)
     {
+        TotalSamples = Math.Max(0, provider.TotalSamples - provider.PreSkip);
         _provider = provider;
-        TotalSamples = provider.TotalSamples - provider.PreSkip;
         _total = TotalSamples * provider.Channels;
         _totalPreSkip = _skip = provider.PreSkip * provider.Channels;
         WaveFormat = provider.Channels == AudioConstants.Channels
@@ -112,7 +112,7 @@ public sealed class OggOpusStreamProcessor : IStreamAudioProcessor
         _sampleBuffer.AsSpan(sampleOffset, write).CopyTo(buffer.AsSpan(offset));
         total += write;
         offset += write;
-        SamplePosition = Math.Min(TotalSamples, _provider.SamplePosition - _provider.PreSkip);
+        SamplePosition = Math.Min(TotalSamples == 0 ? long.MaxValue : TotalSamples, _provider.SamplePosition - _provider.PreSkip);
         if (read <= needed)
         {
             SamplePosition += read - needed;
