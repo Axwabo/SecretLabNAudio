@@ -25,23 +25,39 @@ public sealed class OggOpusStreamProcessor : IStreamAudioProcessor
 
     private int _skip;
 
+    public long TotalSamples { get; }
+
     public long SamplePosition { get; private set; }
 
     public void Seek(long sample)
     {
-        sample = Math.Clamp(sample, 0, _provider.TotalSamples - _provider.PreSkip);
+        if (sample <= 0)
+        {
+            _provider.Seek(0);
+            _skip = _totalPreSkip;
+            SamplePosition = 0;
+            return;
+        }
+
+        if (sample >= TotalSamples)
+        {
+            _provider.Seek(long.MaxValue);
+            SamplePosition = TotalSamples;
+            return;
+        }
+
         var granule = sample - PreRollSamples;
         _provider.Seek(granule);
-        _skip = granule <= 0 ? _totalPreSkip : PreRollSamples * _provider.Channels;
+        _skip = (int) (sample - _provider.SamplePosition);
         SamplePosition = sample;
     }
 
     public OggOpusStreamProcessor(OggOpusPacketProvider provider)
     {
         _provider = provider;
-        _total = provider.TotalSamples * provider.Channels;
+        TotalSamples = provider.TotalSamples - provider.PreSkip;
+        _total = TotalSamples * provider.Channels;
         _totalPreSkip = _skip = provider.PreSkip * provider.Channels;
-        TotalTime = TimeSpan.FromSamples(provider.TotalSamples - provider.PreSkip);
         WaveFormat = provider.Channels == AudioConstants.Channels
             ? AudioConstants.SupportedFormat
             : WaveFormat.CreateIeeeFloatWaveFormat(AudioConstants.SampleRate, provider.Channels);
@@ -81,7 +97,7 @@ public sealed class OggOpusStreamProcessor : IStreamAudioProcessor
     private void DecodePacket(int packetLength, float[] buffer, ref int offset, int count, ref int total)
     {
         var decoded = _decoder.Decode(_packetBuffer, packetLength, _sampleBuffer);
-        var read = _total == 0 ? decoded : Math.Min(decoded, (int) (_total - SamplePosition));
+        var read = _total == 0 ? decoded : Math.Min(decoded, (int) (_total - SamplePosition * _provider.Channels));
         var sampleOffset = 0;
         if (_skip != 0)
         {
@@ -96,9 +112,13 @@ public sealed class OggOpusStreamProcessor : IStreamAudioProcessor
         _sampleBuffer.AsSpan(sampleOffset, write).CopyTo(buffer.AsSpan(offset));
         total += write;
         offset += write;
-        SamplePosition = _provider.SamplePosition - _provider.PreSkip;
+        SamplePosition = Math.Min(TotalSamples, _provider.SamplePosition - _provider.PreSkip);
         if (read <= needed)
+        {
+            SamplePosition += read - needed;
             return;
+        }
+
         _remainingStart = sampleOffset + write;
         _remainingLength = read - needed;
         SamplePosition -= _remainingLength / _provider.Channels;
@@ -109,10 +129,10 @@ public sealed class OggOpusStreamProcessor : IStreamAudioProcessor
     public TimeSpan CurrentTime
     {
         get => TimeSpan.FromSamples(SamplePosition);
-        set => SamplePosition = value.Samples;
+        set => Seek(value.Samples);
     }
 
-    public TimeSpan TotalTime { get; }
+    public TimeSpan TotalTime => TimeSpan.FromSamples(TotalSamples);
 
     public bool Loop { get; set; }
 
